@@ -1,0 +1,63 @@
+.item-panel-container {
+    position: absolute;
+    left: 1.5cqw;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4.2cqw;
+    /* Dark Green/Teal Background */
+    background: linear-gradient(180deg, #153a3e 0%, #051c1e 100%);
+    /* Light Gold Border */
+    border: 0.1cqw solid #c8aa6e;
+    border-radius: 0.5cqw;
+    /* Slightly rounded corners */
+    padding: 0.6cqw 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5cqw;
+    z-index: 60;
+    box-shadow:
+        0 0 1.5cqw rgba(200, 170, 110, 0.25),
+        0 0 3cqw rgba(0, 0, 0, 0.6);
+}
+
+/* Slot Styling */
+.item-slot {
+    width: 2.8cqw;
+    height: 2.8cqw;
+    background: #000;
+    border: 0.1cqw solid #333;
+    border-radius: 0.2cqw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.empty-slot {
+    background: #020405;
+    box-shadow: inset 0 0 0.25cqw rgba(0, 0, 0, 0.8);
+}
+
+.active-slot {
+    border: 0.1cqw solid #c8aa6e;
+    background: radial-gradient(circle, #3a2a10 0%, #1a1205 100%);
+    box-shadow: 0 0 0.4cqw rgba(200, 170, 110, 0.5);
+}
+
+.item-icon {
+    font-size: 1.6cqw;
+    filter: drop-shadow(0 0.1cqw 0.1cqw rgba(0, 0, 0, 0.8));
+}
+
+.item-level {
+    position: absolute;
+    top: -0.2cqw;
+    left: -0.2cqw;
+    background: #c8aa6e;
+    color: #000;
+    font-size: 0.52cqw;
+    font-weight: bold;
+    padding: 0 0.15cqw;
+    border-radius: 0.1cqw;
+}

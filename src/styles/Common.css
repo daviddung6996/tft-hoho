@@ -1,0 +1,113 @@
+/* ==========================================================================
+   COMMON UTILITIES - Hextech Design System
+   ========================================================================== */
+
+/* 
+   MANDATORY: Panel Background Theme (GLOBAL STANDARD) 
+   Used for: ItemPanel, ArenaSelectorModal, DecisionReview, AdminDataModal
+*/
+.hex-panel {
+    background: var(--gradient-panel);
+    border: 0.1cqw solid var(--color-accent-gold);
+    box-shadow:
+        0 0 1.5cqw rgba(200, 170, 110, 0.25),
+        0 0 3cqw rgba(0, 0, 0, 0.6);
+    backdrop-filter: var(--blur-panel);
+    border-radius: 0.4cqw;
+}
+
+/* 
+   MANDATORY: Close Button Standard 
+*/
+.hex-close-btn {
+    width: 2cqw;
+    height: 2cqw;
+    background: rgba(0, 0, 0, 0.3);
+    border: 0.08cqw solid var(--color-accent-gold);
+    border-radius: 0.25cqw;
+    color: var(--color-accent-gold);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    font-size: 1.2cqw;
+}
+
+.hex-close-btn:hover {
+    background: rgba(200, 155, 60, 0.2);
+    box-shadow: 0 0 0.8cqw rgba(200, 155, 60, 0.4);
+}
+
+/* 
+   Hextech Inputs 
+*/
+.hex-input {
+    background: var(--input-bg);
+    border: 0.1cqw solid var(--border-admin);
+    color: var(--color-text-primary);
+    padding: 0.5cqw 0.8cqw;
+    font-family: var(--font-body);
+    font-size: 0.9cqw;
+    border-radius: 0.3cqw;
+    transition: border-color 0.2s;
+    outline: none;
+}
+
+.hex-input:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0.5cqw rgba(0, 163, 255, 0.2);
+}
+
+/* 
+   Hextech Buttons - Simplified (AGENTS.md Compliant)
+*/
+.hex-button {
+    background: transparent;
+    border: 0.1cqw solid #c8aa6e;
+    color: #F0E6D2;
+    padding: 0.5cqw 1.2cqw;
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 0.9cqw;
+    cursor: pointer;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5cqw;
+}
+
+/* Subtle hover glow - NO movement */
+.hex-button:hover {
+    border-color: #d4b876;
+    box-shadow: 0 0 0.8cqw rgba(200, 170, 110, 0.3);
+}
+
+.hex-button.primary {
+    border-color: #c8aa6e;
+    color: #F0E6D2;
+}
+
+.hex-button.gold {
+    border-color: #c8aa6e;
+    color: #F0E6D2;
+}
+
+.hex-button.danger {
+    border-color: #c8aa6e;
+    color: #F0E6D2;
+}
+
+/* 
+   Typography Utilities 
+*/
+.text-glow-gold {
+    text-shadow: 0 0 0.5cqw rgba(200, 155, 60, 0.5);
+}
+
+.text-glow-blue {
+    text-shadow: 0 0 0.5cqw rgba(0, 163, 255, 0.5);
+}

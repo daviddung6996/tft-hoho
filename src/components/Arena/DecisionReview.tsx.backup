@@ -1,0 +1,350 @@
+import React from 'react';
+import { AugmentData } from '../../services/augmentService';
+import { CommunityVotes } from '../../data/puzzleScenarios';
+import './DecisionReview.css';
+
+import { ReviewCard } from './DecisionReviewComponents/ReviewCard';
+import { PuzzleInfo } from './DecisionReviewComponents/PuzzleInfo';
+import { ReviewActions } from './DecisionReviewComponents/ReviewActions';
+
+export interface DecisionReviewProps {
+    userChoice: AugmentData;
+    userRerolled: boolean;
+    userSecondRoll?: AugmentData[];
+    userFirstRoll?: AugmentData[];
+    correctAugmentId: string;
+    proSecondRoll?: AugmentData[];
+    proFirstRoll?: AugmentData[];
+    // All 6 augments from puzzle config
+    initialAugments?: AugmentData[];
+    rerollAugments?: AugmentData[];
+    // NEW: Track which slots were rolled
+    proRerollIndices?: number[]; // [0,1,2] = rolled all 3 slots
+    proSecondRerollIndices?: number[]; // For Teemo second reroll
+    onNextPuzzle: () => void;
+    onReplay: () => void;
+    puzzleId: string;
+    patch?: string;
+    date?: string;
+    server?: string;
+    encounter?: string;
+    streamUrl?: string;
+    communityVotes?: CommunityVotes;
+    proPlayerName?: string;
+}
+
+export const DecisionReview: React.FC<DecisionReviewProps> = ({
+    userChoice,
+    userRerolled,
+    userSecondRoll,
+    userFirstRoll = [],
+    correctAugmentId,
+    proSecondRoll,
+    proFirstRoll = [],
+    initialAugments = [],
+    rerollAugments = [],
+    proRerollIndices = [],
+    proSecondRerollIndices = [],
+    onNextPuzzle,
+    onReplay,
+    puzzleId,
+    patch,
+    date,
+    server,
+    encounter,
+    streamUrl,
+    communityVotes = {},
+    proPlayerName = 'Pro Player'
+}) => {
+
+    const proRerolled = !!(proSecondRoll && proSecondRoll.length > 0);
+
+    const proFinalPick = (proRerolled
+        ? proSecondRoll!.find(a => a.id === correctAugmentId) || proSecondRoll![0]
+        : proFirstRoll.find(a => a.id === correctAugmentId) || proFirstRoll[0]) || {
+            title: "Unknown",
+            id: "unknown",
+            description: "Data missing",
+            icon: "",
+            rarity: "silver",
+            tier: 1
+        } as AugmentData;
+
+    const userMatchedPro = userChoice.title === proFinalPick.title;
+
+    // --- HELPER: VOTE ---
+    const totalVotes = Object.values(communityVotes).reduce((sum, count) => sum + count, 0);
+    const getVotePercent = (augmentTitle: string): number => {
+        const votes = communityVotes[augmentTitle] || 0;
+        return totalVotes > 0 ? Math.round((votes / totalVotes) * 100) : 0;
+    };
+    const getVoteCount = (augmentTitle: string): number => communityVotes[augmentTitle] || 0;
+
+    // --- DETECT WHICH SLOTS CHANGED ---
+    const getChangedSlots = (firstRoll: AugmentData[], secondRoll?: AugmentData[]): number[] => {
+        if (!secondRoll || secondRoll.length === 0) return [];
+        const changed: number[] = [];
+        for (let i = 0; i < 3; i++) {
+            if (firstRoll[i]?.title !== secondRoll[i]?.title) {
+                changed.push(i);
+            }
+        }
+        return changed;
+    };
+
+    const userRolledSlots = getChangedSlots(userFirstRoll, userSecondRoll);
+    // Use explicit proRerollIndices if available, fallback to auto-detect
+    const proRolledSlots = proRerollIndices && proRerollIndices.length > 0 ? proRerollIndices : getChangedSlots(proFirstRoll, proSecondRoll);
+
+    // Build first roll description
+    const getFirstRollDescription = () => {
+        const userRolled = userRolledSlots.length > 0;
+        const proRolled = proRolledSlots.length > 0;
+
+        if (userRolled && proRolled) {
+            return (
+                <>
+                    <span className="user-action">You</span> rolled {userRolled Slots.length} slot{userRolledSlots.length > 1 ? 's' : ''} while{' '}
+                    <span className="pro-action">{proPlayerName}</span> rolled {proRolledSlots.length} slot{proRolledSlots.length > 1 ? 's' : ''}
+                </>
+            );
+        } else if (userRolled) {
+            return (
+                <>
+                    <span className="user-action">You</span> rolled {userRolledSlots.length} slot{userRolledSlots.length > 1 ? 's' : ''} while{' '}
+                    <span className="pro-action">{proPlayerName}</span> kept their choice
+                </>
+            );
+        } else if (proRolled) {
+            return (
+                <>
+                    <span className="user-action">You</span> kept your choice while{' '}
+                    <span className="pro-action">{proPlayerName}</span> rolled {proRolledSlots.length} slot{proRolledSlots.length > 1 ? 's' : ''}
+                </>
+            );
+        }
+        return 'Both players kept their initial choices';
+    };
+
+    // Build second roll description
+    const getSecondRollDescription = () => {
+        // For second roll description, we can keep it simple since we have the data
+        return null; // Simplified for now
+    };
+
+    // Final pick text
+    const getFinalPickDescription = () => {
+        if (userMatchedPro) {
+            return (
+                <>
+                    <span className="user-action">You</span> and{' '}
+                    <span className="pro-action">{proPlayerName}</span> both picked{' '}
+                    <strong>{userChoice.title}</strong>
+                </>
+            );
+        }
+        return (
+            <>
+                <span className="user-action">You</span> picked <strong>{userChoice.title}</strong> while{' '}
+                <span className="pro-action">{proPlayerName}</span> picked <strong>{proFinalPick.title}</strong>
+            </>
+        );
+    };
+
+    return (
+        <div className="decision-review-overlay">
+            <div className="decision-review-container">
+
+                {/* --- HEADER --- */}
+                <PuzzleInfo
+                    puzzleId={puzzleId}
+                    patch={patch}
+                    date={date}
+                    server={server}
+                    encounter={encounter}
+                    streamUrl={streamUrl}
+                    userMatchedPro={userMatchedPro}
+                />
+
+                {/* --- TIMELINE --- */}
+                <div className="roll-timeline">
+
+                    {/* ========== FIRST ROLL ========== */}
+                    <div className="roll-section">
+                        <div className="roll-section-header">
+                            <span className="section-title">First Roll</span>
+                            <span className="section-description">{getFirstRollDescription()}</span>
+                        </div>
+                        <div className="augment-row">
+                            {userFirstRoll.map((aug, idx) => {
+                                const isUserRoll = idx === userRolledSlotIndex;
+                                const isProRoll = idx === proRolledSlotIndex;
+
+                                // Determine roll marker text
+                                let rollMarkerText = '';
+                                if (isUserRoll && isProRoll) {
+                                    rollMarkerText = 'Both Rolled';
+                                } else if (isUserRoll) {
+                                    rollMarkerText = 'Your Roll';
+                                } else if (isProRoll) {
+                                    rollMarkerText = `${proPlayerName}'s Roll`;
+                                }
+
+                                return (
+                                    <div key={`fr-${aug.id}-${idx}`} className="augment-cell">
+                                        <ReviewCard
+                                            augment={aug}
+                                            isUserPick={false}
+                                            isProPick={false}
+                                            proPlayerName={proPlayerName}
+                                            showVotes={true}
+                                            votePercent={getVotePercent(aug.title)}
+                                            voteCount={getVoteCount(aug.title)}
+                                            rollMarkerText={rollMarkerText}
+                                        />
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+
+                    {/* ========== SECOND ROLL (if exists) ========== */}
+                    {(userRerolled || proRerolled) && (userSecondRoll && userSecondRoll.length > 0 || proRerolled) && (
+                        <div className="roll-section">
+                            <div className="roll-section-header">
+                                <span className="section-title">Second Roll</span>
+                                <span className="section-description">{getSecondRollDescription()}</span>
+                            </div>
+                            <div className="augment-row">
+                                {((userSecondRoll && userSecondRoll.length > 0) ? userSecondRoll : userFirstRoll).map((aug, idx) => {
+                                    const isUserRoll = (userSecondRoll && userSecondRoll.length > 0) && idx === userRolledSlotIndex;
+                                    const isProRoll = proRerolled && idx === proRolledSlotIndex;
+                                    const displayAug = aug;
+                                    if (!displayAug) return null;
+
+                                    // Determine roll marker text
+                                    let rollMarkerText = '';
+                                    if (isUserRoll) {
+                                        rollMarkerText = 'Your Roll';
+                                    } else if (isProRoll) {
+                                        rollMarkerText = `${proPlayerName}'s Roll`;
+                                    }
+
+                                    return (
+                                        <div key={`sr-${displayAug.id}-${idx}`} className="augment-cell">
+                                            <ReviewCard
+                                                augment={displayAug}
+                                                isUserPick={false}
+                                                isProPick={false}
+                                                proPlayerName={proPlayerName}
+                                                showVotes={true}
+                                                votePercent={getVotePercent(displayAug.title)}
+                                                voteCount={getVoteCount(displayAug.title)}
+                                                rollMarkerText={rollMarkerText}
+                                            />
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* ========== FINAL PICK - All 6 Augments ========== */}
+                    <div className="roll-section final-section">
+                        <div className="roll-section-header">
+                            <span className="section-title">Final Pick</span>
+                            <span className={`diverge-badge ${userMatchedPro ? 'matched' : 'diverged'}`}>
+                                {userMatchedPro ? 'Same as ' + proPlayerName : 'Diverged from ' + proPlayerName}
+                            </span>
+                        </div>
+                        <p className="final-description">{getFinalPickDescription()}</p>
+
+                        {/* All 6 augments in 2 rows of 3 */}
+                        <div className="final-augment-grid-6">
+                            {/* Initial 3 augments */}
+                            {initialAugments.slice(0, 3).map((aug, idx) => {
+                                if (!aug) return null;
+                                const userRolledThis = idx === userRolledSlotIndex;
+                                const proRolledThis = idx === proRolledSlotIndex;
+
+                                // ❌ CANNOT pick if rolled away (augment disappeared from shop)
+                                const isUserPick = !userRolledThis && userChoice.title === aug.title;
+                                const isProPick = !proRolledThis && proFinalPick.title === aug.title;
+
+                                // Build markers array - MUTUALLY EXCLUSIVE logic
+                                const markers: string[] = [];
+                                if (userRolledThis) {
+                                    markers.push('You Rolled');
+                                } else if (isUserPick) {
+                                    markers.push('Your Pick');
+                                }
+                                if (proRolledThis) {
+                                    markers.push(`${proPlayerName} Rolled`);
+                                } else if (isProPick) {
+                                    markers.push(`${proPlayerName}'s Pick`);
+                                }
+
+                                return (
+                                    <div key={`fp-${idx}`} className={`augment-cell slot-cell ${userRolledThis || proRolledThis ? 'rolled-away' : ''}`}>
+                                        <ReviewCard
+                                            augment={aug}
+                                            isUserPick={isUserPick}
+                                            isProPick={isProPick}
+                                            proPlayerName={proPlayerName}
+                                            showVotes={isUserPick || isProPick}
+                                            votePercent={getVotePercent(aug.title)}
+                                            voteCount={getVoteCount(aug.title)}
+                                            pickMarkerText={markers.join(' • ')}
+                                        />
+                                    </div>
+                                );
+                            })}
+                            {/* Reroll 3 augments */}
+                            {rerollAugments.slice(0, 3).map((aug, idx) => {
+                                if (!aug) return null;
+                                const userGotThis = idx === userRolledSlotIndex;
+                                const proGotThis = idx === proRolledSlotIndex;
+
+                                // ✅ CAN ONLY pick if this slot was actually rolled (new augment appeared)
+                                const isUserPick = userRerolled && userGotThis && userChoice.title === aug.title;
+                                const isProPick = proRerolled && proGotThis && proFinalPick.title === aug.title;
+
+                                // Build markers array - MUTUALLY EXCLUSIVE logic
+                                const markers: string[] = [];
+                                if (userGotThis) {
+                                    if (isUserPick) {
+                                        markers.push('Your Pick');
+                                    }
+                                    markers.push('Your Reroll');
+                                }
+                                if (proGotThis) {
+                                    if (isProPick) {
+                                        markers.push(`${proPlayerName}'s Pick`);
+                                    }
+                                    markers.push(`${proPlayerName}'s Reroll`);
+                                }
+
+                                return (
+                                    <div key={`fp-r-${idx}`} className={`augment-cell slot-cell ${userGotThis || proGotThis ? 'rolled-result' : ''}`}>
+                                        <ReviewCard
+                                            augment={aug}
+                                            isUserPick={isUserPick}
+                                            isProPick={isProPick}
+                                            proPlayerName={proPlayerName}
+                                            showVotes={isUserPick || isProPick}
+                                            votePercent={getVotePercent(aug.title)}
+                                            voteCount={getVoteCount(aug.title)}
+                                            pickMarkerText={markers.join(' • ')}
+                                        />
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </div>
+
+                <ReviewActions onReplay={onReplay} onNextPuzzle={onNextPuzzle} />
+            </div>
+        </div>
+    );
+};

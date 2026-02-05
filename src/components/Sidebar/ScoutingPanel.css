@@ -1,0 +1,255 @@
+/* Container */
+.scouting-panel-container {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5cqw;
+    z-index: 60;
+    padding-right: 1.8cqw;
+    /* Added more space for the larger arrow */
+    font-family: "Spiegel", sans-serif;
+}
+
+/* Row Container */
+.player-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    position: relative;
+    cursor: pointer;
+    /* Interaction */
+    transition: transform 0.2s ease;
+    height: 4.3cqw;
+}
+
+/* Removed hover effect as per user request */
+.player-row:hover {
+    /* transform: translateX(-5px); */
+    cursor: pointer;
+}
+
+/* Active State (Scale up) */
+.player-row.scouting {
+    transform: scale(1.05) translateX(-1cqw);
+    /* Adjusted scale for larger base size */
+    z-index: 100;
+    opacity: 1;
+}
+
+/* Inactive State (Dimmed) - New Requirement */
+.player-row:not(.scouting) {
+    opacity: 0.7;
+    /* Slightly more visible than before */
+    transform: scale(0.98);
+    filter: brightness(0.85);
+}
+
+.player-row:not(.scouting):hover {
+    opacity: 1;
+    transform: scale(1);
+    filter: brightness(1);
+}
+
+/* The Info Pill (Name + Health) */
+.player-pill {
+    background: linear-gradient(90deg, #1e292b 0%, #0e1618 100%);
+    height: 3.2cqw;
+    /* Increased from 52px */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2.1cqw 0 1cqw;
+    /* Increased padding */
+    border-radius: 0.4cqw 0 0 0.4cqw;
+    margin-right: -1.7cqw;
+    /* Increased tuck amount for larger avatar */
+    min-width: 9.4cqw;
+    /* Increased from 140px */
+    position: relative;
+    z-index: 1;
+    border: 0.05cqw solid #333;
+    border-right: none;
+    box-shadow: 0 0.2cqw 0.6cqw rgba(0, 0, 0, 0.6);
+    color: #a0a0a0;
+    font-size: 0.8cqw;
+    font-weight: 600;
+}
+
+.player-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 5.7cqw;
+    color: #e0e0e0;
+    /* Brighter for clarity */
+    text-shadow: 0 0.05cqw 0.15cqw rgba(0, 0, 0, 0.9);
+}
+
+.player-health {
+    color: #fff;
+    font-weight: bold;
+    font-size: 0.9cqw;
+    margin-left: 0.5cqw;
+    padding-left: 0.5cqw;
+    border-left: 0.05cqw solid #444;
+}
+
+/* Avatar Wrapper */
+.player-avatar-wrapper {
+    position: relative;
+    z-index: 2;
+    width: 4cqw;
+    height: 4cqw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* The Ring */
+.avatar-ring {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 0.2cqw solid #b03030;
+    /* Slightly thicker border */
+    box-shadow: inset 0 0 0.4cqw rgba(0, 0, 0, 0.8), 0 0 0.4cqw rgba(0, 0, 0, 0.5);
+    pointer-events: none;
+    z-index: 3;
+}
+
+.player-avatar-img {
+    width: 3.5cqw;
+    height: 3.5cqw;
+    border-radius: 50%;
+    object-fit: cover;
+    background: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.8cqw;
+    /* Larger emoji/placeholder */
+    overflow: hidden;
+}
+
+/* "Me" Styling - Base State (Inactive) */
+.player-row.is-me .player-pill {
+    background: #0a0f11;
+    border: 0.05cqw solid #333;
+    /* Standard border when inactive */
+    border-right: none;
+    justify-content: center;
+    /* Center content when just health */
+    padding-right: 1.3cqw;
+}
+
+/* "Me" - Active State (Scouting Self) */
+.player-row.is-me.scouting .player-pill {
+    border: 0.1cqw solid #c8aa6e;
+    /* Gold border ONLY when active */
+    background: #0f1a1d;
+    box-shadow: 0 0 0.8cqw rgba(200, 170, 110, 0.4);
+}
+
+/* Always hide name for "Me" */
+.player-row.is-me .player-name {
+    display: none;
+}
+
+/* Base Health for "Me" (Inactive) */
+.player-row.is-me .player-health {
+    font-size: 0.8cqw;
+    /* Standard size when inactive */
+    color: #fff;
+    border: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* Big Health for "Me" when Active */
+.player-row.is-me.scouting .player-health {
+    font-size: 1.45cqw;
+    /* Big Prominent Health */
+    text-shadow: 0 0 0.5cqw rgba(255, 255, 255, 0.5);
+}
+
+/* "Me" Avatar Ring - Always Gold distinguish */
+.player-row.is-me .avatar-ring {
+    border-color: #f0e6d2;
+}
+
+/* "Me" Avatar Ring - Extra Glow when Active */
+.player-row.is-me.scouting .avatar-ring {
+    box-shadow: 0 0 0.5cqw rgba(200, 170, 110, 0.8);
+    border-width: 0.15cqw;
+}
+
+/* Status Icons on Ring */
+.status-icon {
+    position: absolute;
+    width: 0.95cqw;
+    height: 0.95cqw;
+    background: #111;
+    border: 0.05cqw solid #555;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.52cqw;
+    z-index: 4;
+    color: #fff;
+}
+
+/* Top Right: Exclamation / Alert */
+.status-top-right {
+    top: -0.1cqw;
+    right: -0.1cqw;
+    border-color: #a0a0a0;
+}
+
+/* Bottom Right: Combat / Swords */
+.status-bottom-right {
+    bottom: -0.1cqw;
+    right: -0.1cqw;
+    border-color: #d13636;
+    background: #3e1212;
+}
+
+/* Eliminated State */
+.player-row.eliminated {
+    filter: grayscale(1) brightness(0.5);
+    opacity: 0.7;
+}
+
+.player-row.eliminated .player-pill {
+    border-color: #333;
+}
+
+.player-row.eliminated .avatar-ring {
+    border-color: #444;
+}
+
+/* Arrow for Active Scouting */
+.player-row.scouting::after {
+    content: '';
+    position: absolute;
+    right: -1.3cqw;
+    /* Move further out to accommodate larger size */
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-top: 0.6cqw solid transparent;
+    border-bottom: 0.6cqw solid transparent;
+    border-right: 0.95cqw solid #f0e6d2;
+    /* Larger Arrow pointing Left */
+    filter: drop-shadow(0 0 0.25cqw rgba(240, 230, 210, 0.8));
+    /* Make it clearer with glow */
+    z-index: 105;
+}

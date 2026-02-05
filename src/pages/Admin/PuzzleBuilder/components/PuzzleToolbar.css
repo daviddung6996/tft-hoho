@@ -1,0 +1,135 @@
+/* Admin Operations Deck - Puzzle Toolbar
+   Reference: AGENTS.md & SKILL.md (Admin Palette) 
+*/
+
+.puzzle-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    /* Flat Design - No Shadows/Gradients */
+    background: #020617;
+    /* bg-admin-dark */
+    border-bottom: 1px solid #1E293B;
+    /* border-admin */
+
+    /* Spacing using rem/cqw hybrid as per SKILL.md for Admin Modals */
+    padding: 0.75rem 1.5rem;
+    margin-bottom: 0;
+    /* Flush with content */
+    border-radius: 0;
+    /* Rectangular utilitarian feel */
+
+    box-shadow: none;
+    /* User requested no shadow */
+}
+
+.pt-group {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+/* Buttons - Flat & Utilitarian */
+.pt-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    background: transparent;
+    border: 1px solid #1E293B;
+    color: #94A3B8;
+    /* text-secondary */
+
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    /* Minimal radius */
+
+    font-family: 'Inter', sans-serif;
+    /* System Font */
+    font-size: 0.85rem;
+    font-weight: 500;
+
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.pt-btn:hover:not(:disabled) {
+    background: #0D1624;
+    /* bg-admin-panel */
+    color: #F0F6FC;
+    /* text-primary */
+    border-color: #334155;
+}
+
+.pt-btn:active:not(:disabled) {
+    transform: none;
+    /* No movement */
+    background: #1E293B;
+}
+
+.pt-btn.disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    border-color: transparent;
+}
+
+.pt-icon {
+    font-size: 1rem;
+    color: inherit;
+    /* Inherit text color for flat look */
+    font-weight: normal;
+}
+
+/* Inputs - Data Entry Style */
+.pt-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.pt-input-wrapper label {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: #64748B;
+    /* Darker label */
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    margin: 0;
+}
+
+.pt-input-wrapper input {
+    background: #05080F;
+    /* input-bg */
+    border: 1px solid #1E293B;
+    color: #F0F6FC;
+    /* text-primary */
+
+    padding: 0.3rem 0.5rem;
+    border-radius: 2px;
+    /* Sharp corners */
+    width: 3.5rem;
+
+    font-family: 'Inter', sans-serif;
+    /* Consistent font, mono not strictly required for small nums */
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-align: center;
+
+    outline: none;
+    transition: border-color 0.2s;
+    box-shadow: none;
+}
+
+.pt-input-wrapper input:focus {
+    border-color: #00A3FF;
+    /* primary blue highlight on focus only */
+}
+
+/* Remove spinners */
+.pt-input-wrapper input::-webkit-outer-spin-button,
+.pt-input-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}

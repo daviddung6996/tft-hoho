@@ -1,0 +1,201 @@
+/* ==========================================================================
+   AUGMENT MODAL - Centered overlay with container query units
+   Uses cqw for proper scaling within the 16:9 game container
+   ========================================================================== */
+
+.augment-modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.75);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 8cqw;
+    z-index: 200;
+    opacity: 0;
+    animation: fadeIn 0.4s ease-out forwards;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
+
+/* ==========================================================================
+   HEADER TITLE
+   ========================================================================== */
+.augment-header-title {
+    font-family: 'Spectral', serif;
+    font-size: 4cqw;
+    font-weight: 700;
+    color: #ffffff;
+    text-transform: capitalize;
+    margin-bottom: 2cqw;
+    letter-spacing: 0.15cqw;
+    text-shadow: 0 0.4cqw 1cqw rgba(0, 0, 0, 0.5);
+}
+
+/* ==========================================================================
+   CARDS CONTAINER - Centered flexbox
+   ========================================================================== */
+.augment-cards-container {
+    display: flex;
+    gap: 2cqw;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.augment-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8cqw;
+    width: 20cqw;
+}
+
+/* ==========================================================================
+   CARD STYLES - Scaled with cqw
+   ========================================================================== */
+.augment-card {
+    position: relative;
+    width: 100%;
+    height: 32cqw;
+    background: #1c2028;
+    border: 0.15cqw solid #c8aa6e;
+    border-radius: 0.8cqw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2cqw 1.2cqw;
+    cursor: pointer;
+    box-shadow: 0 0.8cqw 2.5cqw rgba(0, 0, 0, 0.6);
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+/* HOVER STATE: Subtle glow - NO movement */
+.augment-card:hover {
+    border-color: #d4b876;
+    box-shadow: 0 0 1.2cqw rgba(200, 170, 110, 0.4);
+}
+
+/* ACTIVE STATE: No scale */
+.augment-card:active {
+    border-color: #d4b876;
+}
+
+/* Rarity Specifics - All use gold top border */
+.augment-card.rarity-gold {
+    border-top: 0.35cqw solid #c89b3c;
+}
+
+.augment-card.rarity-prismatic {
+    border-top: 0.35cqw solid #c89b3c;
+}
+
+.augment-card.rarity-silver {
+    border-top: 0.35cqw solid #c89b3c;
+}
+
+/* ==========================================================================
+   CARD CONTENT
+   ========================================================================== */
+.augment-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+}
+
+.augment-icon-container {
+    width: 7cqw;
+    height: 7cqw;
+    margin-bottom: 1.5cqw;
+    margin-top: 0.5cqw;
+}
+
+.augment-icon {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 0.3cqw 0.6cqw rgba(0, 0, 0, 0.5));
+}
+
+.augment-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.3cqw;
+    color: #ffffff;
+    margin-bottom: 0.8cqw;
+    font-weight: 700;
+    text-align: center;
+    text-transform: none;
+    letter-spacing: 0.04cqw;
+}
+
+.augment-description {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9cqw;
+    line-height: 1.5;
+    color: #b0b5bd;
+    text-align: center;
+    padding: 0 0.4cqw;
+}
+
+/* ==========================================================================
+   REROLL BUTTON
+   ========================================================================== */
+.reroll-container {
+    margin-top: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.reroll-btn {
+    width: 100%;
+    height: 3.5cqw;
+    background: linear-gradient(180deg, #3a3428 0%, #2a2418 100%);
+    border: 0.15cqw solid #6a5a3a;
+    border-radius: 0.5cqw;
+    color: #c8aa6e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 0.3cqw 0.5cqw rgba(0, 0, 0, 0.4);
+}
+
+.reroll-btn:not(.disabled):hover {
+    border-color: #8a7b5a;
+    box-shadow: 0 0 0.8cqw rgba(200, 170, 110, 0.3);
+}
+
+.reroll-btn:active {
+    transform: translateY(0) scale(0.99);
+}
+
+.reroll-btn svg {
+    width: 1.8cqw;
+    height: 1.8cqw;
+}
+
+/* Disabled/Used State */
+.reroll-btn.disabled {
+    background: #1a1a1a;
+    border: 0.1cqw solid #333;
+    color: #555;
+    cursor: default;
+    box-shadow: none;
+    transform: none !important;
+    filter: none;
+    opacity: 0.7;
+}
+
+.reroll-btn.disabled svg {
+    opacity: 0.5;
+}

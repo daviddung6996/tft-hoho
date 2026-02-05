@@ -1,0 +1,33 @@
+[
+  {
+    "apiName": "TFT16_Teamup_SingedTeemo",
+    "desc": "Gain a 2-star Teemo. Singed's damage refreshes Teemo's poisons and Teemo's damage grants Singed ramping Ability Power. Gain a Teemo after each player combat.",
+    "effects": [
+      {
+        "maxUnits": 25000,
+        "minUnits": 2,
+        "style": 4,
+        "variables": {
+          "SingedAPGain": 2,
+          "TeemoDamageReq": 100
+        }
+      }
+    ],
+    "icon": "ASSETS/UX/TraitIcons/TeamUp_Trait_PoisonPals.TFT_Set16.tex",
+    "name": "Poison Pals"
+  },
+  {
+    "apiName": "TFT16_XerathUnique",
+    "desc": "After each combat, an Ascendant Charm appears in your shop. These are powerful effects that can be bought for gold.@TFTUnitProperty.trait:TFT16_XerathUnique_PurchasedCharmDisplay@",
+    "effects": [
+      {
+        "maxUnits": 25000,
+        "minUnits": 1,
+        "style": 4,
+        "variables": {}
+      }
+    ],
+    "icon": "ASSETS/UX/TraitIcons/Trait_Icon_12_Ascendant.TFT_Set12.tex",
+    "name": "Ascendant"
+  }
+]

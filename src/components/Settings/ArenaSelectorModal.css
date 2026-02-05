@@ -1,0 +1,201 @@
+/* ==========================================================================
+   ARENA SELECTOR MODAL - Centered within game container
+   Uses absolute positioning for 16:9 responsive container
+   ========================================================================== */
+
+.arena-modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(0.26cqw);
+    z-index: 2000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.2s ease;
+}
+
+.arena-modal-content {
+    /* SYNC: ItemPanel Teal/Green Theme */
+    background: linear-gradient(180deg, #153a3e 0%, #051c1e 100%);
+    /* SYNC: Gold Border #c8aa6e */
+    border: 0.1cqw solid #c8aa6e;
+    width: 41.67cqw;
+    /* 800px / 19.2 */
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    border-radius: 0.21cqw;
+    /* 4px / 19.2 */
+    box-shadow:
+        0 0 1.5cqw rgba(200, 170, 110, 0.25),
+        0 0 3cqw rgba(0, 0, 0, 0.6);
+}
+
+.arena-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.04cqw;
+    /* 20px / 19.2 */
+    border-bottom: 0.05cqw solid rgba(200, 170, 110, 0.25);
+    /* 1px / 19.2 */
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.arena-modal-header h2 {
+    color: #f0e6d2;
+    margin: 0;
+    font-family: 'Spiegel', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.05cqw;
+    /* 1px / 19.2 */
+}
+
+/* SYNC: LoginModal Close Button Style */
+.close-btn {
+    width: 2cqw;
+    height: 2cqw;
+    background: rgba(0, 0, 0, 0.3);
+    border: 0.08cqw solid #c8aa6e;
+    border-radius: 0.25cqw;
+    color: #c8aa6e;
+    font-size: 1cqw;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.2s;
+}
+
+.close-btn:hover {
+    opacity: 0.8;
+}
+
+.arena-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(7.29cqw, 1fr));
+    /* 140px / 19.2 */
+    gap: 0.78cqw;
+    /* 15px / 19.2 */
+    padding: 1.04cqw;
+    /* 20px / 19.2 */
+    overflow-y: auto;
+}
+
+.arena-option {
+    background: #0a0c0e;
+    border: 0.05cqw solid #444;
+    /* 1px / 19.2 */
+    border-radius: 0.21cqw;
+    /* 4px / 19.2 */
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.arena-option:hover {
+    border-color: #f0e6d2;
+    transform: translateY(-0.1cqw);
+    /* -2px / 19.2 */
+    box-shadow: 0 0.26cqw 0.78cqw rgba(0, 0, 0, 0.5);
+    /* 5px, 15px / 19.2 */
+}
+
+.arena-option.selected {
+    border-color: #c89b3c;
+    box-shadow: 0 0 0 0.1cqw #c89b3c;
+    /* 2px / 19.2 */
+}
+
+.arena-option img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    background: #111;
+}
+
+.arena-name {
+    padding: 0.42cqw;
+    /* 8px / 19.2 */
+    font-size: 0.63cqw;
+    /* 12px / 19.2 */
+    color: #ccc;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.arena-rarity {
+    position: absolute;
+    top: 0.26cqw;
+    /* 5px / 19.2 */
+    right: 0.26cqw;
+    /* 5px / 19.2 */
+    padding: 0.1cqw 0.31cqw;
+    /* 2px, 6px / 19.2 */
+    font-size: 0.52cqw;
+    /* 10px / 19.2 */
+    border-radius: 0.16cqw;
+    /* 3px / 19.2 */
+    background: rgba(0, 0, 0, 0.8);
+    font-weight: bold;
+    color: #fff;
+}
+
+.arena-rarity.mythic {
+    color: #d042ff;
+    border: 0.05cqw solid #d042ff;
+    /* 1px / 19.2 */
+}
+
+.arena-rarity.legendary {
+    color: #ff6b6b;
+    border: 0.05cqw solid #ff6b6b;
+    /* 1px / 19.2 */
+}
+
+.arena-rarity.rare {
+    color: #42a5f5;
+    border: 0.05cqw solid #42a5f5;
+    /* 1px / 19.2 */
+}
+
+.arena-rarity.default {
+    color: #aaa;
+    border: 0.05cqw solid #666;
+    /* 1px / 19.2 */
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* Scrollbar */
+.arena-grid::-webkit-scrollbar {
+    width: 0.42cqw;
+    /* 8px / 19.2 */
+}
+
+.arena-grid::-webkit-scrollbar-track {
+    background: #111;
+}
+
+.arena-grid::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 0.21cqw;
+    /* 4px / 19.2 */
+}

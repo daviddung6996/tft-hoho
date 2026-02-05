@@ -1,0 +1,99 @@
+/* ==========================================================================
+   HEX PUZZLE COMPONENT - Admin Authentication Challenge
+   ========================================================================== */
+
+.hex-puzzle {
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.hex-puzzle-instruction {
+    color: #F0E6D2;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+    opacity: 0.9;
+}
+
+.hex-puzzle-grid {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.hex-puzzle-slot {
+    width: 70px;
+    height: 70px;
+    background: rgba(13, 22, 36, 0.5);
+    border: 1px solid rgba(0, 163, 255, 0.3);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.hex-puzzle-slot:hover {
+    border-color: rgba(0, 163, 255, 0.6);
+    box-shadow: 0 0 10px rgba(0, 163, 255, 0.2);
+}
+
+.hex-puzzle-slot.checking {
+    animation: pulse-check 0.5s ease-in-out;
+}
+
+.hex-puzzle-piece {
+    width: 60px;
+    height: 60px;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Spectral', serif;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #090C14;
+    transition: transform 0.2s ease;
+    user-select: none;
+}
+
+.hex-puzzle-piece:active {
+    cursor: grabbing !important;
+    transform: scale(1.1);
+}
+
+.hex-puzzle-check-btn {
+    padding: 0.75rem 2rem;
+    background: linear-gradient(135deg, #C89B3C 0%, #F0E6D2 100%);
+    border: 1px solid #F0E6D2;
+    border-radius: 4px;
+    color: #090C14;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.hex-puzzle-check-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(200, 155, 60, 0.4);
+}
+
+.hex-puzzle-check-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+@keyframes pulse-check {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+}

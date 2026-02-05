@@ -1,0 +1,213 @@
+.augment-selector-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    box-sizing: border-box;
+}
+
+.selected-augments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 300px;
+    margin: 0 auto;
+}
+
+.selected-augment-item {
+    display: flex;
+    align-items: center;
+    background: rgba(5, 28, 30, 0.4);
+    /* Green theme specific */
+    border: 1px solid rgba(200, 170, 110, 0.3);
+    /* Gold border */
+    padding: 0.5rem;
+    border-radius: 4px;
+    gap: 1rem;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.selected-augment-item:hover {
+    background: rgba(21, 58, 62, 0.6);
+    border-color: #c8aa6e;
+    box-shadow: 0 0 10px rgba(200, 170, 110, 0.2);
+}
+
+.selected-augment-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 4px;
+    object-fit: cover;
+    border: 1px solid #c8aa6e;
+}
+
+.selected-augment-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.selected-augment-title {
+    color: #f0f6fc;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.selected-augment-desc-tooltip {
+    display: none;
+    position: absolute;
+    left: 105%;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(2, 6, 23, 0.95);
+    border: 1px solid #c8aa6e;
+    padding: 1rem;
+    width: 250px;
+    z-index: 100;
+    border-radius: 4px;
+    pointer-events: none;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.selected-augment-item:hover .selected-augment-desc-tooltip {
+    display: block;
+}
+
+.augment-add-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(21, 58, 62, 0.3);
+    border: 1px dashed rgba(200, 170, 110, 0.5);
+    height: 60px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #c8aa6e;
+    font-size: 1.5rem;
+}
+
+.augment-add-btn:hover {
+    background: rgba(21, 58, 62, 0.6);
+    border-color: #c8aa6e;
+    color: #fff;
+    box-shadow: 0 0 15px rgba(200, 170, 110, 0.2);
+}
+
+/* Modal Styles */
+.augment-selector-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    backdrop-filter: blur(4px);
+}
+
+.augment-selector-modal {
+    background: linear-gradient(180deg, #153a3e 0%, #051c1e 100%);
+    width: 800px;
+    max-width: 90vw;
+    height: 80vh;
+    border: 0.1cqw solid #c8aa6e;
+    border-radius: 0.5cqw;
+    display: flex;
+    flex-direction: column;
+    box-shadow:
+        0 0 1.5cqw rgba(200, 170, 110, 0.25),
+        0 0 3cqw rgba(0, 0, 0, 0.6);
+}
+
+.augment-modal-header {
+    padding: 1.5rem;
+    border-bottom: 0.1cqw solid rgba(200, 170, 110, 0.25);
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.augment-search-input {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.3);
+    border: 0.1cqw solid rgba(200, 170, 110, 0.3);
+    color: #f0f6fc;
+    padding: 0.75rem 1rem;
+    border-radius: 4px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.augment-search-input:focus {
+    border-color: #c8aa6e;
+    box-shadow: 0 0 0.5cqw rgba(200, 170, 110, 0.2);
+}
+
+.augment-modal-close {
+    width: 2rem;
+    height: 2rem;
+    background: rgba(0, 0, 0, 0.3);
+    border: 0.08rem solid #c8aa6e;
+    border-radius: 0.25rem;
+    color: #c8aa6e;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.2s ease;
+    font-size: 1.2rem;
+}
+
+.augment-modal-close:hover {
+    opacity: 0.8;
+    background: rgba(200, 170, 110, 0.15);
+}
+
+.augment-grid {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 1rem;
+    align-content: start;
+}
+
+.augment-grid-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 4px;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+}
+
+.augment-grid-item:hover {
+    background: rgba(200, 170, 110, 0.1);
+    border-color: rgba(200, 170, 110, 0.3);
+}
+
+.augment-grid-icon {
+    width: 64px;
+    height: 64px;
+    border: 1px solid #4a5568;
+    border-radius: 4px;
+}
+
+.augment-grid-name {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #94a3b8;
+    line-height: 1.2;
+}

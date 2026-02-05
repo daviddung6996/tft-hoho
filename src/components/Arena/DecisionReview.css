@@ -1,0 +1,605 @@
+/* DecisionReview.css - TFTDojo Layout with Hextech Colors */
+
+.decision-review-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(0.5cqw);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+.decision-review-container {
+    width: 70cqw;
+    max-height: 90cqh;
+    background: linear-gradient(180deg, #153a3e 0%, #051c1e 100%);
+    border: 0.15cqw solid #c8aa6e;
+    box-shadow: 0 0 2cqw rgba(200, 170, 110, 0.3);
+    padding: 1.5cqw;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8cqw;
+    color: #F0F6FC;
+    overflow-y: auto;
+}
+
+/* ============================================
+   PUZZLE CONTEXT (HEADER)
+   ============================================ */
+.puzzle-context {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 0.6cqw;
+    border-bottom: 0.08cqw solid rgba(200, 170, 110, 0.3);
+}
+
+.context-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1cqw;
+    align-items: center;
+}
+
+.context-item {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7cqw;
+    color: #94a3b8;
+    display: flex;
+    align-items: center;
+    gap: 0.25cqw;
+}
+
+.context-item strong {
+    font-family: 'Spectral', serif;
+    font-size: 0.65cqw;
+    color: #c8aa6e;
+    text-transform: uppercase;
+}
+
+.puzzle-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5cqw;
+}
+
+/* Completion Badge */
+.completion-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25cqw;
+    padding: 0.2cqw 0.5cqw;
+    border-radius: 0.15cqw;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7cqw;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.completion-badge svg {
+    width: 0.9cqw;
+    height: 0.9cqw;
+}
+
+.completion-badge.matched {
+    background-color: rgba(74, 222, 128, 0.15);
+    color: #4ade80;
+    border: 0.08cqw solid #4ade80;
+}
+
+.completion-badge.diverged {
+    background-color: rgba(200, 170, 110, 0.15);
+    color: #c8aa6e;
+    border: 0.08cqw solid #c8aa6e;
+}
+
+/* Action Buttons - Header (Small) */
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25cqw;
+    padding: 0.25cqw 0.5cqw;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.65cqw;
+    font-weight: 500;
+    color: #94a3b8;
+    background: rgba(0, 0, 0, 0.3);
+    border: 0.08cqw solid #c8aa6e;
+    border-radius: 0.15cqw;
+    cursor: pointer;
+}
+
+.action-btn svg {
+    width: 0.7cqw;
+    height: 0.7cqw;
+}
+
+.share-btn {
+    color: #c8aa6e;
+}
+
+.stream-btn {
+    color: #c8aa6e;
+    border-color: rgba(200, 170, 110, 0.3);
+}
+
+/* ============================================
+   ROLL TIMELINE
+   ============================================ */
+.roll-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8cqw;
+}
+
+/* Roll Section (First Roll, Second Roll, Final Pick) */
+.roll-section {
+    background: rgba(0, 0, 0, 0.25);
+    border: 0.08cqw solid rgba(200, 170, 110, 0.2);
+    padding: 0.8cqw;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5cqw;
+}
+
+.roll-section.final-section {
+    background: rgba(200, 170, 110, 0.06);
+    border-color: rgba(200, 170, 110, 0.4);
+}
+
+/* Section Header */
+.roll-section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.8cqw;
+    flex-wrap: wrap;
+}
+
+.section-title {
+    font-family: 'Spectral', serif;
+    font-size: 1cqw;
+    font-weight: 700;
+    color: #F0F6FC;
+}
+
+.section-description {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75cqw;
+    color: #94a3b8;
+}
+
+.user-action {
+    color: #c8aa6e;
+    font-weight: 600;
+}
+
+.pro-action {
+    color: #c8aa6e;
+    font-weight: 600;
+}
+
+/* Diverge Badge */
+.diverge-badge {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7cqw;
+    font-weight: 600;
+    padding: 0.2cqw 0.5cqw;
+    border-radius: 0.15cqw;
+    text-transform: uppercase;
+}
+
+.diverge-badge.matched {
+    background: rgba(74, 222, 128, 0.15);
+    color: #4ade80;
+    border: 0.08cqw solid #4ade80;
+}
+
+.diverge-badge.diverged {
+    background: rgba(200, 170, 110, 0.15);
+    color: #c8aa6e;
+    border: 0.08cqw solid #c8aa6e;
+}
+
+/* Final Description */
+.final-description {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8cqw;
+    color: #94a3b8;
+    margin: 0;
+}
+
+.final-description strong {
+    color: #F0F6FC;
+}
+
+/* ============================================
+   AUGMENT ROW (3 columns)
+   ============================================ */
+.augment-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.6cqw;
+}
+
+/* Augment Cell */
+.augment-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25cqw;
+    position: relative;
+}
+
+/* ============================================
+   FINAL PICK GRID (flexible)
+   ============================================ */
+.final-augment-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.6cqw;
+}
+
+/* ============================================
+   ROLL MARKERS (Your Roll, Pro's Roll)
+   ============================================ */
+.roll-marker {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.65cqw;
+    font-weight: 700;
+    padding: 0.15cqw 0.4cqw;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+.roll-marker.user-roll {
+    color: #c8aa6e;
+}
+
+.roll-marker.pro-roll {
+    color: #c8aa6e;
+}
+
+.roll-marker.both-roll {
+    color: #c8aa6e;
+}
+
+/* ============================================
+   PICK MARKERS (Your Pick, Pro's Pick)
+   ============================================ */
+.pick-marker {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.65cqw;
+    font-weight: 700;
+    padding: 0.15cqw 0.4cqw;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+.pick-marker.user-pick-marker {
+    color: #c8aa6e;
+}
+
+.pick-marker.pro-pick-marker {
+    color: #c8aa6e;
+}
+
+.pick-marker.both-pick-marker {
+    position: relative;
+}
+
+/* ============================================
+   EXPLANATION SECTION
+   ============================================ */
+.explanation-section {
+    background: rgba(0, 0, 0, 0.4);
+    border: 0.08cqw solid rgba(200, 170, 110, 0.3);
+    padding: 0.8cqw;
+    border-radius: 0.2cqw;
+    margin-top: 0.2cqw;
+}
+
+.explanation-title {
+    font-family: 'Spectral', serif;
+    font-size: 0.85cqw;
+    font-weight: 700;
+    color: #c8aa6e;
+    text-transform: uppercase;
+    margin-bottom: 0.4cqw;
+    letter-spacing: 0.05cqw;
+}
+
+.explanation-text {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75cqw;
+    color: #F0F6FC;
+    line-height: 1.4;
+    margin: 0;
+}
+
+/* ============================================
+   REVIEW CARD
+   ============================================ */
+.roll-augment-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 0.08cqw solid rgba(255, 255, 255, 0.1);
+    padding: 0.5cqw;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25cqw;
+}
+
+/* Increased specificity (0-4-0) to strictly override .augment-cell.rolled-result ... (0-3-0) */
+.augment-cell.slot-cell .roll-augment-card.user-pick,
+.augment-cell.slot-cell .roll-augment-card.pro-pick {
+    border-color: #c8aa6e;
+    background: rgba(200, 170, 110, 0.1);
+}
+
+.augment-cell.slot-cell .roll-augment-card.user-pick.pro-pick {
+    border-color: #c8aa6e;
+    background: rgba(200, 170, 110, 0.12);
+}
+
+.augment-preview {
+    display: flex;
+    align-items: center;
+    gap: 0.4cqw;
+}
+
+.augment-mini-icon {
+    width: 2.5cqw;
+    height: 2.5cqw;
+    border: 0.08cqw solid #c8aa6e;
+    object-fit: cover;
+}
+
+.augment-info-col {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+}
+
+.augment-mini-title {
+    font-family: 'Spectral', serif;
+    color: #f1f5f9;
+    font-size: 0.8cqw;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Pick Markers in Card */
+.pick-markers {
+    display: flex;
+    flex-direction: row;
+    gap: 0.2cqw;
+}
+
+.user-marker {
+    color: #c8aa6e;
+    font-size: 0.55cqw;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.pro-marker {
+    color: #c8aa6e;
+    font-size: 0.55cqw;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+/* Vote Section */
+.vote-section {
+    display: flex;
+    align-items: center;
+    gap: 0.25cqw;
+    margin-top: 0.15cqw;
+}
+
+.vote-bar-container {
+    height: 0.3cqw;
+    background: rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+    flex: 1;
+}
+
+.vote-bar-fill {
+    height: 100%;
+    background: #c8aa6e;
+}
+
+/* ============================================
+   REVIEW ACTIONS - HEXTECH BUTTONS (Simplified)
+   ============================================ */
+.review-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.6cqw;
+    padding-top: 0.8cqw;
+    margin-top: auto;
+    border-top: 0.08cqw solid rgba(200, 170, 110, 0.3);
+}
+
+/* Base Button - Simple gold border */
+.review-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3cqw;
+    padding: 0.5cqw 1cqw;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85cqw;
+    font-weight: 500;
+    text-transform: uppercase;
+    cursor: pointer;
+    background: transparent;
+    border: 0.1cqw solid #c8aa6e;
+    color: #F0E6D2;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.review-btn svg {
+    width: 0.9cqw;
+    height: 0.9cqw;
+}
+
+/* Subtle hover glow - NO movement */
+.review-btn:hover {
+    border-color: #d4b876;
+    box-shadow: 0 0 0.8cqw rgba(200, 170, 110, 0.3);
+}
+
+/* Replay Button */
+.replay-btn {
+    border-color: #c8aa6e;
+    color: #c8aa6e;
+}
+
+/* Next Button */
+.next-btn {
+    border-color: #c8aa6e;
+    color: #F0E6D2;
+}
+
+/* Combined Marker */
+.combined-marker {
+    font-size: 0.55cqw;
+    font-weight: 700;
+    text-transform: uppercase;
+    display: flex;
+    gap: 0.15cqw;
+    align-items: center;
+}
+
+/* ============================================
+   NEW: 3-COLUMN SLOT LAYOUT
+   ============================================ */
+
+.final-augment-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1cqw;
+    margin-bottom: 0.8cqw;
+}
+
+/* Row Label for Initial/Reroll sections */
+.final-row-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9cqw;
+    font-weight: 600;
+    color: #c8aa6e;
+    text-transform: uppercase;
+    letter-spacing: 0.08cqw;
+    margin-bottom: 0.4cqw;
+    margin-top: 0.6cqw;
+    padding-left: 0.2cqw;
+}
+
+.final-row-label:first-of-type {
+    margin-top: 0;
+}
+
+/* Individual Slot Container */
+.slot-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25cqw;
+}
+
+/* Case 2: Split Slot (User vs Pro) */
+.split-slot {
+    justify-content: space-between;
+    background: linear-gradient(180deg, rgba(200, 170, 110, 0.05) 0%, rgba(0, 0, 0, 0.2) 100%);
+    border-color: rgba(200, 170, 110, 0.15);
+}
+
+.split-card-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2cqw;
+}
+
+.split-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.6cqw;
+    color: #94a3b8;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-left: 0.2cqw;
+}
+
+.user-wrapper .split-label {
+    color: #c8aa6e;
+}
+
+.pro-wrapper .split-label {
+    color: #94a3b8;
+}
+
+/* ============================================
+   FINAL PICK - 6 AUGMENTS GRID (3x2)
+   ============================================ */
+.final-augment-grid-6 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.6cqw;
+}
+
+/* Rolled away augment - dimmed */
+.augment-cell.rolled-away {
+    opacity: 0.5;
+}
+
+.augment-cell.rolled-away .roll-augment-card {
+    border-style: dashed;
+}
+
+.augment-cell.rolled-away .roll-augment-card {
+    border-style: dashed;
+}
+
+/* Rolled result augment - no special highlight, just default card style */
+/* This ensures unpicked results look neutral (grey) vs Picked (Gold) */
+/* NOTE: .user-pick rules defined earlier must have equal or higher specificity to override this */
+.augment-cell.rolled-result .roll-augment-card {
+    border-color: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* Equal Height Fixes */
+.augment-cell {
+    height: 100%;
+}
+
+.roll-augment-card {
+    height: 100%;
+    justify-content: flex-start;
+    /* items top aligned */
+}
+
+.augment-preview {
+    height: 100%;
+    align-items: flex-start;
+    /* Icon top aligned */
+}
+
+.augment-info-col {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    /* Spread title/markers/votes */
+}
+
+.marker-separator {
+    color: #64748b;
+    font-size: 0.65cqw;
+    margin: 0 0.1cqw;
+}

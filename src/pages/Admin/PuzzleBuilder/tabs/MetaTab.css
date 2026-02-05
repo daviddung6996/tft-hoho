@@ -1,0 +1,108 @@
+/* MetaTab.css - Dedicated styles to ensure correct layout and Hextech theming */
+
+.pb-meta-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2cqw;
+    padding: 1cqw 2cqw;
+    width: 100%;
+    flex: 1;
+    min-height: 0;
+    box-sizing: border-box;
+    overflow-y: auto;
+    /* Custom Scrollbar for this container */
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-accent-gold) rgba(0, 0, 0, 0.3);
+}
+
+.pb-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2cqw;
+    padding-bottom: 1.5cqw;
+    border-bottom: 0.1cqw solid rgba(200, 170, 110, 0.2);
+}
+
+.pb-section:last-child {
+    border-bottom: none;
+}
+
+.pb-section-title {
+    color: #c8aa6e;
+    /* Hextech Gold */
+    font-family: 'Spectral', serif;
+    font-size: 1.2cqw;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0;
+    text-shadow: 0 0 10px rgba(200, 170, 110, 0.3);
+}
+
+.pb-field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2cqw;
+    width: 100%;
+}
+
+.pb-field-group {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.6cqw;
+    width: 100%;
+    position: relative;
+}
+
+.pb-label {
+    color: #94A3B8;
+    /* Blue Grey */
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8cqw;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Scoped Input Styles to guarantee override */
+.pb-meta-container .hex-input {
+    width: 100%;
+    background: rgba(5, 8, 15, 0.8);
+    /* Dark background */
+    border: 0.1cqw solid #c8aa6e;
+    /* Gold border */
+    color: #F0F6FC;
+    /* White text */
+    padding: 0.6cqw 0.8cqw;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9cqw;
+    border-radius: 0.2cqw;
+    outline: none;
+    box-sizing: border-box;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.pb-meta-container .hex-input:focus {
+    border-color: #00A3FF;
+    /* Cyan focus */
+    box-shadow: 0 0 1cqw rgba(0, 163, 255, 0.25), inset 0 0 0.5cqw rgba(0, 163, 255, 0.1);
+    background: rgba(5, 20, 30, 0.9);
+}
+
+.pb-meta-container .hex-input::placeholder {
+    color: rgba(148, 163, 184, 0.4);
+    font-style: italic;
+}
+
+.pb-hint {
+    color: #64748B;
+    font-size: 0.7cqw;
+    font-style: italic;
+    margin-top: 0.2cqw;
+}
+
+.hex-textarea {
+    min-height: 8cqw;
+    resize: vertical;
+    line-height: 1.4;
+}
