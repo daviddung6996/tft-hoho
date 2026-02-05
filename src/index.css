@@ -1,0 +1,140 @@
+/* ==========================================================================
+   GLOBAL STYLES - TFT-hoho (Hextech HUD System)
+   ========================================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Share+Tech+Mono&family=Spectral:wght@400;600;700&display=swap');
+
+:root {
+    /* ==========================================================================
+       COLORS (AGENTS.md Strict)
+       ========================================================================== */
+
+    /* Backgrounds */
+    --color-surface-dark: #090C14;
+    /* Deep Void */
+    --color-surface-panel: rgba(13, 22, 36, 0.85);
+    /* Glassy Hextech */
+    --color-surface-overlay: rgba(0, 0, 0, 0.6);
+
+    /* Primary Colors */
+    --color-primary: #00A3FF;
+    /* Hextech Blue */
+    --color-primary-dark: #0077B6;
+    --color-primary-glow: 0 0 15px rgba(0, 163, 255, 0.4);
+
+    /* Accents */
+    --color-accent-gold: #C89B3C;
+    /* Prestige Gold */
+    --color-accent-gold-glow: 0 0 10px rgba(200, 155, 60, 0.3);
+    --color-accent-cyan: #00F0FF;
+    /* Energy */
+    --color-accent-rose: #FF4E50;
+    /* Combat */
+
+    /* Text */
+    --color-text-primary: #F0F6FC;
+    /* Starlight White */
+    --color-text-secondary: #94A3B8;
+    /* Blue Grey */
+    --color-text-gold: #F0E6D2;
+    /* Pale Gold */
+
+    /* Admin specifics (Operations Deck) */
+    --bg-admin-dark: #020617;
+    --bg-admin-panel: #0D1624;
+    --border-admin: #1E293B;
+    --input-bg: #05080F;
+
+    /* ==========================================================================
+       EFFECTS & BORDERS
+       ========================================================================== */
+    --blur-panel: blur(8px);
+
+    /* Variable width borders using cqw to ensure scalability */
+    /* Note: In CSS vars we can't easily use cqw for composite values like border shorthand 
+       unless we verify context, but for colors/widths it helps. 
+       Standard border width should be around 1px -> 0.05cqw approx */
+    --border-width-std: 0.1cqw;
+
+    --border-primary: var(--border-width-std) solid rgba(0, 163, 255, 0.3);
+    --border-gold: var(--border-width-std) solid rgba(200, 155, 60, 0.3);
+
+    /* Panel Standard Gradient */
+    --gradient-panel: linear-gradient(180deg, #153a3e 0%, #051c1e 100%);
+
+    /* ==========================================================================
+       FONTS
+       ========================================================================== */
+    --font-heading: 'Spectral', serif;
+    /* Fantasy/RPG feel (AGENTS.md) */
+    --font-tech: 'Share Tech Mono', monospace;
+    /* FUI Numbers */
+    --font-body: 'Inter', sans-serif;
+    /* UI Text */
+}
+
+/* Reset & Base */
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+    /* Base for rem, but we primarily use cqw */
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--font-body);
+    background: var(--color-surface-dark);
+    color: var(--color-text-primary);
+    min-height: 100vh;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Typography Defaults */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--color-text-gold);
+    /* Headings default to gold per aesthetic */
+    letter-spacing: 0.02em;
+}
+
+/* ==========================================================================
+   SCROLLBARS (Global Overlay)
+   ========================================================================== */
+::-webkit-scrollbar {
+    width: 0.4cqw;
+    height: 0.4cqw;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--color-accent-gold);
+    border-radius: 0.2cqw;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #E0C070;
+}

@@ -1,0 +1,180 @@
+/* Puzzle Builder - Matching Admin Operations Deck Styling */
+
+.puzzle-builder-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    color: var(--color-text-primary);
+    font-family: var(--font-body);
+    box-sizing: border-box;
+    /* Removed background overrides to inherit .hex-panel gradient */
+    background: transparent;
+}
+
+/* Header & Tabs */
+/* Header & Tabs styles removed - using AdminHeader component */
+
+/* Action Buttons */
+/* Action Buttons */
+/* .pb-actions container removed, buttons passed as fragment */
+
+.pb-btn {
+    background: rgba(0, 0, 0, 0.3);
+    border: 0.08cqw solid var(--color-accent-gold);
+    border-radius: 0.25cqw;
+    color: var(--color-accent-gold);
+    padding: 0.5cqw 1cqw;
+    cursor: pointer;
+    font-family: var(--font-body);
+    text-transform: capitalize;
+    font-size: 0.9cqw;
+    transition: all 0.2s ease;
+}
+
+/* Hover effect removed */
+
+.pb-btn.primary {
+    background: rgba(0, 163, 255, 0.2);
+    border: 0.1cqw solid var(--color-primary);
+    color: var(--color-accent-cyan);
+}
+
+/* Hover effect removed */
+
+/* Content Area */
+.pb-content {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Meta Form Styling */
+.pb-meta-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2cqw;
+    padding: 2cqw;
+    overflow-y: auto;
+    height: 100%;
+}
+
+.pb-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1cqw;
+    padding-bottom: 1.5cqw;
+    border-bottom: 1px solid rgba(200, 170, 110, 0.2);
+}
+
+.pb-section:last-child {
+    border-bottom: none;
+}
+
+.pb-section-title {
+    color: var(--color-accent-gold);
+    font-family: var(--font-heading);
+    font-size: 1.1cqw;
+    font-weight: 600;
+    margin: 0 0 0.5cqw 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.pb-field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5cqw;
+}
+
+.pb-field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5cqw;
+}
+
+.pb-label {
+    color: var(--color-text-secondary);
+    font-size: 0.85cqw;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.pb-hint {
+    color: #64748B;
+    font-size: 0.75cqw;
+    font-style: italic;
+    margin-top: -0.25cqw;
+}
+
+/* Reusing .hex-input from Common.css in JS, but ensuring styles here just in case */
+.hex-input {
+    width: 100%;
+    padding: 0.5cqw;
+    background: var(--input-bg);
+    border: 0.1cqw solid var(--color-accent-gold);
+    color: var(--color-text-primary);
+    font-family: var(--font-body);
+    font-size: 1cqw;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    box-sizing: border-box;
+    border-radius: 0.3cqw;
+}
+
+.hex-input:focus {
+    border-color: var(--color-accent-cyan);
+    box-shadow: 0 0 0.5cqw rgba(0, 163, 255, 0.2);
+}
+
+.hex-textarea {
+    min-height: 10cqw;
+    resize: vertical;
+}
+
+/* ================================================================================== */
+/* NEW TEAM BUILDER LAYOUT STYLES                                                    */
+/* ================================================================================== */
+
+.pb-team-builder {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: transparent;
+}
+
+/* Top Bar styles moved to components/PuzzleToolbar.css */
+
+/* Main Layout: Split 30/70 */
+.pb-builder-view {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    background: transparent;
+}
+
+/* .pb-builder-view .pb-tb-top-bar reused top bar styles */
+
+/* The actual split container needs to be handled in the component or via layout classes */
+/* Assuming PlayerTeamBuilder component handles the split? 
+   Checking PlayerTeamBuilder.css in next steps. 
+   For now ensuring container correctness. */
+
+.loading-text {
+    color: var(--color-text-primary);
+    text-align: center;
+    padding: 2cqw;
+    font-size: 1cqw;
+}
+
+.pb-set-label {
+    color: var(--color-text-primary);
+    font-size: 0.9cqw;
+    font-weight: 500;
+}

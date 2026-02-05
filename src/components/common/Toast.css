@@ -1,0 +1,60 @@
+.hextech-toast {
+    position: fixed;
+    bottom: 4cqw;
+    right: 2cqw;
+    min-width: 15cqw;
+    background: linear-gradient(180deg, #153a3e 0%, #051c1e 100%);
+    border: 0.1cqw solid #c8aa6e;
+    box-shadow: 0 0 1.5cqw rgba(200, 170, 110, 0.25);
+    color: #F0F6FC;
+    padding: 0.8cqw 1.5cqw;
+    border-radius: 0.4cqw;
+    z-index: 3000;
+    display: flex;
+    align-items: center;
+    gap: 0.8cqw;
+    animation: slideIn 0.3s ease-out;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9cqw;
+    backdrop-filter: blur(4px);
+}
+
+.hextech-toast.success {
+    border-color: #00A3FF;
+    /* Hextech Blue for success variant or keep Gold? Rules say Gold is main border. Let's stick to Gold main, maybe blue glow. */
+    box-shadow: 0 0 1.5cqw rgba(0, 163, 255, 0.25);
+    border: 0.1cqw solid #00A3FF;
+}
+
+.hextech-toast.error {
+    border-color: #ef4444;
+    box-shadow: 0 0 1.5cqw rgba(239, 68, 68, 0.25);
+}
+
+.toast-icon {
+    font-size: 1.2cqw;
+    color: #c8aa6e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hextech-toast.success .toast-icon {
+    color: #00A3FF;
+}
+
+.hextech-toast.error .toast-icon {
+    color: #ef4444;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}

@@ -1,0 +1,199 @@
+/* Sidebar optimized container */
+.icb-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1cqw;
+    padding: 0;
+    width: 100%;
+    margin-top: 0;
+}
+
+/* Header style update matches sidebar labels */
+.icb-header {
+    display: none;
+    /* Hidden because parent already has a label */
+}
+
+/* Grid layout strictly 2 columns */
+.icb-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.8cqw;
+    padding: 0.5cqw;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.icb-slot {
+    aspect-ratio: 1;
+    /* Square */
+    width: 100%;
+    height: auto;
+    border: 0.08cqw dashed rgba(200, 170, 110, 0.4);
+    background: rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 0.2cqw;
+}
+
+.icb-slot:hover {
+    background: rgba(200, 170, 110, 0.08);
+    border-color: #c8aa6e;
+    box-shadow: 0 0 1cqw rgba(200, 170, 110, 0.15);
+}
+
+.icb-slot.filled {
+    border-style: solid;
+    border-color: rgba(200, 170, 110, 0.6);
+    background: radial-gradient(circle at center, rgba(30, 45, 55, 0.9), rgba(15, 25, 30, 0.95));
+}
+
+.icb-slot-icon {
+    width: 70%;
+    height: 70%;
+    object-fit: contain;
+    filter: drop-shadow(0 0.2cqw 0.4cqw rgba(0, 0, 0, 0.5));
+}
+
+.icb-empty-icon {
+    font-size: 1.2cqw;
+    color: rgba(200, 170, 110, 0.5);
+    font-weight: 300;
+}
+
+.icb-slot-name {
+    display: none;
+    /* Hide name in compact sidebar view, show tooltip instead */
+}
+
+.icb-slot-clear {
+    position: absolute;
+    top: -0.4cqw;
+    right: -0.4cqw;
+    width: 1.2cqw;
+    height: 1.2cqw;
+    background: #0f172a;
+    /* Slate 900 */
+    border: 0.1cqw solid #c8aa6e;
+    color: #c8aa6e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7cqw;
+    cursor: pointer;
+    border-radius: 50%;
+    opacity: 0;
+    transition: all 0.2s ease;
+    z-index: 10;
+    box-shadow: 0 0.2cqw 0.4cqw rgba(0, 0, 0, 0.5);
+}
+
+.icb-slot:hover .icb-slot-clear {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+/* Modal Reuse */
+.icb-modal-overlay {
+    position: fixed;
+    top: 5cqw;
+    /* Below header */
+    left: 0;
+    width: 100%;
+    height: calc(100% - 5cqw);
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icb-modal {
+    width: 60cqw;
+    height: 70vh;
+    background: linear-gradient(180deg, #153a3e 0%, #051c1e 100%);
+    border: 0.1cqw solid #c8aa6e;
+    box-shadow: 0 0 2cqw rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    padding: 2cqw;
+}
+
+.icb-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2cqw;
+}
+
+.icb-search-input {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.4);
+    border: 0.1cqw solid #c8aa6e;
+    color: #fff;
+    padding: 0.8cqw;
+    font-family: 'Inter', sans-serif;
+    font-size: 1cqw;
+}
+
+.icb-modal-close {
+    background: none;
+    border: 0.1cqw solid #c8aa6e;
+    color: #c8aa6e;
+    width: 2.5cqw;
+    height: 2.5cqw;
+    cursor: pointer;
+    margin-left: 1cqw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.icb-modal-close:hover {
+    background: rgba(200, 170, 110, 0.2);
+}
+
+.icb-modal-grid {
+    flex: 1;
+    overflow-y: auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(6cqw, 1fr));
+    gap: 1cqw;
+    padding-right: 1cqw;
+}
+
+.icb-modal-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5cqw;
+    padding: 1cqw;
+    background: rgba(255, 255, 255, 0.05);
+    border: 0.1cqw solid transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.icb-modal-item:hover {
+    border-color: #c8aa6e;
+    background: rgba(200, 170, 110, 0.1);
+}
+
+.icb-modal-icon {
+    width: 4cqw;
+    height: 4cqw;
+    object-fit: contain;
+}
+
+.icb-modal-name {
+    font-size: 0.8cqw;
+    color: #ccc;
+    text-align: center;
+    word-break: break-word;
+}

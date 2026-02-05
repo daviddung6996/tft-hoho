@@ -1,0 +1,232 @@
+/* ==========================================================================
+   LOGIN MODAL - TFT Hextech Theme (AGENTS.md)
+   Centered within game container using absolute positioning
+   ========================================================================== */
+
+.login-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    box-sizing: border-box;
+}
+
+.login-modal {
+    position: relative;
+    width: 500px;
+    max-width: 90vw;
+    margin: auto;
+    padding: 0;
+    flex-shrink: 0;
+    animation: modal-appear 0.4s ease-out;
+
+    /* Define the shape variable for reuse */
+    --modal-clip: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
+
+    /* 1. The Container Shape (Outer Border Limit) */
+    clip-path: var(--modal-clip);
+
+    /* 2. The Border Color (Background of the container) */
+    background-color: #c8aa6e;
+
+    /* 3. Outer Glow (Applied to the clipped shape) */
+    filter: drop-shadow(0 0 10px rgba(200, 170, 110, 0.5));
+}
+
+/* The Dark Inner Background */
+.login-modal::after {
+    content: "";
+    position: absolute;
+    /* Inset 2px creates the border thickness on straight edges */
+    inset: 2px;
+    background: linear-gradient(180deg, #153a3e 0%, #051c1e 100%);
+
+    /* Inner clip needs to be slightly smaller to maintain parallel diagonal borders */
+    /* Math: 20px outer - ~1px adjustment for offset = 19px inner */
+    clip-path: polygon(19px 0, 100% 0, 100% calc(100% - 19px), calc(100% - 19px) 100%, 0 100%, 0 19px);
+
+    z-index: -1;
+}
+
+/* Inner content wrapper */
+.login-modal-content {
+    padding: 2rem 2.5rem 2.5rem 2.5rem;
+    position: relative;
+}
+
+.login-close-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 38px;
+    /* ~2cqw */
+    height: 38px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1.5px solid #c8aa6e;
+    /* ~0.08cqw */
+    border-radius: 4px;
+    color: #c8aa6e;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.2s ease;
+    line-height: 1;
+    z-index: 10;
+}
+
+.login-close-btn:hover {
+    opacity: 0.8;
+}
+
+@keyframes modal-appear {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Inner content wrapper */
+.login-modal-content {
+    padding: 3rem 2.5rem 2.5rem 2.5rem;
+    position: relative;
+}
+
+/* Title bar */
+.login-title-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: linear-gradient(180deg,
+            rgba(0, 120, 120, 0.4) 0%,
+            rgba(0, 80, 80, 0.3) 100%);
+    border-bottom: 1px solid rgba(0, 163, 163, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-title {
+    font-family: 'Spectral', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #F0F6FC;
+    text-align: center;
+    margin: 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.login-subtitle {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    color: #94A3B8;
+    text-align: center;
+    margin: 0 0 2rem 0;
+}
+
+/* Form */
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding-top: 1rem;
+}
+
+.login-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.login-field label {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #F0E6D2;
+}
+
+.login-field input {
+    padding: 0.75rem 1rem;
+    background: rgba(9, 12, 20, 0.6);
+    border: 1px solid rgba(0, 163, 163, 0.4);
+    border-radius: 4px;
+    color: #F0F6FC;
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.login-field input:focus {
+    outline: none;
+    border-color: #00A3A3;
+    box-shadow: 0 0 8px rgba(0, 163, 163, 0.3);
+}
+
+.login-field input::placeholder {
+    color: #94A3B8;
+    opacity: 0.6;
+}
+
+.login-error {
+    padding: 0.75rem;
+    background: rgba(255, 78, 80, 0.15);
+    border: 1px solid rgba(255, 78, 80, 0.5);
+    border-radius: 4px;
+    color: #FF4E50;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.login-submit {
+    padding: 1rem;
+    background: linear-gradient(135deg, #C89B3C 0%, #F0E6D2 100%);
+    border: 1px solid #F0E6D2;
+    border-radius: 4px;
+    color: #090C14;
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+    margin-top: 0.5rem;
+}
+
+.login-submit:hover {
+    opacity: 0.9;
+}
+
+.login-demo-hint {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: rgba(0, 163, 255, 0.1);
+    border: 1px solid rgba(0, 163, 255, 0.2);
+    border-radius: 4px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    color: #94A3B8;
+    text-align: center;
+}
+
+.login-demo-hint p {
+    margin: 0.25rem 0;
+}
+
+.login-demo-hint strong {
+    color: #00F0FF;
+}

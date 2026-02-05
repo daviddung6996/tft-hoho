@@ -1,0 +1,173 @@
+.synergy-floating-container {
+    position: absolute;
+    /* Position to the right of the Item Panel */
+    left: 6.2cqw;
+    top: 50%;
+    transform: translateY(calc(-50% - 2.1cqw));
+    display: flex;
+    flex-direction: column;
+    gap: 0.5cqw;
+    z-index: 55;
+    padding-left: 0.25cqw;
+}
+
+/* Horizontal layout for Puzzle Builder */
+.synergy-floating-container.horizontal {
+    position: relative;
+    left: 0;
+    top: 0;
+    transform: none;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1.2cqw;
+    padding: 0;
+    width: 100%;
+    justify-content: center;
+    /* No margin-bottom here - parent handles spacing via marginTop on board */
+}
+
+
+.synergy-floating-row {
+    display: flex;
+    align-items: center;
+    gap: -0.7cqw;
+    /* More overlap for tight integration */
+    transition: transform 0.2s ease;
+}
+
+/* Horizontal mode: larger elements */
+.horizontal .synergy-floating-row {
+    gap: 0.8cqw;
+    transform: scale(1.5);
+    /* Make traits 50% larger */
+    transform-origin: center bottom;
+    /* Scale up from bottom to avoid overlap issues */
+    margin: 0.8cqw 1.2cqw;
+    /* Add margin to account for scaling */
+}
+
+
+/* Hover removed per AGENTS.md - minimal hover effects */
+
+/* Hexagon Shape */
+.synergy-hex-wrapper {
+    width: 3.1cqw;
+    height: 3.5cqw;
+    position: relative;
+    z-index: 2;
+    filter: drop-shadow(0 0.15cqw 0.3cqw rgba(0, 0, 0, 0.6));
+}
+
+.synergy-hex-shape {
+    width: 100%;
+    height: 100%;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    background: #222;
+    /* Default Inactive */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 0 0.3cqw rgba(0, 0, 0, 1);
+}
+
+.synergy-icon-symbol {
+    font-size: 1.45cqw;
+    z-index: 3;
+    opacity: 0.7;
+}
+
+/* Tier Colors for Hexagons */
+.tier-inactive .synergy-hex-shape {
+    background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+    border: 0.05cqw solid #333;
+}
+
+.tier-inactive {
+    opacity: 0.6;
+}
+
+.tier-inactive .synergy-icon-image {
+    filter: grayscale(60%) brightness(0.7);
+}
+
+.tier-inactive .synergy-label-bar {
+    background: rgba(5, 15, 20, 0.85);
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+.tier-bronze .synergy-hex-shape {
+    background: linear-gradient(135deg, #cd7f32 0%, #8b4513 100%);
+}
+
+.tier-silver .synergy-hex-shape {
+    background: linear-gradient(135deg, #e0e0e0 0%, #909090 100%);
+}
+
+.tier-gold .synergy-hex-shape {
+    background: linear-gradient(135deg, #ffd700 0%, #b8860b 100%);
+}
+
+.tier-prismatic .synergy-hex-shape {
+    background: linear-gradient(135deg, #ff00cc 0%, #333399 100%);
+}
+
+.tier-gold .synergy-hex-shape,
+.tier-prismatic .synergy-hex-shape,
+.tier-bronze .synergy-hex-shape,
+.tier-silver .synergy-hex-shape {
+    box-shadow: inset 0 0 0.5cqw rgba(0, 0, 0, 0.6);
+}
+
+.tier-gold .synergy-icon-symbol,
+.tier-prismatic .synergy-icon-symbol,
+.tier-bronze .synergy-icon-symbol,
+.tier-silver .synergy-icon-symbol {
+    opacity: 1;
+    color: #fff;
+    text-shadow: 0 0.05cqw 0.15cqw rgba(0, 0, 0, 0.9);
+}
+
+
+/* Label Bar */
+.synergy-label-bar {
+    background: rgba(8, 24, 30, 0.9);
+    /* Dark Teal Tint */
+    backdrop-filter: blur(0.4cqw);
+    height: 2.5cqw;
+    padding: 0 0.8cqw 0 1.25cqw;
+    /* More padding left for deeper hexagon overlap */
+    border-radius: 0 0.3cqw 0.3cqw 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 7.3cqw;
+    border: 0.05cqw solid rgba(255, 255, 255, 0.15);
+    border-left: none;
+    box-shadow: 0 0.2cqw 0.4cqw rgba(0, 0, 0, 0.4);
+}
+
+.trait-name {
+    font-size: 0.83cqw;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    color: #bbb;
+    line-height: 1.1;
+    margin-bottom: 0.1cqw;
+}
+
+.synergy-floating-row:not(.tier-inactive) .trait-name {
+    color: #fff;
+    text-shadow: 0 0 0.25cqw rgba(255, 255, 255, 0.2);
+}
+
+.trait-numbers {
+    font-size: 0.62cqw;
+    color: #777;
+    font-family: 'Roboto Mono', monospace;
+    font-weight: 500;
+}
+
+.active-num {
+    color: #eee;
+    font-weight: 700;
+}

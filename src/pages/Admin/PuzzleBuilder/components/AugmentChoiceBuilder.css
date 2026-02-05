@@ -1,0 +1,400 @@
+.acb-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 2rem;
+    width: 100%;
+    height: 100%;
+    color: #F0F6FC;
+    overflow-y: auto;
+    box-sizing: border-box;
+    align-items: center;
+    /* Center content horizontally */
+}
+
+.acb-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    width: 100%;
+    max-width: 60cqw;
+    margin: 0 auto;
+}
+
+.acb-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    position: relative;
+    padding: 1rem;
+    background: rgba(5, 28, 30, 0.2);
+    border: 0.1cqw solid rgba(200, 170, 110, 0.1);
+    border-radius: 0.5cqw;
+}
+
+.acb-slot-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.acb-slot-label {
+    font-family: 'Spectral', serif;
+    color: #c8aa6e;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+}
+
+.acb-slot-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.acb-slot {
+    width: 8rem;
+    height: 8rem;
+    background: rgba(0, 0, 0, 0.4);
+    border: 0.1cqw dashed rgba(200, 170, 110, 0.4);
+    border-radius: 0.5cqw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    padding: 0.5rem;
+}
+
+.acb-slot:hover {
+    background: rgba(21, 58, 62, 0.6);
+    border-color: #c8aa6e;
+    box-shadow: 0 0 1.5cqw rgba(200, 170, 110, 0.2);
+}
+
+.acb-slot.filled {
+    border-style: solid;
+    background: linear-gradient(135deg, rgba(21, 58, 62, 0.8) 0%, rgba(5, 28, 30, 0.9) 100%);
+}
+
+.acb-slot.pro-picked {
+    box-shadow: 0 0 2cqw #00A3FF, inset 0 0 1cqw #00A3FF;
+    border-color: #00A3FF;
+}
+
+.acb-slot-icon {
+    width: 4rem;
+    height: 4rem;
+    border: 0.1cqw solid #c8aa6e;
+    border-radius: 0.25cqw;
+    margin-bottom: 0.5rem;
+    object-fit: cover;
+}
+
+.acb-slot-name {
+    font-size: 0.8rem;
+    text-align: center;
+    color: #fff;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Clear Button */
+.acb-slot-clear {
+    position: absolute;
+    top: 0.4cqw;
+    right: 0.4cqw;
+    width: auto;
+    height: auto;
+    background: none;
+    border: none;
+    color: #94A3B8;
+    /* Blue Grey - Unobtrusive */
+    font-size: 1cqw;
+    font-weight: normal;
+    font-family: sans-serif;
+    /* Simple X */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s ease, color 0.2s ease;
+    z-index: 10;
+    line-height: 1;
+    padding: 0;
+    box-shadow: none;
+}
+
+.acb-slot:hover .acb-slot-clear {
+    opacity: 1;
+}
+
+.acb-slot-clear:hover {
+    color: #F0F6FC;
+    /* White on hover */
+    background: none;
+    transform: none;
+}
+
+.acb-arrow {
+    font-size: 1.5rem;
+    color: #00A3FF;
+    margin: 0.5rem 0;
+}
+
+.acb-empty-icon {
+    font-size: 2rem;
+    color: rgba(200, 170, 110, 0.5);
+}
+
+/* Action Buttons (Pro Reroll / Pick) */
+.acb-slot-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.acb-action-btn {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    border: 0.1cqw solid #4a5568;
+    /* Default inactive border */
+    background: rgba(0, 0, 0, 0.4);
+    color: #4a5568;
+    font-weight: bold;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    position: relative;
+    /* For badge positioning */
+}
+
+.acb-badge {
+    position: absolute;
+    top: -0.3cqw;
+    right: -0.3cqw;
+    width: 1cqw;
+    height: 1cqw;
+    background: #ef4444;
+    /* Red or Gold depending on preference, User asked for badge */
+    color: #fff;
+    border-radius: 50%;
+    font-size: 0.6cqw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 0.1cqw solid #fff;
+    font-weight: 700;
+    box-shadow: 0 0 0.2cqw rgba(0, 0, 0, 0.5);
+}
+
+.acb-action-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ccc;
+}
+
+/* Reroll Button */
+.acb-action-btn.reroll.active {
+    background: #c8aa6e;
+    color: #000;
+    border-color: #c8aa6e;
+    box-shadow: 0 0 0.5cqw rgba(200, 170, 110, 0.4);
+}
+
+/* Pick Button */
+.acb-action-btn.pick.active {
+    background: #00A3FF;
+    /* Hextech Blue */
+    color: #fff;
+    border-color: #00A3FF;
+    box-shadow: 0 0 0.8cqw rgba(0, 163, 255, 0.4);
+}
+
+/* Toggle Switch Styles */
+.acb-controls {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    padding-bottom: 2rem;
+    border-top: 0.1cqw solid rgba(200, 170, 110, 0.2);
+    width: 100%;
+    max-width: 60cqw;
+}
+
+.acb-toggle-label {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+    font-family: 'Spectral', serif;
+    color: #c8aa6e;
+    font-size: 1.1rem;
+}
+
+.acb-toggle-input {
+    display: none;
+}
+
+.acb-toggle-slider {
+    position: relative;
+    width: 3.5rem;
+    height: 1.8rem;
+    background-color: rgba(0, 0, 0, 0.5);
+    border: 0.1cqw solid #4a5568;
+    border-radius: 2rem;
+    transition: all 0.3s ease;
+}
+
+.acb-toggle-slider::before {
+    content: '';
+    position: absolute;
+    width: 1.4rem;
+    height: 1.4rem;
+    left: 0.15rem;
+    top: 0.1rem;
+    background-color: #94a3b8;
+    border-radius: 50%;
+    transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.acb-toggle-input:checked+.acb-toggle-slider {
+    background-color: rgba(0, 163, 255, 0.2);
+    border-color: #00A3FF;
+}
+
+.acb-toggle-input:checked+.acb-toggle-slider::before {
+    left: 1.85rem;
+    background-color: #00A3FF;
+    box-shadow: 0 0 10px rgba(0, 163, 255, 0.5);
+}
+
+/* Modal Styles - Centered & cqw based */
+.acb-modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    /* Ensure high z-index to sit above everything */
+    backdrop-filter: blur(0.5cqw);
+}
+
+.acb-modal {
+    background: linear-gradient(180deg, #153a3e 0%, #051c1e 100%);
+    width: 60cqw;
+    height: 45cqw;
+    border: 0.1cqw solid #c8aa6e;
+    border-radius: 0.5cqw;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 2cqw rgba(0, 0, 0, 0.8), 0 0 1cqw rgba(200, 170, 110, 0.2);
+    position: relative;
+    overflow: hidden;
+    /* Prevent overflow leaks */
+}
+
+.acb-modal-header {
+    padding: 1.5cqw;
+    border-bottom: 0.1cqw solid rgba(200, 170, 110, 0.25);
+    display: flex;
+    gap: 1cqw;
+    align-items: center;
+    height: 5cqw;
+    box-sizing: border-box;
+}
+
+.acb-search-input {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.3);
+    border: 0.1cqw solid rgba(200, 170, 110, 0.3);
+    color: #f0f6fc;
+    padding: 0.5cqw 1cqw;
+    border-radius: 0.25cqw;
+    font-size: 1cqw;
+    outline: none;
+    height: 80%;
+}
+
+.acb-search-input:focus {
+    border-color: #c8aa6e;
+    box-shadow: 0 0 0.5cqw rgba(200, 170, 110, 0.2);
+}
+
+.acb-modal-close {
+    width: 2.5cqw;
+    height: 2.5cqw;
+    background: rgba(0, 0, 0, 0.3);
+    border: 0.1cqw solid #c8aa6e;
+    border-radius: 0.25cqw;
+    color: #c8aa6e;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2cqw;
+}
+
+.acb-modal-close:hover {
+    background: rgba(200, 170, 110, 0.15);
+}
+
+.acb-modal-grid {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5cqw;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1cqw;
+    align-content: start;
+}
+
+.acb-modal-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5cqw;
+    cursor: pointer;
+    padding: 0.5cqw;
+    border-radius: 0.5cqw;
+    border: 0.1cqw solid transparent;
+    transition: all 0.2s;
+}
+
+.acb-modal-item:hover {
+    background: rgba(200, 170, 110, 0.1);
+    border-color: rgba(200, 170, 110, 0.3);
+}
+
+.acb-modal-icon {
+    width: 5cqw;
+    height: 5cqw;
+    border: 0.1cqw solid #4a5568;
+    border-radius: 0.25cqw;
+    margin-bottom: 0.5rem;
+    object-fit: cover;
+}
+
+.acb-modal-name {
+    font-size: 0.8cqw;
+    text-align: center;
+    color: #94a3b8;
+    line-height: 1.2;
+}

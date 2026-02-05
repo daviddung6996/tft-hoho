@@ -1,0 +1,58 @@
+/* ==========================================================================
+   AUGMENT BUTTON - Simplified Hextech Style
+   Scaled with cqw for 16:9 container
+   ========================================================================== */
+
+.augment-button {
+    position: absolute;
+    bottom: 4cqw;
+    left: 50%;
+    transform: translateX(-50%);
+
+    /* Size */
+    width: 15cqw;
+    height: 3.5cqw;
+
+    /* Hextech blue background with gold border */
+    background: linear-gradient(180deg, rgba(21, 58, 62, 0.9) 0%, rgba(5, 28, 30, 0.95) 100%);
+    border: 0.15cqw solid #c8aa6e;
+    border-radius: 0.25cqw;
+
+    /* Cursor & Layout */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 300;
+
+    /* Transitions */
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+
+    /* Text/Icon Color */
+    color: #F0E6D2;
+}
+
+/* Hover State - Subtle glow, NO movement */
+.augment-button:hover {
+    border-color: #d4b876;
+    box-shadow: 0 0 0.8cqw rgba(200, 170, 110, 0.3);
+}
+
+/* Active State */
+.augment-button.active {
+    border-color: #c8aa6e;
+    box-shadow: 0 0 0.5cqw rgba(200, 170, 110, 0.2);
+}
+
+.augment-button-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Specific SVG adjustments if needed */
+.augment-button svg {
+    width: 2cqw;
+    height: 2cqw;
+    filter: drop-shadow(0 0.15cqw 0.25cqw rgba(0, 0, 0, 0.5));
+}

@@ -1,0 +1,44 @@
+{
+    "meta": {
+        "brand_name": "TFT Hextech",
+        "description": "Core design tokens for TFT Set 16 Hextech UI implementation. Note: All spatial units should ideally use cqw in implementation."
+    },
+    "colors": {
+        "primary": {
+            "DEFAULT": "#c8aa6e",
+            "hover": "#d4b876",
+            "foreground": "#051c1e"
+        },
+        "secondary": {
+            "DEFAULT": "#d4b876",
+            "foreground": "#051c1e"
+        },
+        "background": "#153a3e",
+        "foreground": "#94A3B8",
+        "muted": "#1e4b50",
+        "accent": "#F0E6D2",
+        "destructive": "#EF4444",
+        "success": "#10B981"
+    },
+    "gradients": {
+        "panel": "linear-gradient(180deg, #153a3e 0%, #051c1e 100%)",
+        "button_special": "linear-gradient(180deg, rgba(21, 58, 62, 0.9) 0%, rgba(5, 28, 30, 0.95) 100%)"
+    },
+    "typography": {
+        "font_family_headings": [
+            "Spectral",
+            "serif"
+        ],
+        "font_family_body": [
+            "Inter",
+            "sans-serif"
+        ],
+        "font_weight_bold": "700",
+        "font_weight_normal": "400"
+    },
+    "ui": {
+        "border_radius_default": "0px",
+        "border_radius_small": "0px",
+        "spacing_base_unit": "0.5cqw"
+    }
+}

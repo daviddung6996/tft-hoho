@@ -1,0 +1,488 @@
+/* ==========================================================================
+   BOARD COMPONENT - TFT Arena Grid
+   ========================================================================== */
+
+.game-board-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    /* Center the board content */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+/* Counter-rotate units so they stay upright in mirrored view */
+/* REMOVED ROTATION LOGIC AS PER REDESIGN */
+
+/* Common style for both halves */
+.board-half {
+    position: absolute;
+    left: 49.5%;
+    /* Shifted right ~10px (0.5%) */
+    /* Width for 9 hexes based on new config */
+    width: 60cqw;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Anchor to center */
+    top: 19cqw;
+    /* Shifted up ~40px (2cqw) from 21cqw */
+    transform-origin: 50% 0;
+    pointer-events: none;
+    /* Allow clicks to pass through transparent areas */
+}
+
+.board-half.opponent-side {
+    transform: translateX(-50%);
+    /* REMOVED ROTATION: Opponent now viewed Top-Down */
+    top: 10.26cqw;
+    /* Moved up 20px (1.04cqw): 11.5cqw - 1.04cqw = 10.46cqw */
+    left: calc(49.5% + 2cqw);
+    /* Moved right 10px (0.52cqw): 0.25cqw + 0.52cqw = 0.77cqw */
+}
+
+.board-half.player-side {
+    transform: translateX(-50%);
+}
+
+/* Main Board Grid */
+.board-grid {
+    position: relative;
+    /* 7 hexes width: 7 * (5.5 + 0.4) ~ 41.3 + offset */
+    width: 45cqw;
+    height: 20cqw;
+    z-index: 10;
+    pointer-events: auto;
+    /* Re-enable pointer events for grid */
+}
+
+/* ==========================================================================
+   HEXAGON STYLING
+   ========================================================================== */
+
+.hex-cell {
+    position: absolute;
+    /* Unified Flat Hex Style - White Transparent (Increased Visibility) */
+    background: rgba(255, 255, 255, 0.25);
+    /* Hexagon Shape (Pointy Topped) */
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* No transition needed for static style */
+}
+
+/* Hover effects removed as requested */
+
+/* ==========================================================================
+   UNIT STYLING
+   ========================================================================== */
+
+.board-unit-wrapper {
+    position: absolute;
+    z-index: 20;
+    pointer-events: none;
+    /* Let interactions pass to the cell if needed */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* The visual hexagon for the unit */
+.board-unit {
+    width: 100%;
+    height: 100%;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    background: #090C14;
+    /* Dark Void background behind unit */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Unit Image */
+.board-unit .unit-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scale(1.1);
+    /* Slight zoom to fill hex */
+}
+
+/* Cost Borders (Inner Glow) */
+.board-unit.cost-1 {
+    box-shadow: inset 0 0 0 2px #94A3B8;
+}
+
+/* Gray */
+.board-unit.cost-2 {
+    box-shadow: inset 0 0 0 2px #22C55E;
+}
+
+/* Green */
+.board-unit.cost-3 {
+    box-shadow: inset 0 0 0 2px #00A3FF;
+}
+
+/* Blue */
+.board-unit.cost-4 {
+    box-shadow: inset 0 0 0 2px #D946EF;
+}
+
+/* Purple */
+.board-unit.cost-5 {
+    box-shadow: inset 0 0 0 2px #C89B3C;
+}
+
+/* Gold */
+
+/* Stars Indicator */
+/* Stars Indicator */
+.unit-stars {
+    position: absolute;
+    top: -0.5cqw;
+    /* Move higher up for "on head" look */
+    z-index: 30;
+    display: flex;
+    gap: 0;
+    /* Remove gap for tighter packing */
+    justify-content: center;
+    width: 100%;
+    /* Center in unit hex */
+    filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.8));
+    pointer-events: none;
+}
+
+.unit-stars .star {
+    font-size: 1.5cqw;
+    /* Reduced significantly from 2.5cqw */
+    text-shadow: 0 0 2px rgba(0, 0, 0, 0.8), 0 0 5px rgba(0, 0, 0, 0.9);
+    line-height: 1;
+}
+
+.unit-stars.stars-2 .star {
+    color: #C0C0C0;
+    /* Silver */
+}
+
+.unit-stars.stars-3 .star {
+    color: #FFD700;
+    /* Gold */
+}
+
+/* Items Indicator - Bottom of unit */
+.unit-items {
+    position: absolute;
+    bottom: 0.2cqw;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0.15cqw;
+    z-index: 30;
+}
+
+.unit-item {
+    width: 1.2cqw;
+    height: 1.2cqw;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 0.15cqw;
+    padding: 0.1cqw;
+    filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.9));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ==========================================================================
+   BENCH AREA
+   ========================================================================== */
+
+.bench-container {
+    position: absolute;
+    bottom: 12.5cqw;
+    /* Positioned exactly on the stone bench slots in background */
+    left: calc(50% - 4cqw);
+    transform: translateX(-50%);
+    /* Width to fit 9 standard hexes (5.0) with 1.3 gap => Stride 6.3 */
+    width: 55.4cqw;
+    display: flex;
+    justify-content: center;
+    gap: 1.3cqw;
+    /* Spread evenly to match stone slots using fixed gap */
+    padding: 0;
+    z-index: 15;
+    pointer-events: auto;
+}
+
+/* Mirrored View: Bench at Top */
+.bench-container.mirrored {
+    bottom: auto;
+    top: 12.5cqw;
+    /* Approximate top position matching opposed stone slots */
+}
+
+.bench-slot {
+    position: relative;
+    /* Inherit exact same style as board hexes */
+    /* No specific overrides for bench */
+}
+
+/* Bench hover effects removed */
+
+/* ==========================================================================
+   OPPONENT BENCH AREA (Scouting Mode)
+   ========================================================================== */
+
+.opponent-bench-container {
+    position: absolute;
+    top: 5.0cqw;
+    /* Positioned at opponent's stone bench slots in background */
+    left: 50%;
+    transform: translateX(-50%);
+    /* Width for 9 smaller hexes: 9 * 3.6 + 8 * 0.8 = 32.4 + 6.4 = 38.8cqw */
+    width: 38.8cqw;
+    display: flex;
+    justify-content: center;
+    gap: 0.8cqw;
+    /* Gap to fit hexes exactly in stone slots */
+    padding: 0;
+    z-index: 15;
+    pointer-events: auto;
+}
+
+/* ==========================================================================
+   GOLD PILLAR HEXES - 5 coins on right stone pillar slots
+   ========================================================================== */
+
+.gold-pillar-container {
+    position: absolute;
+    /* Position at right stone pillar area */
+    top: 11cqw;
+    right: 26cqw;
+    z-index: 20;
+    pointer-events: auto;
+
+    /* Stack 5 coins vertically */
+    display: flex;
+    flex-direction: column;
+    gap: 1.2cqw;
+}
+
+/* Player side gold pillar - positioned at bottom right */
+.gold-pillar-container.player-side {
+    top: auto;
+    bottom: 18cqw;
+    right: 26cqw;
+}
+
+.gold-pillar-hex {
+    /* Each coin hex */
+    width: 3.8cqw;
+    height: 3.2cqw;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: visible;
+
+    /* No background - only show the gold icon */
+    background: transparent;
+}
+
+.gold-pillar-icon {
+    width: 150%;
+    height: 150%;
+    object-fit: contain;
+    filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.6));
+    animation: gold-pulse 2s ease-in-out infinite;
+}
+
+/* Fixed positions for opponent gold coins (top right) */
+/* Converted from 1920x1080 pixel coordinates to cqw units */
+/* Container width at 16:9 aspect ratio = 1920px, so 1cqw = 19.2px */
+
+.gold-pillar-container:not(.player-side) .gold-pillar-hex:nth-child(1) {
+    transform: translate(0.1cqw, -0.05cqw);
+    /* x: 2px, y: -1px */
+}
+
+.gold-pillar-container:not(.player-side) .gold-pillar-hex:nth-child(2) {
+    transform: translate(0.68cqw, -1.25cqw);
+    /* x: 13px, y: -24px */
+}
+
+.gold-pillar-container:not(.player-side) .gold-pillar-hex:nth-child(3) {
+    transform: translate(1.15cqw, -2.66cqw);
+    /* x: 22px, y: -51px */
+}
+
+.gold-pillar-container:not(.player-side) .gold-pillar-hex:nth-child(4) {
+    transform: translate(1.82cqw, -3.96cqw);
+    /* x: 35px, y: -76px */
+}
+
+.gold-pillar-container:not(.player-side) .gold-pillar-hex:nth-child(5) {
+    transform: translate(2.29cqw, -5.21cqw);
+    /* x: 44px, y: -100px */
+}
+
+/* Fixed positions for player gold coins (bottom right) */
+.gold-pillar-container.player-side .gold-pillar-hex:nth-child(1) {
+    transform: translate(-47.29cqw, -2.76cqw);
+    /* x: -908px, y: -53px */
+}
+
+.gold-pillar-container.player-side .gold-pillar-hex:nth-child(2) {
+    transform: translate(-48.07cqw, -4.11cqw);
+    /* x: -923px, y: -79px */
+}
+
+.gold-pillar-container.player-side .gold-pillar-hex:nth-child(3) {
+    transform: translate(-48.96cqw, -5.57cqw);
+    /* x: -940px, y: -107px */
+}
+
+.gold-pillar-container.player-side .gold-pillar-hex:nth-child(4) {
+    transform: translate(-49.79cqw, -6.98cqw);
+    /* x: -956px, y: -134px */
+}
+
+.gold-pillar-container.player-side .gold-pillar-hex:nth-child(5) {
+    transform: translate(-50.57cqw, -7.92cqw);
+    /* x: -971px, y: -152px */
+}
+
+/* Dragging state for gold coins */
+.gold-pillar-hex.dragging {
+    z-index: 100;
+    transform-origin: center center;
+}
+
+.gold-pillar-hex.dragging .gold-pillar-icon {
+    filter: drop-shadow(0 0 15px rgba(255, 215, 0, 1));
+    transform: scale(1.15);
+}
+
+@keyframes gold-pulse {
+
+    0%,
+    100% {
+        filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.6));
+        transform: scale(1);
+    }
+
+    50% {
+        filter: drop-shadow(0 0 12px rgba(255, 215, 0, 0.9));
+        transform: scale(1.05);
+    }
+}
+
+/* Augment Tree 3D Effect */
+/* Augment Tree */
+.augment-tree {
+    position: absolute;
+    z-index: 50;
+    /* Higher than units */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: auto;
+    cursor: grab;
+
+    /* Configurable Size */
+    width: 4.5cqw;
+    /* Reduced further from 6cqw */
+    height: 5.6cqw;
+    /* Reduced further from 7.5cqw */
+
+    /* Centering the drag anchor - Ensure upright 90 degrees (vertical) */
+    transform: translate(-50%, -50%);
+}
+
+/* Ground Shadow for "Planted" Look */
+.augment-tree::after {
+    content: '';
+    position: absolute;
+    bottom: -0.2cqw;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 2cqw;
+    background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.6) 0%, transparent 70%);
+    z-index: -1;
+    pointer-events: none;
+    filter: blur(2px);
+}
+
+.augment-tree-inner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    pointer-events: none;
+    /* Gentle floating animation removed */
+    /* animation: tree-breathe 6s ease-in-out infinite; */
+}
+
+@keyframes tree-breathe {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-0.3cqw);
+    }
+}
+
+.augment-tree-inner img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    /* Soft ambient shadow + Subtle Magical Glow */
+    filter: drop-shadow(0 5px 5px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 8px rgba(0, 200, 255, 0.15));
+}
+
+/* Augment Icons Floating Above Tree */
+.augment-tree-popups {
+    position: absolute;
+    bottom: 85%;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0;
+    /* Stuck together as requested */
+    z-index: 60;
+    pointer-events: auto;
+    /* Allow hovering if needed */
+}
+
+.augment-tree-icon {
+    width: 2.2cqw;
+    height: 2.2cqw;
+    /* Square, no border */
+    background: radial-gradient(circle, #1a1a2e 0%, #0d0d1a 100%);
+    border: none;
+    border-radius: 0.2cqw;
+    /* Slightly rounded square */
+    box-shadow: 0 0 0.5cqw rgba(0, 0, 0, 0.4);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.augment-tree-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}

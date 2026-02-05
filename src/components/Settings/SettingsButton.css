@@ -1,0 +1,126 @@
+.menu-container {
+    position: fixed;
+    top: 1.04cqw;
+    /* 20px / 19.2 */
+    right: 1.04cqw;
+    /* 20px / 19.2 */
+    z-index: 1000;
+}
+
+.settings-button {
+    width: 2.5cqw;
+    /* 48px / 19.2 */
+    height: 2.5cqw;
+    /* 48px / 19.2 */
+    background: rgba(0, 0, 0, 0.7);
+    border: 0.05cqw solid #c89b3c;
+    /* 1px / 19.2 */
+    border-radius: 0.42cqw;
+    /* 8px / 19.2 */
+    color: #f0e6d2;
+    font-size: 1.25cqw;
+    /* 24px / 19.2 */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(0.21cqw);
+    /* 4px / 19.2 */
+}
+
+.settings-button:hover {
+    opacity: 0.9;
+}
+
+/* Menu Dropdown */
+.menu-dropdown {
+    position: absolute;
+    top: 3.13cqw;
+    /* 60px / 19.2 */
+    right: 0;
+    min-width: 11.46cqw;
+    /* 220px / 19.2 */
+    background: linear-gradient(180deg,
+            rgba(20, 40, 50, 0.98) 0%,
+            rgba(15, 30, 40, 0.98) 100%);
+    backdrop-filter: blur(0.42cqw);
+    /* 8px / 19.2 */
+    border: 0.1cqw solid #C89B3C;
+    /* 2px / 19.2 */
+    border-radius: 0.42cqw;
+    /* 8px / 19.2 */
+    box-shadow: 0 0 1.5cqw rgba(200, 170, 110, 0.25);
+    /* 10px */
+    padding: 0.75rem;
+    animation: menu-appear 0.2s ease-out;
+}
+
+@keyframes menu-appear {
+    from {
+        opacity: 0;
+        transform: translateY(-0.52cqw);
+        /* -10px / 19.2 */
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* User Info */
+.menu-user-info {
+    padding: 0.5rem 0.75rem;
+    margin-top: 0.5rem;
+    border-bottom: 0.05cqw solid rgba(0, 163, 163, 0.3);
+    /* 1px / 19.2 */
+    margin-bottom: 0.5rem;
+}
+
+.menu-username {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #C89B3C;
+}
+
+/* Menu Items */
+.menu-item {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: transparent;
+    border: none;
+    border-radius: 0.21cqw;
+    /* 4px / 19.2 */
+    color: #F0E6D2;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.menu-item:hover {
+    background: rgba(0, 163, 163, 0.2);
+}
+
+/* Divider */
+.menu-divider {
+    height: 0.05cqw;
+    /* 1px / 19.2 */
+    background: rgba(0, 163, 163, 0.3);
+    margin: 0.5rem 0;
+}
+
+/* Icon styling */
+.menu-icon,
+.settings-icon {
+    color: #C89B3C;
+    font-size: 1.1rem;
+    display: inline-block;
+    min-width: 1.2rem;
+    text-align: center;
+}

@@ -1,0 +1,641 @@
+/* PlayerTeamBuilder.css - Admin Operations Deck Color Scheme */
+
+/* ============================================================================
+   CSS Custom Properties (Admin Deck Colors)
+   ============================================================================ */
+.ptb-container {
+    --bg-primary: #020617;
+    --bg-panel: #05080F;
+    --bg-hex: rgba(10, 14, 21, 0.9);
+    --bg-hex-inner: rgba(5, 8, 15, 0.95);
+    /* Added inner dark color */
+    --border-gold: #c8aa6e;
+    --border-subtle: rgba(200, 170, 110, 0.3);
+    --border-dark: #1E293B;
+    --text-primary: #F0F6FC;
+    --text-label: #94A3B8;
+    --text-muted: #64748B;
+    --accent-cyan: #00F0FF;
+    --accent-blue: #00A3FF;
+
+    /* Cost colors */
+    --cost-1: #808080;
+    --cost-2: #11b288;
+    --cost-3: #207ac7;
+    --cost-4: #c440da;
+    --cost-5: #ffb93b;
+    --cost-7: #ffb93b;
+}
+
+/* ============================================================================
+   Main Container Layout
+   ============================================================================ */
+.ptb-container {
+    display: flex;
+    width: 100%;
+    /* Flex grow to fill remaining space in BoardTab column */
+    flex: 1;
+    min-height: 0;
+    /* Removed solid background to inherit Operations Deck theme */
+    background: transparent;
+    font-family: 'Inter', sans-serif;
+    color: var(--text-primary);
+    /* Ensure no scrollbars trigger layout shifts */
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* ============================================================================
+   Left Panel - Champion Pool
+   ============================================================================ */
+.ptb-left-panel {
+    width: 25cqw;
+    min-width: 20cqw;
+    flex: 0 0 25cqw;
+    /* Enforce rigid width, prevent shrinking/growing */
+    display: flex;
+    flex-direction: column;
+    /* Standard green theme background */
+    background: linear-gradient(180deg, #153a3e 0%, #051c1e 100%);
+    border-right: 0.1cqw solid var(--border-gold);
+    box-sizing: border-box;
+    /* Ensure border doesn't add to width */
+}
+
+/* Search Header */
+.cp-search-header {
+    padding: 1cqw;
+    border-bottom: 0.1cqw solid var(--border-subtle);
+}
+
+.cp-search-input {
+    width: 100%;
+    padding: 0.5cqw 0.8cqw;
+    background: rgba(0, 0, 0, 0.3);
+    border: 0.1cqw solid var(--border-subtle);
+    border-radius: 0.3cqw;
+    color: var(--text-primary);
+    font-size: 0.9cqw;
+    outline: none;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+}
+
+.cp-search-input::placeholder {
+    color: var(--text-muted);
+}
+
+.cp-search-input:focus {
+    border-color: var(--border-gold);
+}
+
+/* Cost Filter Buttons */
+.cp-cost-filters {
+    display: flex;
+    gap: 0.3cqw;
+    padding: 0.6cqw 0.8cqw;
+    background: rgba(0, 0, 0, 0.2);
+    border-bottom: 0.1cqw solid var(--border-subtle);
+}
+
+.cp-cost-btn {
+    flex: 1;
+    padding: 0.4cqw 0;
+    /* Neutral dark green/black, removed blue slate */
+    background: rgba(10, 20, 20, 0.6);
+    border: 0.1cqw solid var(--border-subtle);
+    border-radius: 0.3cqw;
+    color: var(--text-label);
+    font-size: 0.8cqw;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.cp-cost-btn.active {
+    color: #fff;
+    border-color: transparent;
+    box-shadow: inset 0 0 1cqw rgba(0, 0, 0, 0.4);
+}
+
+.cp-cost-btn.cost-1.active {
+    background: var(--cost-1);
+}
+
+.cp-cost-btn.cost-2.active {
+    background: var(--cost-2);
+}
+
+.cp-cost-btn.cost-3.active {
+    background: var(--cost-3);
+}
+
+.cp-cost-btn.cost-4.active {
+    background: var(--cost-4);
+}
+
+.cp-cost-btn.cost-5.active {
+    background: var(--cost-5);
+}
+
+.cp-cost-btn.cost-6.active {
+    background: var(--cost-6);
+}
+
+.cp-cost-btn.cost-7.active {
+    background: var(--cost-7);
+}
+
+/* Champion Grid Container */
+.cp-grid-scroll {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-gutter: stable;
+    padding-bottom: 8cqw;
+}
+
+/* Cost Group with subtle background */
+.cp-cost-group {
+    position: relative;
+}
+
+.cp-cost-group::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.08;
+    pointer-events: none;
+}
+
+.cp-cost-group.cost-1::before {
+    background: var(--cost-1);
+}
+
+.cp-cost-group.cost-2::before {
+    background: var(--cost-2);
+}
+
+.cp-cost-group.cost-3::before {
+    background: var(--cost-3);
+}
+
+.cp-cost-group.cost-4::before {
+    background: var(--cost-4);
+}
+
+.cp-cost-group.cost-5::before {
+    background: var(--cost-5);
+}
+
+.cp-cost-group.cost-6::before {
+    background: var(--cost-6);
+}
+
+.cp-cost-group.cost-7::before {
+    background: var(--cost-7);
+}
+
+.cp-cost-group-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.25cqw;
+    padding: 0.5cqw;
+    position: relative;
+}
+
+/* Champion Tile */
+.cp-champ-tile {
+    aspect-ratio: 1;
+    position: relative;
+    cursor: grab;
+    border-radius: 0.3cqw;
+    overflow: hidden;
+    border: 0.15cqw solid transparent;
+    transition: transform 0.1s, border-color 0.15s;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.cp-champ-tile:active {
+    cursor: grabbing;
+}
+
+.cp-champ-tile.cost-1 {
+    border-color: var(--cost-1);
+}
+
+.cp-champ-tile.cost-2 {
+    border-color: var(--cost-2);
+}
+
+.cp-champ-tile.cost-3 {
+    border-color: var(--cost-3);
+}
+
+.cp-champ-tile.cost-4 {
+    border-color: var(--cost-4);
+}
+
+.cp-champ-tile.cost-5 {
+    border-color: var(--cost-5);
+}
+
+.cp-champ-tile.cost-6 {
+    border-color: var(--cost-6);
+}
+
+.cp-champ-tile.cost-7 {
+    border-color: var(--cost-7);
+}
+
+.cp-champ-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.cp-champ-name {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 0.1cqw 0.2cqw;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.85));
+    color: #fff;
+    font-size: 0.6cqw;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ============================================================================
+   Right Panel - Hex Board Area
+   ============================================================================ */
+.ptb-right-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    padding: 1cqw;
+    overflow: visible;
+    /* UPDATED: Allow absolute children (augment columns) to be seen */
+    container-type: inline-size;
+    position: relative;
+}
+
+.ptb-right-panel::-webkit-scrollbar {
+    display: none;
+}
+
+/* Board Container - Centers the hex grid */
+.hb-board-container {
+    /* flex: 1; Removed so it shrinks to content */
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1cqw;
+    position: relative;
+    /* Anchor for augment side panels */
+}
+
+/* Hex Grid Wrapper */
+.hb-hex-grid {
+    position: relative;
+}
+
+/* Individual Hex Cell */
+.hb-hex-cell {
+    position: absolute;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    background: var(--bg-hex);
+    /* Outer / Border color */
+    border: none;
+    transition: background 0.15s, box-shadow 0.15s;
+    cursor: pointer;
+}
+
+.hb-hex-cell::before {
+    content: '';
+    position: absolute;
+    inset: 0.2cqw;
+    /* Creates border thickness */
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    background: var(--bg-hex-inner);
+    /* Inner color */
+    z-index: -1;
+}
+
+.hb-hex-cell.drag-over {
+    /* Gold highlight for drag over, removing blue */
+    background: rgba(200, 170, 110, 0.2);
+    box-shadow: 0 0 2cqw rgba(200, 170, 110, 0.4);
+}
+
+.hb-hex-cell.occupied {
+    background: transparent;
+}
+
+/* Unit on Board */
+.hb-unit {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: grab;
+    z-index: 5;
+}
+
+.hb-unit:active {
+    cursor: grabbing;
+}
+
+.hb-unit.dragging {
+    opacity: 0.4;
+}
+
+.hb-unit-inner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    background: var(--cost-1);
+}
+
+.hb-unit-inner.cost-1 {
+    background: var(--cost-1);
+}
+
+.hb-unit-inner.cost-2 {
+    background: var(--cost-2);
+}
+
+.hb-unit-inner.cost-3 {
+    background: var(--cost-3);
+}
+
+.hb-unit-inner.cost-4 {
+    background: var(--cost-4);
+}
+
+.hb-unit-inner.cost-5 {
+    background: var(--cost-5);
+}
+
+.hb-unit-inner.cost-7 {
+    background: var(--cost-7);
+}
+
+.hb-unit-content {
+    position: absolute;
+    inset: 0.3cqw;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    background: #0a0c10;
+    overflow: hidden;
+}
+
+.hb-unit-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.hb-unit-name {
+    position: absolute;
+    bottom: 5%;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 0.8cqw;
+    color: #fff;
+    font-weight: 600;
+    text-shadow: 0 0.1cqw 0.2cqw #000, 0 0 0.4cqw #000;
+    padding: 0.2cqw 0.4cqw;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.hb-unit-stars {
+    position: absolute;
+    top: 5%;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 2cqw;
+    /* Reduced from 2.5cqw */
+    text-shadow: 0 0 0.4cqw #000, 0 0 0.8cqw #000;
+    pointer-events: none;
+    z-index: 100;
+    /* Increased z-index to stay above everything */
+}
+
+.hb-unit-stars.stars-2 {
+    color: #C0C0C0;
+    /* Silver */
+}
+
+.hb-unit-stars.stars-3 {
+    color: #FFD700;
+    /* Gold */
+}
+
+/* ============================================================================
+   Bench Area
+   ============================================================================ */
+.hb-bench {
+    display: flex;
+    gap: 0.5cqw;
+    padding: 1cqw 1.5cqw;
+    background: transparent;
+    border: none;
+    border-radius: 0.6cqw;
+    margin-top: 1cqw;
+    min-height: 10cqw;
+}
+
+.hb-bench-slot {
+    width: 9cqw;
+    height: 10cqw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+    overflow: visible;
+    /* Allow stars to overflow */
+    /* Use pseudo-elements to mimic Board Tile structure exactly */
+}
+
+/* Outer Border Layer */
+.hb-bench-slot::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    background: var(--bg-hex);
+    /* Standard Board Hex Border */
+    z-index: 0;
+    transition: background 0.15s, box-shadow 0.15s;
+}
+
+/* Inner Fill Layer */
+.hb-bench-slot::after {
+    content: '';
+    position: absolute;
+    inset: 0.2cqw;
+    /* Creates border thickness */
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    background: var(--bg-hex-inner);
+    /* Standard Board Hex Inner */
+    z-index: 0;
+    transition: background 0.15s;
+}
+
+.hb-bench-slot.occupied::before {
+    background: transparent;
+}
+
+.hb-bench-slot.occupied::after {
+    background: transparent;
+}
+
+.hb-bench-slot.drag-over::before {
+    /* Synced Gold drag over, removing blue */
+    background: rgba(200, 170, 110, 0.2);
+    box-shadow: 0 0 2cqw rgba(200, 170, 110, 0.4);
+}
+
+.hb-bench-unit {
+    width: 100%;
+    height: 100%;
+    cursor: grab;
+    position: relative;
+    z-index: 1;
+    /* Sits above ::before and ::after */
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    background: var(--cost-1);
+    display: flex;
+    padding: 0.3cqw;
+    box-sizing: border-box;
+}
+
+.hb-bench-unit:active {
+    cursor: grabbing;
+}
+
+.hb-bench-unit.cost-1 {
+    background: var(--cost-1);
+}
+
+.hb-bench-unit.cost-2 {
+    background: var(--cost-2);
+}
+
+.hb-bench-unit.cost-3 {
+    background: var(--cost-3);
+}
+
+.hb-bench-unit.cost-4 {
+    background: var(--cost-4);
+}
+
+.hb-bench-unit.cost-5 {
+    background: var(--cost-5);
+}
+
+.hb-bench-unit.cost-7 {
+    background: var(--cost-7);
+}
+
+.hb-bench-unit img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    display: block;
+    background: #0a0c10;
+}
+
+.hb-bench-unit .hb-unit-stars {
+    font-size: 1.5cqw;
+    z-index: 200;
+    top: 2%;
+    width: 150%;
+    left: -25%;
+}
+
+.ptb-drop-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    pointer-events: none;
+}
+
+.ptb-drop-overlay.active {
+    pointer-events: auto;
+}
+
+.cp-grid-scroll::-webkit-scrollbar {
+    width: 0.4cqw;
+}
+
+.cp-grid-scroll::-webkit-scrollbar-track {
+    background: var(--bg-panel);
+}
+
+.cp-grid-scroll::-webkit-scrollbar-thumb {
+    background: var(--border-gold);
+    border-radius: 0.2cqw;
+}
+
+/* ============================================================================
+   Augments Panel (Right)
+   ============================================================================ */
+.ptb-augments-panel {
+    width: 15cqw;
+    min-width: 12cqw;
+    flex: 0 0 15cqw;
+    background: linear-gradient(180deg, #153a3e 0%, #051c1e 100%);
+    border-left: 0.11cqw solid var(--border-gold);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+.ptb-augments-panel::-webkit-scrollbar {
+    width: 0.4cqw;
+}
+
+.ptb-augments-panel::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.ptb-augments-panel::-webkit-scrollbar-thumb {
+    background: var(--border-gold);
+    border-radius: 0.2cqw;
+}
+
+.augment-selector-container {
+    padding: 1cqw !important;
+}
+
+.selected-augments-list {
+    width: 100% !important;
+}
+
+.selected-augment-item {
+    font-size: 0.8cqw;
+}
+
+.selected-augment-icon {
+    width: 3cqw !important;
+    height: 3cqw !important;
+}

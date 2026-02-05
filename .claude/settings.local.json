@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run dev:*)",
+      "Bash(node scripts/seed-set16-items.mjs:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npx tsx:*)",
+      "Bash(curl:*)",
+      "Bash(del \"d:\\\\TFT-hoho\\\\.agent\\\\skills\\\\tft-set16-data\\\\scripts\\\\check_patterns.ts\")",
+      "Bash(cmd /c \"del d:\\\\TFT-hoho\\\\.agent\\\\skills\\\\tft-set16-data\\\\scripts\\\\check_patterns.ts\")"
+    ]
+  }
+}
