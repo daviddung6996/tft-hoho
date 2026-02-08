@@ -6,12 +6,13 @@ import { transformToData, transformToVisual } from '../../../utils/hexMapping';
 import { usePuzzleBuilderState } from './hooks/usePuzzleBuilderState';
 import MetaTab from './tabs/MetaTab';
 import BoardTab from './tabs/BoardTab';
+import Toast from '../../../components/common/Toast';
 
 import { PuzzleScenario } from '../../../data/puzzleScenarios';
 
 interface PuzzleBuilderProps {
     onClose: () => void;
-    onSaveSuccess: () => void;
+    onSaveSuccess: (puzzleId: string, shareUrl: string) => void;
     initialPuzzle?: PuzzleScenario;
 }
 
@@ -28,7 +29,9 @@ const PuzzleBuilder: React.FC<PuzzleBuilderProps> = ({ onClose, onSaveSuccess, i
         setSelectedOpponentIndex,
         updatePuzzle,
         updateOpponent,
-        handleSave
+        handleSave,
+        toast,
+        clearToast
     } = usePuzzleBuilderState(onSaveSuccess, initialPuzzle);
 
     // Helpers
@@ -50,24 +53,24 @@ const PuzzleBuilder: React.FC<PuzzleBuilderProps> = ({ onClose, onSaveSuccess, i
         }
     };
 
-    if (loading) return <div className="loading-text">Loading Builder...</div>;
+    if (loading) return <div className="loading-text">Đang tải...</div>;
 
     return (
         <div className="puzzle-builder-container">
             <AdminHeader
-                title="Visual Puzzle Builder"
+                title="Trình tạo Puzzles"
                 tabs={[
-                    { key: 'meta', label: 'Meta' },
-                    { key: 'player', label: 'Player' },
-                    { key: 'opponent', label: 'Opponent' },
-                    { key: 'augments', label: 'Augment Choice' }
+                    { key: 'meta', label: 'Thông tin' },
+                    { key: 'player', label: 'Người chơi' },
+                    { key: 'opponent', label: 'Đối thủ' },
+                    { key: 'augments', label: 'Augments' }
                 ]}
                 activeTab={viewMode}
                 onTabChange={(key) => setViewMode(key as ViewMode)}
                 actions={
                     <>
-                        <button onClick={onClose} className="pb-btn">Cancel</button>
-                        <button onClick={handleSave} className="pb-btn primary">Save Puzzle</button>
+                        <button onClick={onClose} className="pb-btn">Huỷ</button>
+                        <button onClick={handleSave} className="pb-btn primary">Lưu Puzzles</button>
                     </>
                 }
             />
@@ -92,6 +95,10 @@ const PuzzleBuilder: React.FC<PuzzleBuilderProps> = ({ onClose, onSaveSuccess, i
                         onAugmentsChange={(newAugments) => updatePuzzle({ augments: newAugments })}
                         items={puzzle.startingItems || []}
                         onItemsChange={(newItems) => updatePuzzle({ startingItems: newItems })}
+                        ioniaPathId={puzzle.ioniaPathId}
+                        voidModIds={puzzle.voidModIds}
+                        onIoniaPathChange={(pathId) => updatePuzzle({ ioniaPathId: pathId })}
+                        onVoidModsChange={(modIds) => updatePuzzle({ voidModIds: modIds })}
                     />
                 )}
 
@@ -126,8 +133,8 @@ const PuzzleBuilder: React.FC<PuzzleBuilderProps> = ({ onClose, onSaveSuccess, i
 
                 {viewMode === 'augments' && (
                     <div className="pb-builder-view admin-content-transition" key="augments" style={{ padding: '2cqw', color: '#fff' }}>
-                        <h3>Augment Choice</h3>
-                        <p>Configure augment choices, rerolls, and final selection here.</p>
+                        <h3>Lựa chọn Augments</h3>
+                        <p>Cấu hình lựa chọn Augments, Roll lại và lựa chọn cuối cùng.</p>
                         <AugmentChoiceBuilder
                             initialAugments={puzzle.augments || []}
                             rerollAugments={puzzle.rerollAugments || []}
@@ -151,8 +158,19 @@ const PuzzleBuilder: React.FC<PuzzleBuilderProps> = ({ onClose, onSaveSuccess, i
                     </div>
                 )}
             </div>
+
+            {/* Toast Notification */}
+            {toast && (
+                <Toast
+                    message={toast.message}
+                    type={toast.type}
+                    onClose={clearToast}
+                    duration={5000}
+                />
+            )}
         </div>
     );
 };
 
 export default PuzzleBuilder;
+

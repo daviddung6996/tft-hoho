@@ -13,9 +13,9 @@ const MetaTab: React.FC<MetaTabProps> = ({ puzzle, updatePuzzle }) => {
             <div className="pb-meta-container">
                 {/* Match Information */}
                 <div className="pb-section">
-                    <h3 className="pb-section-title">Match Information</h3>
+                    <h3 className="pb-section-title">Thông tin trận đấu</h3>
                     <div className="pb-field-group" style={{ marginBottom: '1cqw' }}>
-                        <label className="pb-label">Puzzle Title (Custom Name)</label>
+                        <label className="pb-label">Tiêu đề Puzzles</label>
                         <input
                             className="hex-input"
                             value={puzzle.title || ''}
@@ -25,7 +25,7 @@ const MetaTab: React.FC<MetaTabProps> = ({ puzzle, updatePuzzle }) => {
                     </div>
                     <div className="pb-field-row">
                         <div className="pb-field-group">
-                            <label className="pb-label">Pro Player Name *</label>
+                            <label className="pb-label">Tên tuyển thủ *</label>
                             <input
                                 className="hex-input"
                                 value={puzzle.proPlayer}
@@ -34,7 +34,7 @@ const MetaTab: React.FC<MetaTabProps> = ({ puzzle, updatePuzzle }) => {
                             />
                         </div>
                         <div className="pb-field-group">
-                            <label className="pb-label">Rank</label>
+                            <label className="pb-label">Hạng</label>
                             <input
                                 className="hex-input"
                                 value={puzzle.rank}
@@ -45,7 +45,7 @@ const MetaTab: React.FC<MetaTabProps> = ({ puzzle, updatePuzzle }) => {
                     </div>
                     <div className="pb-field-row">
                         <div className="pb-field-group">
-                            <label className="pb-label">LP / Rank Details</label>
+                            <label className="pb-label">LP / Chi tiết hạng</label>
                             <input
                                 className="hex-input"
                                 value={puzzle.proLpRank || ''}
@@ -54,7 +54,7 @@ const MetaTab: React.FC<MetaTabProps> = ({ puzzle, updatePuzzle }) => {
                             />
                         </div>
                         <div className="pb-field-group">
-                            <label className="pb-label">Stage *</label>
+                            <label className="pb-label">Giai đoạn *</label>
                             <input
                                 className="hex-input"
                                 value={puzzle.stage}
@@ -65,7 +65,7 @@ const MetaTab: React.FC<MetaTabProps> = ({ puzzle, updatePuzzle }) => {
                     </div>
                     <div className="pb-field-row">
                         <div className="pb-field-group">
-                            <label className="pb-label">Patch Version</label>
+                            <label className="pb-label">Phiên bản</label>
                             <input
                                 className="hex-input"
                                 value={puzzle.patch || ''}
@@ -74,7 +74,7 @@ const MetaTab: React.FC<MetaTabProps> = ({ puzzle, updatePuzzle }) => {
                             />
                         </div>
                         <div className="pb-field-group">
-                            <label className="pb-label">Date</label>
+                            <label className="pb-label">Ngày</label>
                             <input
                                 type="date"
                                 className="hex-input"
@@ -85,7 +85,7 @@ const MetaTab: React.FC<MetaTabProps> = ({ puzzle, updatePuzzle }) => {
                     </div>
                     <div className="pb-field-row">
                         <div className="pb-field-group">
-                            <label className="pb-label">Server / Region</label>
+                            <label className="pb-label">Máy chủ / Khu vực</label>
                             <input
                                 className="hex-input"
                                 value={puzzle.server || ''}
@@ -94,7 +94,7 @@ const MetaTab: React.FC<MetaTabProps> = ({ puzzle, updatePuzzle }) => {
                             />
                         </div>
                         <div className="pb-field-group">
-                            <label className="pb-label">Encounter Type</label>
+                            <label className="pb-label">Loại sự kiện</label>
                             <input
                                 className="hex-input"
                                 value={puzzle.encounter || ''}
@@ -107,9 +107,9 @@ const MetaTab: React.FC<MetaTabProps> = ({ puzzle, updatePuzzle }) => {
 
                 {/* VOD Information */}
                 <div className="pb-section">
-                    <h3 className="pb-section-title">VOD Information</h3>
+                    <h3 className="pb-section-title">Thông tin VOD</h3>
                     <div className="pb-field-group">
-                        <label className="pb-label">Stream / VOD URL</label>
+                        <label className="pb-label">Link Stream / VOD</label>
                         <input
                             type="url"
                             className="hex-input"
@@ -120,7 +120,7 @@ const MetaTab: React.FC<MetaTabProps> = ({ puzzle, updatePuzzle }) => {
                     </div>
                     <div className="pb-field-row">
                         <div className="pb-field-group">
-                            <label className="pb-label">VOD Timestamp</label>
+                            <label className="pb-label">Mốc thời gian VOD</label>
                             <input
                                 className="hex-input"
                                 value={puzzle.vodTimestamp || ''}
@@ -129,7 +129,7 @@ const MetaTab: React.FC<MetaTabProps> = ({ puzzle, updatePuzzle }) => {
                             />
                         </div>
                         <div className="pb-field-group">
-                            <label className="pb-label">VOD Source</label>
+                            <label className="pb-label">Nguồn VOD</label>
                             <select
                                 className="hex-input"
                                 value={puzzle.vodSource || 'twitch'}
@@ -137,7 +137,7 @@ const MetaTab: React.FC<MetaTabProps> = ({ puzzle, updatePuzzle }) => {
                             >
                                 <option value="twitch">Twitch</option>
                                 <option value="youtube">YouTube</option>
-                                <option value="other">Other</option>
+                                <option value="other">Khác</option>
                             </select>
                         </div>
                     </div>
@@ -145,9 +145,9 @@ const MetaTab: React.FC<MetaTabProps> = ({ puzzle, updatePuzzle }) => {
 
                 {/* Pro Player Details */}
                 <div className="pb-section">
-                    <h3 className="pb-section-title">Pro Player Details</h3>
+                    <h3 className="pb-section-title">Thông tin tuyển thủ</h3>
                     <div className="pb-field-group">
-                        <label className="pb-label">Social / Profile Link</label>
+                        <label className="pb-label">Link mạng xã hội</label>
                         <input
                             type="url"
                             className="hex-input"
@@ -160,9 +160,9 @@ const MetaTab: React.FC<MetaTabProps> = ({ puzzle, updatePuzzle }) => {
 
                 {/* Game Context */}
                 <div className="pb-section">
-                    <h3 className="pb-section-title">Game Context</h3>
+                    <h3 className="pb-section-title">Bối cảnh trận đấu</h3>
                     <div className="pb-field-group">
-                        <label className="pb-label">Tournament Name</label>
+                        <label className="pb-label">Tên giải đấu</label>
                         <input
                             className="hex-input"
                             value={puzzle.tournamentName || ''}
@@ -171,17 +171,17 @@ const MetaTab: React.FC<MetaTabProps> = ({ puzzle, updatePuzzle }) => {
                         />
                     </div>
                     <div className="pb-field-group">
-                        <label className="pb-label">Lobby Health (8 players)</label>
+                        <label className="pb-label">Máu lobby (8 người chơi)</label>
                         <input
                             className="hex-input"
                             value={puzzle.lobbyHealth || ''}
                             onChange={e => updatePuzzle({ lobbyHealth: e.target.value })}
                             placeholder="e.g., 100, 95, 90, 85, 80, 75, 70, 65"
                         />
-                        <span className="pb-hint">Comma-separated HP values for all 8 players</span>
+                        <span className="pb-hint">Giá trị HP cách nhau bằng dấu phẩy cho 8 người chơi</span>
                     </div>
                     <div className="pb-field-group">
-                        <label className="pb-label">Explanation / Analysis</label>
+                        <label className="pb-label">Giải thích / Phân tích</label>
                         <textarea
                             className="hex-input hex-textarea"
                             value={puzzle.explanation || ''}

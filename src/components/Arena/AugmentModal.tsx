@@ -9,10 +9,10 @@ interface AugmentCardProps extends AugmentData {
     onSelect: () => void;
 }
 
-const AugmentCard: React.FC<AugmentCardProps> = ({ title, description, icon, rarity, onReroll, isRerolled, onSelect }) => {
+const AugmentCard: React.FC<AugmentCardProps> = ({ title, description, icon, tier, onReroll, isRerolled, onSelect }) => {
     return (
         <div className="augment-column">
-            <div className={`augment-card rarity-${rarity}`} onClick={onSelect}>
+            <div className={`augment-card tier-${tier}`} onClick={onSelect}>
                 <div className="augment-content">
                     <div className="augment-icon-container">
                         <img src={icon} alt={title} className="augment-icon" />
@@ -65,7 +65,6 @@ export const AugmentModal: React.FC<AugmentModalProps> = ({ currentAugments, rer
                         title={augment.title}
                         description={augment.description}
                         icon={augment.icon}
-                        rarity={augment.rarity}
                         onReroll={() => onReroll(index)}
                         isRerolled={(rerollOrder[index] ?? 0) > 0}
                         onSelect={() => onSelect(augment)}

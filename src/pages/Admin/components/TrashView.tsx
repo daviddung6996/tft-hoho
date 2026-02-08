@@ -1,0 +1,359 @@
+import React, { useState, useEffect } from 'react';
+import { championService } from '../../../services/championService';
+import { traitService } from '../../../services/traitService';
+import { itemService } from '../../../services/itemService';
+import { augmentService } from '../../../services/augmentService';
+import { puzzleService } from '../../../services/puzzleService';
+import ConfirmModal from '../../../components/common/ConfirmModal';
+import '../../../components/Admin/AdminDataTable.css';
+
+// Type for deleted items
+export interface DeletedItem {
+    id: string;
+    type: 'champions' | 'traits' | 'items' | 'augments' | 'puzzles';
+    data: any;
+    deleted_at: string;
+}
+
+interface TrashViewProps {
+    onRestore: (items: DeletedItem[]) => void;
+    onPermanentDelete: (items: DeletedItem[]) => Promise<void>;
+}
+
+type ConfirmAction = 'delete' | 'empty' | null;
+
+export const TrashView: React.FC<TrashViewProps> = ({ onRestore, onPermanentDelete }) => {
+    const [trashItems, setTrashItems] = useState<DeletedItem[]>([]);
+    const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+    const [filterType, setFilterType] = useState<'all' | 'champions' | 'traits' | 'items' | 'augments' | 'puzzles'>('all');
+    const [confirmAction, setConfirmAction] = useState<ConfirmAction>(null);
+    const [isProcessing, setIsProcessing] = useState(false);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        loadTrash();
+    }, [filterType]);
+
+    const loadTrash = async () => {
+        setLoading(true);
+        try {
+            // Load ALL tables in PARALLEL for speed
+            const [champions, traits, items, augments, puzzles] = await Promise.all([
+                filterType === 'all' || filterType === 'champions'
+                    ? championService.getDeleted() : Promise.resolve([]),
+                filterType === 'all' || filterType === 'traits'
+                    ? traitService.getDeleted() : Promise.resolve([]),
+                filterType === 'all' || filterType === 'items'
+                    ? itemService.getDeleted() : Promise.resolve([]),
+                filterType === 'all' || filterType === 'augments'
+                    ? augmentService.getDeleted() : Promise.resolve([]),
+                filterType === 'all' || filterType === 'puzzles'
+                    ? puzzleService.getDeleted() : Promise.resolve([])
+            ]);
+
+            const allItems: DeletedItem[] = [
+                ...champions.map(c => ({
+                    id: c.id,
+                    type: 'champions' as const,
+                    data: c,
+                    deleted_at: (c as any).deleted_at
+                })),
+                ...traits.map(t => ({
+                    id: t.id,
+                    type: 'traits' as const,
+                    data: t,
+                    deleted_at: (t as any).deleted_at
+                })),
+                ...items.map(i => ({
+                    id: i.id,
+                    type: 'items' as const,
+                    data: i,
+                    deleted_at: (i as any).deleted_at
+                })),
+                ...augments.map(a => ({
+                    id: a.id,
+                    type: 'augments' as const,
+                    data: a,
+                    deleted_at: (a as any).deleted_at
+                })),
+                ...puzzles.map(p => ({
+                    id: p.id,
+                    type: 'puzzles' as const,
+                    data: p,
+                    deleted_at: (p as any).deleted_at
+                }))
+            ];
+
+            // Sort by deleted_at descending
+            allItems.sort((a, b) =>
+                new Date(b.deleted_at).getTime() - new Date(a.deleted_at).getTime()
+            );
+
+            setTrashItems(allItems);
+            setSelectedIds(new Set());
+        } catch (err) {
+            console.error('Error loading trash:', err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const toggleSelect = (id: string) => {
+        const newSelected = new Set(selectedIds);
+        if (newSelected.has(id)) {
+            newSelected.delete(id);
+        } else {
+            newSelected.add(id);
+        }
+        setSelectedIds(newSelected);
+    };
+
+    const toggleSelectAll = () => {
+        if (selectedIds.size === trashItems.length && trashItems.length > 0) {
+            setSelectedIds(new Set());
+        } else {
+            setSelectedIds(new Set(trashItems.map(item => item.id)));
+        }
+    };
+
+    const handleRestore = async () => {
+        if (selectedIds.size === 0) return;
+
+        const itemsToRestore = trashItems.filter(item => selectedIds.has(item.id));
+        await onRestore(itemsToRestore);
+        loadTrash();
+    };
+
+    // Open confirm modal for permanent delete
+    const requestPermanentDelete = () => {
+        if (selectedIds.size === 0) return;
+        setConfirmAction('delete');
+    };
+
+    // Open confirm modal for empty trash
+    const requestEmptyTrash = () => {
+        if (trashItems.length === 0) return;
+        setConfirmAction('empty');
+    };
+
+    // Execute confirmed action
+    const handleConfirm = async () => {
+        setIsProcessing(true);
+        try {
+            if (confirmAction === 'delete') {
+                const itemsToDelete = trashItems.filter(item => selectedIds.has(item.id));
+                await onPermanentDelete(itemsToDelete);
+            } else if (confirmAction === 'empty') {
+                await onPermanentDelete(trashItems);
+            }
+            loadTrash();
+        } finally {
+            setIsProcessing(false);
+            setConfirmAction(null);
+        }
+    };
+
+    const formatDate = (isoString: string) => {
+        if (!isoString) return 'N/A';
+        const date = new Date(isoString);
+        return date.toLocaleDateString('vi-VN', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    };
+
+    const isAllSelected = trashItems.length > 0 && selectedIds.size === trashItems.length;
+
+    if (loading) {
+        return (
+            <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: '100%',
+                color: '#94A3B8',
+                gap: '1cqw'
+            }}>
+                <div style={{ fontSize: '1cqw' }}>Đang tải thùng rác...</div>
+            </div>
+        );
+    }
+
+    if (trashItems.length === 0) {
+        return (
+            <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: '100%',
+                color: '#94A3B8',
+                gap: '1cqw'
+            }}>
+                <div style={{ fontSize: '3cqw', opacity: 0.5 }}>🗑️</div>
+                <div style={{ fontSize: '1cqw' }}>Thùng rác trống</div>
+            </div>
+        );
+    }
+
+    return (
+        <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
+            {/* Action Bar */}
+            <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                padding: '1cqw',
+                borderBottom: '0.1cqw solid rgba(200, 170, 110, 0.2)',
+                flexShrink: 0
+            }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1cqw' }}>
+                    <select
+                        value={filterType}
+                        onChange={(e) => setFilterType(e.target.value as any)}
+                        className="hex-input"
+                        style={{ width: 'auto', padding: '0.4cqw 0.8cqw', fontSize: '0.8cqw' }}
+                    >
+                        <option value="all">Tất cả</option>
+                        <option value="champions">Tướng</option>
+                        <option value="traits">Tộc/Hệ</option>
+                        <option value="items">Trang bị</option>
+                        <option value="augments">Augments</option>
+                        <option value="puzzles">Puzzles</option>
+                    </select>
+                    <span style={{ color: '#94A3B8', fontSize: '0.9cqw' }}>
+                        {trashItems.length} mục trong thùng rác
+                    </span>
+                </div>
+                <div style={{ display: 'flex', gap: '1cqw' }}>
+                    {selectedIds.size > 0 && (
+                        <>
+                            <button
+                                className="hex-button primary small"
+                                onClick={handleRestore}
+                            >
+                                Khôi phục ({selectedIds.size})
+                            </button>
+                            <button
+                                className="hex-button danger small"
+                                onClick={requestPermanentDelete}
+                            >
+                                Xóa vĩnh viễn ({selectedIds.size})
+                            </button>
+                        </>
+                    )}
+                    <button
+                        className="hex-button danger small"
+                        onClick={requestEmptyTrash}
+                        disabled={trashItems.length === 0}
+                    >
+                        Làm trống thùng rác
+                    </button>
+                </div>
+            </div>
+
+            {/* Trash Table */}
+            <div className="admin-table-container" style={{ flex: 1, overflowY: 'auto' }}>
+                <table className="admin-table">
+                    <thead>
+                        <tr>
+                            <th style={{ width: '3%', textAlign: 'center' }}>
+                                <input
+                                    type="checkbox"
+                                    checked={isAllSelected}
+                                    onChange={toggleSelectAll}
+                                    style={{ cursor: 'pointer', width: '1.2cqw', height: '1.2cqw' }}
+                                />
+                            </th>
+                            <th style={{ width: '12%' }}>Loại</th>
+                            <th style={{ width: '20%' }}>Tên</th>
+                            <th style={{ width: '15%' }}>ID</th>
+                            <th style={{ width: '12%' }}>Ngày xóa</th>
+                            <th style={{ width: '38%' }}>Chi tiết</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {trashItems.map((item) => {
+                            const isSelected = selectedIds.has(item.id);
+                            const data = item.data;
+
+                            return (
+                                <tr
+                                    key={item.id}
+                                    className={isSelected ? 'selected-row' : ''}
+                                >
+                                    <td>
+                                        <input
+                                            type="checkbox"
+                                            checked={isSelected}
+                                            onChange={() => toggleSelect(item.id)}
+                                            style={{ cursor: 'pointer', width: '1.2cqw', height: '1.2cqw' }}
+                                        />
+                                    </td>
+                                    <td>
+                                        <span style={{
+                                            background: 'rgba(200, 170, 110, 0.15)',
+                                            border: '0.05cqw solid #c8aa6e',
+                                            color: '#c8aa6e',
+                                            padding: '0.2cqw 0.6cqw',
+                                            borderRadius: '0.3cqw',
+                                            fontSize: '0.7cqw',
+                                            textTransform: 'capitalize'
+                                        }}>
+                                            {item.type === 'champions' ? 'Tướng' :
+                                                item.type === 'traits' ? 'Tộc/Hệ' :
+                                                    item.type === 'items' ? 'Trang bị' :
+                                                        item.type === 'augments' ? 'Augment' : 'Puzzle'}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div style={{ fontWeight: 500, color: '#F0E6D2' }}>
+                                            {data.name || data.title || 'Không tên'}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div className="id-cell">
+                                            <span title={data.id}>{data.id}</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span style={{ fontSize: '0.8cqw', color: '#94A3B8' }}>
+                                            {formatDate(item.deleted_at)}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span style={{ fontSize: '0.75cqw', color: '#94A3B8', fontStyle: 'italic' }}>
+                                            {item.type === 'champions' && `Cost: ${data.cost || 'N/A'}`}
+                                            {item.type === 'traits' && `Active: ${data.breakpoints?.join(', ') || 'N/A'}`}
+                                            {item.type === 'items' && `Combined: ${data.combined || 'N/A'}`}
+                                            {item.type === 'augments' && `Tier: ${data.tier || 'N/A'}`}
+                                            {item.type === 'puzzles' && `Stage: ${data.stage || 'N/A'}`}
+                                        </span>
+                                    </td>
+                                </tr>
+                            );
+                        })}
+                    </tbody>
+                </table>
+            </div>
+
+            {/* Confirm Modal */}
+            <ConfirmModal
+                isOpen={confirmAction !== null}
+                title={confirmAction === 'empty' ? 'Làm trống thùng rác' : 'Xóa vĩnh viễn'}
+                message={confirmAction === 'empty'
+                    ? `Xóa vĩnh viễn tất cả ${trashItems.length} mục trong thùng rác?`
+                    : `Xóa vĩnh viễn ${selectedIds.size} mục đã chọn?`
+                }
+                confirmLabel="Xóa vĩnh viễn"
+                cancelLabel="Huỷ"
+                isLoading={isProcessing}
+                onClose={() => setConfirmAction(null)}
+                onConfirm={handleConfirm}
+            />
+        </div>
+    );
+};

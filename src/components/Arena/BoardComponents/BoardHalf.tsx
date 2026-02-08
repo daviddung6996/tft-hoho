@@ -49,19 +49,21 @@ export const BoardHalf: React.FC<BoardHalfProps> = ({ isOpponent, units = [], hi
             {/* BOARD GRID */}
             <div className="board-grid">
                 {!hideHexes && renderGridCells()}
-                {!hideHexes && renderGridCells()}
-                {units.filter(u => u.row !== undefined && u.col !== undefined).map(u => {
-                    // [TRANSFORMATION] Removed inversion to match Builder view (Top-Left stays Top-Left)
-                    const displayRow = u.row!;
-                    const displayCol = u.col!;
+                {units
+                    .filter(u => u.row !== undefined && u.col !== undefined)
+                    .sort((a, b) => (a.row! - b.row!) || (a.col! - b.col!))
+                    .map(u => {
+                        // [TRANSFORMATION] Removed inversion to match Builder view (Top-Left stays Top-Left)
+                        const displayRow = u.row!;
+                        const displayCol = u.col!;
 
-                    // Create visual-only unit with transformed coordinates
-                    const visualUnit = { ...u, row: displayRow, col: displayCol };
+                        // Create visual-only unit with transformed coordinates
+                        const visualUnit = { ...u, row: displayRow, col: displayCol };
 
-                    return (
-                        <BoardUnit key={u.id} unit={visualUnit} hexConfig={hexConfig} />
-                    );
-                })}
+                        return (
+                            <BoardUnit key={u.id} unit={visualUnit} hexConfig={hexConfig} />
+                        );
+                    })}
             </div>
         </div>
     );

@@ -23,12 +23,16 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
     actions,
     onClose
 }) => {
+    // Separate trash tab from regular tabs
+    const regularTabs = tabs.filter(tab => tab.key !== 'trash');
+    const trashTab = tabs.find(tab => tab.key === 'trash');
+
     return (
         <div className="admin-header-container">
             <div className="admin-header-left">
                 <h2 className="admin-header-title">{title}</h2>
                 <nav className="admin-tabs">
-                    {tabs.map(tab => (
+                    {regularTabs.map(tab => (
                         <button
                             key={tab.key}
                             className={`admin-tab-btn ${activeTab === tab.key ? 'active' : ''}`}
@@ -41,6 +45,16 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
             </div>
 
             <div className="admin-header-actions">
+                {/* Trash tab on the right */}
+                {trashTab && (
+                    <button
+                        className={`admin-trash-tab ${activeTab === 'trash' ? 'active' : ''}`}
+                        onClick={() => onTabChange('trash')}
+                    >
+                        {trashTab.label}
+                    </button>
+                )}
+
                 {actions}
                 {onClose && (
                     <button onClick={onClose} className="admin-close-btn" aria-label="Close">

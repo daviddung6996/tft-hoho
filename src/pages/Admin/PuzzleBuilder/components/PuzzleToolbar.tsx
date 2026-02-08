@@ -22,17 +22,17 @@ const PuzzleToolbar: React.FC<PuzzleToolbarProps> = ({
             <div className="pt-group left">
                 <button className="pt-btn" onClick={onClearBoard}>
                     <span className="pt-icon">×</span>
-                    Clear Board
+                    Xoá bàn cờ
                 </button>
                 {/* Placeholder for future actions to match the 'busy' look of the inspiration */}
-                <button className="pt-btn disabled" disabled>Import Code</button>
-                <button className="pt-btn disabled" disabled>Export Code</button>
+                <button className="pt-btn disabled" disabled>Nhập mã</button>
+                <button className="pt-btn disabled" disabled>Xuất mã</button>
             </div>
 
             {/* Right Inputs Group */}
             <div className="pt-group right">
                 <div className="pt-input-wrapper">
-                    <label>Level</label>
+                    <label>Cấp</label>
                     <input
                         type="number"
                         value={level}
@@ -42,7 +42,7 @@ const PuzzleToolbar: React.FC<PuzzleToolbarProps> = ({
                     />
                 </div>
                 <div className="pt-input-wrapper">
-                    <label>Gold</label>
+                    <label>Vàng</label>
                     <input
                         type="number"
                         value={gold}
@@ -52,7 +52,7 @@ const PuzzleToolbar: React.FC<PuzzleToolbarProps> = ({
                     />
                 </div>
                 <div className="pt-input-wrapper">
-                    <label>Health</label>
+                    <label>Máu</label>
                     <input
                         type="number"
                         value={hp}

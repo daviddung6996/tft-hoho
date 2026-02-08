@@ -1,9 +1,47 @@
 import React from 'react';
 import { puzzleService } from '../services/puzzleService';
 import { PUZZLE_SCENARIOS } from '../data/puzzleScenarios';
-import { getAuthToken } from '../data/mockAuth';
+import { useAuth } from '../contexts/AuthContext';
+import { useGameData } from '../contexts/GameDataContext';
+import { AugmentData } from '../services/augmentService';
+
+// Enrich a single augment with Vietnamese data from DB
+function enrichAugment(aug: AugmentData | null, dbAugments: AugmentData[]): AugmentData | null {
+    if (!aug) return null;
+    const dbAug = dbAugments.find(db => db.id === aug.id) ||
+        dbAugments.find(db => db.title.toLowerCase() === aug.title.toLowerCase());
+    if (dbAug) {
+        return { ...aug, title: dbAug.title, description: dbAug.description, icon: dbAug.icon || aug.icon };
+    }
+    return aug;
+}
+
+// Enrich all augment arrays in a puzzle with Vietnamese data
+function enrichPuzzleAugments(puzzle: any, dbAugments: AugmentData[]): any {
+    if (!dbAugments.length) return puzzle;
+
+    const enrichArray = (arr: any[] | null | undefined) =>
+        arr ? arr.map((a: any) => enrichAugment(a, dbAugments)) : arr;
+
+    return {
+        ...puzzle,
+        augments: enrichArray(puzzle.augments),
+        rerollAugments: enrichArray(puzzle.rerollAugments),
+        secondRerollAugments: enrichArray(puzzle.secondRerollAugments),
+        proFirstRoll: enrichArray(puzzle.proFirstRoll),
+        proSecondRoll: enrichArray(puzzle.proSecondRoll),
+        proFinalPick: enrichAugment(puzzle.proFinalPick, dbAugments),
+        opponents: puzzle.opponents?.map((opp: any) => ({
+            ...opp,
+            augments: enrichArray(opp.augments)
+        }))
+    };
+}
 
 export const usePuzzleGame = (isAuthenticated: boolean) => {
+    const { user } = useAuth();
+    const { augments: cachedAugments, isLoading: isGameDataLoading } = useGameData();
+
     // [NEW] Dynamic Puzzles State
     const [puzzles, setPuzzles] = React.useState<any[]>([]);
     const [isLoadingPuzzles, setIsLoadingPuzzles] = React.useState(true);
@@ -16,7 +54,7 @@ export const usePuzzleGame = (isAuthenticated: boolean) => {
     const [currentPuzzleIndex, setCurrentPuzzleIndex] = React.useState(0);
     const [customScenario, setCustomScenario] = React.useState<any | null>(null);
 
-    // Fetch puzzles on mount
+    // Fetch puzzles immediately (don't wait for game data)
     React.useEffect(() => {
         if (new URLSearchParams(window.location.search).get('seed') === 'true') {
             import('../utils/seedTestPuzzles').then(m => m.seedTestPuzzles());
@@ -26,7 +64,8 @@ export const usePuzzleGame = (isAuthenticated: boolean) => {
             setIsLoadingPuzzles(true);
             try {
                 const dbPuzzles = await puzzleService.getAll();
-                setPuzzles(dbPuzzles && dbPuzzles.length > 0 ? dbPuzzles : PUZZLE_SCENARIOS);
+                const rawPuzzles = dbPuzzles && dbPuzzles.length > 0 ? dbPuzzles : PUZZLE_SCENARIOS;
+                setPuzzles(rawPuzzles);
             } catch (err) {
                 console.error("Failed to load puzzles:", err);
                 setPuzzles(PUZZLE_SCENARIOS);
@@ -37,16 +76,22 @@ export const usePuzzleGame = (isAuthenticated: boolean) => {
         fetchPuzzles();
     }, []);
 
+    // Enrich augment data reactively when augments become available
+    React.useEffect(() => {
+        if (!isGameDataLoading && cachedAugments.length > 0 && puzzles.length > 0) {
+            setPuzzles(prev => prev.map(p => enrichPuzzleAugments(p, cachedAugments)));
+        }
+    }, [isGameDataLoading, cachedAugments]);
+
     // Fetch User History
     const fetchUserHistory = React.useCallback(async () => {
-        const token = getAuthToken();
-        if (token && token.username) {
-            const ids = await puzzleService.getCompletedPuzzles(token.username);
+        if (user?.id) {
+            const ids = await puzzleService.getCompletedPuzzles(user.id);
             setCompletedPuzzleIds(ids);
         } else {
             setCompletedPuzzleIds([]);
         }
-    }, [isAuthenticated]);
+    }, [user?.id]);
 
     React.useEffect(() => {
         fetchUserHistory();
@@ -136,15 +181,12 @@ export const usePuzzleGame = (isAuthenticated: boolean) => {
     }, [currentPuzzleIndex, puzzles, isLoadingPuzzles]);
 
     const handleMarkCompleted = async (puzzleId: string) => {
-        if (isAuthenticated) {
-            const token = getAuthToken();
-            if (token && token.username) {
-                try {
-                    await puzzleService.markPuzzleCompleted(token.username, puzzleId);
-                    setCompletedPuzzleIds(prev => [...prev, puzzleId]);
-                } catch (e) {
-                    console.error("Failed to mark puzzle completed:", e);
-                }
+        if (isAuthenticated && user?.id) {
+            try {
+                await puzzleService.markPuzzleCompleted(user.id, puzzleId);
+                setCompletedPuzzleIds(prev => [...prev, puzzleId]);
+            } catch (e) {
+                console.error("Failed to mark puzzle completed:", e);
             }
         }
     };
@@ -169,13 +211,18 @@ export const usePuzzleGame = (isAuthenticated: boolean) => {
         setIsLoadingPuzzles(true);
         try {
             const dbPuzzles = await puzzleService.getAll();
-            setPuzzles(dbPuzzles && dbPuzzles.length > 0 ? dbPuzzles : PUZZLE_SCENARIOS);
+            const rawPuzzles = dbPuzzles && dbPuzzles.length > 0 ? dbPuzzles : PUZZLE_SCENARIOS;
+            // Apply enrichment if augments are already loaded
+            const enriched = cachedAugments.length > 0
+                ? rawPuzzles.map(p => enrichPuzzleAugments(p, cachedAugments))
+                : rawPuzzles;
+            setPuzzles(enriched);
         } catch (err) {
             console.error("Failed to refresh puzzles:", err);
         } finally {
             setIsLoadingPuzzles(false);
         }
-    }, []);
+    }, [cachedAugments]);
 
     return {
         puzzles,

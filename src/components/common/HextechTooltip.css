@@ -1,0 +1,331 @@
+/* HextechTooltip.css - Hextech styled tooltip */
+
+.hextech-tooltip-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.hextech-tooltip-wrapper:hover {
+    z-index: 999999;
+    isolation: isolate;
+}
+
+.hextech-tooltip {
+    position: absolute;
+    z-index: 99999;
+    min-width: 12cqw;
+    max-width: 20cqw;
+    padding: 0.8cqw 1cqw;
+    background: rgba(10, 12, 15, 0.95);
+    border: 0.1cqw solid rgba(100, 100, 100, 0.4);
+    box-shadow: 0 0.3cqw 1cqw rgba(0, 0, 0, 0.6);
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.15s ease-in-out;
+    border-radius: 0.2cqw;
+}
+
+/* Portal-based tooltip - renders at body level */
+.hextech-tooltip-portal {
+    position: fixed;
+    z-index: 2147483647;
+    /* Maximum z-index */
+    min-width: 180px;
+    max-width: 320px;
+    padding: 12px 16px;
+    background: rgba(10, 12, 15, 0.98);
+    border: 1px solid rgba(100, 100, 100, 0.4);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+    pointer-events: none;
+    border-radius: 4px;
+}
+
+/* Portal tooltip positioning */
+.hextech-tooltip-portal.position-top {
+    transform: translate(-50%, -100%);
+}
+
+.hextech-tooltip-portal.position-bottom {
+    transform: translate(-50%, 0);
+}
+
+.hextech-tooltip-portal.position-left {
+    transform: translate(-100%, -50%);
+}
+
+.hextech-tooltip-portal.position-right {
+    transform: translate(0, -50%);
+}
+
+/* Champion tooltip in portal - larger width */
+.hextech-tooltip-portal.champion-tooltip {
+    min-width: 400px;
+    max-width: 520px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+/* 2-Column Grid Layout */
+.hextech-tooltip-content-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(200, 170, 110, 0.3);
+}
+
+/* Stat Icons from Riot CDN */
+.stat-icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    vertical-align: middle;
+    margin-right: 4px;
+}
+
+/* TFT Tools icons are larger, need to scale down */
+.stat-icon[src*="cdn.tft.tools"] {
+    width: 16px;
+    height: 16px;
+}
+
+.hextech-tooltip-wrapper:hover .hextech-tooltip {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Positioning variants */
+.hextech-tooltip.position-top {
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 0.5cqw;
+}
+
+.hextech-tooltip.position-bottom {
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 0.5cqw;
+}
+
+.hextech-tooltip.position-left {
+    right: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-right: 0.5cqw;
+}
+
+.hextech-tooltip.position-right {
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-left: 0.5cqw;
+}
+
+/* Tooltip content styling */
+.hextech-tooltip-title {
+    font-family: 'Spectral', serif;
+    font-size: 1cqw;
+    font-weight: 600;
+    color: #c8aa6e;
+    margin-bottom: 0.3cqw;
+    text-transform: uppercase;
+    letter-spacing: 0.05cqw;
+}
+
+.hextech-tooltip-description {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75cqw;
+    color: #a8b4c2;
+    line-height: 1.4;
+    white-space: pre-wrap;
+}
+
+.hextech-tooltip-meta {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.65cqw;
+    color: #6b7a8a;
+    margin-top: 0.4cqw;
+    padding-top: 0.3cqw;
+    border-top: 0.05cqw solid rgba(200, 170, 110, 0.3);
+}
+
+/* Tier/Rarity colors */
+.hextech-tooltip-tier-silver {
+    color: #94a3b8;
+}
+
+.hextech-tooltip-tier-gold {
+    color: #c8aa6e;
+}
+
+.hextech-tooltip-tier-prismatic {
+    color: #e879f9;
+}
+
+/* Cost colors for champions */
+.hextech-tooltip-cost-1 {
+    color: #808080;
+}
+
+.hextech-tooltip-cost-2 {
+    color: #11b288;
+}
+
+.hextech-tooltip-cost-3 {
+    color: #207ac7;
+}
+
+.hextech-tooltip-cost-4 {
+    color: #c440da;
+}
+
+.hextech-tooltip-cost-5 {
+    color: #ffb93b;
+}
+
+/* Trait list in tooltip */
+.hextech-tooltip-traits {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3cqw;
+    margin-top: 0.3cqw;
+}
+
+.hextech-tooltip-trait-tag {
+    font-size: 0.6cqw;
+    padding: 0.15cqw 0.4cqw;
+    background: rgba(200, 170, 110, 0.15);
+    border: 0.05cqw solid rgba(200, 170, 110, 0.4);
+    color: #c8aa6e;
+}
+
+/* Item list in tooltip */
+.hextech-tooltip-items {
+    display: flex;
+    gap: 0.3cqw;
+    margin-top: 0.3cqw;
+}
+
+.hextech-tooltip-item-icon {
+    width: 1.2cqw;
+    height: 1.2cqw;
+    border: 0.05cqw solid #c8aa6e;
+}
+
+/* Champion tooltip - larger width for ability/stats */
+.hextech-tooltip.champion-tooltip {
+    min-width: 18cqw;
+    max-width: 25cqw;
+}
+
+/* Ability section - Left column */
+.hextech-tooltip-ability {
+    display: flex;
+    flex-direction: column;
+}
+
+.hextech-tooltip-ability-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    gap: 8px;
+}
+
+.hextech-tooltip-ability-name {
+    font-family: 'Spectral', serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #00A3FF;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.hextech-tooltip-mana {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    color: #6DD1FF;
+    white-space: nowrap;
+}
+
+.hextech-tooltip-ability-desc {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    color: #94A3B8;
+    line-height: 1.5;
+}
+
+/* Stats section - Right column */
+.hextech-tooltip-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.hextech-tooltip-stats .stat-item {
+    display: flex;
+    align-items: center;
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    color: #a8b4c2;
+    gap: 4px;
+}
+
+.hextech-tooltip-stats .stat-label {
+    color: #6b7a8a;
+    margin-right: 2px;
+}
+
+.hextech-tooltip-stats .stat-values {
+    color: #F0F6FC;
+    font-weight: 500;
+}
+
+/* Ability Scaling Section */
+.ability-scaling-section {
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(200, 170, 110, 0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.ability-scaling-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    color: #94A3B8;
+}
+
+.ability-scaling-row .scaling-name {
+    color: #a8b4c2;
+    min-width: 80px;
+}
+
+.ability-scaling-row .scaling-current {
+    color: #c8aa6e;
+    font-weight: 600;
+    min-width: 40px;
+}
+
+.ability-scaling-row .scaling-icon {
+    width: 14px;
+    height: 14px;
+    object-fit: contain;
+    vertical-align: middle;
+}
+
+.ability-scaling-row .scaling-values {
+    color: #6b7a8a;
+    font-size: 10px;
+}

@@ -1,17 +1,16 @@
 /* Admin Data Table Styles */
 
 .admin-table-container {
-    overflow-x: auto;
+    overflow-x: hidden;
     flex: 1;
     width: 100%;
-    /* Custom Scrollbar for the table container itself if needed */
-    scrollbar-gutter: stable;
+    /* Prevent horizontal scroll - content should fit within container */
 }
 
 .admin-table {
     width: 100%;
+    table-layout: fixed;
     border-collapse: separate;
-    /* Allows for border-radius on rows if desired, though collapse is standard */
     border-spacing: 0;
     color: var(--color-text-primary);
     font-size: 0.9cqw;
@@ -20,13 +19,13 @@
 .admin-table th {
     position: sticky;
     top: 0;
-    background: rgba(13, 22, 36, 0.95);
-    /* Matches panel bg */
+    background: linear-gradient(180deg, #1a4d52 0%, #0d3438 100%);
+    /* Darker teal matching Hextech theme */
     backdrop-filter: blur(4px);
     z-index: 10;
     text-align: left;
     padding: 1cqw;
-    color: var(--color-text-secondary);
+    color: #F0E6D2;
     font-family: var(--font-heading);
     font-weight: 600;
     letter-spacing: 0.05em;
@@ -67,15 +66,25 @@
     background: rgba(255, 255, 255, 0.04);
 }
 
+/* Selected Row Highlight */
+.admin-table tr.selected-row td {
+    background: rgba(200, 170, 110, 0.08) !important;
+}
+
+.admin-table tr.selected-row:hover td {
+    background: rgba(200, 170, 110, 0.12) !important;
+}
+
 /* Column Specifics */
 .id-cell {
     font-family: var(--font-tech);
     color: var(--color-accent-cyan);
     font-size: 0.85cqw;
     white-space: nowrap;
-    display: flex;
-    align-items: center;
-    gap: 0.5cqw;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 15cqw;
+    display: block;
 }
 
 /* Status / Type Pills */
@@ -176,6 +185,9 @@
     letter-spacing: 0.05em;
     cursor: pointer;
     transition: box-shadow 0.2s ease, border-color 0.2s ease;
+    position: relative;
+    z-index: 10;
+    pointer-events: auto;
 }
 
 /* Subtle hover glow - NO movement */

@@ -1,10 +1,10 @@
+
 import React, { useState, useEffect } from 'react';
 import { usePuzzleGame } from './hooks/usePuzzleGame';
 import { useGameFlow } from './hooks/useGameFlow';
 import { usePuzzleToPlayers } from './hooks/usePuzzleToPlayers';
 import { GameScene } from './components/Game/GameScene';
 import { GameHUD } from './components/Game/GameHUD';
-import { fetchAllAugments, AugmentData } from './services/augmentService';
 
 // Components
 import { AugmentButton } from './components/Arena/AugmentButton';
@@ -14,64 +14,49 @@ import { MenuButton } from './components/Settings/SettingsButton';
 import { ArenaSelectorModal } from './components/Settings/ArenaSelectorModal';
 import { LoginModal } from './components/Auth/LoginModal';
 import AdminDataModal from './pages/Admin/AdminDataModal';
+import { UserProfileModal } from './components/Settings/UserProfileModal';
 
 // Data
 import { ARENA_SKINS } from './data/arenas';
-import { getAuthToken, clearAuthToken } from './data/mockAuth';
+import { useAuth } from './contexts/AuthContext';
 
 import './App.css';
 
 const App: React.FC = () => {
     // --- 1. Authentication ---
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [userRole, setUserRole] = useState<'user' | 'admin' | null>(null);
-    const [displayName, setDisplayName] = useState<string>('');
-    const [showLoginModal, setShowLoginModal] = useState(true);
+    const { user, isAuthenticated, isAdmin, isGuest, isLoading: isAuthLoading } = useAuth();
 
+    // Modal visibility: Show for unauthenticated users, hide when logged in or guest mode is active
+    const [showLoginModal, setShowLoginModal] = useState(false);
+
+    // useEffect to control modal visibility based on auth state
     useEffect(() => {
-        const authToken = getAuthToken();
-        if (authToken) {
-            setIsAuthenticated(true);
-            setUserRole(authToken.role);
-            setDisplayName(authToken.displayName);
+        // Wait for auth to finish loading
+        if (isAuthLoading) return;
+
+        // ONLY hide modal if user is LOGGED IN (has real user object)
+        // Guests should ALWAYS see modal on every page load
+        if (!user) {
+            setShowLoginModal(true);
+        } else {
             setShowLoginModal(false);
         }
-    }, []);
+    }, [isAuthLoading, user]);
 
-    const handleLoginSuccess = (role: 'user' | 'admin', name: string) => {
-        setIsAuthenticated(true);
-        setUserRole(role);
-        setDisplayName(name);
+    // Close modal handler
+    const handleCloseLoginModal = () => {
         setShowLoginModal(false);
-    };
-
-    const handleLogout = () => {
-        clearAuthToken();
-        setIsAuthenticated(false);
-        setUserRole(null);
-        setDisplayName('');
-        setShowLoginModal(true);
     };
 
     // --- 2. Puzzle Data & Game Flow ---
     const {
-        puzzles,
+        // puzzles, // Unused
         currentPuzzle,
         isLoadingPuzzles,
         handleMarkCompleted,
         handleNextPuzzle: handleNext,
         refreshPuzzles
     } = usePuzzleGame(isAuthenticated);
-
-    // Fetch all augments for reroll pool
-    const [allAugments, setAllAugments] = useState<AugmentData[]>([]);
-    useEffect(() => {
-        const loadAugments = async () => {
-            const augments = await fetchAllAugments();
-            setAllAugments(augments);
-        };
-        loadAugments();
-    }, []);
 
     const {
         puzzlePhase,
@@ -89,7 +74,9 @@ const App: React.FC = () => {
     const [isAugmentOpen, setIsAugmentOpen] = useState(true);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [showAdminModal, setShowAdminModal] = useState(false);
+    const [showProfileModal, setShowProfileModal] = useState(false);
     const [scoutedPlayerId, setScoutedPlayerId] = useState<string>('1');
+    const [myArenaId, setMyArenaId] = useState<string | null>(null);
 
     // Wrapper for next puzzle to also reset flow
     const handleNextPuzzle = () => {
@@ -108,27 +95,60 @@ const App: React.FC = () => {
         items
     } = usePuzzleToPlayers(currentPuzzle);
 
+    // Apply user-selected arena to myPlayer
+    const myPlayerWithArena = myArenaId
+        ? { ...myPlayer, arenaId: myArenaId }
+        : myPlayer;
+    const allPlayersWithArena = allPlayers.map(p =>
+        p.isMe && myArenaId ? { ...p, arenaId: myArenaId } : p
+    );
+
     // Scouting Logic
-    const activePlayer = allPlayers.find(p => p.id === scoutedPlayerId) || myPlayer;
+    const activePlayer = allPlayersWithArena.find(p => p.id === scoutedPlayerId) || myPlayerWithArena;
     const isMirrored = scoutedPlayerId !== '1';
     const playerArena = ARENA_SKINS.find(a => a.id === activePlayer.arenaId) || ARENA_SKINS[0];
     const arenaSkinUrl = playerArena.backgroundUrl || playerArena.iconUrl;
 
-    if (isLoadingPuzzles && !currentPuzzle) {
-        return (
-            <div className="layout-wrapper">
-                <div className="app-loading-screen">
-                    Loading Scenario...
-                </div>
-            </div>
-        );
-    }
+    // Keyboard shortcuts: Q (scout next), R (scout prev), Space (return home)
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            // Ignore if user is typing in an input
+            if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+
+            const opponents = allPlayers.filter(p => !p.isMe);
+            if (opponents.length === 0) return;
+
+            if (e.key === 'q' || e.key === 'Q') {
+                e.preventDefault();
+                setScoutedPlayerId(prev => {
+                    const currentIdx = opponents.findIndex(p => p.id === prev);
+                    if (currentIdx === -1) return opponents[0].id;
+                    const nextIdx = (currentIdx + 1) % opponents.length;
+                    return opponents[nextIdx].id;
+                });
+            } else if (e.key === 'r' || e.key === 'R') {
+                e.preventDefault();
+                setScoutedPlayerId(prev => {
+                    const currentIdx = opponents.findIndex(p => p.id === prev);
+                    if (currentIdx === -1) return opponents[opponents.length - 1].id;
+                    const prevIdx = (currentIdx - 1 + opponents.length) % opponents.length;
+                    return opponents[prevIdx].id;
+                });
+            } else if (e.key === ' ') {
+                e.preventDefault();
+                setScoutedPlayerId('1');
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [allPlayers]);
 
     if (!currentPuzzle) {
         return (
             <div className="layout-wrapper">
                 <div className="app-loading-screen">
-                    Scenario Not Found or No Data.
+                    {isLoadingPuzzles ? 'Đang tải...' : 'Không tìm thấy kịch bản.'}
                 </div>
             </div>
         );
@@ -139,7 +159,7 @@ const App: React.FC = () => {
             <div className="app-container" style={{ backgroundImage: `url(${arenaSkinUrl})` }}>
 
                 <GameScene
-                    myPlayer={myPlayer}
+                    myPlayer={myPlayerWithArena}
                     activePlayer={activePlayer}
                     isMirrored={isMirrored}
                 />
@@ -147,7 +167,7 @@ const App: React.FC = () => {
                 <GameHUD
                     stage={currentPuzzle?.stage || '2-1'}
                     activePlayerId={scoutedPlayerId}
-                    players={allPlayers}
+                    players={allPlayersWithArena}
                     onPlayerSelect={setScoutedPlayerId}
                     synergies={synergies}
                     items={activePlayer.items || items || []} // Prefer active player items, fallback to global items
@@ -156,24 +176,25 @@ const App: React.FC = () => {
                 {/* --- Modals & Overlays --- */}
 
                 <MenuButton
-                    onLoginClick={() => setShowLoginModal(true)}
                     onArenaClick={() => setIsSettingsOpen(true)}
                     isAuthenticated={isAuthenticated}
-                    displayName={displayName}
-                    onLogout={handleLogout}
+                    displayName={isGuest ? 'Khách' : (user?.display_name || user?.email || 'Guest')}
+                    onLogout={() => { }}
                     onAdminClick={() => setShowAdminModal(true)}
-                    isAdmin={true || userRole === 'admin'}
+                    onProfileClick={() => setShowProfileModal(true)}
+                    onLoginClick={() => setShowLoginModal(true)}
+                    isAdmin={isAdmin}
                 />
 
                 <ArenaSelectorModal
                     isOpen={isSettingsOpen}
                     onClose={() => setIsSettingsOpen(false)}
-                    onSelectArena={() => { }}
-                    currentArena={playerArena}
+                    onSelectArena={(arena) => setMyArenaId(arena.id)}
+                    currentArena={ARENA_SKINS.find(a => a.id === (myArenaId || myPlayer.arenaId)) || ARENA_SKINS[0]}
                 />
 
                 {/* Augment Logic */}
-                {isAugmentOpen && puzzlePhase === 'selecting' && (
+                {!isMirrored && isAugmentOpen && puzzlePhase === 'selecting' && (
                     <AugmentModal
                         currentAugments={currentAugments}
                         rerollOrder={rerollOrder}
@@ -182,7 +203,7 @@ const App: React.FC = () => {
                     />
                 )}
 
-                {isAugmentOpen && puzzlePhase === 'reviewing' && selectedAugment && (
+                {!isMirrored && isAugmentOpen && puzzlePhase === 'reviewing' && selectedAugment && (
                     <DecisionReview
                         userRerollOrder={rerollOrder}
                         userChoice={selectedAugment}
@@ -190,8 +211,7 @@ const App: React.FC = () => {
                         proSecondRoll={currentPuzzle.proSecondRoll}
                         proFirstRoll={currentPuzzle.proFirstRoll}
                         proRerollIndices={currentPuzzle.proRerollIndices || currentPuzzle.meta_data?.proRerollIndices || []}
-                        proSecondRerollIndices={currentPuzzle.proSecondRerollIndices || currentPuzzle.meta_data?.proSecondRerollIndices || []}
-                        proPickIndex={currentPuzzle.proPickIndex}
+                        // Removed unused props: proSecondRerollIndices, proPickIndex
                         initialAugments={currentPuzzle.augments?.filter((a: any) => a !== null) || []}
                         rerollAugments={currentPuzzle.rerollAugments?.filter((a: any) => a !== null) || []}
                         correctAugmentId={currentPuzzle.proFinalPick?.id || ''}
@@ -211,21 +231,29 @@ const App: React.FC = () => {
                 {puzzlePhase !== 'reviewing' && (
                     <AugmentButton
                         isActive={isAugmentOpen}
-                        onClick={() => setIsAugmentOpen(!isAugmentOpen)}
+                        variant={isMirrored ? 'return' : 'default'}
+                        onClick={isMirrored
+                            ? () => { setScoutedPlayerId('1'); setIsAugmentOpen(true); }
+                            : () => setIsAugmentOpen(!isAugmentOpen)
+                        }
                     />
                 )}
 
                 {showLoginModal && (
-                    <LoginModal
-                        onLoginSuccess={handleLoginSuccess}
-                        onClose={() => setShowLoginModal(false)}
-                    />
+                    <LoginModal onClose={handleCloseLoginModal} />
                 )}
 
                 {showAdminModal && (
                     <AdminDataModal
                         onClose={() => setShowAdminModal(false)}
                         onPuzzleSaved={refreshPuzzles}
+                    />
+                )}
+
+                {showProfileModal && (
+                    <UserProfileModal
+                        isOpen={showProfileModal}
+                        onClose={() => setShowProfileModal(false)}
                     />
                 )}
             </div>

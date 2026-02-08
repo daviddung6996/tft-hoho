@@ -48,7 +48,7 @@ const ChampionPool: React.FC<ChampionPoolProps> = ({
                 <input
                     type="text"
                     className="cp-search-input"
-                    placeholder="Search..."
+                    placeholder="Tìm kiếm..."
                     value={searchQuery}
                     onChange={(e) => onSearchChange(e.target.value)}
                 />
@@ -62,7 +62,7 @@ const ChampionPool: React.FC<ChampionPoolProps> = ({
                         className={`cp-cost-btn cost-${cost} ${costFilter === cost ? 'active' : ''}`}
                         onClick={() => onCostFilterChange(cost === costFilter ? null : cost)}
                     >
-                        ${cost}
+                        $ {cost}
                     </button>
                 ))}
             </div>
@@ -82,12 +82,20 @@ const ChampionPool: React.FC<ChampionPoolProps> = ({
                                     onClick={() => onSelect && onSelect(champ)}
                                     style={{ cursor: 'pointer' }}
                                 >
-                                    <AssetImage
-                                        type="champion"
-                                        name={champ.name}
-                                        alt={champ.name}
-                                        className="cp-champ-img"
-                                    />
+                                    {champ.icon ? (
+                                        <img
+                                            src={champ.icon}
+                                            alt={champ.name}
+                                            className="cp-champ-img"
+                                        />
+                                    ) : (
+                                        <AssetImage
+                                            type="champion"
+                                            name={champ.name}
+                                            alt={champ.name}
+                                            className="cp-champ-img"
+                                        />
+                                    )}
                                     <span className="cp-champ-name">{champ.name}</span>
                                 </div>
                             ))}

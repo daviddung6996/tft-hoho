@@ -7,6 +7,15 @@ interface SynergyInput {
     traitData: Trait[];
 }
 
+/** Match a trait name (English, from champion.traits) against trait definitions */
+function findTraitDef(traitName: string, traitData: Trait[]): Trait | undefined {
+    const lower = traitName.toLowerCase();
+    return traitData.find(t =>
+        t.name_en?.toLowerCase() === lower ||
+        t.name.toLowerCase() === lower
+    );
+}
+
 /**
  * Calculate active synergies from board units
  * @param input - units on board, champion definitions, trait definitions
@@ -45,21 +54,15 @@ export function calculateSynergies(input: SynergyInput): Synergy[] {
     const synergies: Synergy[] = [];
 
     Object.entries(traitCounts).forEach(([traitName, count]) => {
-        const traitDef = traitData.find(t =>
-            t.name.toLowerCase() === traitName.toLowerCase()
-        );
+        const traitDef = findTraitDef(traitName, traitData);
 
         // Extract breakpoints from trait effects
-        // Effects structure: { "2": {...}, "4": {...}, "6": {...} } where keys are breakpoint numbers
         let breakpoints: number[] = [2, 4, 6]; // Default fallback
         let styles: number[] = [];
 
-
         if (traitDef?.effects) {
             // Primary: Handle array format from Set 16 API
-            // Format: [{ minUnits: 3, maxUnits: 4, style: 1, variables: {...} }, ...]
             if (Array.isArray(traitDef.effects) && traitDef.effects.length > 0) {
-                // Extract minUnits and style from each effect
                 const validEffects = traitDef.effects
                     .filter((e: any) => e.minUnits !== undefined && typeof e.minUnits === 'number')
                     .sort((a: any, b: any) => a.minUnits - b.minUnits);
@@ -69,7 +72,6 @@ export function calculateSynergies(input: SynergyInput): Synergy[] {
                     styles = validEffects.map((e: any) => e.style || 1);
                 }
             } else if (typeof traitDef.effects === 'object') {
-                // Fallback: Read keys from effects object (e.g., {"2": {...}, "4": {...}})
                 const effectKeys = Object.keys(traitDef.effects)
                     .map(k => parseInt(k, 10))
                     .filter(n => !isNaN(n))
@@ -82,14 +84,14 @@ export function calculateSynergies(input: SynergyInput): Synergy[] {
             }
         }
 
-        // Include all synergies (both active and inactive)
+        // Use English name for id (asset lookup), Vietnamese name for display
         synergies.push({
             id: traitName.toLowerCase().replace(/\s+/g, '-'),
-            name: traitName,
+            name: traitDef?.name || traitName, // Vietnamese from DB
             breakpoints,
             styles,
             activeCount: count,
-            icon: '' // Icon loaded via AssetImage component
+            icon: ''
         });
     });
 
@@ -140,16 +142,12 @@ export function getAllTraitsFromBoard(input: SynergyInput): Synergy[] {
 
     return Object.entries(traitCounts)
         .map(([traitName, count]) => {
-            const traitDef = traitData.find(t =>
-                t.name.toLowerCase() === traitName.toLowerCase()
-            );
+            const traitDef = findTraitDef(traitName, traitData);
 
             let breakpoints: number[] = [2, 4, 6];
             let styles: number[] = [];
 
-
             if (traitDef?.effects) {
-                // Primary: Handle array format from Set 16 API
                 if (Array.isArray(traitDef.effects) && traitDef.effects.length > 0) {
                     const validEffects = traitDef.effects
                         .filter((e: any) => e.minUnits !== undefined && typeof e.minUnits === 'number')
@@ -160,7 +158,6 @@ export function getAllTraitsFromBoard(input: SynergyInput): Synergy[] {
                         styles = validEffects.map((e: any) => e.style || 1);
                     }
                 } else if (typeof traitDef.effects === 'object') {
-                    // Fallback: Read keys from effects object
                     const effectKeys = Object.keys(traitDef.effects)
                         .map(k => parseInt(k, 10))
                         .filter(n => !isNaN(n))
@@ -175,7 +172,7 @@ export function getAllTraitsFromBoard(input: SynergyInput): Synergy[] {
 
             return {
                 id: traitName.toLowerCase().replace(/\s+/g, '-'),
-                name: traitName,
+                name: traitDef?.name || traitName, // Vietnamese from DB
                 breakpoints,
                 styles,
                 activeCount: count,

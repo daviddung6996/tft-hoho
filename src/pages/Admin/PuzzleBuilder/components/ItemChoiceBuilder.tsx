@@ -40,7 +40,8 @@ const ItemChoiceBuilder: React.FC<ItemChoiceBuilderProps> = ({
         } else {
             const lowerQuery = searchQuery.toLowerCase();
             const results = itemPool.filter(item =>
-                item.name.toLowerCase().includes(lowerQuery)
+                item.name.toLowerCase().includes(lowerQuery) ||
+                (item.name_en && item.name_en.toLowerCase().includes(lowerQuery))
             );
             setFilteredItems(results);
         }
@@ -74,7 +75,7 @@ const ItemChoiceBuilder: React.FC<ItemChoiceBuilderProps> = ({
 
     return (
         <div className="icb-container">
-            <div className="icb-header">Starting Items / Components</div>
+            <div className="icb-header">Trang bị / Nguyên liệu</div>
 
             <div className="icb-grid">
                 {Array.from({ length: MAX_SLOTS }).map((_, index) => {
@@ -110,7 +111,7 @@ const ItemChoiceBuilder: React.FC<ItemChoiceBuilderProps> = ({
                                     <button
                                         className="icb-slot-clear"
                                         onClick={(e) => { e.stopPropagation(); handleClearSlot(index); }}
-                                        title="Clear Item"
+                                        title="Xoá trang bị"
                                     >✕</button>
                                 </>
                             ) : (
@@ -128,7 +129,7 @@ const ItemChoiceBuilder: React.FC<ItemChoiceBuilderProps> = ({
                             <input
                                 type="text"
                                 className="icb-search-input"
-                                placeholder="Search items..."
+                                placeholder="Tìm trang bị..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 autoFocus

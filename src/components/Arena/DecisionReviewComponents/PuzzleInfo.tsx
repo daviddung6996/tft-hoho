@@ -23,22 +23,30 @@ export const PuzzleInfo: React.FC<PuzzleInfoProps> = ({
     return (
         <div className="puzzle-context">
             <div className="context-row">
-                {patch && <span className="context-item"><strong>PATCH</strong> {patch}</span>}
-                {date && <span className="context-item"><strong>DATE</strong> {date}</span>}
-                {server && <span className="context-item"><strong>SERVER</strong> {server}</span>}
-                {encounter && <span className="context-item"><strong>ENCOUNTER</strong> {encounter}</span>}
+                {patch && <span className="context-item"><strong>PHIÊN BẢN</strong> {patch}</span>}
+                {date && <span className="context-item"><strong>NGÀY</strong> {date}</span>}
+                {server && <span className="context-item"><strong>MÁY CHỦ</strong> {server}</span>}
+                {encounter && <span className="context-item"><strong>SỰ KIỆN</strong> {encounter}</span>}
             </div>
             <div className="puzzle-actions">
                 {/* Completion Status Badge */}
                 <div className={`completion-badge ${userMatchedPro ? 'matched' : 'diverged'}`}>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        {userMatchedPro ? (
-                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        ) : (
-                            <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                        )}
-                    </svg>
-                    {userMatchedPro ? 'Đã hoàn thành' : 'Đã hoàn thành'}
+                    {userMatchedPro ? (
+                        <>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            Đã hoàn thành
+                        </>
+                    ) : (
+                        <>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                <circle cx="12" cy="12" r="10" />
+                                <path d="M12 7v5m0 4h.01" strokeLinecap="round" />
+                            </svg>
+                            Đã hoàn thành
+                        </>
+                    )}
                 </div>
 
                 {/* Share Button */}

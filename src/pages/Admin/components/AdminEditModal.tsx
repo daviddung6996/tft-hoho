@@ -62,7 +62,7 @@ const AdminEditModal: React.FC<AdminEditModalProps> = ({ item, type, isSaving, o
             return (
                 <>
                     <div>
-                        <label style={labelStyle}>Name</label>
+                        <label style={labelStyle}>Tên</label>
                         <input
                             style={inputStyle}
                             value={formData.name || ''}
@@ -70,23 +70,23 @@ const AdminEditModal: React.FC<AdminEditModalProps> = ({ item, type, isSaving, o
                         />
                     </div>
                     <div>
-                        <label style={labelStyle}>Cost</label>
+                        <label style={labelStyle}>$</label>
                         <select
                             style={inputStyle}
                             value={formData.cost || 1}
                             onChange={e => handleChange('cost', parseInt(e.target.value))}
                         >
-                            <option value={0}>Cost 0</option>
-                            <option value={1}>Cost 1</option>
-                            <option value={2}>Cost 2</option>
-                            <option value={3}>Cost 3</option>
-                            <option value={4}>Cost 4</option>
-                            <option value={5}>Cost 5</option>
-                            <option value={7}>Cost 7</option>
+                            <option value={0}>$ 0</option>
+                            <option value={1}>$ 1</option>
+                            <option value={2}>$ 2</option>
+                            <option value={3}>$ 3</option>
+                            <option value={4}>$ 4</option>
+                            <option value={5}>$ 5</option>
+                            <option value={7}>$ 7</option>
                         </select>
                     </div>
                     <div>
-                        <label style={labelStyle}>Avatar URL</label>
+                        <label style={labelStyle}>URL Ảnh đại diện</label>
                         <input
                             style={inputStyle}
                             value={formData.avatar || ''}
@@ -94,7 +94,7 @@ const AdminEditModal: React.FC<AdminEditModalProps> = ({ item, type, isSaving, o
                         />
                     </div>
                     <div>
-                        <label style={labelStyle}>Traits (JSON Array)</label>
+                        <label style={labelStyle}>Tộc/Hệ (JSON Array)</label>
                         <textarea
                             style={{ ...inputStyle, minHeight: '60px', fontFamily: 'monospace' }}
                             value={Array.isArray(formData.traits) ? JSON.stringify(formData.traits) : formData.traits}
@@ -108,6 +108,53 @@ const AdminEditModal: React.FC<AdminEditModalProps> = ({ item, type, isSaving, o
                             placeholder='["Trait1", "Trait2"]'
                         />
                     </div>
+                    {/* Ability Fields */}
+                    <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid rgba(200, 170, 110, 0.3)' }}>
+                        <label style={{ ...labelStyle, color: '#00A3FF' }}>Kỹ Năng</label>
+                    </div>
+                    <div>
+                        <label style={labelStyle}>Tên Kỹ Năng (Tiếng Việt)</label>
+                        <input
+                            style={inputStyle}
+                            value={formData.ability_name || ''}
+                            onChange={e => handleChange('ability_name', e.target.value)}
+                            placeholder="Ví dụ: Tê Cóng"
+                        />
+                    </div>
+                    <div>
+                        <label style={labelStyle}>Mô Tả Kỹ Năng</label>
+                        <textarea
+                            style={{ ...inputStyle, minHeight: '80px' }}
+                            value={formData.ability_description || ''}
+                            onChange={e => handleChange('ability_description', e.target.value)}
+                            placeholder="Mô tả kỹ năng của tướng..."
+                        />
+                    </div>
+                    {/* Stats Fields */}
+                    <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid rgba(200, 170, 110, 0.3)' }}>
+                        <label style={{ ...labelStyle, color: '#c8aa6e' }}>Stats Cơ Bản (JSON)</label>
+                        <textarea
+                            style={{ ...inputStyle, minHeight: '100px', fontFamily: 'monospace', fontSize: '0.8rem' }}
+                            value={formData.stats ? JSON.stringify(formData.stats, null, 2) : ''}
+                            onChange={e => {
+                                try {
+                                    handleChange('stats', JSON.parse(e.target.value));
+                                } catch (err) {
+                                    // Allow typing invalid json momentarily
+                                }
+                            }}
+                            placeholder={`{
+  "hp": [600, 1080, 1944],
+  "ad": [50, 90, 162],
+  "as": 0.75,
+  "armor": 30,
+  "mr": 30,
+  "mana": {"min": 0, "max": 100},
+  "range": 1,
+  "dps": [38, 68, 122]
+}`}
+                        />
+                    </div>
                 </>
             );
         }
@@ -115,7 +162,7 @@ const AdminEditModal: React.FC<AdminEditModalProps> = ({ item, type, isSaving, o
         // Default / Generic Fields for Traits/Items/Puzzles
         const isTitleField = type === 'puzzles' || type === 'augments';
         const fieldName = isTitleField ? 'title' : 'name';
-        const displayLabel = isTitleField ? 'Title' : 'Name';
+        const displayLabel = isTitleField ? 'Tiêu đề' : 'Tên';
 
         return (
             <>
@@ -130,7 +177,7 @@ const AdminEditModal: React.FC<AdminEditModalProps> = ({ item, type, isSaving, o
                 </div>
                 {formData.description !== undefined && (
                     <div>
-                        <label style={labelStyle}>Description</label>
+                        <label style={labelStyle}>Mô tả</label>
                         <textarea
                             style={{ ...inputStyle, minHeight: '100px' }}
                             value={formData.description || ''}
@@ -138,10 +185,22 @@ const AdminEditModal: React.FC<AdminEditModalProps> = ({ item, type, isSaving, o
                         />
                     </div>
                 )}
+                {/* Vietnamese description field for augments, traits, and items */}
+                {(type === 'augments' || type === 'traits' || type === 'items') && (
+                    <div>
+                        <label style={labelStyle}>Mô tả tiếng Việt</label>
+                        <textarea
+                            style={{ ...inputStyle, minHeight: '80px' }}
+                            value={formData.description_vi || ''}
+                            onChange={e => handleChange('description_vi', e.target.value)}
+                            placeholder={`Mô tả ${type === 'augments' ? 'augment' : type === 'traits' ? 'tộc/hệ' : 'trang bị'} bằng tiếng Việt...`}
+                        />
+                    </div>
+                )}
                 {/* Icon field for items and augments */}
                 {(type === 'items' || type === 'augments') && (
                     <div>
-                        <label style={labelStyle}>Icon URL</label>
+                        <label style={labelStyle}>URL Biểu tượng</label>
                         <input
                             style={inputStyle}
                             value={formData.icon || ''}
@@ -153,15 +212,15 @@ const AdminEditModal: React.FC<AdminEditModalProps> = ({ item, type, isSaving, o
                 {/* Tier field for augments */}
                 {type === 'augments' && (
                     <div>
-                        <label style={labelStyle}>Tier</label>
+                        <label style={labelStyle}>Cấp</label>
                         <select
                             style={inputStyle}
                             value={formData.tier || 1}
                             onChange={e => handleChange('tier', parseInt(e.target.value))}
                         >
-                            <option value={1}>Tier 1 (Silver)</option>
-                            <option value={2}>Tier 2 (Gold)</option>
-                            <option value={3}>Tier 3 (Prismatic)</option>
+                            <option value={1}>Cấp 1 (Bạc)</option>
+                            <option value={2}>Cấp 2 (Vàng)</option>
+                            <option value={3}>Cấp 3 (Lăng kính)</option>
                         </select>
                     </div>
                 )}
@@ -209,7 +268,7 @@ const AdminEditModal: React.FC<AdminEditModalProps> = ({ item, type, isSaving, o
                         letterSpacing: '0.05em',
                         fontSize: '1.25rem'
                     }}>
-                        Edit {type.slice(0, -1)}
+                        Chỉnh sửa {type === 'champions' ? 'tướng' : type === 'traits' ? 'tộc/hệ' : type === 'items' ? 'trang bị' : type === 'augments' ? 'Augments' : 'Puzzles'}
                     </h3>
                 </div>
 
@@ -232,9 +291,9 @@ const AdminEditModal: React.FC<AdminEditModalProps> = ({ item, type, isSaving, o
                         onClick={onClose}
                         disabled={isSaving}
                         style={{
-                            background: 'transparent',
+                            background: 'rgba(0, 0, 0, 0.3)',
                             border: '1px solid #c8aa6e',
-                            color: '#c8aa6e',
+                            color: '#F0E6D2',
                             padding: '0.5rem 1.5rem',
                             cursor: 'pointer',
                             fontFamily: 'Inter, sans-serif',
@@ -242,19 +301,19 @@ const AdminEditModal: React.FC<AdminEditModalProps> = ({ item, type, isSaving, o
                             fontSize: '0.9rem',
                             borderRadius: '2px',
                             opacity: isSaving ? 0.5 : 1,
-                            transition: 'all 0.2s'
+                            transition: 'none'
                         }}
                     >
-                        Cancel
+                        Huỷ
                     </button>
                     <button
                         type="submit"
                         form="edit-form"
                         disabled={isSaving}
                         style={{
-                            background: 'linear-gradient(180deg, #00A3FF 0%, #0077CC 100%)',
-                            border: '1px solid #00A3FF',
-                            color: '#FFFFFF',
+                            background: 'linear-gradient(180deg, rgba(21, 58, 62, 0.6) 0%, rgba(5, 28, 30, 0.6) 100%)',
+                            border: '1px solid #c8aa6e',
+                            color: '#F0E6D2',
                             padding: '0.5rem 1.5rem',
                             cursor: isSaving ? 'wait' : 'pointer',
                             fontFamily: 'Inter, sans-serif',
@@ -262,12 +321,12 @@ const AdminEditModal: React.FC<AdminEditModalProps> = ({ item, type, isSaving, o
                             textTransform: 'uppercase',
                             fontSize: '0.9rem',
                             borderRadius: '2px',
-                            boxShadow: '0 0 10px rgba(0, 163, 255, 0.4)',
+                            boxShadow: '0 0 10px rgba(200, 170, 110, 0.25)',
                             opacity: isSaving ? 0.8 : 1,
-                            transition: 'all 0.2s'
+                            transition: 'none'
                         }}
                     >
-                        {isSaving ? 'Saving...' : 'Save Changes'}
+                        {isSaving ? 'Đang lưu...' : 'Lưu thay đổi'}
                     </button>
                 </div>
             </div>

@@ -49,7 +49,7 @@ const randBoard = (champions: Champion[], count: number): UnitData[] => {
 // Create opponent
 const createOpp = (champions: Champion[], id: number, hp: number): OpponentData => ({
     id: `opp-${id}`,
-    name: ['Opp Alpha', 'Opp Beta', 'Opp Gamma', 'Opp Delta', 'Opp Epsilon', 'Opp Zeta', 'Opp Eta'][id - 1] || `Opp ${id}`,
+    name: ['Choncc', 'Ahri', 'Irelia', 'Bun Bun', 'Chihuahua', 'Fuwa', 'Mèo bánh mì'][id - 1] || `Opp ${id}`,
     state: { hp, gold: 30 + id * 5, level: 6 + Math.floor(id / 3), xp: 0 },
     board: randBoard(champions, 4 + id),
     bench: []
@@ -57,11 +57,11 @@ const createOpp = (champions: Champion[], id: number, hp: number): OpponentData 
 
 // Augment templates
 const AUG = {
-    air: { id: 'air', title: 'Air Axiom', description: 'AS buff', icon: augIcon('airaxiom_i'), rarity: 'silver' as const, tier: 1 as const },
-    fire: { id: 'fire', title: 'Fire Axiom', description: 'Burn', icon: augIcon('fireaxiom_i'), rarity: 'silver' as const, tier: 1 as const },
-    earth: { id: 'earth', title: 'Earth Axiom', description: 'Tank', icon: augIcon('earthaxiom_i'), rarity: 'gold' as const, tier: 2 as const },
-    gold1: { id: 'g1', title: 'Gold Rush', description: '+10g', icon: augIcon('artillerybarrage_i'), rarity: 'gold' as const, tier: 2 as const },
-    prism1: { id: 'p1', title: 'Prismatic Power', description: 'OP', icon: augIcon('leapoffaith_i'), rarity: 'prismatic' as const, tier: 3 as const },
+    air: { id: 'air', title: 'Air Axiom', description: 'AS buff', icon: augIcon('airaxiom_i'), tier: 1 as const },
+    fire: { id: 'fire', title: 'Fire Axiom', description: 'Burn', icon: augIcon('fireaxiom_i'), tier: 1 as const },
+    earth: { id: 'earth', title: 'Earth Axiom', description: 'Tank', icon: augIcon('earthaxiom_i'), tier: 2 as const },
+    gold1: { id: 'g1', title: 'Gold Rush', description: '+10g', icon: augIcon('artillerybarrage_i'), tier: 2 as const },
+    prism1: { id: 'p1', title: 'Prismatic Power', description: 'OP', icon: augIcon('leapoffaith_i'), tier: 3 as const },
 };
 
 // Generate 10 complete puzzles using champions from database

@@ -1,0 +1,416 @@
+/* ==========================================================================
+   USER MANAGEMENT - Hextech Theme
+   ========================================================================== */
+
+.user-management {
+    padding: 2cqw;
+    color: #F0E6D2;
+}
+
+/* Header */
+.um-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5cqw;
+    padding-bottom: 1cqw;
+    border-bottom: 0.08cqw solid rgba(200, 170, 110, 0.2);
+}
+
+.um-title {
+    font-family: 'Spectral', serif;
+    font-size: 1.4cqw;
+    color: #c8aa6e;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.1cqw;
+}
+
+.um-stats {
+    display: flex;
+    gap: 1.5cqw;
+}
+
+.um-stats .stat-item {
+    font-size: 0.75cqw;
+    color: #94a3b8;
+}
+
+.um-stats .stat-item strong {
+    color: #c8aa6e;
+    margin-right: 0.3cqw;
+}
+
+/* Toolbar */
+.um-toolbar {
+    display: flex;
+    gap: 1cqw;
+    margin-bottom: 1.5cqw;
+}
+
+.um-search {
+    flex: 1;
+    padding: 0.5cqw 1cqw;
+    background: rgba(0, 0, 0, 0.4);
+    border: 0.06cqw solid rgba(200, 170, 110, 0.3);
+    color: #F0E6D2;
+    font-size: 0.8cqw;
+}
+
+.um-search::placeholder {
+    color: rgba(148, 163, 184, 0.6);
+}
+
+.um-search:focus {
+    border-color: #c8aa6e;
+    outline: none;
+}
+
+.um-filter-select {
+    padding: 0.5cqw 1cqw;
+    background: rgba(0, 0, 0, 0.4);
+    border: 0.06cqw solid rgba(200, 170, 110, 0.3);
+    color: #F0E6D2;
+    font-size: 0.8cqw;
+    cursor: pointer;
+}
+
+.um-filter-select:focus {
+    border-color: #c8aa6e;
+    outline: none;
+}
+
+/* User List */
+.um-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6cqw;
+    max-height: 28cqw;
+    overflow-y: auto;
+}
+
+.um-list::-webkit-scrollbar {
+    width: 0.3cqw;
+}
+
+.um-list::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.um-list::-webkit-scrollbar-thumb {
+    background: rgba(200, 170, 110, 0.3);
+}
+
+/* User Card */
+.um-user-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8cqw 1cqw;
+    background: rgba(21, 58, 62, 0.4);
+    border: 0.06cqw solid rgba(200, 170, 110, 0.15);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.um-user-card:hover {
+    border-color: rgba(200, 170, 110, 0.4);
+    background: rgba(21, 58, 62, 0.6);
+}
+
+.um-user-card.um-current {
+    border-color: rgba(200, 170, 110, 0.5);
+    background: rgba(200, 170, 110, 0.08);
+}
+
+.um-user-info {
+    display: flex;
+    align-items: center;
+    gap: 1cqw;
+}
+
+.um-user-avatar {
+    width: 2.5cqw;
+    height: 2.5cqw;
+    background: linear-gradient(180deg, #C89B3C 0%, #A07828 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Spectral', serif;
+    font-size: 1cqw;
+    font-weight: 700;
+    color: #051c1e;
+    flex-shrink: 0;
+}
+
+.um-user-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15cqw;
+}
+
+.um-user-name {
+    font-size: 0.85cqw;
+    font-weight: 600;
+    color: #F0E6D2;
+    display: flex;
+    align-items: center;
+    gap: 0.5cqw;
+}
+
+.um-you-badge {
+    font-size: 0.55cqw;
+    padding: 0.1cqw 0.4cqw;
+    background: rgba(200, 170, 110, 0.2);
+    color: #c8aa6e;
+    border-radius: 0.2cqw;
+    font-weight: 500;
+}
+
+.um-user-email {
+    font-size: 0.7cqw;
+    color: #94a3b8;
+}
+
+.um-user-date {
+    font-size: 0.6cqw;
+    color: rgba(148, 163, 184, 0.6);
+}
+
+/* User Actions */
+.um-user-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.8cqw;
+}
+
+.um-view-btn {
+    width: 1.8cqw;
+    height: 1.8cqw;
+    background: rgba(0, 0, 0, 0.3);
+    border: 0.06cqw solid rgba(200, 170, 110, 0.3);
+    color: #c8aa6e;
+    font-size: 1cqw;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.um-view-btn:hover {
+    background: rgba(200, 170, 110, 0.15);
+    border-color: #c8aa6e;
+}
+
+/* Role Badges */
+.role-badge {
+    padding: 0.25cqw 0.6cqw;
+    font-size: 0.6cqw;
+    font-weight: 700;
+    letter-spacing: 0.05cqw;
+    border-radius: 0.2cqw;
+}
+
+.role-admin {
+    background: rgba(200, 170, 110, 0.2);
+    color: #c8aa6e;
+    border: 0.06cqw solid #c8aa6e;
+}
+
+.role-mod {
+    background: rgba(59, 130, 246, 0.2);
+    color: #60a5fa;
+    border: 0.06cqw solid #3b82f6;
+}
+
+.role-user {
+    background: rgba(148, 163, 184, 0.15);
+    color: #94a3b8;
+    border: 0.06cqw solid rgba(148, 163, 184, 0.4);
+}
+
+/* States */
+.um-loading,
+.um-error,
+.um-empty {
+    text-align: center;
+    padding: 3cqw;
+    font-size: 0.9cqw;
+    color: #94a3b8;
+}
+
+.um-error {
+    color: #EF4444;
+}
+
+/* ==========================================================================
+   USER DETAIL MODAL
+   ========================================================================== */
+
+.um-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    backdrop-filter: blur(4px);
+}
+
+.um-modal {
+    width: 35cqw;
+    background: linear-gradient(180deg, #153a3e 0%, #051c1e 100%);
+    border: 0.1cqw solid #c8aa6e;
+    box-shadow: 0 0 2cqw rgba(200, 170, 110, 0.3);
+}
+
+.um-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1cqw 1.5cqw;
+    border-bottom: 0.06cqw solid rgba(200, 170, 110, 0.2);
+}
+
+.um-modal-header h3 {
+    font-family: 'Spectral', serif;
+    font-size: 1cqw;
+    color: #c8aa6e;
+    margin: 0;
+    letter-spacing: 0.1cqw;
+}
+
+.um-modal-close {
+    width: 1.8cqw;
+    height: 1.8cqw;
+    background: rgba(0, 0, 0, 0.3);
+    border: 0.06cqw solid #c8aa6e;
+    color: #c8aa6e;
+    font-size: 1cqw;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.um-modal-body {
+    padding: 1.5cqw;
+}
+
+.um-detail-avatar {
+    width: 5cqw;
+    height: 5cqw;
+    background: linear-gradient(180deg, #C89B3C 0%, #A07828 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Spectral', serif;
+    font-size: 2cqw;
+    font-weight: 700;
+    color: #051c1e;
+    margin: 0 auto 1.5cqw;
+}
+
+.um-detail-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1cqw;
+}
+
+.um-detail-row {
+    display: flex;
+    align-items: center;
+    gap: 1cqw;
+}
+
+.um-detail-row label {
+    width: 8cqw;
+    font-size: 0.75cqw;
+    color: #94a3b8;
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.um-detail-value {
+    flex: 1;
+    font-size: 0.8cqw;
+    color: #F0E6D2;
+}
+
+.um-detail-value.um-id {
+    font-size: 0.6cqw;
+    font-family: monospace;
+    color: #64748b;
+}
+
+.um-detail-input,
+.um-detail-select {
+    flex: 1;
+    padding: 0.4cqw 0.8cqw;
+    background: rgba(0, 0, 0, 0.4);
+    border: 0.06cqw solid rgba(200, 170, 110, 0.3);
+    color: #F0E6D2;
+    font-size: 0.8cqw;
+}
+
+.um-detail-input:focus,
+.um-detail-select:focus {
+    border-color: #c8aa6e;
+    outline: none;
+}
+
+.um-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.8cqw;
+    padding: 1cqw 1.5cqw;
+    border-top: 0.06cqw solid rgba(200, 170, 110, 0.2);
+}
+
+.um-btn {
+    padding: 0.5cqw 1.2cqw;
+    font-size: 0.75cqw;
+    font-weight: 600;
+    background: rgba(0, 0, 0, 0.4);
+    border: 0.06cqw solid rgba(200, 170, 110, 0.3);
+    color: #F0E6D2;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.um-btn:hover {
+    border-color: #c8aa6e;
+}
+
+.um-btn-primary {
+    background: rgba(200, 170, 110, 0.2);
+    border-color: #c8aa6e;
+    color: #c8aa6e;
+}
+
+.um-btn-primary:hover {
+    background: rgba(200, 170, 110, 0.3);
+}
+
+.um-btn-danger {
+    background: rgba(239, 68, 68, 0.15);
+    border-color: rgba(239, 68, 68, 0.5);
+    color: #EF4444;
+}
+
+.um-btn-danger:hover {
+    background: rgba(239, 68, 68, 0.25);
+    border-color: #EF4444;
+}
+
+.um-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}

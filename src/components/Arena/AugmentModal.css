@@ -1,6 +1,6 @@
 /* ==========================================================================
-   AUGMENT MODAL - Centered overlay with container query units
-   Uses cqw for proper scaling within the 16:9 game container
+   AUGMENT MODAL - Hextech Premium (Atmosphere + Sharp Corners)
+   Core gameplay selection screen
    ========================================================================== */
 
 .augment-modal-overlay {
@@ -9,7 +9,10 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.75);
+    background:
+        radial-gradient(ellipse at 50% 40%, rgba(200, 170, 110, 0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 80%, rgba(21, 58, 62, 0.3) 0%, transparent 50%),
+        rgba(0, 0, 0, 0.82);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -31,17 +34,17 @@
    ========================================================================== */
 .augment-header-title {
     font-family: 'Spectral', serif;
-    font-size: 4cqw;
+    font-size: 3.5cqw;
     font-weight: 700;
-    color: #ffffff;
-    text-transform: capitalize;
-    margin-bottom: 2cqw;
-    letter-spacing: 0.15cqw;
-    text-shadow: 0 0.4cqw 1cqw rgba(0, 0, 0, 0.5);
+    color: #F0E6D2;
+    text-transform: uppercase;
+    margin-bottom: 2.5cqw;
+    letter-spacing: 0.2cqw;
+    text-shadow: 0 0.3cqw 1cqw rgba(0, 0, 0, 0.6);
 }
 
 /* ==========================================================================
-   CARDS CONTAINER - Centered flexbox
+   CARDS CONTAINER
    ========================================================================== */
 .augment-cards-container {
     display: flex;
@@ -59,46 +62,53 @@
 }
 
 /* ==========================================================================
-   CARD STYLES - Scaled with cqw
+   CARD STYLES - Hextech Premium
    ========================================================================== */
 .augment-card {
     position: relative;
     width: 100%;
-    height: 32cqw;
-    background: #1c2028;
-    border: 0.15cqw solid #c8aa6e;
-    border-radius: 0.8cqw;
+    min-height: 32cqw;
+    height: auto;
+    background: linear-gradient(180deg, rgb(21, 58, 62) 0%, rgb(5, 28, 30) 100%);
+    border: 0.1cqw solid rgba(200, 170, 110, 0.35);
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 2cqw 1.2cqw;
     cursor: pointer;
-    box-shadow: 0 0.8cqw 2.5cqw rgba(0, 0, 0, 0.6);
-    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+    box-shadow: 0 0.6cqw 2cqw rgba(0, 0, 0, 0.5);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    overflow: hidden;
 }
 
-/* HOVER STATE: Subtle glow - NO movement */
+/* Subtle top glow on each card */
+.augment-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 10%;
+    width: 80%;
+    height: 0.15cqw;
+    background: linear-gradient(90deg, transparent, rgba(200, 170, 110, 0.4), transparent);
+}
+
+/* HOVER: Gold glow only */
 .augment-card:hover {
-    border-color: #d4b876;
-    box-shadow: 0 0 1.2cqw rgba(200, 170, 110, 0.4);
+    border-color: #c8aa6e;
+    box-shadow:
+        0 0 1.2cqw rgba(200, 170, 110, 0.3),
+        0 0.6cqw 2cqw rgba(0, 0, 0, 0.5);
 }
 
-/* ACTIVE STATE: No scale */
 .augment-card:active {
     border-color: #d4b876;
 }
 
-/* Rarity Specifics - All use gold top border */
-.augment-card.rarity-gold {
-    border-top: 0.35cqw solid #c89b3c;
-}
-
-.augment-card.rarity-prismatic {
-    border-top: 0.35cqw solid #c89b3c;
-}
-
-.augment-card.rarity-silver {
-    border-top: 0.35cqw solid #c89b3c;
+/* Tier top accent - uniform for all */
+.augment-card.tier-1,
+.augment-card.tier-2,
+.augment-card.tier-3 {
+    border-top: 0.25cqw solid rgba(200, 170, 110, 0.5);
 }
 
 /* ==========================================================================
@@ -109,6 +119,7 @@
     flex-direction: column;
     align-items: center;
     height: 100%;
+    width: 100%;
 }
 
 .augment-icon-container {
@@ -128,7 +139,7 @@
 .augment-title {
     font-family: 'Inter', sans-serif;
     font-size: 1.3cqw;
-    color: #ffffff;
+    color: #F0E6D2;
     margin-bottom: 0.8cqw;
     font-weight: 700;
     text-align: center;
@@ -140,9 +151,14 @@
     font-family: 'Inter', sans-serif;
     font-size: 0.9cqw;
     line-height: 1.5;
-    color: #b0b5bd;
+    color: #94A3B8;
     text-align: center;
-    padding: 0 0.4cqw;
+    padding: 0 0.8cqw;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 /* ==========================================================================
@@ -158,25 +174,24 @@
 .reroll-btn {
     width: 100%;
     height: 3.5cqw;
-    background: linear-gradient(180deg, #3a3428 0%, #2a2418 100%);
-    border: 0.15cqw solid #6a5a3a;
-    border-radius: 0.5cqw;
+    background: linear-gradient(180deg, rgba(60, 52, 38, 0.9) 0%, rgba(35, 30, 20, 0.95) 100%);
+    border: 0.1cqw solid rgba(200, 170, 110, 0.3);
     color: #c8aa6e;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.2s;
-    box-shadow: 0 0.3cqw 0.5cqw rgba(0, 0, 0, 0.4);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 0.2cqw 0.4cqw rgba(0, 0, 0, 0.3);
 }
 
 .reroll-btn:not(.disabled):hover {
-    border-color: #8a7b5a;
-    box-shadow: 0 0 0.8cqw rgba(200, 170, 110, 0.3);
+    border-color: #c8aa6e;
+    box-shadow: 0 0 0.6cqw rgba(200, 170, 110, 0.25);
 }
 
 .reroll-btn:active {
-    transform: translateY(0) scale(0.99);
+    border-color: #d4b876;
 }
 
 .reroll-btn svg {
@@ -186,16 +201,14 @@
 
 /* Disabled/Used State */
 .reroll-btn.disabled {
-    background: #1a1a1a;
-    border: 0.1cqw solid #333;
-    color: #555;
+    background: rgba(20, 20, 20, 0.8);
+    border: 0.06cqw solid rgba(200, 170, 110, 0.1);
+    color: rgba(200, 170, 110, 0.2);
     cursor: default;
     box-shadow: none;
-    transform: none !important;
-    filter: none;
-    opacity: 0.7;
+    opacity: 0.6;
 }
 
 .reroll-btn.disabled svg {
-    opacity: 0.5;
+    opacity: 0.4;
 }

@@ -3,6 +3,12 @@ import { PuzzleScenario } from '../../../../data/puzzleScenarios';
 import { Champion } from '../../../../data/types';
 import { puzzleService } from '../../../../services/puzzleService';
 import { championService } from '../../../../services/championService';
+import { AugmentData, augmentService } from '../../../../services/augmentService';
+
+export interface ToastState {
+    message: string;
+    type: 'success' | 'error' | 'info';
+}
 
 const INITIAL_PUZZLE: PuzzleScenario = {
     id: '',
@@ -18,7 +24,7 @@ const INITIAL_PUZZLE: PuzzleScenario = {
     proPickIndex: -1,
     proFirstRoll: [],
     proSecondRoll: [],
-    proFinalPick: { id: 'temp-initial-aug', title: 'TBD', description: '', icon: '', rarity: 'silver' },
+    proFinalPick: { id: 'temp-initial-aug', title: 'TBD', description: '', icon: '', tier: 1 },
     proPickRound: 0,
     playerBoard: [],
     opponentBoard: [],
@@ -31,7 +37,24 @@ const INITIAL_PUZZLE: PuzzleScenario = {
 };
 
 
-export const usePuzzleBuilderState = (onSaveSuccess: () => void, initialPuzzle?: PuzzleScenario) => {
+/** Enrich snapshot augments with fresh DB data (Vietnamese names, updated icons) */
+function enrichAugments(
+    snapshotAugs: (AugmentData | null)[] | undefined,
+    dbAugments: AugmentData[]
+): (AugmentData | null)[] {
+    if (!snapshotAugs || !dbAugments.length) return snapshotAugs || [];
+    return snapshotAugs.map(aug => {
+        if (!aug) return aug;
+        const dbAug = dbAugments.find(db => db.id === aug.id) ||
+            dbAugments.find(db => db.title.toLowerCase() === (aug.title || '').toLowerCase());
+        if (dbAug) {
+            return { ...aug, title: dbAug.title, description: dbAug.description, icon: dbAug.icon || aug.icon, tier: dbAug.tier };
+        }
+        return aug;
+    });
+}
+
+export const usePuzzleBuilderState = (onSaveSuccess: (puzzleId: string, shareUrl: string) => void, initialPuzzle?: PuzzleScenario) => {
     const [puzzle, setPuzzle] = useState<PuzzleScenario>(() => {
         if (initialPuzzle) {
             return {
@@ -51,34 +74,45 @@ export const usePuzzleBuilderState = (onSaveSuccess: () => void, initialPuzzle?:
         return INITIAL_PUZZLE;
     });
     const [champions, setChampions] = useState<Champion[]>([]);
+    const [dbAugments, setDbAugments] = useState<AugmentData[]>([]);
     const [loading, setLoading] = useState(true);
     const [selectedOpponentIndex, setSelectedOpponentIndex] = useState(0);
+    const [toast, setToast] = useState<ToastState | null>(null);
 
     // If initialPuzzle changes (e.g. modal closed/reopened with diff puzzle), reset state
-    // Note: In typical usage, this hook is remounted when Builder is shown,
-    // but if we keep it mounted, we'd need this.
     useEffect(() => {
         if (initialPuzzle) {
             setPuzzle({
                 ...INITIAL_PUZZLE,
                 ...initialPuzzle,
                 opponents: initialPuzzle.opponents || [],
-                augments: initialPuzzle.augments || [],
-                rerollAugments: initialPuzzle.rerollAugments || [],
-                secondRerollAugments: initialPuzzle.secondRerollAugments || [],
+                augments: enrichAugments(initialPuzzle.augments, dbAugments),
+                rerollAugments: enrichAugments(initialPuzzle.rerollAugments, dbAugments),
+                secondRerollAugments: enrichAugments(initialPuzzle.secondRerollAugments, dbAugments),
                 hasExtraReroll: initialPuzzle.hasExtraReroll || false,
                 proRerollIndices: initialPuzzle.proRerollIndices || [],
                 proSecondRerollIndices: initialPuzzle.proSecondRerollIndices || [],
                 proPickIndex: initialPuzzle.proPickIndex ?? -1
             });
         }
-    }, [initialPuzzle]);
+    }, [initialPuzzle, dbAugments]);
 
     useEffect(() => {
-        championService.getAll().then(data => {
-            setChampions(data || []);
-            setLoading(false);
-        });
+        const loadData = async () => {
+            try {
+                const [champData, augData] = await Promise.all([
+                    championService.getAll(),
+                    augmentService.getAll()
+                ]);
+                setChampions(champData || []);
+                setDbAugments(augData || []);
+            } catch (err) {
+                console.error('Failed to load data:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        loadData();
     }, []);
 
     const updatePuzzle = (updates: Partial<PuzzleScenario>) => {
@@ -86,11 +120,12 @@ export const usePuzzleBuilderState = (onSaveSuccess: () => void, initialPuzzle?:
     };
 
     const updateOpponent = (index: number, updates: Partial<any>) => {
+        const OPPONENT_NAMES = ['Choncc', 'Ahri', 'Irelia', 'Bun Bun', 'Chihuahua', 'Fuwa', 'Mèo bánh mì'];
         const newOpponents = [...(puzzle.opponents || [])];
         while (newOpponents.length <= index) {
             newOpponents.push({
                 id: crypto.randomUUID(),
-                name: `Opponent ${newOpponents.length + 1}`,
+                name: OPPONENT_NAMES[newOpponents.length] || `Đối thủ ${newOpponents.length + 1}`,
                 board: [],
                 bench: [],
                 state: { gold: 0, level: 3, hp: 100, xp: 0 }
@@ -146,13 +181,18 @@ export const usePuzzleBuilderState = (onSaveSuccess: () => void, initialPuzzle?:
             setPuzzle(prev => ({ ...prev, id: puzzleToSave.id }));
 
             const shareUrl = `${window.location.origin}?puzzle=${puzzleToSave.id}`;
-            alert(`Puzzle saved successfully!\n\nID: ${puzzleToSave.id}\nShare Link: ${shareUrl}`);
 
-            onSaveSuccess();
+            // Pass success info to parent - parent will handle the toast
+            onSaveSuccess(puzzleToSave.id, shareUrl);
         } catch (e: any) {
-            alert('Error saving puzzle: ' + e.message);
+            setToast({
+                message: `Lỗi khi lưu: ${e.message}`,
+                type: 'error'
+            });
         }
     };
+
+    const clearToast = () => setToast(null);
 
     return {
         puzzle,
@@ -162,6 +202,8 @@ export const usePuzzleBuilderState = (onSaveSuccess: () => void, initialPuzzle?:
         setSelectedOpponentIndex,
         updatePuzzle,
         updateOpponent,
-        handleSave
+        handleSave,
+        toast,
+        clearToast
     };
 };

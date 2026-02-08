@@ -27,6 +27,12 @@ interface BoardTabProps {
     // Opponent specific
     selectedOpponentIndex?: number;
     onOpponentSelect?: (index: number) => void;
+
+    // Game Info (player only)
+    ioniaPathId?: string;
+    voidModIds?: string[];
+    onIoniaPathChange?: (pathId: string) => void;
+    onVoidModsChange?: (modIds: string[]) => void;
 }
 
 const BoardTab: React.FC<BoardTabProps> = ({
@@ -44,7 +50,11 @@ const BoardTab: React.FC<BoardTabProps> = ({
     selectedOpponentIndex,
     onOpponentSelect,
     items,
-    onItemsChange
+    onItemsChange,
+    ioniaPathId,
+    voidModIds,
+    onIoniaPathChange,
+    onVoidModsChange
 }) => {
     // State for all traits (fetched from DB)
     const [allTraits, setAllTraits] = React.useState<Trait[]>([]);
@@ -94,7 +104,7 @@ const BoardTab: React.FC<BoardTabProps> = ({
                                 fontFamily: 'Spectral'
                             }}
                         >
-                            OPP {idx + 1}
+                            ĐT {idx + 1}
                         </button>
                     ))}
                 </div>
@@ -111,6 +121,10 @@ const BoardTab: React.FC<BoardTabProps> = ({
                 items={items}
                 onItemsChange={onItemsChange}
                 synergies={activeSynergies}
+                ioniaPathId={ioniaPathId}
+                voidModIds={voidModIds}
+                onIoniaPathChange={onIoniaPathChange}
+                onVoidModsChange={onVoidModsChange}
             />
 
 

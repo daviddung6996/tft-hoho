@@ -6,7 +6,9 @@ import { Item, itemService } from '../services/itemService';
 import { Trait } from '../services/traitService';
 import { championService } from '../services/championService';
 import { traitService } from '../services/traitService';
+import { AugmentData, augmentService } from '../services/augmentService';
 import { calculateSynergies } from '../utils/synergyCalculator';
+import { ARENA_SKINS } from '../data/arenas';
 
 // Tactician Images
 import penguImg from '../assets/tacticians/pengu.webp';
@@ -19,6 +21,28 @@ import spriteImg from '../assets/tacticians/sprite.webp';
 import molediverImg from '../assets/tacticians/molediver.webp';
 
 const OPPONENT_AVATARS = [chonccImg, ahriImg, norraImg, bunbunImg, fenroarImg, spriteImg, molediverImg];
+
+// Simple hash from string to number for deterministic random per puzzle
+function hashString(str: string): number {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+        hash = ((hash << 5) - hash) + str.charCodeAt(i);
+        hash |= 0;
+    }
+    return Math.abs(hash);
+}
+
+// Get shuffled arena IDs for a puzzle (deterministic based on puzzle ID)
+function getShuffledArenaIds(puzzleId: string): string[] {
+    const ids = ARENA_SKINS.map(a => a.id);
+    const seed = hashString(puzzleId);
+    // Fisher-Yates shuffle with seeded random
+    for (let i = ids.length - 1; i > 0; i--) {
+        const j = (seed * (i + 1) + i) % (i + 1);
+        [ids[i], ids[j]] = [ids[j], ids[i]];
+    }
+    return ids;
+}
 
 const DEFAULT_PLAYER_STATE = {
     gold: 0,
@@ -43,20 +67,23 @@ export function usePuzzleToPlayers(puzzle: PuzzleScenario | null): PuzzlePlayers
     const [champions, setChampions] = useState<Champion[]>([]);
     const [traits, setTraits] = useState<Trait[]>([]);
     const [dbItems, setDbItems] = useState<Item[]>([]);
+    const [dbAugments, setDbAugments] = useState<AugmentData[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
     // Load static data on mount
     useEffect(() => {
         const loadData = async () => {
             try {
-                const [champData, traitData, itemData] = await Promise.all([
+                const [champData, traitData, itemData, augData] = await Promise.all([
                     championService.getAll(),
                     traitService.getAll(),
-                    itemService.getAll()
+                    itemService.getAll(),
+                    augmentService.getAll()
                 ]);
                 setChampions(champData || []);
                 setTraits(traitData || []);
                 setDbItems(itemData || []);
+                setDbAugments(augData || []);
             } catch (err) {
                 console.error('Failed to load champion/trait/item data:', err);
             } finally {
@@ -74,23 +101,42 @@ export function usePuzzleToPlayers(puzzle: PuzzleScenario | null): PuzzlePlayers
 
 
 
-        // Helper to enrich items with icons
+        // Helper to enrich augments with Vietnamese names from DB
+        const enrichAugments = (rawAugs: any[]) => {
+            if (!rawAugs || !dbAugments.length) return rawAugs;
+            return rawAugs.map((aug: any) => {
+                if (!aug) return aug;
+                const dbAug = dbAugments.find(db => db.id === aug.id) ||
+                    dbAugments.find(db => db.title.toLowerCase() === (aug.title || '').toLowerCase());
+                if (dbAug) {
+                    return { ...aug, title: dbAug.title, description: dbAug.description, icon: dbAug.icon || aug.icon };
+                }
+                return aug;
+            });
+        };
+
+        // Helper to enrich items with icons and Vietnamese names
         const enrichItems = (rawItems: (Item | null)[]) => {
             return (rawItems || []).map(item => {
                 if (!item) return null;
                 const normalizedName = item.name.toLowerCase().replace(/\s+/g, '');
                 const dbItem = dbItems.find(db => {
                     const dbNormalized = db.name.toLowerCase().replace(/\s+/g, '');
-                    return dbNormalized === normalizedName || db.id === item.id;
+                    const dbEnNormalized = (db.name_en || '').toLowerCase().replace(/\s+/g, '');
+                    return dbNormalized === normalizedName || dbEnNormalized === normalizedName || db.id === item.id;
                 });
                 return {
                     ...item,
+                    name: dbItem?.name || item.name,
                     icon: dbItem?.icon || item.icon || ''
                 };
             });
         };
 
         const myItems = enrichItems(puzzle.startingItems || []);
+
+        // Shuffle arenas per puzzle (deterministic: same puzzle = same arenas)
+        const arenaIds = getShuffledArenaIds(puzzle.id);
 
         // Transform player
         const playerState = puzzle.playerState || DEFAULT_PLAYER_STATE;
@@ -103,8 +149,8 @@ export function usePuzzleToPlayers(puzzle: PuzzleScenario | null): PuzzlePlayers
             bench: normalizeBench(puzzle.playerBench || [], champions),
             gold: playerState.gold,
             hp: playerState.hp,
-            augments: (puzzle.augments || []).filter((a): a is NonNullable<typeof a> => Boolean(a)),
-            arenaId: 'summoners_rift',
+            augments: enrichAugments((puzzle.augments || []).filter((a): a is NonNullable<typeof a> => Boolean(a))),
+            arenaId: arenaIds[0],
             items: myItems
         });
 
@@ -114,9 +160,8 @@ export function usePuzzleToPlayers(puzzle: PuzzleScenario | null): PuzzlePlayers
                 return puzzle.opponents.map((opp, index) =>
                     createOpponentPlayerData({
                         ...opp,
-                        // Ensure we pass enriched items
                         startingItems: enrichItems(opp.startingItems || [])
-                    } as OpponentData, index + 2, champions)
+                    } as OpponentData, index + 2, champions, arenaIds[index + 1] || arenaIds[(index + 1) % arenaIds.length])
                 );
             }
             // Legacy support
@@ -128,9 +173,9 @@ export function usePuzzleToPlayers(puzzle: PuzzleScenario | null): PuzzlePlayers
                     bench: puzzle.opponentBench || [],
                     state: puzzle.opponentState || DEFAULT_PLAYER_STATE,
                     augments: [],
-                    startingItems: [] // Legacy has no items usually
+                    startingItems: []
                 };
-                return [createOpponentPlayerData(legacyOpponent, 2, champions)];
+                return [createOpponentPlayerData(legacyOpponent, 2, champions, arenaIds[1])];
             }
             return [];
         };
@@ -152,7 +197,7 @@ export function usePuzzleToPlayers(puzzle: PuzzleScenario | null): PuzzlePlayers
             items: myItems, // Legacy prop for compatibility, prefer using player.items in HUD
             isLoading: false
         };
-    }, [puzzle, champions, traits, dbItems, isLoading]);
+    }, [puzzle, champions, traits, dbItems, dbAugments, isLoading]);
 }
 
 /**
@@ -174,7 +219,7 @@ function createPlayerData(config: {
     gold: number;
     hp: number;
     augments: any[];
-    augments: any[];
+
     arenaId: string;
     items?: (Item | null)[];
 }): PlayerData {
@@ -198,7 +243,7 @@ function createPlayerData(config: {
 /**
  * Create PlayerData from OpponentData
  */
-function createOpponentPlayerData(opp: OpponentData, index: number, champions: Champion[]): PlayerData {
+function createOpponentPlayerData(opp: OpponentData, index: number, champions: Champion[], arenaId: string): PlayerData {
     return {
         id: String(index),
         name: opp.name || `Opponent ${index - 1}`,
@@ -209,8 +254,8 @@ function createOpponentPlayerData(opp: OpponentData, index: number, champions: C
         isMe: false,
         units: normalizeUnits(opp.board || [], champions),
         bench: normalizeBench(opp.bench || [], champions),
-        augments: (opp.augments || []).filter((a): a is NonNullable<typeof a> => Boolean(a)),
-        arenaId: 'summoners_rift',
+        augments: (opp.augments || []).filter((a: any): a is NonNullable<typeof a> => Boolean(a)),
+        arenaId,
         augmentTreeUrl: '/src/assets/augment-tree/augment-tree.png',
         items: opp.startingItems || []
     };
@@ -233,7 +278,9 @@ function normalizeUnits(units: UnitData[], champions: Champion[]): UnitData[] {
                 // Use admin avatar/icon from DB only
                 image: adminChamp?.icon || adminChamp?.avatar || u.image || '',
                 // Ensure cost is synced if missing (optional but good)
-                cost: adminChamp?.cost !== undefined ? adminChamp.cost : u.cost
+                cost: adminChamp?.cost !== undefined ? adminChamp.cost : u.cost,
+                // Add traits for tooltip display
+                traits: adminChamp?.traits || u.traits || []
             };
         });
 }
@@ -256,7 +303,9 @@ function normalizeBench(bench: UnitData[], champions: Champion[]): UnitData[] {
                 image: adminChamp?.icon || adminChamp?.avatar || u.image || '',
                 cost: adminChamp?.cost !== undefined ? adminChamp.cost : u.cost,
                 benchIndex: u.benchIndex ?? idx,
-                row: -1 // Mark as bench unit
+                row: -1, // Mark as bench unit
+                // Add traits for tooltip display
+                traits: adminChamp?.traits || u.traits || []
             };
         });
 }

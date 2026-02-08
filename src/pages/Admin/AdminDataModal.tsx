@@ -3,7 +3,7 @@ import '../../components/Sidebar/ItemPanel.css';
 import { championService, Champion } from '../../services/championService';
 import { traitService } from '../../services/traitService';
 import { itemService } from '../../services/itemService';
-import { augmentService, Augment } from '../../services/augmentService';
+import { augmentService } from '../../services/augmentService';
 import { puzzleService } from '../../services/puzzleService';
 import { seedCompletePuzzles } from '../../utils/seedCompletePuzzles';
 import PuzzleBuilder from './PuzzleBuilder/PuzzleBuilder';
@@ -13,20 +13,33 @@ import '../../components/Admin/AdminDataTable.css';
 import AdminDeleteModal from './components/AdminDeleteModal';
 import AdminEditModal from './components/AdminEditModal';
 import Toast from '../../components/common/Toast';
+import { TrashView, DeletedItem } from './components/TrashView';
+import { useAuth } from '../../contexts/AuthContext';
+import { UserManagement } from './UserManagement/UserManagement';
 
 interface AdminDataModalProps {
     onClose: () => void;
     onPuzzleSaved?: () => void | Promise<void>;
 }
 
-type Tab = 'champions' | 'traits' | 'items' | 'augments' | 'puzzles';
+type Tab = 'champions' | 'traits' | 'items' | 'augments' | 'puzzles' | 'users' | 'trash';
 
 const AdminDataModal: React.FC<AdminDataModalProps> = ({ onClose, onPuzzleSaved }) => {
+    const { canAccessAdmin, canManageUsers } = useAuth();
+
     const [activeTab, setActiveTab] = useState<Tab>('champions');
     const [data, setData] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
     const [isBuilderMode, setIsBuilderMode] = useState(false);
     const [error, setError] = useState<string | null>(null);
+
+    // Admin Guard: Close modal if user cannot access admin panel
+    useEffect(() => {
+        if (!canAccessAdmin) {
+            console.error('Unauthorized access attempt to admin panel');
+            onClose();
+        }
+    }, [canAccessAdmin, onClose]);
 
     // Modal State
     const [editingItem, setEditingItem] = useState<any>(null);
@@ -70,7 +83,7 @@ const AdminDataModal: React.FC<AdminDataModalProps> = ({ onClose, onPuzzleSaved 
             setData(result || []);
         } catch (err: any) {
             console.error('Error fetching data:', err);
-            setError(err.message || 'Failed to fetch data. check console.');
+            setError(err.message || 'Không thể tải dữ liệu. Kiểm tra console.');
         } finally {
             setLoading(false);
         }
@@ -125,15 +138,22 @@ const AdminDataModal: React.FC<AdminDataModalProps> = ({ onClose, onPuzzleSaved 
         if (!deletingItem) return;
 
         setIsSaving(true);
+        setDeletingItem(null);
+
         try {
+            if (activeTab === 'trash') {
+                // Permanent delete from trash
+                return; // Handled by TrashView
+            }
+
             if (deletingItem.id === 'BULK_DELETE_FLAG') {
                 const ids = Array.from(selectedIds);
-                // 1. Optimistic Fade Out
+
+                // 1. Fade out animation (reduced to 150ms)
                 setFadingIds(new Set(ids));
+                await new Promise(resolve => setTimeout(resolve, 150));
 
-                // 2. Wait for animation (parallel with API call start if we want, but better to wait a bit)
-                await new Promise(resolve => setTimeout(resolve, 500));
-
+                // 2. Soft delete in DB - PARALLEL for speed
                 const deletePromises = ids.map(id => {
                     switch (activeTab) {
                         case 'champions': return championService.delete(id);
@@ -146,38 +166,100 @@ const AdminDataModal: React.FC<AdminDataModalProps> = ({ onClose, onPuzzleSaved 
                 });
                 await Promise.all(deletePromises);
 
-                // 3. Update Local Data
+                // 3. Remove from local UI
                 setData(prev => prev.filter(item => !selectedIds.has(item.id)));
-
-                setToast({ message: `Successfully deleted ${ids.length} items.`, type: 'success' });
-                setSelectedIds(new Set());
                 setFadingIds(new Set());
+
+                setToast({ message: `Đã chuyển ${ids.length} mục vào thùng rác.`, type: 'success' });
+                setSelectedIds(new Set());
             } else {
                 // Single Delete
-                setFadingIds(new Set([deletingItem.id]));
-                await new Promise(resolve => setTimeout(resolve, 500));
+                const itemToDelete = deletingItem;
 
+                setFadingIds(new Set([itemToDelete.id]));
+                await new Promise(resolve => setTimeout(resolve, 150));
+
+                // Soft delete in DB (sets deleted_at)
                 switch (activeTab) {
-                    case 'champions': await championService.delete(deletingItem.id); break;
-                    case 'traits': await traitService.delete(deletingItem.id); break;
-                    case 'items': await itemService.delete(deletingItem.id); break;
-                    case 'augments': await augmentService.delete(deletingItem.id); break;
-                    case 'puzzles': await puzzleService.delete(deletingItem.id); break;
+                    case 'champions': await championService.delete(itemToDelete.id); break;
+                    case 'traits': await traitService.delete(itemToDelete.id); break;
+                    case 'items': await itemService.delete(itemToDelete.id); break;
+                    case 'augments': await augmentService.delete(itemToDelete.id); break;
+                    case 'puzzles': await puzzleService.delete(itemToDelete.id); break;
                 }
 
-                setData(prev => prev.filter(item => item.id !== deletingItem.id));
-                setToast({ message: 'Deleted successfully.', type: 'success' });
+                setData(prev => prev.filter(item => item.id !== itemToDelete.id));
                 setFadingIds(new Set());
+
+                setToast({ message: `Đã chuyển vào thùng rác.`, type: 'success' });
             }
-            setDeletingItem(null);
-            // DO NOT CALL loadData()
         } catch (err: any) {
             console.error('Delete error:', err);
-            setToast({ message: `Failed to delete: ${err.message}`, type: 'error' });
-            setFadingIds(new Set()); // Reset on error
-            loadData(); // Revert to server state on error
+            setToast({ message: `Xoá thất bại: ${err.message}`, type: 'error' });
+            setFadingIds(new Set());
+            loadData();
         } finally {
             setIsSaving(false);
+        }
+    };
+
+    // Restore items from trash (set deleted_at = null)
+    const handleRestoreFromTrash = async (deletedItems: DeletedItem[]) => {
+        try {
+            setLoading(true);
+
+            // Restore in PARALLEL for speed
+            const restorePromises = deletedItems.map(item => {
+                switch (item.type) {
+                    case 'champions': return championService.restore(item.id);
+                    case 'traits': return traitService.restore(item.id);
+                    case 'items': return itemService.restore(item.id);
+                    case 'augments': return augmentService.restore(item.id);
+                    case 'puzzles': return puzzleService.restore(item.id);
+                    default: return Promise.resolve();
+                }
+            });
+            await Promise.all(restorePromises);
+
+            setToast({ message: `Đã khôi phục ${deletedItems.length} mục.`, type: 'success' });
+
+            // Reload current tab if it matches restored type
+            if (deletedItems.length > 0 && deletedItems[0].type === (activeTab as any)) {
+                await loadData();
+            }
+        } catch (err: any) {
+            console.error('Restore error:', err);
+            setToast({ message: `Khôi phục thất bại: ${err.message}`, type: 'error' });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Permanently delete items from database (hard delete)
+    const handlePermanentDeleteFromTrash = async (deletedItems: DeletedItem[]) => {
+        try {
+            setLoading(true);
+            const { supabase } = await import('../../lib/supabase');
+
+            // Hard delete in PARALLEL for speed
+            const deletePromises = deletedItems.map(item => {
+                switch (item.type) {
+                    case 'champions': return supabase.from('champions').delete().eq('id', item.id);
+                    case 'traits': return supabase.from('traits').delete().eq('id', item.id);
+                    case 'items': return supabase.from('items').delete().eq('id', item.id);
+                    case 'augments': return supabase.from('augments').delete().eq('id', item.id);
+                    case 'puzzles': return supabase.from('puzzles').delete().eq('id', item.id);
+                    default: return Promise.resolve();
+                }
+            });
+            await Promise.all(deletePromises);
+
+            setToast({ message: `Đã xóa vĩnh viễn ${deletedItems.length} mục.`, type: 'success' });
+        } catch (err: any) {
+            console.error('Permanent delete error:', err);
+            setToast({ message: `Xóa vĩnh viễn thất bại: ${err.message}`, type: 'error' });
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -202,10 +284,10 @@ const AdminDataModal: React.FC<AdminDataModalProps> = ({ onClose, onPuzzleSaved 
             ));
 
             setEditingItem(null);
-            setToast({ message: 'Changes saved successfully', type: 'success' });
+            setToast({ message: 'Đã lưu thay đổi thành công', type: 'success' });
         } catch (err: any) {
             console.error('Edit error:', err);
-            setToast({ message: `Failed to update: ${err.message}`, type: 'error' });
+            setToast({ message: `Cập nhật thất bại: ${err.message}`, type: 'error' });
             loadData();
         } finally {
             setIsSaving(false);
@@ -260,7 +342,7 @@ const AdminDataModal: React.FC<AdminDataModalProps> = ({ onClose, onPuzzleSaved 
         // Open the existing delete modal with a special flag/name
         setDeletingItem({
             id: 'BULK_DELETE_FLAG',
-            name: `${selectedIds.size} selected items`
+            name: `${selectedIds.size} mục đã chọn`
         });
     };
 
@@ -270,51 +352,55 @@ const AdminDataModal: React.FC<AdminDataModalProps> = ({ onClose, onPuzzleSaved 
 
     const renderTable = () => {
         // ... (loading/error checks)
-        if (loading) return <div className="text-muted" style={{ textAlign: 'center', padding: '2cqw' }}>Loading data...</div>;
+        if (loading) return <div className="text-muted" style={{ textAlign: 'center', padding: '2cqw' }}>Đang tải dữ liệu...</div>;
         if (error) return (
             <div className="text-rose" style={{ textAlign: 'center', padding: '2cqw' }}>
-                <p>Error: {error}</p>
+                <p>Lỗi: {error}</p>
             </div>
         );
-        if (filteredData.length === 0) return <div className="text-muted" style={{ textAlign: 'center', padding: '2cqw' }}>No records found matching "{searchTerm}".</div>;
+        if (filteredData.length === 0) return <div className="text-muted" style={{ textAlign: 'center', padding: '2cqw' }}>Không tìm thấy kết quả cho "{searchTerm}".</div>;
 
         return (
             <div className="admin-table-container" style={{ overflowY: 'auto' }}>
                 <table className="admin-table">
                     <thead>
                         <tr>
-                            <th style={{ width: '5%', textAlign: 'center' }}>
+                            <th style={{ width: '3%', textAlign: 'center' }}>
                                 <input
                                     type="checkbox"
                                     checked={isAllSelected}
                                     onChange={toggleSelectAll}
-                                    style={{ cursor: 'pointer', accentColor: 'var(--color-primary)' }}
+                                    style={{ cursor: 'pointer', width: '1.2cqw', height: '1.2cqw' }}
                                 />
                             </th>
-                            <th style={{ width: '15%' }}>ID</th>
-                            <th>Name / Title</th>
-                            {activeTab === 'champions' && <th style={{ width: '10%' }}>Cost</th>}
-                            {activeTab === 'augments' && <th style={{ width: '15%' }}>Rarity</th>}
-                            {activeTab === 'puzzles' && <th>Pro Player</th>}
-                            {activeTab === 'puzzles' && <th>Stage</th>}
-                            <th style={{ width: '20%', textAlign: 'right' }}>Actions</th>
+                            <th style={{ width: (activeTab === 'augments' || activeTab === 'traits' || activeTab === 'items') ? '12%' : activeTab === 'champions' ? '10%' : '17%' }}>ID</th>
+                            <th style={{ width: (activeTab === 'augments' || activeTab === 'traits' || activeTab === 'items') ? '20%' : activeTab === 'champions' ? '12%' : undefined }}>Tên</th>
+                            {(activeTab === 'augments' || activeTab === 'traits' || activeTab === 'items') && <th style={{ width: '52%' }}>Mô tả VN</th>}
+                            {activeTab === 'champions' && (
+                                <>
+                                    <th style={{ width: '8%' }}>Giá</th>
+                                    <th style={{ width: '25%' }}>Kỹ Năng</th>
+                                    <th style={{ width: '32%' }}>Stats Cơ Bản</th>
+                                </>
+                            )}
+                            <th style={{ width: '10%', textAlign: 'right' }}>Thao tác</th>
                         </tr>
                     </thead>
                     <tbody>
                         {filteredData.map((item) => {
                             const isFading = fadingIds.has(item.id);
+                            const isSelected = selectedIds.has(item.id);
                             return (
                                 <tr
                                     key={item.id}
-                                    className={`${selectedIds.has(item.id) ? 'selected-row' : ''} ${isFading ? 'fading-row' : ''}`}
-                                    style={selectedIds.has(item.id) ? { backgroundColor: 'rgba(200, 170, 110, 0.1)' } : {}}
+                                    className={`${isFading ? 'fading-row' : ''} ${isSelected ? 'selected-row' : ''}`}
                                 >
                                     <td style={{ textAlign: 'center' }}>
                                         <input
                                             type="checkbox"
-                                            checked={selectedIds.has(item.id)}
+                                            checked={isSelected}
                                             onChange={() => toggleSelect(item.id)}
-                                            style={{ cursor: 'pointer', accentColor: 'var(--color-primary)' }}
+                                            style={{ cursor: 'pointer', width: '1.2cqw', height: '1.2cqw' }}
                                         />
                                     </td>
                                     <td>
@@ -344,26 +430,64 @@ const AdminDataModal: React.FC<AdminDataModalProps> = ({ onClose, onPuzzleSaved 
                                                 />
                                             )}
                                             <span style={{ fontWeight: 500, color: 'var(--color-text-primary)', display: 'flex', alignItems: 'center' }}>
-                                                {item.name || item.title || item.proPlayer || 'Unnamed'}
+                                                {item.name || item.title || item.proPlayer || 'Chưa đặt tên'}
                                             </span>
                                         </div>
                                     </td>
+                                    {(activeTab === 'augments' || activeTab === 'traits' || activeTab === 'items') && (
+                                        <td>
+                                            <span style={{
+                                                fontSize: '0.8em',
+                                                color: (item as any).description_vi
+                                                    ? 'var(--color-text-secondary)'
+                                                    : 'var(--color-text-muted, #666)',
+                                                fontStyle: (item as any).description_vi ? 'normal' : 'italic',
+                                                display: 'block',
+                                                wordWrap: 'break-word',
+                                                overflowWrap: 'break-word',
+                                                whiteSpace: 'normal',
+                                                lineHeight: 1.4
+                                            }}>
+                                                {(item as any).description_vi || 'Chưa có'}
+                                            </span>
+                                        </td>
+                                    )}
                                     {activeTab === 'champions' && (
-                                        <td>
-                                            <span className={`cell-pill rarity-${(item as Champion).cost}`}>
-                                                Cost {(item as Champion).cost}
-                                            </span>
-                                        </td>
+                                        <>
+                                            <td>
+                                                <span className={`cell-pill rarity-${(item as Champion).cost}`}>
+                                                    $ {(item as Champion).cost}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <div style={{ fontSize: '0.75cqw' }}>
+                                                    {(item as Champion).ability_name ? (
+                                                        <>
+                                                            <div style={{ fontWeight: 600, color: '#c8aa6e', marginBottom: '0.3cqw' }}>
+                                                                {(item as Champion).ability_name}
+                                                            </div>
+                                                            <div style={{ color: '#94A3B8', lineHeight: 1.3 }}>
+                                                                {(item as Champion).ability_description?.substring(0, 80)}{(item as Champion).ability_description && (item as Champion).ability_description!.length > 80 ? '...' : ''}
+                                                            </div>
+                                                        </>
+                                                    ) : (
+                                                        <span style={{ fontStyle: 'italic', color: '#666' }}>Chưa có</span>
+                                                    )}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                {(item as Champion).stats ? (
+                                                    <div style={{ fontSize: '0.7cqw', lineHeight: 1.4, color: '#a8b4c2' }}>
+                                                        <div>HP {(item as Champion).stats!.hp.join('/')} | AD {(item as Champion).stats!.ad.join('/')}</div>
+                                                        <div>AR {(item as Champion).stats!.armor} | MR {(item as Champion).stats!.mr} | AS: {(item as Champion).stats!.as}</div>
+                                                        <div>Mana {(item as Champion).stats!.mana.min}/{(item as Champion).stats!.mana.max} | Range {(item as Champion).stats!.range}</div>
+                                                    </div>
+                                                ) : (
+                                                    <span style={{ fontStyle: 'italic', color: '#666' }}>Chưa có</span>
+                                                )}
+                                            </td>
+                                        </>
                                     )}
-                                    {activeTab === 'augments' && (
-                                        <td>
-                                            <span className="cell-pill" style={{ textTransform: 'capitalize' }}>
-                                                {(item as Augment).rarity}
-                                            </span>
-                                        </td>
-                                    )}
-                                    {activeTab === 'puzzles' && <td>{item.proPlayer}</td>}
-                                    {activeTab === 'puzzles' && <td>{item.stage}</td>}
                                     <td style={{ textAlign: 'right' }}>
                                         <div className="action-buttons" style={{ justifyContent: 'flex-end' }}>
                                             <button
@@ -373,7 +497,7 @@ const AdminDataModal: React.FC<AdminDataModalProps> = ({ onClose, onPuzzleSaved 
                                                     handleEditClick(item);
                                                 }}
                                             >
-                                                Edit
+                                                Sửa
                                             </button>
                                             <button
                                                 className="hex-button danger small"
@@ -382,7 +506,7 @@ const AdminDataModal: React.FC<AdminDataModalProps> = ({ onClose, onPuzzleSaved 
                                                     handleDeleteClick(item);
                                                 }}
                                             >
-                                                Delete
+                                                Xoá
                                             </button>
                                         </div>
                                     </td>
@@ -425,10 +549,19 @@ const AdminDataModal: React.FC<AdminDataModalProps> = ({ onClose, onPuzzleSaved 
                             setIsBuilderMode(false);
                             setSelectedPuzzleToEdit(null);
                         }}
-                        onSaveSuccess={async () => {
+                        onSaveSuccess={async (puzzleId: string, _shareUrl: string) => {
+                            // FIRST: Show toast immediately
+                            console.log('[AdminDataModal] Puzzle saved, showing toast for:', puzzleId);
+                            setToast({
+                                message: `Lưu thành công! ID: ${puzzleId.slice(0, 8)}...`,
+                                type: 'success'
+                            });
+
+                            // THEN: Close modal and reload
                             setIsBuilderMode(false);
                             setSelectedPuzzleToEdit(null);
                             await loadData();
+
                             // Refresh puzzle list in main app
                             if (onPuzzleSaved) {
                                 await onPuzzleSaved();
@@ -438,13 +571,15 @@ const AdminDataModal: React.FC<AdminDataModalProps> = ({ onClose, onPuzzleSaved 
                 ) : (
                     <>
                         <AdminHeader
-                            title="Operations Deck"
+                            title="Bảng điều khiển"
                             tabs={[
-                                { key: 'champions', label: 'champions' },
-                                { key: 'traits', label: 'traits' },
-                                { key: 'items', label: 'items' },
-                                { key: 'augments', label: 'augments' },
-                                { key: 'puzzles', label: 'puzzles' }
+                                { key: 'champions', label: 'tướng' },
+                                { key: 'traits', label: 'tộc/hệ' },
+                                { key: 'items', label: 'trang bị' },
+                                { key: 'augments', label: 'Augments' },
+                                { key: 'puzzles', label: 'Puzzles' },
+                                ...(canManageUsers ? [{ key: 'users', label: 'Users' }] : []),
+                                { key: 'trash', label: '🗑️' }
                             ]}
                             activeTab={activeTab}
                             onTabChange={(key) => setActiveTab(key as Tab)}
@@ -453,69 +588,80 @@ const AdminDataModal: React.FC<AdminDataModalProps> = ({ onClose, onPuzzleSaved 
 
                         <div className="admin-body" style={{ padding: '2cqw', flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
                             <div key={activeTab} className="admin-content-transition" style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1cqw', gap: '1cqw', flexShrink: 0 }}>
-
-                                    <input
-                                        type="text"
-                                        className="hex-input"
-                                        placeholder={`Filter ${activeTab}...`}
-                                        value={searchTerm}
-                                        onChange={(e) => setSearchTerm(e.target.value)}
-                                        style={{ width: '40%' }} /* Adjust width as needed */
+                                {activeTab === 'trash' ? (
+                                    <TrashView
+                                        onRestore={handleRestoreFromTrash}
+                                        onPermanentDelete={handlePermanentDeleteFromTrash}
                                     />
+                                ) : activeTab === 'users' ? (
+                                    <UserManagement />
+                                ) : (
+                                    <>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1cqw', gap: '1cqw', flexShrink: 0 }}>
 
-                                    <div style={{ display: 'flex', gap: '1cqw', alignItems: 'center' }}>
-                                        {/* BULK DELETE BUTTON */}
-                                        {selectedIds.size > 0 && (
-                                            <button
-                                                className="hex-button danger"
-                                                onClick={handleBulkDelete}
-                                                style={{ marginRight: '1cqw' }}
-                                                disabled={isSaving}
-                                            >
-                                                {isSaving ? 'Deleting...' : `Delete Selected (${selectedIds.size})`}
-                                            </button>
-                                        )}
+                                            <input
+                                                type="text"
+                                                className="hex-input"
+                                                placeholder={`Tìm kiếm ${activeTab === 'champions' ? 'tướng' : activeTab === 'traits' ? 'tộc/hệ' : activeTab === 'items' ? 'trang bị' : activeTab === 'augments' ? 'Augments' : 'Puzzles'}...`}
+                                                value={searchTerm}
+                                                onChange={(e) => setSearchTerm(e.target.value)}
+                                                style={{ width: '40%' }}
+                                            />
 
-                                        {activeTab === 'puzzles' && (
-                                            <>
-                                                <button
-                                                    onClick={async () => {
-                                                        setLoading(true);
-                                                        try {
-                                                            await seedCompletePuzzles();
-                                                            await loadData();
-                                                            setToast({ message: '✓ Seeded 10 complete puzzles successfully!', type: 'success' });
-                                                        } catch (err: any) {
-                                                            setToast({ message: `Failed to seed: ${err.message}`, type: 'error' });
-                                                        } finally {
-                                                            setLoading(false);
-                                                        }
-                                                    }}
-                                                    className="hex-button primary"
-                                                >
-                                                    🌱 Seed 10 Complete Puzzles
-                                                </button>
-                                                <button
-                                                    onClick={() => setIsBuilderMode(true)}
-                                                    className="hex-button primary"
-                                                >
-                                                    + Create New Puzzle
-                                                </button>
-                                            </>
-                                        )}
-                                        {activeTab !== 'puzzles' && (
-                                            <button
-                                                className="hex-button"
-                                                onClick={() => alert('Feature coming soon')}
-                                            >
-                                                + Add New {activeTab}
-                                            </button>
-                                        )}
-                                    </div>
-                                </div>
+                                            <div style={{ display: 'flex', gap: '1cqw', alignItems: 'center' }}>
+                                                {/* BULK DELETE BUTTON */}
+                                                {selectedIds.size > 0 && (
+                                                    <button
+                                                        className="hex-button danger"
+                                                        onClick={handleBulkDelete}
+                                                        style={{ marginRight: '1cqw' }}
+                                                        disabled={isSaving}
+                                                    >
+                                                        {isSaving ? 'Đang xoá...' : `Xoá đã chọn (${selectedIds.size})`}
+                                                    </button>
+                                                )}
 
-                                {renderTable()}
+                                                {activeTab === 'puzzles' && (
+                                                    <>
+                                                        <button
+                                                            onClick={async () => {
+                                                                setLoading(true);
+                                                                try {
+                                                                    await seedCompletePuzzles();
+                                                                    await loadData();
+                                                                    setToast({ message: 'Đã tạo 10 câu đố mẫu thành công!', type: 'success' });
+                                                                } catch (err: any) {
+                                                                    setToast({ message: `Tạo mẫu thất bại: ${err.message}`, type: 'error' });
+                                                                } finally {
+                                                                    setLoading(false);
+                                                                }
+                                                            }}
+                                                            className="hex-button primary"
+                                                        >
+                                                            Tạo 10 Puzzles mẫu
+                                                        </button>
+                                                        <button
+                                                            onClick={() => setIsBuilderMode(true)}
+                                                            className="hex-button primary"
+                                                        >
+                                                            + Tạo Puzzles mới
+                                                        </button>
+                                                    </>
+                                                )}
+                                                {activeTab !== 'puzzles' && (
+                                                    <button
+                                                        className="hex-button"
+                                                        onClick={() => { }}
+                                                    >
+                                                        + Thêm mới
+                                                    </button>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        {renderTable()}
+                                    </>
+                                )}
                             </div>
                         </div>
                     </>
@@ -533,7 +679,7 @@ const AdminDataModal: React.FC<AdminDataModalProps> = ({ onClose, onPuzzleSaved 
 
             <AdminEditModal
                 item={editingItem}
-                type={activeTab}
+                type={activeTab === 'trash' || activeTab === 'users' ? 'champions' : activeTab}
                 isSaving={isSaving}
                 onClose={() => setEditingItem(null)}
                 onSave={saveEdit}

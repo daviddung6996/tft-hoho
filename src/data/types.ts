@@ -1,3 +1,21 @@
+// Champion Stats for different star levels
+export interface ChampionStats {
+    hp: [number, number, number];      // HP for 1★, 2★, 3★
+    ad: [number, number, number];      // Attack Damage for star levels
+    as: number;                        // Attack Speed
+    armor: number;
+    mr: number;                        // Magic Resist
+    mana: { min: number; max: number }; // e.g., {min: 60, max: 105}
+    range: number;
+    dps: [number, number, number];     // DPS for star levels
+}
+
+// Ability variable with values per star level
+export interface AbilityVariable {
+    name: string;
+    value: [number, number, number, number, number, number, number];
+}
+
 // Champion data type
 export interface Champion {
     id: string;
@@ -8,6 +26,13 @@ export interface Champion {
     items?: string[];
     icon: string;
     avatar?: string;
+
+    // Ability fields
+    ability_name?: string;              // Vietnamese ability name
+    ability_name_en?: string;           // English ability name
+    ability_description?: string;       // Vietnamese ability description
+    ability_variables?: AbilityVariable[]; // Ability scaling values
+    stats?: ChampionStats;              // Base stats
 }
 
 // Augment data type
@@ -25,6 +50,7 @@ export interface Augment {
 export interface Synergy {
     id: string;
     name: string;
+    description?: string; // Vietnamese description for tooltip
     breakpoints: number[]; // e.g., [2, 4, 6]
     styles?: number[];     // e.g., [1, 3, 4] mapping to bronze/silver/gold
     activeCount: number;
@@ -64,6 +90,7 @@ export interface UnitData {
     stars: number;
     image: string;
     items?: string[]; // Item names/emojis for display
+    traits?: string[]; // Champion traits for tooltip display
 }
 
 // Game state

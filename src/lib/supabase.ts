@@ -9,12 +9,47 @@ if (!supabaseUrl || !supabaseAnonKey) {
 
 export const supabase = createClient(
     supabaseUrl || 'https://placeholder.supabase.co',
-    supabaseAnonKey || 'placeholder-key'
+    supabaseAnonKey || 'placeholder-key',
+    {
+        auth: {
+            autoRefreshToken: true,
+            persistSession: true,
+            detectSessionInUrl: true
+        }
+    }
 );
+
+// Auth helper types
+export type AuthUser = {
+    id: string;
+    email: string;
+    display_name: string | null;
+    role: 'user' | 'mod' | 'admin';
+};
 
 export type Database = {
     public: {
         Tables: {
+            users: {
+                Row: {
+                    id: string;
+                    email: string;
+                    display_name: string | null;
+                    role: 'user' | 'mod' | 'admin';
+                    created_at: string;
+                    updated_at: string;
+                };
+                Insert: {
+                    id: string;
+                    email: string;
+                    display_name?: string | null;
+                    role?: 'user' | 'admin';
+                };
+                Update: {
+                    display_name?: string | null;
+                    role?: 'user' | 'admin';
+                };
+            };
             champions: {
                 Row: {
                     id: string;
@@ -151,6 +186,64 @@ export type Database = {
                     user_id?: string;
                     puzzle_id?: string;
                     completed_at?: string;
+                };
+            };
+            user_puzzle_attempts: {
+                Row: {
+                    id: string;
+                    user_id: string;
+                    puzzle_id: string;
+                    user_pick_id: string;
+                    user_pick_name: string | null;
+                    is_correct: boolean;
+                    reroll_count: number;
+                    reroll_indices: number[];
+                    time_to_decide_ms: number | null;
+                    puzzle_stage: string | null;
+                    pro_pick_id: string | null;
+                    created_at: string;
+                };
+                Insert: {
+                    user_id: string;
+                    puzzle_id: string;
+                    user_pick_id: string;
+                    user_pick_name?: string;
+                    is_correct: boolean;
+                    reroll_count?: number;
+                    reroll_indices?: number[];
+                    time_to_decide_ms?: number;
+                    puzzle_stage?: string;
+                    pro_pick_id?: string;
+                };
+                Update: {
+                    user_pick_id?: string;
+                    user_pick_name?: string;
+                    is_correct?: boolean;
+                    reroll_count?: number;
+                    reroll_indices?: number[];
+                    time_to_decide_ms?: number;
+                    puzzle_stage?: string;
+                    pro_pick_id?: string;
+                };
+            };
+            puzzle_votes: {
+                Row: {
+                    id: string;
+                    puzzle_id: string;
+                    augment_id: string;
+                    augment_name: string;
+                    session_id: string;
+                    created_at: string;
+                };
+                Insert: {
+                    puzzle_id: string;
+                    augment_id: string;
+                    augment_name: string;
+                    session_id: string;
+                };
+                Update: {
+                    augment_id?: string;
+                    augment_name?: string;
                 };
             };
         };

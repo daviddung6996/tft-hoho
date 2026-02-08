@@ -19,24 +19,26 @@
 /* .pb-actions container removed, buttons passed as fragment */
 
 .pb-btn {
-    background: rgba(0, 0, 0, 0.3);
-    border: 0.08cqw solid var(--color-accent-gold);
+    background: transparent;
+    border: 0.1cqw solid #c8aa6e;
     border-radius: 0.25cqw;
-    color: var(--color-accent-gold);
-    padding: 0.5cqw 1cqw;
+    color: #F0E6D2;
+    padding: 0.6cqw 1.2cqw;
     cursor: pointer;
     font-family: var(--font-body);
-    text-transform: capitalize;
+    text-transform: uppercase;
     font-size: 0.9cqw;
-    transition: all 0.2s ease;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    transition: none;
 }
 
 /* Hover effect removed */
 
 .pb-btn.primary {
-    background: rgba(0, 163, 255, 0.2);
-    border: 0.1cqw solid var(--color-primary);
-    color: var(--color-accent-cyan);
+    background: linear-gradient(180deg, rgba(21, 58, 62, 0.6) 0%, rgba(5, 28, 30, 0.6) 100%);
+    border-color: #c8aa6e;
+    color: #F0E6D2;
 }
 
 /* Hover effect removed */

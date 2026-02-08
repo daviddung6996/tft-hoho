@@ -57,7 +57,7 @@ export const HexPuzzle: React.FC<HexPuzzleProps> = ({ onSolved, onFailed }) => {
     return (
         <div className="hex-puzzle">
             <p className="hex-puzzle-instruction">
-                Arrange the hexagons in the correct order to unlock admin access
+                Sắp xếp các ô theo đúng thứ tự để mở quyền quản trị
             </p>
 
             <div className="hex-puzzle-grid">
@@ -88,7 +88,7 @@ export const HexPuzzle: React.FC<HexPuzzleProps> = ({ onSolved, onFailed }) => {
                 onClick={checkSolution}
                 disabled={isChecking}
             >
-                {isChecking ? 'Checking...' : 'Verify Solution'}
+                {isChecking ? 'Đang kiểm tra...' : 'Xác nhận'}
             </button>
         </div>
     );

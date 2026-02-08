@@ -277,12 +277,20 @@ const HexBoard: React.FC<HexBoardProps> = ({
                             >
                                 <div className={`hb-unit-inner cost-${unit.cost || 1}`}>
                                     <div className="hb-unit-content">
-                                        <AssetImage
-                                            type="champion"
-                                            name={unit.name}
-                                            alt={unit.name}
-                                            className="hb-unit-img"
-                                        />
+                                        {unit.image ? (
+                                            <img
+                                                src={unit.image}
+                                                alt={unit.name}
+                                                className="hb-unit-img"
+                                            />
+                                        ) : (
+                                            <AssetImage
+                                                type="champion"
+                                                name={unit.name}
+                                                alt={unit.name}
+                                                className="hb-unit-img"
+                                            />
+                                        )}
                                     </div>
                                     {(unit.stars || 1) > 1 && (
                                         <div className={`hb-unit-stars stars-${unit.stars}`}>
@@ -323,12 +331,20 @@ const HexBoard: React.FC<HexBoardProps> = ({
                                         draggable
                                         onContextMenu={(e) => handleUnitContextMenu(e, unit)}
                                     >
-                                        <AssetImage
-                                            type="champion"
-                                            name={unit.name}
-                                            alt={unit.name}
-                                            className="hb-unit-img"
-                                        />
+                                        {unit.image ? (
+                                            <img
+                                                src={unit.image}
+                                                alt={unit.name}
+                                                className="hb-unit-img"
+                                            />
+                                        ) : (
+                                            <AssetImage
+                                                type="champion"
+                                                name={unit.name}
+                                                alt={unit.name}
+                                                className="hb-unit-img"
+                                            />
+                                        )}
                                         {(unit.stars || 1) > 1 && (
                                             <div className={`hb-unit-stars stars-${unit.stars}`}>
                                                 {'★'.repeat(unit.stars || 1)}

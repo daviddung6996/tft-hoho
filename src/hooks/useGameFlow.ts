@@ -1,6 +1,8 @@
 import React from 'react';
-import { generateCommunityVotes, CommunityVotes } from '../data/puzzleScenarios';
+import { CommunityVotes } from '../data/puzzleScenarios';
 import { AugmentData } from '../services/augmentService';
+import { userStatsService } from '../services/userStatsService';
+import { voteService } from '../services/voteService';
 
 export type PuzzlePhase = 'selecting' | 'reviewing';
 
@@ -21,6 +23,9 @@ export const useGameFlow = (currentPuzzle: any) => {
     const [rerollOrder, setRerollOrder] = React.useState<number[]>([0, 0, 0]);
     const [rollSequence, setRollSequence] = React.useState<number>(1);
 
+    // Timing tracking for analytics
+    const [startTime, setStartTime] = React.useState<number | null>(null);
+
     // Initialize on puzzle change
     React.useEffect(() => {
         if (!currentPuzzle) return;
@@ -35,9 +40,14 @@ export const useGameFlow = (currentPuzzle: any) => {
         setUserPickRound(0); // 0 = First Roll, 1 = Second Roll
         setRerollOrder([0, 0, 0]);
         setRollSequence(1);
-        setCommunityVotes(generateCommunityVotes(threeAugments));
         setPuzzlePhase('selecting');
         setSelectedAugment(null);
+
+        // Fetch real community votes from DB
+        voteService.getVotes(currentPuzzle.id).then(setCommunityVotes).catch(() => setCommunityVotes({}));
+
+        // Start timing when puzzle loads
+        setStartTime(Date.now());
     }, [currentPuzzle]);
 
     const handleAugmentReroll = (indexToReplace: number) => {
@@ -79,7 +89,36 @@ export const useGameFlow = (currentPuzzle: any) => {
         setPuzzlePhase('reviewing');
 
         if (currentPuzzle) {
-            // removed onComplete call
+            const proPickId = currentPuzzle.proFinalPick?.id || '';
+            const isCorrect = augment.id === proPickId;
+            const rerollCount = rerollOrder.filter(r => r > 0).length;
+            const rerollIndices = rerollOrder
+                .map((val, idx) => val > 0 ? idx : -1)
+                .filter(idx => idx >= 0);
+            const timeToDecideMs = startTime ? Date.now() - startTime : 0;
+
+            // Record vote for community percentages (works for guests too)
+            voteService.recordVote(
+                currentPuzzle.id,
+                augment.id,
+                augment.title || 'Unknown'
+            ).then(() => {
+                // Refetch votes to show updated percentages
+                voteService.getVotes(currentPuzzle.id).then(setCommunityVotes);
+            }).catch(err => console.error('Failed to record vote:', err));
+
+            // Record detailed attempt for analytics (authenticated users only)
+            userStatsService.recordAttempt({
+                puzzleId: currentPuzzle.id,
+                userPickId: augment.id,
+                userPickName: augment.title || 'Unknown',
+                isCorrect,
+                rerollCount,
+                rerollIndices,
+                timeToDecideMs,
+                puzzleStage: currentPuzzle.stage || '',
+                proPickId
+            }).catch(err => console.error('Failed to record attempt:', err));
         }
     };
 
@@ -97,6 +136,9 @@ export const useGameFlow = (currentPuzzle: any) => {
         setUserPickRound(0);
         setRerollOrder([0, 0, 0]);
         setRollSequence(1);
+
+        // Reset timing for replay
+        setStartTime(Date.now());
     };
 
     const resetFlow = () => {
@@ -119,3 +161,4 @@ export const useGameFlow = (currentPuzzle: any) => {
         resetFlow
     };
 };
+

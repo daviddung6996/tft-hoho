@@ -1,6 +1,8 @@
 import React from 'react';
 import { Synergy } from '../../data/types';
 import { AssetImage } from '../../hooks/useAssetUrl';
+import { TraitTooltip } from '../common/HextechTooltip';
+import { useGameData } from '../../contexts/GameDataContext';
 import './SynergyPanel.css';
 
 interface SynergyPanelProps {
@@ -12,6 +14,8 @@ export const SynergyPanel: React.FC<SynergyPanelProps & { style?: React.CSSPrope
     style,
     className
 }) => {
+    const { getTraitByNameEn } = useGameData();
+
     // Helper to find the active breakpoint index
     const getActiveBreakpointIndex = (synergy: Synergy): number => {
         const { activeCount, breakpoints } = synergy;
@@ -71,38 +75,75 @@ export const SynergyPanel: React.FC<SynergyPanelProps & { style?: React.CSSPrope
         return 'tier-inactive';
     };
 
+    // Get description from DB data
+    const getTraitDescription = (synergy: Synergy): string => {
+        // First check if synergy already has description
+        if (synergy.description) return synergy.description;
+        // Try to get from GameDataContext
+        const dbTrait = getTraitByNameEn(synergy.id);
+        return dbTrait?.description || '';
+    };
+
+    // Get icon URL from DB data (prioritize DB over CDN)
+    const getTraitIcon = (synergy: Synergy): string | undefined => {
+        const dbTrait = getTraitByNameEn(synergy.id);
+        return dbTrait?.icon;
+    };
+
     return (
         <div className={`synergy-floating-container ${className || ''}`} style={style}>
             {synergies.map(synergy => {
                 const tierClass = getTierClass(synergy);
                 const displayBreakpoint = getDisplayBreakpoint(synergy);
-                return (
-                    <div key={synergy.id} className={`synergy-floating-row ${tierClass}`}>
-                        {/* Hexagon Left */}
-                        <div className="synergy-hex-wrapper">
-                            <div className="synergy-hex-shape">
-                                <AssetImage
-                                    type="trait"
-                                    name={synergy.name}
-                                    alt={synergy.name}
-                                    className="synergy-icon-image"
-                                    style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-                                />
-                            </div>
-                        </div>
+                const description = getTraitDescription(synergy);
+                const dbIcon = getTraitIcon(synergy);
 
-                        {/* Label Bar Right */}
-                        <div className="synergy-label-bar">
-                            <div className="trait-name">{synergy.name}</div>
-                            <div className="trait-numbers">
-                                <span className="active-num">{synergy.activeCount}</span>
-                                <span className="separator"> / </span>
-                                <span className="next-num">{displayBreakpoint}</span>
+                return (
+                    <TraitTooltip
+                        key={synergy.id}
+                        name={synergy.name}
+                        description={description}
+                        activeCount={synergy.activeCount}
+                        breakpoints={synergy.breakpoints}
+                        position="right"
+                    >
+                        <div className={`synergy-floating-row ${tierClass}`}>
+                            {/* Hexagon Left */}
+                            <div className="synergy-hex-wrapper">
+                                <div className="synergy-hex-shape">
+                                    {dbIcon ? (
+                                        <img
+                                            src={dbIcon}
+                                            alt={synergy.name}
+                                            className="synergy-icon-image"
+                                            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                                        />
+                                    ) : (
+                                        <AssetImage
+                                            type="trait"
+                                            name={synergy.id}
+                                            alt={synergy.name}
+                                            className="synergy-icon-image"
+                                            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                                        />
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Label Bar Right */}
+                            <div className="synergy-label-bar">
+                                <div className="trait-name">{synergy.name}</div>
+                                <div className="trait-numbers">
+                                    <span className="active-num">{synergy.activeCount}</span>
+                                    <span className="separator"> / </span>
+                                    <span className="next-num">{displayBreakpoint}</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </TraitTooltip>
                 );
             })}
         </div>
     );
 };
+

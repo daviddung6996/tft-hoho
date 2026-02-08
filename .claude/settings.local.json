@@ -7,7 +7,28 @@
       "Bash(npx tsx:*)",
       "Bash(curl:*)",
       "Bash(del \"d:\\\\TFT-hoho\\\\.agent\\\\skills\\\\tft-set16-data\\\\scripts\\\\check_patterns.ts\")",
-      "Bash(cmd /c \"del d:\\\\TFT-hoho\\\\.agent\\\\skills\\\\tft-set16-data\\\\scripts\\\\check_patterns.ts\")"
+      "Bash(cmd /c \"del d:\\\\TFT-hoho\\\\.agent\\\\skills\\\\tft-set16-data\\\\scripts\\\\check_patterns.ts\")",
+      "WebFetch(domain:tactics.tools)",
+      "WebFetch(domain:raw.communitydragon.org)",
+      "Bash(npx supabase:*)",
+      "Bash(dir \"C:\\\\Users\\\\Administrator\\\\.claude\"\" /b)",
+      "WebFetch(domain:supabase.com)",
+      "WebFetch(domain:www.npmjs.com)",
+      "WebFetch(domain:github.com)",
+      "Bash(node:*)",
+      "Bash(npx vite build:*)",
+      "mcp__supabase__execute_sql",
+      "mcp__supabase__get_logs",
+      "mcp__supabase__apply_migration",
+      "mcp__supabase__list_tables",
+      "mcp__supabase__get_advisors",
+      "WebFetch(domain:leagueoflegends.fandom.com)",
+      "WebFetch(domain:wiki.leagueoflegends.com)",
+      "WebFetch(domain:tftactics.gg)"
     ]
-  }
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "supabase"
+  ]
 }
