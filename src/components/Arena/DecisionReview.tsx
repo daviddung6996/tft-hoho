@@ -18,8 +18,6 @@ export interface DecisionReviewProps {
     rerollAugments?: AugmentData[];
     // Track which slots were rolled
     proRerollIndices?: number[]; // [0,1,2] = rolled all 3 slots
-    proSecondRerollIndices?: number[]; // For Teemo second reroll
-    proPickIndex?: number;
     onNextPuzzle: () => void;
     onReplay: () => void;
     puzzleId: string;
@@ -42,8 +40,6 @@ export const DecisionReview: React.FC<DecisionReviewProps> = ({
     initialAugments = [],
     rerollAugments = [],
     proRerollIndices = [],
-    proSecondRerollIndices = [],
-    proPickIndex = -1,
     onNextPuzzle,
     onReplay,
     puzzleId,
@@ -53,7 +49,7 @@ export const DecisionReview: React.FC<DecisionReviewProps> = ({
     encounter,
     streamUrl,
     communityVotes = {},
-    proPlayerName = 'Pro Player',
+    proPlayerName = 'Tuyển thủ',
     explanation
 }) => {
 
@@ -62,11 +58,10 @@ export const DecisionReview: React.FC<DecisionReviewProps> = ({
     const proFinalPick = (proRerolled
         ? proSecondRoll!.find(a => a.id === correctAugmentId) || proSecondRoll![0]
         : proFirstRoll.find(a => a.id === correctAugmentId) || proFirstRoll[0]) || {
-            title: "Unknown",
+            title: "Không rõ",
             id: "unknown",
-            description: "Data missing",
+            description: "Thiếu dữ liệu",
             icon: "",
-            rarity: "silver",
             tier: 1
         } as AugmentData;
 
@@ -105,16 +100,16 @@ export const DecisionReview: React.FC<DecisionReviewProps> = ({
         if (userMatchedPro) {
             return (
                 <>
-                    <span className="user-action">You</span> and{' '}
-                    <span className="pro-action">{proPlayerName}</span> both picked{' '}
+                    <span className="user-action">Bạn</span> và{' '}
+                    <span className="pro-action">{proPlayerName}</span> cùng chọn{' '}
                     <strong>{userChoice.title}</strong>
                 </>
             );
         }
         return (
             <>
-                <span className="user-action">You</span> picked <strong>{userChoice.title}</strong> while{' '}
-                <span className="pro-action">{proPlayerName}</span> picked <strong>{proFinalPick.title}</strong>
+                <span className="user-action">Bạn</span> chọn <strong>{userChoice.title}</strong> còn{' '}
+                <span className="pro-action">{proPlayerName}</span> chọn <strong>{proFinalPick.title}</strong>
             </>
         );
     };
@@ -139,9 +134,9 @@ export const DecisionReview: React.FC<DecisionReviewProps> = ({
                     {/* ========== FINAL PICK - All 6 Augments ========== */}
                     <div className="roll-section final-section">
                         <div className="roll-section-header">
-                            <span className="section-title">Final Pick</span>
+                            <span className="section-title">Lựa chọn cuối</span>
                             <span className={`diverge-badge ${userMatchedPro ? 'matched' : 'diverged'}`}>
-                                {userMatchedPro ? 'Same as ' + proPlayerName : 'Diverged from ' + proPlayerName}
+                                {userMatchedPro ? 'Giống với ' + proPlayerName : 'Khác với ' + proPlayerName}
                             </span>
                         </div>
                         <p className="final-description">{getFinalPickDescription()}</p>
@@ -169,17 +164,17 @@ export const DecisionReview: React.FC<DecisionReviewProps> = ({
 
                                 // USER MARKERS
                                 if (isUserRolled) {
-                                    markers.push({ text: `You Rolled #${rerollSeq}`, type: 'user' });
+                                    markers.push({ text: `Bạn đã Roll #${rerollSeq}`, type: 'user' });
                                 } else if (isUserPick) {
-                                    markers.push({ text: 'Your Pick', type: 'user' });
+                                    markers.push({ text: 'Bạn chọn', type: 'user' });
                                 }
 
                                 // PRO MARKERS
                                 if (isProRolled) {
                                     const proOrder = proRolledSlots.indexOf(idx);
-                                    markers.push({ text: `${proPlayerName} Rolled${proOrder !== -1 ? ` #${proOrder + 1}` : ''}`, type: 'pro' });
+                                    markers.push({ text: `${proPlayerName} đã Roll${proOrder !== -1 ? ` #${proOrder + 1}` : ''}`, type: 'pro' });
                                 } else if (isProPick) {
-                                    markers.push({ text: `${proPlayerName}'s Pick`, type: 'pro' });
+                                    markers.push({ text: `${proPlayerName} chọn`, type: 'pro' });
                                 }
 
                                 return (
@@ -189,7 +184,7 @@ export const DecisionReview: React.FC<DecisionReviewProps> = ({
                                             isUserPick={isUserPick}
                                             isProPick={isProPick}
                                             proPlayerName={proPlayerName}
-                                            showVotes={isUserPick || isProPick}
+                                            showVotes={true}
                                             votePercent={getVotePercent(aug.title)}
                                             voteCount={getVoteCount(aug.title)}
                                             markers={markers}
@@ -213,10 +208,10 @@ export const DecisionReview: React.FC<DecisionReviewProps> = ({
                                 // Build markers array - Only show if Picked or available
                                 const markers: { text: string; type: 'user' | 'pro' }[] = [];
                                 if (isUserPick) {
-                                    markers.push({ text: 'Your Pick', type: 'user' });
+                                    markers.push({ text: 'Bạn chọn', type: 'user' });
                                 }
                                 if (isProPick) {
-                                    markers.push({ text: `${proPlayerName}'s Pick`, type: 'pro' });
+                                    markers.push({ text: `${proPlayerName} chọn`, type: 'pro' });
                                 }
 
                                 return (
@@ -226,7 +221,7 @@ export const DecisionReview: React.FC<DecisionReviewProps> = ({
                                             isUserPick={isUserPick}
                                             isProPick={isProPick}
                                             proPlayerName={proPlayerName}
-                                            showVotes={isUserPick || isProPick}
+                                            showVotes={true}
                                             votePercent={getVotePercent(aug.title)}
                                             voteCount={getVoteCount(aug.title)}
                                             markers={markers}
@@ -241,7 +236,7 @@ export const DecisionReview: React.FC<DecisionReviewProps> = ({
                 {/* --- EXPLANATION SECTION --- */}
                 {explanation && (
                     <div className="explanation-section">
-                        <div className="explanation-title">EXPLANATION</div>
+                        <div className="explanation-title">GIẢI THÍCH</div>
                         <p className="explanation-text">{explanation}</p>
                     </div>
                 )}

@@ -68,6 +68,9 @@ export interface PuzzleScenario {
     opponents?: OpponentData[];
     // Starting items/components available to the player
     startingItems?: (Item | null)[];
+    // Game Info (Ionia Path & Void Mods)
+    ioniaPathId?: string;
+    voidModIds?: string[];
 }
 
 export interface OpponentData {

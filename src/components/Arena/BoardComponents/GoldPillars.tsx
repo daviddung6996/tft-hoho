@@ -29,7 +29,7 @@ export const GoldPillarHexesPlayer: React.FC<{ goldAmount: number }> = ({ goldAm
     return (
         <div className="gold-pillar-container player-side">
             {slots.map((index) => (
-                <div key={index} className="gold-pillar-hex" style={{ opacity: index < coinsToShow ? 1 : 0 }}>
+                <div key={index} className="gold-pillar-hex" style={{ opacity: index >= (5 - coinsToShow) ? 1 : 0 }}>
                     <img
                         src={goldIconImg}
                         alt={`Player Gold ${index + 1}`}

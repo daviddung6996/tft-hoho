@@ -1,5 +1,6 @@
 import React from 'react';
 import { Item } from '../../services/itemService';
+import { ItemTooltip } from '../common/HextechTooltip';
 import './ItemPanel.css';
 
 interface ItemPanelProps {
@@ -15,16 +16,23 @@ export const ItemPanel: React.FC<ItemPanelProps> = ({ items = [] }) => {
         <div className="item-panel-container">
             {/* Display puzzle items */}
             {validItems.map((item, index) => (
-                <div key={item.id || index} className="item-slot active-slot">
-                    {item.icon && (
-                        <img
-                            src={item.icon}
-                            alt={item.name}
-                            className="item-icon-image"
-                            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-                        />
-                    )}
-                </div>
+                <ItemTooltip
+                    key={item.id || index}
+                    name={item.name}
+                    description={item.description || ''}
+                    position="right"
+                >
+                    <div className="item-slot active-slot">
+                        {item.icon && (
+                            <img
+                                src={item.icon}
+                                alt={item.name}
+                                className="item-icon-image"
+                                style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                            />
+                        )}
+                    </div>
+                </ItemTooltip>
             ))}
 
             {/* Empty slots below */}
@@ -34,3 +42,4 @@ export const ItemPanel: React.FC<ItemPanelProps> = ({ items = [] }) => {
         </div>
     );
 };
+

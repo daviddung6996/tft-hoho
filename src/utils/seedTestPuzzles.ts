@@ -11,9 +11,9 @@ export const seedTestPuzzles = async () => {
         rank: 'Challenger',
         stage: '4-2',
         augments: [
-            { id: 'test-1', title: "Test Augment 1", description: "Desc 1", icon: "https://raw.communitydragon.org/latest/game/assets/maps/tft/icons/augments/hexcore/tft13_augment_crownguarded_gold.tft_set13.png", tier: 2, rarity: 'gold' },
-            { id: 'test-2', title: "Test Augment 2", description: "Desc 2", icon: "https://raw.communitydragon.org/latest/game/assets/maps/tft/icons/augments/hexcore/tft13_augment_sniper_focus_gold.tft_set13.png", tier: 2, rarity: 'gold' },
-            { id: 'test-3', title: "Test Augment 3", description: "Desc 3", icon: "https://raw.communitydragon.org/latest/game/assets/maps/tft/icons/augments/hexcore/tft13_augment_shred_split.tft_set13.png", tier: 2, rarity: 'gold' }
+            { id: 'test-1', title: "Test Augment 1", description: "Desc 1", icon: "https://raw.communitydragon.org/latest/game/assets/maps/tft/icons/augments/hexcore/tft13_augment_crownguarded_gold.tft_set13.png", tier: 2 },
+            { id: 'test-2', title: "Test Augment 2", description: "Desc 2", icon: "https://raw.communitydragon.org/latest/game/assets/maps/tft/icons/augments/hexcore/tft13_augment_sniper_focus_gold.tft_set13.png", tier: 2 },
+            { id: 'test-3', title: "Test Augment 3", description: "Desc 3", icon: "https://raw.communitydragon.org/latest/game/assets/maps/tft/icons/augments/hexcore/tft13_augment_shred_split.tft_set13.png", tier: 2 }
         ],
         rerollAugments: [],
         secondRerollAugments: [],
@@ -23,7 +23,7 @@ export const seedTestPuzzles = async () => {
         proPickIndex: -1,
         proFirstRoll: [],
         proSecondRoll: [],
-        proFinalPick: { id: 'temp', title: 'TBD', description: '', icon: '', rarity: 'silver', tier: 1 } as any,
+        proFinalPick: { id: 'temp', title: 'TBD', description: '', icon: '', tier: 1 } as any,
         proPickRound: 0,
 
         playerBoard: [],
@@ -76,10 +76,10 @@ export const seedTestPuzzles = async () => {
 
     try {
         await puzzleService.save(puzzle1);
-        console.log("Successfully seeded puzzle: " + puzzle1.id);
-        alert("Seeding Complete! Puzzle ID: " + puzzle1.id);
+        console.log("✅ Successfully seeded puzzle: " + puzzle1.id);
+        return puzzle1.id;
     } catch (e) {
-        console.error("Seeding failed", e);
-        alert("Seeding Failed: " + e);
+        console.error("❌ Seeding failed", e);
+        throw e; // Let caller handle the error notification
     }
 };

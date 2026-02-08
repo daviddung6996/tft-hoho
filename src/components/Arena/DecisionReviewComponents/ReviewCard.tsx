@@ -42,24 +42,26 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({
                 <div className="augment-info-col">
                     <span className="augment-mini-title">{augment.title}</span>
 
-                    {/* Markers Section - Always rendered to maintain height, or handle spacing */}
-                    <div className="pick-markers" style={{ marginTop: '0.4cqw' }}>
-                        {markers.map((marker, idx) => (
-                            <React.Fragment key={idx}>
-                                {idx > 0 && <span className="marker-separator"> • </span>}
-                                <span className="marker-text" style={{
-                                    color: marker.type === 'user' ? '#c8aa6e' : '#00A3FF',
-                                    fontSize: '0.65cqw',
-                                    fontWeight: 700,
-                                    textTransform: 'uppercase'
-                                }}>
-                                    {marker.text}
-                                </span>
-                            </React.Fragment>
-                        ))}
-                    </div>
+                    {/* Markers Section - Only render when there are markers */}
+                    {markers.length > 0 && (
+                        <div className="pick-markers" style={{ marginTop: '0.4cqw' }}>
+                            {markers.map((marker, idx) => (
+                                <React.Fragment key={idx}>
+                                    {idx > 0 && <span className="marker-separator"> • </span>}
+                                    <span className="marker-text" style={{
+                                        color: marker.type === 'user' ? '#c8aa6e' : '#00A3FF',
+                                        fontSize: '0.65cqw',
+                                        fontWeight: 700,
+                                        textTransform: 'uppercase'
+                                    }}>
+                                        {marker.text}
+                                    </span>
+                                </React.Fragment>
+                            ))}
+                        </div>
+                    )}
 
-                    {showVotes && (isUserPick || isProPick) && (
+                    {showVotes && voteCount > 0 && (
                         <div className="vote-section">
                             <span className="vote-stats" style={{ marginRight: 'auto', fontSize: '0.8cqw', fontWeight: 600, color: '#e2e8f0' }}>
                                 {votePercent}% <span style={{ fontSize: '0.6cqw', color: '#94a3b8', fontWeight: 400 }}>{voteCount} votes</span>
@@ -69,7 +71,7 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({
                                     className="vote-bar-fill"
                                     style={{
                                         width: `${votePercent}%`,
-                                        background: isUserPick && isProPick ? 'linear-gradient(90deg, #4ade80, #3b82f6)' : undefined
+                                        background: isUserPick && isProPick ? 'linear-gradient(90deg, #c8aa6e, #d4b876)' : undefined
                                     }}
                                 />
                             </div>

@@ -168,7 +168,7 @@ const AugmentChoiceBuilder: React.FC<AugmentChoiceBuilderProps> = ({
                             <button
                                 className="acb-slot-clear"
                                 onClick={(e) => { e.stopPropagation(); handleClearSlot(type, index); }}
-                                title="Clear Augment"
+                                title="Xoá Augments"
                             >✕</button>
                         </>
                     ) : (
@@ -184,7 +184,7 @@ const AugmentChoiceBuilder: React.FC<AugmentChoiceBuilderProps> = ({
                                 <button
                                     className={`acb-action-btn reroll ${isRerolled ? 'active' : ''}`}
                                     onClick={(e) => { e.stopPropagation(); toggleProReroll(type as 'initial' | 'reroll', index); }}
-                                    title="Mark as Pro Reroll"
+                                    title="Đánh dấu Pro đã Roll"
                                 >
                                     R
                                     {isRerolled && <span className="acb-badge">{rerollOrder + 1}</span>}
@@ -193,7 +193,7 @@ const AugmentChoiceBuilder: React.FC<AugmentChoiceBuilderProps> = ({
                             <button
                                 className={`acb-action-btn pick ${isProPicked ? 'active' : ''}`}
                                 onClick={(e) => { e.stopPropagation(); setProPick(flatIndex); }}
-                                title="Mark as Pro Pick"
+                                title="Đánh dấu Pro đã chọn"
                             >
                                 P
                             </button>
@@ -210,14 +210,14 @@ const AugmentChoiceBuilder: React.FC<AugmentChoiceBuilderProps> = ({
                 {[0, 1, 2].map(index => (
                     <div key={index} className="acb-column">
                         <div className="acb-slot-group">
-                            <div className="acb-slot-label">Initial Choice {index + 1}</div>
+                            <div className="acb-slot-label">Lựa chọn ban đầu {index + 1}</div>
                             {renderSlot('initial', index)}
                         </div>
 
                         <div className="acb-arrow">↓</div>
 
                         <div className="acb-slot-group">
-                            <div className="acb-slot-label">Reroll Option {index + 4}</div>
+                            <div className="acb-slot-label">Roll lại {index + 4}</div>
                             {renderSlot('reroll', index)}
                         </div>
 
@@ -225,7 +225,7 @@ const AugmentChoiceBuilder: React.FC<AugmentChoiceBuilderProps> = ({
                             <>
                                 <div className="acb-arrow">↓</div>
                                 <div className="acb-slot-group">
-                                    <div className="acb-slot-label">Teemo Reroll Option {index + 7}</div>
+                                    <div className="acb-slot-label">Teemo Roll lại {index + 7}</div>
                                     {renderSlot('secondReroll', index)}
                                 </div>
                             </>
@@ -243,7 +243,7 @@ const AugmentChoiceBuilder: React.FC<AugmentChoiceBuilderProps> = ({
                         onChange={handleToggleExtraReroll}
                     />
                     <div className="acb-toggle-slider"></div>
-                    <span>Advanced: Enable extra reroll (Teemo Encounter)</span>
+                    <span>Nâng cao: Bật Roll lại thêm (Sự kiện Teemo)</span>
                 </label>
             </div>
 
@@ -255,7 +255,7 @@ const AugmentChoiceBuilder: React.FC<AugmentChoiceBuilderProps> = ({
                             <input
                                 type="text"
                                 className="acb-search-input"
-                                placeholder="Search augments..."
+                                placeholder="Tìm Augments..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 autoFocus

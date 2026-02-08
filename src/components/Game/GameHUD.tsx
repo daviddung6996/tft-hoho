@@ -25,9 +25,9 @@ export const GameHUD: React.FC<GameHUDProps> = ({
 }) => {
     return (
         <>
-            {/* Stage Indicator - Top Left */}
+            {/* Stage Indicator - Top Center */}
             <div className="stage-indicator">
-                <span className="stage-label">Stage</span>
+                <span className="stage-label">Round</span>
                 <span className="stage-value">{stage}</span>
             </div>
 

@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.env
+.DS_Store
+*.log
+.vscode/
+.idea/
+coverage/
+build/
+.gemini/
+*.ps1
+*.sh
+Desktop.ini
+Thumbs.db

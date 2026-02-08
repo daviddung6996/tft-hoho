@@ -49,7 +49,7 @@ const AdminDeleteModal: React.FC<AdminDeleteModalProps> = ({ isOpen, itemName, i
                         letterSpacing: '0.05em',
                         fontSize: '1.25rem'
                     }}>
-                        Confirm Deletion
+                        Xác nhận xoá
                     </h3>
                 </div>
 
@@ -61,7 +61,7 @@ const AdminDeleteModal: React.FC<AdminDeleteModalProps> = ({ isOpen, itemName, i
                         margin: 0,
                         fontFamily: 'Inter, sans-serif'
                     }}>
-                        Are you sure you want to delete <br />
+                        Bạn có chắc muốn xoá <br />
                         <strong style={{
                             color: '#FF4E50', // Warning Red
                             fontSize: '1.1em',
@@ -69,7 +69,7 @@ const AdminDeleteModal: React.FC<AdminDeleteModalProps> = ({ isOpen, itemName, i
                             margin: '0.5rem 0'
                         }}>{itemName}</strong>
                         <span style={{ fontSize: '0.9em', color: '#94A3B8', display: 'block' }}>
-                            This action cannot be undone.
+                            Hành động này không thể hoàn tác.
                         </span>
                     </p>
                 </div>
@@ -99,7 +99,7 @@ const AdminDeleteModal: React.FC<AdminDeleteModalProps> = ({ isOpen, itemName, i
                             transition: 'all 0.2s'
                         }}
                     >
-                        Cancel
+                        Huỷ
                     </button>
                     <button
                         onClick={onConfirm}
@@ -121,7 +121,7 @@ const AdminDeleteModal: React.FC<AdminDeleteModalProps> = ({ isOpen, itemName, i
                             opacity: isDeleting ? 0.7 : 1
                         }}
                     >
-                        {isDeleting ? 'Deleting...' : 'Delete'}
+                        {isDeleting ? 'Đang xoá...' : 'Xoá'}
                     </button>
                 </div>
             </div>

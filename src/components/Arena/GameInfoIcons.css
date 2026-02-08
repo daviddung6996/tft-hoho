@@ -1,0 +1,215 @@
+/* ==========================================================================
+   GAME INFO ICONS - Ionia Path & Void Mod Indicators
+   ========================================================================== */
+
+.game-info-icons {
+    position: absolute;
+    left: 65.98cqw;
+    top: 45.83cqw;
+    z-index: 50;
+    display: flex;
+    flex-direction: row;
+    gap: 0.5cqw;
+    pointer-events: auto;
+}
+
+/* Individual Icon Container */
+.game-info-icon {
+    width: 3.5cqw;
+    height: 3.5cqw;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+
+    /* Hexagon shape - pointy topped (mũi nhọn lên) */
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    background: linear-gradient(135deg, #2a4a4e 0%, #1a2f32 100%);
+    border: none;
+}
+
+/* Inner border effect using pseudo-element */
+.game-info-icon::before {
+    content: '';
+    position: absolute;
+    inset: 0.15cqw;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    background: linear-gradient(135deg, #1f4548 0%, #0f2428 100%);
+    z-index: 1;
+}
+
+/* Icon image */
+.game-info-icon img {
+    position: relative;
+    z-index: 2;
+    width: 70%;
+    height: 70%;
+    object-fit: contain;
+    filter: drop-shadow(0 0 2px rgba(200, 170, 110, 0.3));
+}
+
+/* Ionia specific styling */
+.game-info-icon.ionia-icon::before {
+    background: linear-gradient(135deg, #2a5a5e 0%, #153538 100%);
+}
+
+/* Void specific styling */
+.game-info-icon.void-icon::before {
+    background: linear-gradient(135deg, #3a2a5e 0%, #1f1538 100%);
+}
+
+/* ==========================================================================
+   GAME INFO TOOLTIP STYLING
+   ========================================================================== */
+
+.game-info-tooltip-portal {
+    position: fixed;
+    z-index: 999999;
+    pointer-events: none;
+
+    /* Hextech Panel Style */
+    background: linear-gradient(180deg, #153a3e 0%, #051c1e 100%);
+    border: 0.1cqw solid #c8aa6e;
+    box-shadow: 0 0 1.5cqw rgba(200, 170, 110, 0.25);
+    backdrop-filter: blur(8px);
+
+    padding: 1cqw 1.2cqw;
+    min-width: 18cqw;
+    max-width: 24cqw;
+}
+
+/* Position adjustments */
+.game-info-tooltip-portal.position-right {
+    transform: translateY(-50%);
+}
+
+.game-info-tooltip-portal.position-top {
+    transform: translate(-50%, -100%);
+    margin-top: -0.5cqw;
+}
+
+.game-info-tooltip-portal.position-bottom {
+    transform: translateX(-50%);
+    margin-top: 0.5cqw;
+}
+
+/* Header with icon and title */
+.game-info-header {
+    display: flex;
+    align-items: center;
+    gap: 0.6cqw;
+    margin-bottom: 0.6cqw;
+    padding-bottom: 0.5cqw;
+    border-bottom: 0.05cqw solid rgba(200, 170, 110, 0.3);
+}
+
+.game-info-header-icon {
+    width: 2cqw;
+    height: 2cqw;
+    flex-shrink: 0;
+}
+
+.game-info-header-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.game-info-title {
+    font-family: 'Spectral', serif;
+    font-size: 1cqw;
+    font-weight: 700;
+    color: #c8aa6e;
+    text-transform: uppercase;
+    letter-spacing: 0.05cqw;
+}
+
+/* Description */
+.game-info-description {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7cqw;
+    color: #94A3B8;
+    line-height: 1.4;
+    margin-bottom: 0.6cqw;
+}
+
+/* Breakpoints table for Ionia */
+.game-info-breakpoints {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3cqw;
+}
+
+.game-info-breakpoint {
+    display: flex;
+    align-items: center;
+    gap: 0.5cqw;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.65cqw;
+}
+
+.game-info-breakpoint-level {
+    color: #c8aa6e;
+    font-weight: 600;
+    min-width: 1.5cqw;
+}
+
+.game-info-breakpoint-stats {
+    color: #F0E6D2;
+}
+
+/* Void Mods list */
+.game-info-mods-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5cqw;
+}
+
+.game-info-mod-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5cqw;
+}
+
+.game-info-mod-index {
+    font-family: 'Spectral', serif;
+    font-size: 0.75cqw;
+    font-weight: 700;
+    color: #c8aa6e;
+    min-width: 1cqw;
+}
+
+.game-info-mod-icon {
+    width: 1.5cqw;
+    height: 1.5cqw;
+    flex-shrink: 0;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 0.15cqw;
+    padding: 0.1cqw;
+}
+
+.game-info-mod-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.game-info-mod-details {
+    flex: 1;
+}
+
+.game-info-mod-name {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7cqw;
+    font-weight: 600;
+    color: #F0E6D2;
+    margin-bottom: 0.15cqw;
+}
+
+.game-info-mod-desc {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.6cqw;
+    color: #94A3B8;
+    line-height: 1.3;
+}

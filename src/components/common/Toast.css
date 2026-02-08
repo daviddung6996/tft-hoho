@@ -47,6 +47,30 @@
     color: #ef4444;
 }
 
+.toast-message {
+    flex: 1;
+}
+
+.toast-action-btn {
+    background: rgba(200, 170, 110, 0.2);
+    border: 0.08cqw solid #c8aa6e;
+    color: #c8aa6e;
+    padding: 0.4cqw 1cqw;
+    border-radius: 0.2cqw;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8cqw;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.05cqw;
+}
+
+.toast-action-btn:hover {
+    background: rgba(200, 170, 110, 0.3);
+    box-shadow: 0 0 0.8cqw rgba(200, 170, 110, 0.4);
+}
+
 @keyframes slideIn {
     from {
         transform: translateY(100%);

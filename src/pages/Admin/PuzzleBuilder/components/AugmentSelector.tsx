@@ -84,7 +84,7 @@ const AugmentSelector: React.FC<AugmentSelectorProps> = ({ selectedAugments, onA
                             <input
                                 type="text"
                                 className="augment-search-input"
-                                placeholder="Search augments..."
+                                placeholder="Tìm Augments..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 autoFocus
@@ -100,7 +100,7 @@ const AugmentSelector: React.FC<AugmentSelectorProps> = ({ selectedAugments, onA
                             ))}
                             {filteredAugments.length === 0 && (
                                 <div style={{ color: '#64748b', gridColumn: '1/-1', textAlign: 'center', marginTop: '2rem' }}>
-                                    No augments found.
+                                    Không tìm thấy Augments.
                                 </div>
                             )}
                         </div>

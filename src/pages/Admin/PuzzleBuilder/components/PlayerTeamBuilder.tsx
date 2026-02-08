@@ -5,6 +5,7 @@ import { Item } from '../../../../services/itemService';
 import ChampionPool from './ChampionPool';
 import HexBoard, { DragItem } from './HexBoard';
 import AugmentSelector from './AugmentSelector';
+import GameInfoSelector from './GameInfoSelector';
 import ItemChoiceBuilder from './ItemChoiceBuilder';
 import './PlayerTeamBuilder.css';
 
@@ -17,6 +18,10 @@ interface PlayerTeamBuilderProps {
     items: (Item | null)[];
     onItemsChange: (items: (Item | null)[]) => void;
     synergies: Synergy[];
+    ioniaPathId?: string;
+    voidModIds?: string[];
+    onIoniaPathChange?: (pathId: string) => void;
+    onVoidModsChange?: (modIds: string[]) => void;
 }
 
 const PlayerTeamBuilder: React.FC<PlayerTeamBuilderProps> = ({
@@ -27,7 +32,11 @@ const PlayerTeamBuilder: React.FC<PlayerTeamBuilderProps> = ({
     onAugmentsChange,
     items,
     onItemsChange,
-    synergies
+    synergies,
+    ioniaPathId,
+    voidModIds,
+    onIoniaPathChange,
+    onVoidModsChange
 }) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [costFilter, setCostFilter] = useState<number | null>(null);
@@ -214,7 +223,7 @@ const PlayerTeamBuilder: React.FC<PlayerTeamBuilderProps> = ({
         }
 
         // Board and bench full
-        alert('Board and bench are full!');
+        // Board and bench full - silently ignored
     };
 
     return (
@@ -247,7 +256,17 @@ const PlayerTeamBuilder: React.FC<PlayerTeamBuilderProps> = ({
                 />
 
                 <div style={{ padding: '1cqw', borderBottom: '0.1cqw solid var(--border-subtle)', borderTop: '0.1cqw solid var(--border-subtle)', color: 'var(--text-label)', fontSize: '0.9cqw', fontWeight: 600, marginTop: '2cqw' }}>
-                    STARTING ITEMS
+                    GAME INFO
+                </div>
+                <GameInfoSelector
+                    selectedIoniaPathId={ioniaPathId}
+                    selectedVoidModIds={voidModIds}
+                    onIoniaPathChange={onIoniaPathChange || (() => { })}
+                    onVoidModsChange={onVoidModsChange || (() => { })}
+                />
+
+                <div style={{ padding: '1cqw', borderBottom: '0.1cqw solid var(--border-subtle)', borderTop: '0.1cqw solid var(--border-subtle)', color: 'var(--text-label)', fontSize: '0.9cqw', fontWeight: 600, marginTop: '2cqw' }}>
+                    TRANG BỊ
                 </div>
                 <div style={{ padding: '0.5cqw' }}>
                     <ItemChoiceBuilder

@@ -1,13 +1,17 @@
 import { Champion, Synergy, UnitData } from '../data/types';
 import { Trait } from '../services/traitService';
 
+/** Match a trait name (English, from champion.traits) against trait definitions */
+function findTraitDef(traitName: string, traits: Trait[]): Trait | undefined {
+    const lower = traitName.toLowerCase();
+    return traits.find(t =>
+        t.name_en?.toLowerCase() === lower ||
+        t.name.toLowerCase() === lower
+    );
+}
+
 /**
  * Calculates active synergies based on the units on the board.
- * 
- * @param units - List of units currently on the board/bench (we only care about board units for traits usually, but checks row/col)
- * @param champions - Master list of champion data to look up traits
- * @param traits - Master list of trait definitions from DB
- * @returns Sorted list of active or partially active synergies
  */
 export const calculateSynergies = (
     units: UnitData[],
@@ -44,8 +48,8 @@ export const calculateSynergies = (
     const synergies: Synergy[] = [];
 
     Object.entries(activeTraitsCount).forEach(([traitName, count]) => {
-        // Find trait definition
-        const traitDef = traits.find(t => t.name === traitName);
+        // Find trait definition (match by English name or Vietnamese name)
+        const traitDef = findTraitDef(traitName, traits);
         if (!traitDef) return;
 
         // Extract breakpoints and styles from effects
@@ -85,8 +89,8 @@ export const calculateSynergies = (
         }
 
         synergies.push({
-            id: traitDef.id,
-            name: traitDef.name,
+            id: traitName.toLowerCase().replace(/\s+/g, '-'), // English name for asset lookup
+            name: traitDef.name, // Vietnamese from DB
             breakpoints: breakpoints,
             styles: styles,
             activeCount: count,

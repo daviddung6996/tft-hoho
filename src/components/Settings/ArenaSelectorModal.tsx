@@ -21,7 +21,7 @@ export const ArenaSelectorModal: React.FC<ArenaSelectorModalProps> = ({
         <div className="arena-modal-overlay" onClick={onClose}>
             <div className="arena-modal-content" onClick={(e) => e.stopPropagation()}>
                 <div className="arena-modal-header">
-                    <h2>Select Arena</h2>
+                    <h2>Chọn Đấu Trường</h2>
                     <button className="close-btn" onClick={onClose}>×</button>
                 </div>
                 <div className="arena-grid">

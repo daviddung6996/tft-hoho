@@ -3,10 +3,14 @@ import './Board.css';
 
 import { UnitData } from '../../data/types';
 import { AugmentData } from '../../services/augmentService';
+import { IoniaPath, VoidMod } from '../../data/gameInfoData';
 import { BOARD_CONFIG } from './BoardComponents/BoardConfig';
 import { BoardUnit, calculatePosition } from './BoardComponents/BoardUnit';
 import { BoardHalf } from './BoardComponents/BoardHalf';
 import { OpponentBenchArea, BenchArea } from './BoardComponents/BenchComponents';
+import { AugmentTooltip } from '../common/HextechTooltip';
+import { GameInfoIcons } from './GameInfoIcons';
+
 
 interface BoardProps {
     units?: UnitData[];
@@ -16,6 +20,10 @@ interface BoardProps {
     opponentBenchUnits?: UnitData[];
     augmentTreeUrl?: string; // Dynamic Augment Tree Asset
     opponentAugments?: AugmentData[]; // [NEW] Opponent's augments for the tree
+    playerAugmentTreeUrl?: string; // Player's Augment Tree Asset
+    playerAugments?: AugmentData[]; // Player's augments for the tree
+    ioniaPath?: IoniaPath; // [NEW] Current game's Ionia Path
+    voidMods?: VoidMod[]; // [NEW] Current game's Void Mods (3 items)
 }
 
 /**
@@ -29,7 +37,11 @@ export const Board: React.FC<BoardProps> = ({
     opponentUnits = [],
     opponentBenchUnits = [],
     augmentTreeUrl,
-    opponentAugments = [] // Default to empty array
+    opponentAugments = [], // Default to empty array
+    playerAugmentTreeUrl,
+    playerAugments = [],
+    ioniaPath,
+    voidMods = []
 }) => {
     const boardContainerRef = React.useRef<HTMLDivElement>(null);
 
@@ -76,27 +88,39 @@ export const Board: React.FC<BoardProps> = ({
                                 cursor: 'default'
                             }}
                         >
-                            {/* Dynamic Augments Popup - Fixed 3 Slots */}
-                            <div className="augment-tree-popups">
-                                {[0, 1, 2].map((slotIndex) => {
-                                    const aug = opponentAugments[slotIndex];
-                                    return (
-                                        <div key={slotIndex} className="augment-tree-icon" style={{ opacity: aug ? 1 : 0 }}>
-                                            {aug && <img src={aug.icon} alt={aug.title} draggable={false} />}
-                                        </div>
-                                    );
-                                })}
-                            </div>
+                            {/* Dynamic Augments Popup - Only show when augments exist */}
+                            {opponentAugments.some(aug => aug) && (
+                                <div className="augment-tree-popups">
+                                    {opponentAugments.filter(aug => aug).map((aug, index) => (
+                                        <AugmentTooltip
+                                            key={index}
+                                            title={aug.title}
+                                            description={aug.description || ''}
+                                            tier={aug.tier || 2}
+                                            position="bottom"
+                                        >
+                                            <div className="augment-tree-icon" style={{ opacity: 1 }}>
+                                                <img src={aug.icon} alt={aug.title} draggable={false} />
+                                            </div>
+                                        </AugmentTooltip>
+                                    ))}
+                                </div>
+                            )}
 
                             <div className="augment-tree-inner">
                                 <img src={augmentTreeUrl} alt="Augment Tree" draggable={false} />
                             </div>
                         </div>
                     )}
+
                 </>
             ) : (
                 <>
                     {/* PLAYER VIEW: Board + Bench */}
+                    {/* Game Info Icons - Ionia Path & Void Mods - Display on Player's board */}
+                    {ioniaPath && voidMods.length > 0 && (
+                        <GameInfoIcons ioniaPath={ioniaPath} voidMods={voidMods} />
+                    )}
                     <div className="board-half player-side">
                         <div className="board-grid">
                             {/* Render grid cells with drop handlers */}
@@ -121,13 +145,50 @@ export const Board: React.FC<BoardProps> = ({
                             ))}
 
                             {/* Render Units */}
-                            {units.filter(u => u.row !== undefined && u.col !== undefined).map(u => (
-                                <BoardUnit key={u.id} unit={u as UnitData & { row: number; col: number }} hexConfig={BOARD_CONFIG.HEX} />
-                            ))}
+                            {units
+                                .filter(u => u.row !== undefined && u.col !== undefined)
+                                .sort((a, b) => (a.row! - b.row!) || (a.col! - b.col!))
+                                .map(u => (
+                                    <BoardUnit key={u.id} unit={u as UnitData & { row: number; col: number }} hexConfig={BOARD_CONFIG.HEX} />
+                                ))}
                         </div>
                     </div>
 
                     <BenchArea units={benchUnits} isMirrored={false} config={BOARD_CONFIG.BENCH} />
+
+                    {/* Augment Tree - STATIC POSITION on Player Board */}
+                    {playerAugmentTreeUrl && (
+                        <div
+                            className="augment-tree player-side"
+                            style={{
+                                left: '27.98cqw',
+                                top: '17.21cqw',
+                                cursor: 'default'
+                            }}
+                        >
+                            {playerAugments.some(aug => aug) && (
+                                <div className="augment-tree-popups">
+                                    {playerAugments.filter(aug => aug).map((aug, index) => (
+                                        <AugmentTooltip
+                                            key={index}
+                                            title={aug.title}
+                                            description={aug.description || ''}
+                                            tier={aug.tier || 2}
+                                            position="bottom"
+                                        >
+                                            <div className="augment-tree-icon" style={{ opacity: 1 }}>
+                                                <img src={aug.icon} alt={aug.title} draggable={false} />
+                                            </div>
+                                        </AugmentTooltip>
+                                    ))}
+                                </div>
+                            )}
+
+                            <div className="augment-tree-inner">
+                                <img src={playerAugmentTreeUrl} alt="Augment Tree" draggable={false} />
+                            </div>
+                        </div>
+                    )}
                 </>
             )}
         </div>

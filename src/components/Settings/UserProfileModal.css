@@ -1,0 +1,405 @@
+/* ================================================
+   UserProfileModal — Hextech Premium Stats Panel
+   ================================================ */
+
+.profile-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(6px);
+}
+
+/* ---- Modal Shell ---- */
+.profile-modal {
+    width: 65cqw;
+    max-height: 82cqh;
+    background:
+        radial-gradient(ellipse at 50% 0%, rgba(200, 170, 110, 0.04) 0%, transparent 60%),
+        linear-gradient(180deg, #153a3e 0%, #051c1e 100%);
+    border: 0.1cqw solid rgba(200, 170, 110, 0.35);
+    box-shadow:
+        0 0 3cqw rgba(200, 170, 110, 0.15),
+        inset 0 0.5cqw 2cqw rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* ---- Header ---- */
+.profile-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2cqw 2cqw;
+    border-bottom: 0.06cqw solid rgba(200, 170, 110, 0.2);
+    background: linear-gradient(180deg, rgba(200, 170, 110, 0.05) 0%, transparent 100%);
+}
+
+.profile-header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.8cqw;
+}
+
+.profile-header-accent {
+    width: 0.2cqw;
+    height: 1.8cqw;
+    background: linear-gradient(180deg, #c8aa6e, rgba(200, 170, 110, 0.2));
+}
+
+.profile-modal-title {
+    font-family: 'Spectral', serif;
+    font-size: 1.5cqw;
+    color: #c8aa6e;
+    text-transform: uppercase;
+    letter-spacing: 0.15cqw;
+    margin: 0;
+    font-weight: 700;
+}
+
+.profile-close-btn {
+    width: 1.8cqw;
+    height: 1.8cqw;
+    background: transparent;
+    border: 0.06cqw solid rgba(200, 170, 110, 0.25);
+    color: rgba(200, 170, 110, 0.5);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.35cqw;
+    transition: border-color 0.2s, color 0.2s;
+}
+
+.profile-close-btn:hover {
+    border-color: #c8aa6e;
+    color: #F0E6D2;
+}
+
+/* ---- Scrollable Content ---- */
+.profile-modal-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5cqw 2cqw 2cqw;
+}
+
+.profile-modal-content::-webkit-scrollbar {
+    width: 0.3cqw;
+}
+
+.profile-modal-content::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.profile-modal-content::-webkit-scrollbar-thumb {
+    background: rgba(200, 170, 110, 0.2);
+    border-radius: 0.15cqw;
+}
+
+/* ================================================
+   Stats Summary Cards
+   ================================================ */
+.stats-summary {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1cqw;
+    margin-bottom: 1.5cqw;
+}
+
+.stat-card {
+    background:
+        linear-gradient(180deg, rgba(21, 58, 62, 0.5) 0%, rgba(5, 28, 30, 0.8) 100%);
+    border: 0.06cqw solid rgba(200, 170, 110, 0.2);
+    padding: 1.2cqw 0.8cqw;
+    text-align: center;
+    position: relative;
+    transition: border-color 0.2s;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 0.06cqw;
+    background: linear-gradient(90deg, transparent, rgba(200, 170, 110, 0.3), transparent);
+}
+
+.stat-card:hover {
+    border-color: rgba(200, 170, 110, 0.4);
+}
+
+.stat-value {
+    font-family: 'Spectral', serif;
+    font-size: 2.2cqw;
+    color: #F0E6D2;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.stat-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7cqw;
+    color: rgba(200, 170, 110, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.12cqw;
+    margin-top: 0.5cqw;
+}
+
+/* ================================================
+   Charts Section
+   ================================================ */
+.charts-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1cqw;
+    margin-bottom: 1.5cqw;
+}
+
+.chart-container {
+    background: rgba(5, 28, 30, 0.6);
+    border: 0.06cqw solid rgba(200, 170, 110, 0.15);
+    padding: 1.2cqw;
+    display: flex;
+    flex-direction: column;
+}
+
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.8cqw;
+}
+
+.chart-title {
+    font-family: 'Spectral', serif;
+    font-size: 1cqw;
+    color: #c8aa6e;
+    text-transform: uppercase;
+    letter-spacing: 0.08cqw;
+    font-weight: 700;
+}
+
+.chart-legend {
+    display: flex;
+    align-items: center;
+    gap: 0.4cqw;
+}
+
+.legend-dot {
+    width: 0.5cqw;
+    height: 0.5cqw;
+    border-radius: 50%;
+}
+
+.legend-dot.legend-correct {
+    background: #10B981;
+}
+
+.legend-dot.legend-incorrect {
+    background: #EF4444;
+}
+
+.legend-text {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.65cqw;
+    color: #94A3B8;
+}
+
+/* Fixed-height wrapper so ResponsiveContainer fills it correctly */
+.chart-wrapper {
+    width: 100%;
+    height: 14cqw;
+    min-height: 120px;
+}
+
+.chart-placeholder {
+    height: 14cqw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(200, 170, 110, 0.35);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85cqw;
+}
+
+/* ---- Custom Tooltip ---- */
+.hextech-chart-tooltip {
+    background: rgba(5, 28, 30, 0.95);
+    border: 0.06cqw solid rgba(200, 170, 110, 0.4);
+    padding: 0.5cqw 0.8cqw;
+    pointer-events: none;
+}
+
+.hextech-chart-tooltip-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.65cqw;
+    color: #94A3B8;
+    margin-bottom: 0.15cqw;
+}
+
+.hextech-chart-tooltip-value {
+    font-family: 'Spectral', serif;
+    font-size: 0.9cqw;
+    color: #F0E6D2;
+    font-weight: 600;
+}
+
+/* ================================================
+   Recent Activity
+   ================================================ */
+.recent-activity {
+    background: rgba(5, 28, 30, 0.6);
+    border: 0.06cqw solid rgba(200, 170, 110, 0.15);
+    padding: 1.2cqw;
+}
+
+.recent-activity .chart-title {
+    margin-bottom: 0.8cqw;
+}
+
+.activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15cqw;
+}
+
+.activity-item {
+    display: flex;
+    align-items: center;
+    gap: 0.8cqw;
+    padding: 0.6cqw 0.8cqw;
+    border-left: 0.15cqw solid transparent;
+    background: rgba(0, 0, 0, 0.15);
+    transition: background 0.15s;
+}
+
+.activity-item:hover {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.activity-item.correct {
+    border-left-color: #10B981;
+}
+
+.activity-item.incorrect {
+    border-left-color: #EF4444;
+}
+
+.activity-icon {
+    width: 1.1cqw;
+    height: 1.1cqw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.activity-icon.correct {
+    color: #10B981;
+}
+
+.activity-icon.incorrect {
+    color: #EF4444;
+}
+
+.activity-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.activity-augment {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85cqw;
+    color: #F0E6D2;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.activity-meta {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7cqw;
+    color: #94A3B8;
+    margin-top: 0.1cqw;
+}
+
+.activity-time {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7cqw;
+    color: rgba(200, 170, 110, 0.4);
+    flex-shrink: 0;
+}
+
+/* ================================================
+   Empty & Loading States
+   ================================================ */
+.empty-state {
+    text-align: center;
+    padding: 4cqw 2cqw;
+}
+
+.empty-state-line {
+    width: 4cqw;
+    height: 0.06cqw;
+    background: linear-gradient(90deg, transparent, rgba(200, 170, 110, 0.3), transparent);
+    margin: 0 auto 1.5cqw;
+}
+
+.empty-state-text {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9cqw;
+    color: #94A3B8;
+    line-height: 1.6;
+}
+
+.loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1cqw;
+    padding: 5cqw;
+    color: #94A3B8;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85cqw;
+}
+
+.loading-spinner {
+    width: 2cqw;
+    height: 2cqw;
+    border: 0.12cqw solid rgba(200, 170, 110, 0.15);
+    border-top-color: #c8aa6e;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ================================================
+   Recharts Overrides
+   ================================================ */
+.recharts-cartesian-grid-horizontal line,
+.recharts-cartesian-grid-vertical line {
+    stroke: rgba(200, 170, 110, 0.06);
+}
+
+.recharts-text {
+    fill: #94A3B8;
+    font-family: 'Inter', sans-serif;
+}
+
+/* Prevent default recharts tooltip from showing */
+.recharts-tooltip-wrapper {
+    z-index: 10;
+    pointer-events: none !important;
+}

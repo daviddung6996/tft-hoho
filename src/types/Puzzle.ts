@@ -1,12 +1,12 @@
 export type AugmentId = string;
-export type AugmentRarity = 'silver' | 'gold' | 'prismatic';
+export type AugmentTier = 1 | 2 | 3;
 
 export interface PuzzleAugment {
     id: AugmentId;
     title: string;
     description: string;
     icon: string;
-    rarity: AugmentRarity;
+    tier: AugmentTier;
 }
 
 export type ProActionType = 'REROLL' | 'PICK';

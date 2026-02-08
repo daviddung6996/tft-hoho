@@ -87,15 +87,15 @@
 }
 
 .completion-badge.matched {
-    background-color: rgba(74, 222, 128, 0.15);
-    color: #4ade80;
-    border: 0.08cqw solid #4ade80;
-}
-
-.completion-badge.diverged {
     background-color: rgba(200, 170, 110, 0.15);
     color: #c8aa6e;
     border: 0.08cqw solid #c8aa6e;
+}
+
+.completion-badge.diverged {
+    background-color: rgba(148, 163, 184, 0.15);
+    color: #94a3b8;
+    border: 0.08cqw solid #64748b;
 }
 
 /* Action Buttons - Header (Small) */
@@ -194,15 +194,15 @@
 }
 
 .diverge-badge.matched {
-    background: rgba(74, 222, 128, 0.15);
-    color: #4ade80;
-    border: 0.08cqw solid #4ade80;
-}
-
-.diverge-badge.diverged {
     background: rgba(200, 170, 110, 0.15);
     color: #c8aa6e;
     border: 0.08cqw solid #c8aa6e;
+}
+
+.diverge-badge.diverged {
+    background: rgba(148, 163, 184, 0.15);
+    color: #94a3b8;
+    border: 0.08cqw solid #64748b;
 }
 
 /* Final Description */
@@ -594,8 +594,8 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    /* Spread title/markers/votes */
+    justify-content: flex-start;
+    gap: 0.2cqw;
 }
 
 .marker-separator {

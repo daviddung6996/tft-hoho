@@ -87,11 +87,16 @@
 .board-unit-wrapper {
     position: absolute;
     z-index: 20;
-    pointer-events: none;
-    /* Let interactions pass to the cell if needed */
+    pointer-events: auto;
+    /* Enable for tooltip interaction */
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+/* Elevate unit wrapper on hover so tooltip appears above everything */
+.board-unit-wrapper:hover {
+    z-index: 999999;
 }
 
 /* The visual hexagon for the unit */
@@ -485,4 +490,28 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+}
+
+/* Disable hover effects on augment icons */
+.augment-tree-icon,
+.augment-tree-icon:hover,
+.augment-tree-icon img,
+.augment-tree-icon:hover img,
+.hextech-tooltip-wrapper .augment-tree-icon,
+.hextech-tooltip-wrapper:hover .augment-tree-icon,
+.hextech-tooltip-wrapper .augment-tree-icon img,
+.hextech-tooltip-wrapper:hover .augment-tree-icon img {
+    transform: none !important;
+    filter: none !important;
+    opacity: 1 !important;
+}
+
+/* Ensure all siblings remain visible when hovering */
+.augment-tree-popups .hextech-tooltip-wrapper {
+    opacity: 1 !important;
+}
+
+.augment-tree-popups:hover .hextech-tooltip-wrapper,
+.augment-tree-popups:hover .augment-tree-icon {
+    opacity: 1 !important;
 }
