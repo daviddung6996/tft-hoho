@@ -1,6 +1,8 @@
 node_modules/
 dist/
 .env
+.env.local
+.env.*.local
 .DS_Store
 *.log
 .vscode/
@@ -8,6 +10,10 @@ dist/
 coverage/
 build/
 .gemini/
+.claude/
+.venv/
+__pycache__/
+*.py[cod]
 *.ps1
 *.sh
 Desktop.ini
