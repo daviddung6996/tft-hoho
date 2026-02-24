@@ -63,6 +63,9 @@ export const UnitVisual: React.FC<{ unit: UnitData }> = ({ unit }) => {
                     </div>
                 )}
 
+                {/* Cost-tier hex border frame — slightly larger hex behind the unit */}
+                <div className={`cost-border cost-${unit.cost}`} />
+
                 {/* Unit hex with clip-path */}
                 <div className={`board-unit cost-${unit.cost}`}>
                     <img src={unit.image} alt={unit.name} className="unit-image" draggable={false} />
