@@ -26,6 +26,7 @@ export const TrashView: React.FC<TrashViewProps> = ({ onRestore, onPermanentDele
     const [trashItems, setTrashItems] = useState<DeletedItem[]>([]);
     const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
     const [filterType, setFilterType] = useState<'all' | 'champions' | 'traits' | 'items' | 'augments' | 'puzzles'>('all');
+    const [searchTerm, setSearchTerm] = useState('');
     const [confirmAction, setConfirmAction] = useState<ConfirmAction>(null);
     const [isProcessing, setIsProcessing] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -165,7 +166,16 @@ export const TrashView: React.FC<TrashViewProps> = ({ onRestore, onPermanentDele
         });
     };
 
-    const isAllSelected = trashItems.length > 0 && selectedIds.size === trashItems.length;
+    const filteredTrashItems = trashItems.filter(item => {
+        if (!searchTerm) return true;
+        const searchLower = searchTerm.toLowerCase();
+        const data = item.data;
+        const nameMatch = data.name?.toLowerCase().includes(searchLower) || data.title?.toLowerCase().includes(searchLower);
+        const idMatch = data.id?.toLowerCase().includes(searchLower);
+        return nameMatch || idMatch;
+    });
+
+    const isAllSelected = filteredTrashItems.length > 0 && selectedIds.size === filteredTrashItems.length;
 
     if (loading) {
         return (
@@ -183,39 +193,23 @@ export const TrashView: React.FC<TrashViewProps> = ({ onRestore, onPermanentDele
         );
     }
 
-    if (trashItems.length === 0) {
-        return (
-            <div style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                height: '100%',
-                color: '#94A3B8',
-                gap: '1cqw'
-            }}>
-                <div style={{ fontSize: '3cqw', opacity: 0.5 }}>🗑️</div>
-                <div style={{ fontSize: '1cqw' }}>Thùng rác trống</div>
-            </div>
-        );
-    }
-
     return (
         <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
             {/* Action Bar */}
             <div style={{
                 display: 'flex',
                 justifyContent: 'space-between',
-                padding: '1cqw',
+                alignItems: 'center',
+                padding: '0.8cqw 1cqw',
                 borderBottom: '0.1cqw solid rgba(200, 170, 110, 0.2)',
-                flexShrink: 0
+                flexShrink: 0,
+                gap: '2cqw'
             }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1cqw' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1cqw', flex: 1 }}>
                     <select
                         value={filterType}
                         onChange={(e) => setFilterType(e.target.value as any)}
                         className="hex-input"
-                        style={{ width: 'auto', padding: '0.4cqw 0.8cqw', fontSize: '0.8cqw' }}
                     >
                         <option value="all">Tất cả</option>
                         <option value="champions">Tướng</option>
@@ -224,11 +218,19 @@ export const TrashView: React.FC<TrashViewProps> = ({ onRestore, onPermanentDele
                         <option value="augments">Augments</option>
                         <option value="puzzles">Puzzles</option>
                     </select>
-                    <span style={{ color: '#94A3B8', fontSize: '0.9cqw' }}>
-                        {trashItems.length} mục trong thùng rác
+                    <input
+                        type="text"
+                        className="hex-input"
+                        placeholder="Tìm kiếm theo ID hoặc tên..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        style={{ minWidth: '15cqw' }}
+                    />
+                    <span style={{ color: '#94A3B8', fontSize: '0.9cqw', whiteSpace: 'nowrap' }}>
+                        {filteredTrashItems.length} mục trong thùng rác
                     </span>
                 </div>
-                <div style={{ display: 'flex', gap: '1cqw' }}>
+                <div style={{ display: 'flex', gap: '0.8cqw', flexShrink: 0 }}>
                     {selectedIds.size > 0 && (
                         <>
                             <button
@@ -255,89 +257,105 @@ export const TrashView: React.FC<TrashViewProps> = ({ onRestore, onPermanentDele
                 </div>
             </div>
 
-            {/* Trash Table */}
+            {/* Trash Table or Empty State */}
             <div className="admin-table-container" style={{ flex: 1, overflowY: 'auto' }}>
-                <table className="admin-table">
-                    <thead>
-                        <tr>
-                            <th style={{ width: '3%', textAlign: 'center' }}>
-                                <input
-                                    type="checkbox"
-                                    checked={isAllSelected}
-                                    onChange={toggleSelectAll}
-                                    style={{ cursor: 'pointer', width: '1.2cqw', height: '1.2cqw' }}
-                                />
-                            </th>
-                            <th style={{ width: '12%' }}>Loại</th>
-                            <th style={{ width: '20%' }}>Tên</th>
-                            <th style={{ width: '15%' }}>ID</th>
-                            <th style={{ width: '12%' }}>Ngày xóa</th>
-                            <th style={{ width: '38%' }}>Chi tiết</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {trashItems.map((item) => {
-                            const isSelected = selectedIds.has(item.id);
-                            const data = item.data;
+                {filteredTrashItems.length === 0 ? (
+                    <div style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        height: '100%',
+                        color: '#94A3B8',
+                        gap: '1cqw',
+                        paddingTop: '5cqw'
+                    }}>
+                        <div style={{ fontSize: '3cqw', opacity: 0.5 }}>🗑️</div>
+                        <div style={{ fontSize: '1cqw' }}>Thùng rác trống</div>
+                    </div>
+                ) : (
+                    <table className="admin-table">
+                        <thead>
+                            <tr>
+                                <th style={{ width: '3%', textAlign: 'center' }}>
+                                    <input
+                                        type="checkbox"
+                                        checked={isAllSelected}
+                                        onChange={toggleSelectAll}
+                                        style={{ cursor: 'pointer', width: '1.2cqw', height: '1.2cqw' }}
+                                    />
+                                </th>
+                                <th style={{ width: '12%' }}>Loại</th>
+                                <th style={{ width: '20%' }}>Tên</th>
+                                <th style={{ width: '15%' }}>ID</th>
+                                <th style={{ width: '12%' }}>Ngày xóa</th>
+                                <th style={{ width: '38%' }}>Chi tiết</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {filteredTrashItems.map((item) => {
+                                const isSelected = selectedIds.has(item.id);
+                                const data = item.data;
 
-                            return (
-                                <tr
-                                    key={item.id}
-                                    className={isSelected ? 'selected-row' : ''}
-                                >
-                                    <td>
-                                        <input
-                                            type="checkbox"
-                                            checked={isSelected}
-                                            onChange={() => toggleSelect(item.id)}
-                                            style={{ cursor: 'pointer', width: '1.2cqw', height: '1.2cqw' }}
-                                        />
-                                    </td>
-                                    <td>
-                                        <span style={{
-                                            background: 'rgba(200, 170, 110, 0.15)',
-                                            border: '0.05cqw solid #c8aa6e',
-                                            color: '#c8aa6e',
-                                            padding: '0.2cqw 0.6cqw',
-                                            borderRadius: '0.3cqw',
-                                            fontSize: '0.7cqw',
-                                            textTransform: 'capitalize'
-                                        }}>
-                                            {item.type === 'champions' ? 'Tướng' :
-                                                item.type === 'traits' ? 'Tộc/Hệ' :
-                                                    item.type === 'items' ? 'Trang bị' :
-                                                        item.type === 'augments' ? 'Augment' : 'Puzzle'}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <div style={{ fontWeight: 500, color: '#F0E6D2' }}>
-                                            {data.name || data.title || 'Không tên'}
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div className="id-cell">
-                                            <span title={data.id}>{data.id}</span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span style={{ fontSize: '0.8cqw', color: '#94A3B8' }}>
-                                            {formatDate(item.deleted_at)}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span style={{ fontSize: '0.75cqw', color: '#94A3B8', fontStyle: 'italic' }}>
-                                            {item.type === 'champions' && `Cost: ${data.cost || 'N/A'}`}
-                                            {item.type === 'traits' && `Active: ${data.breakpoints?.join(', ') || 'N/A'}`}
-                                            {item.type === 'items' && `Combined: ${data.combined || 'N/A'}`}
-                                            {item.type === 'augments' && `Tier: ${data.tier || 'N/A'}`}
-                                            {item.type === 'puzzles' && `Stage: ${data.stage || 'N/A'}`}
-                                        </span>
-                                    </td>
-                                </tr>
-                            );
-                        })}
-                    </tbody>
-                </table>
+                                return (
+                                    <tr
+                                        key={item.id}
+                                        className={isSelected ? 'selected-row' : ''}
+                                    >
+                                        <td>
+                                            <input
+                                                type="checkbox"
+                                                checked={isSelected}
+                                                onChange={() => toggleSelect(item.id)}
+                                                style={{ cursor: 'pointer', width: '1.2cqw', height: '1.2cqw' }}
+                                            />
+                                        </td>
+                                        <td>
+                                            <span style={{
+                                                background: 'rgba(200, 170, 110, 0.15)',
+                                                border: '0.05cqw solid #c8aa6e',
+                                                color: '#c8aa6e',
+                                                padding: '0.2cqw 0.6cqw',
+                                                borderRadius: '0.3cqw',
+                                                fontSize: '0.7cqw',
+                                                textTransform: 'capitalize'
+                                            }}>
+                                                {item.type === 'champions' ? 'Tướng' :
+                                                    item.type === 'traits' ? 'Tộc/Hệ' :
+                                                        item.type === 'items' ? 'Trang bị' :
+                                                            item.type === 'augments' ? 'Augment' : 'Puzzle'}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div style={{ fontWeight: 500, color: '#F0E6D2' }}>
+                                                {data.name || data.title || 'Không tên'}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div className="id-cell">
+                                                <span title={data.id}>{data.id}</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span style={{ fontSize: '0.8cqw', color: '#94A3B8' }}>
+                                                {formatDate(item.deleted_at)}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span style={{ fontSize: '0.75cqw', color: '#94A3B8', fontStyle: 'italic' }}>
+                                                {item.type === 'champions' && `Cost: ${data.cost || 'N/A'}`}
+                                                {item.type === 'traits' && `Active: ${data.breakpoints?.join(', ') || 'N/A'}`}
+                                                {item.type === 'items' && `Combined: ${data.combined || 'N/A'}`}
+                                                {item.type === 'augments' && `Tier: ${data.tier || 'N/A'}`}
+                                                {item.type === 'puzzles' && `Stage: ${data.stage || 'N/A'}`}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                )}
             </div>
 
             {/* Confirm Modal */}

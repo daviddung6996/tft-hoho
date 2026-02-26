@@ -6,6 +6,7 @@ import './DecisionReview.css';
 import { ReviewCard } from './DecisionReviewComponents/ReviewCard';
 import { PuzzleInfo } from './DecisionReviewComponents/PuzzleInfo';
 import { ReviewActions } from './DecisionReviewComponents/ReviewActions';
+import { MemeFeedback } from '../../features/puzzle/feedback/MemeFeedback';
 
 export interface DecisionReviewProps {
     userChoice: AugmentData;
@@ -127,6 +128,13 @@ export const DecisionReview: React.FC<DecisionReviewProps> = ({
                     encounter={encounter}
                     streamUrl={streamUrl}
                     userMatchedPro={userMatchedPro}
+                />
+
+                {/* --- MEME FEEDBACK --- */}
+                <MemeFeedback
+                    isCorrect={userMatchedPro}
+                    augmentName={userChoice.title}
+                    insight={explanation}
                 />
 
                 {/* --- TIMELINE REMOVED - DIRECT TO FINAL PICK --- */}

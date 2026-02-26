@@ -16,13 +16,14 @@ import Toast from '../../components/common/Toast';
 import { TrashView, DeletedItem } from './components/TrashView';
 import { useAuth } from '../../contexts/AuthContext';
 import { UserManagement } from './UserManagement/UserManagement';
+import { MemeManager } from './MemeManager/MemeManager';
 
 interface AdminDataModalProps {
     onClose: () => void;
     onPuzzleSaved?: () => void | Promise<void>;
 }
 
-type Tab = 'champions' | 'traits' | 'items' | 'augments' | 'puzzles' | 'users' | 'trash';
+type Tab = 'champions' | 'traits' | 'items' | 'augments' | 'puzzles' | 'users' | 'memes' | 'trash';
 
 const AdminDataModal: React.FC<AdminDataModalProps> = ({ onClose, onPuzzleSaved }) => {
     const { canAccessAdmin, canManageUsers } = useAuth();
@@ -478,7 +479,7 @@ const AdminDataModal: React.FC<AdminDataModalProps> = ({ onClose, onPuzzleSaved 
                                             <td>
                                                 {(item as Champion).stats ? (
                                                     <div style={{ fontSize: '0.7cqw', lineHeight: 1.4, color: '#a8b4c2' }}>
-                                                        <div>HP {(item as Champion).stats!.hp.join('/')} | AD {(item as Champion).stats!.ad.join('/')}</div>
+                                                        <div>HP {(item as Champion).stats!.hp?.join('/') ?? '–'} | AD {(item as Champion).stats!.ad?.join('/') ?? '–'}</div>
                                                         <div>AR {(item as Champion).stats!.armor} | MR {(item as Champion).stats!.mr} | AS: {(item as Champion).stats!.as}</div>
                                                         <div>Mana {(item as Champion).stats!.mana.min}/{(item as Champion).stats!.mana.max} | Range {(item as Champion).stats!.range}</div>
                                                     </div>
@@ -578,8 +579,9 @@ const AdminDataModal: React.FC<AdminDataModalProps> = ({ onClose, onPuzzleSaved 
                                 { key: 'items', label: 'trang bị' },
                                 { key: 'augments', label: 'Augments' },
                                 { key: 'puzzles', label: 'Puzzles' },
+                                { key: 'memes', label: 'Memes' },
                                 ...(canManageUsers ? [{ key: 'users', label: 'Users' }] : []),
-                                { key: 'trash', label: '🗑️' }
+                                { key: 'trash', label: 'Thùng rác' }
                             ]}
                             activeTab={activeTab}
                             onTabChange={(key) => setActiveTab(key as Tab)}
@@ -595,9 +597,11 @@ const AdminDataModal: React.FC<AdminDataModalProps> = ({ onClose, onPuzzleSaved 
                                     />
                                 ) : activeTab === 'users' ? (
                                     <UserManagement />
+                                ) : activeTab === 'memes' ? (
+                                    <MemeManager />
                                 ) : (
                                     <>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1cqw', gap: '1cqw', flexShrink: 0 }}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5cqw', gap: '1cqw', flexShrink: 0 }}>
 
                                             <input
                                                 type="text"
@@ -605,7 +609,7 @@ const AdminDataModal: React.FC<AdminDataModalProps> = ({ onClose, onPuzzleSaved 
                                                 placeholder={`Tìm kiếm ${activeTab === 'champions' ? 'tướng' : activeTab === 'traits' ? 'tộc/hệ' : activeTab === 'items' ? 'trang bị' : activeTab === 'augments' ? 'Augments' : 'Puzzles'}...`}
                                                 value={searchTerm}
                                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                                style={{ width: '40%' }}
+                                                style={{ flex: 1 }}
                                             />
 
                                             <div style={{ display: 'flex', gap: '1cqw', alignItems: 'center' }}>
@@ -648,14 +652,7 @@ const AdminDataModal: React.FC<AdminDataModalProps> = ({ onClose, onPuzzleSaved 
                                                         </button>
                                                     </>
                                                 )}
-                                                {activeTab !== 'puzzles' && (
-                                                    <button
-                                                        className="hex-button"
-                                                        onClick={() => { }}
-                                                    >
-                                                        + Thêm mới
-                                                    </button>
-                                                )}
+
                                             </div>
                                         </div>
 
@@ -679,7 +676,7 @@ const AdminDataModal: React.FC<AdminDataModalProps> = ({ onClose, onPuzzleSaved 
 
             <AdminEditModal
                 item={editingItem}
-                type={activeTab === 'trash' || activeTab === 'users' ? 'champions' : activeTab}
+                type={activeTab === 'trash' || activeTab === 'users' || activeTab === 'memes' ? 'champions' : activeTab}
                 isSaving={isSaving}
                 onClose={() => setEditingItem(null)}
                 onSave={saveEdit}

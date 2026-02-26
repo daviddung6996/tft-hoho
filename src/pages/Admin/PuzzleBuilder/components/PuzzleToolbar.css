@@ -123,8 +123,8 @@
 }
 
 .pt-input-wrapper input:focus {
-    border-color: #00A3FF;
-    /* primary blue highlight on focus only */
+    border-color: #c8aa6e;
+    /* gold highlight on focus */
 }
 
 /* Remove spinners */

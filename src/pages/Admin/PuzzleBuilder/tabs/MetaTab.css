@@ -83,10 +83,10 @@
 }
 
 .pb-meta-container .hex-input:focus {
-    border-color: #00A3FF;
-    /* Cyan focus */
-    box-shadow: 0 0 1cqw rgba(0, 163, 255, 0.25), inset 0 0 0.5cqw rgba(0, 163, 255, 0.1);
-    background: rgba(5, 20, 30, 0.9);
+    border-color: #c8aa6e;
+    /* Gold focus */
+    box-shadow: 0 0 1cqw rgba(200, 155, 60, 0.25), inset 0 0 0.5cqw rgba(200, 155, 60, 0.1);
+    background: rgba(5, 20, 15, 0.9);
 }
 
 .pb-meta-container .hex-input::placeholder {

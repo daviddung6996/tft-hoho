@@ -83,8 +83,8 @@
 }
 
 .acb-slot.pro-picked {
-    box-shadow: 0 0 2cqw #00A3FF, inset 0 0 1cqw #00A3FF;
-    border-color: #00A3FF;
+    box-shadow: 0 0 2cqw #c8aa6e, inset 0 0 1cqw rgba(200, 170, 110, 0.5);
+    border-color: #c8aa6e;
 }
 
 .acb-slot-icon {
@@ -146,7 +146,7 @@
 
 .acb-arrow {
     font-size: 1.5rem;
-    color: #00A3FF;
+    color: #c8aa6e;
     margin: 0.5rem 0;
 }
 
@@ -215,11 +215,10 @@
 
 /* Pick Button */
 .acb-action-btn.pick.active {
-    background: #00A3FF;
-    /* Hextech Blue */
-    color: #fff;
-    border-color: #00A3FF;
-    box-shadow: 0 0 0.8cqw rgba(0, 163, 255, 0.4);
+    background: #c8aa6e;
+    color: #051c1e;
+    border-color: #c8aa6e;
+    box-shadow: 0 0 0.8cqw rgba(200, 170, 110, 0.4);
 }
 
 /* Toggle Switch Styles */
@@ -271,14 +270,14 @@
 }
 
 .acb-toggle-input:checked+.acb-toggle-slider {
-    background-color: rgba(0, 163, 255, 0.2);
-    border-color: #00A3FF;
+    background-color: rgba(200, 155, 60, 0.2);
+    border-color: #c8aa6e;
 }
 
 .acb-toggle-input:checked+.acb-toggle-slider::before {
     left: 1.85rem;
-    background-color: #00A3FF;
-    box-shadow: 0 0 10px rgba(0, 163, 255, 0.5);
+    background-color: #c8aa6e;
+    box-shadow: 0 0 10px rgba(200, 155, 60, 0.5);
 }
 
 /* Modal Styles - Centered & cqw based */

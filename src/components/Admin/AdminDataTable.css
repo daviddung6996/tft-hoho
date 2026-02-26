@@ -1,74 +1,98 @@
-/* Admin Data Table Styles */
+/* ==========================================================================
+   ADMIN DATA TABLE - Hextech Theme (matching UserManagement style)
+   ========================================================================== */
 
 .admin-table-container {
     overflow-x: hidden;
+    overflow-y: auto;
     flex: 1;
     width: 100%;
-    /* Prevent horizontal scroll - content should fit within container */
+}
+
+/* Custom scrollbar matching Users page */
+.admin-table-container::-webkit-scrollbar {
+    width: 0.3cqw;
+}
+
+.admin-table-container::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.admin-table-container::-webkit-scrollbar-thumb {
+    background: rgba(200, 170, 110, 0.3);
 }
 
 .admin-table {
     width: 100%;
     table-layout: fixed;
     border-collapse: separate;
-    border-spacing: 0;
-    color: var(--color-text-primary);
+    border-spacing: 0 0.4cqw;
+    color: #F0E6D2;
     font-size: 0.9cqw;
 }
 
 .admin-table th {
     position: sticky;
     top: 0;
-    background: linear-gradient(180deg, #1a4d52 0%, #0d3438 100%);
-    /* Darker teal matching Hextech theme */
+    background: linear-gradient(180deg, #153a3e 0%, #0d2a2e 100%);
     backdrop-filter: blur(4px);
     z-index: 10;
     text-align: left;
-    padding: 1cqw;
+    padding: 0.8cqw 1cqw;
     color: #F0E6D2;
     font-family: var(--font-heading);
     font-weight: 600;
     letter-spacing: 0.05em;
-    border-bottom: var(--border-width-std) solid var(--color-accent-gold);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    border-bottom: 0.08cqw solid rgba(200, 170, 110, 0.3);
 }
 
 .admin-table td {
-    padding: 1cqw;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 0.8cqw 1cqw;
+    background: rgba(21, 58, 62, 0.4);
     vertical-align: middle;
-    transition: background 0.2s ease;
+    transition: all 0.2s ease;
+    border-top: 0.06cqw solid rgba(200, 170, 110, 0.1);
+    border-bottom: 0.06cqw solid rgba(200, 170, 110, 0.1);
 }
 
-.admin-table tr {
-    transition: background 0.2s ease;
+.admin-table td:first-child {
+    border-left: 0.06cqw solid rgba(200, 170, 110, 0.1);
 }
 
-.admin-table tr:hover td {
-    background: rgba(255, 255, 255, 0.03);
+.admin-table td:last-child {
+    border-right: 0.06cqw solid rgba(200, 170, 110, 0.1);
+}
+
+.admin-table tbody tr {
+    transition: all 0.2s ease;
+}
+
+.admin-table tbody tr:hover td {
+    background: rgba(21, 58, 62, 0.6);
+    border-color: rgba(200, 170, 110, 0.3);
 }
 
 /* Fade Out Animation */
 .admin-table tr.fading-row td {
     background: rgba(255, 78, 80, 0.2) !important;
-    /* Gentle red tint */
     opacity: 0;
-    transform: scaleXT(0.95);
+    transform: scaleX(0.95);
     transition: all 0.5s ease-out;
 }
 
-/* Zebra striping for better readability */
-.admin-table tr:nth-child(even) td {
-    background: rgba(255, 255, 255, 0.01);
+/* Zebra striping - subtle teal variation */
+.admin-table tbody tr:nth-child(even) td {
+    background: rgba(21, 58, 62, 0.3);
 }
 
-.admin-table tr:nth-child(even):hover td {
-    background: rgba(255, 255, 255, 0.04);
+.admin-table tbody tr:nth-child(even):hover td {
+    background: rgba(21, 58, 62, 0.6);
 }
 
 /* Selected Row Highlight */
 .admin-table tr.selected-row td {
     background: rgba(200, 170, 110, 0.08) !important;
+    border-color: rgba(200, 170, 110, 0.4) !important;
 }
 
 .admin-table tr.selected-row:hover td {
@@ -78,7 +102,7 @@
 /* Column Specifics */
 .id-cell {
     font-family: var(--font-tech);
-    color: var(--color-accent-cyan);
+    color: var(--color-accent-gold);
     font-size: 0.85cqw;
     white-space: nowrap;
     overflow: hidden;
