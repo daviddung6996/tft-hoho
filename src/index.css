@@ -16,17 +16,17 @@
     --color-surface-overlay: rgba(0, 0, 0, 0.6);
 
     /* Primary Colors */
-    --color-primary: #00A3FF;
-    /* Hextech Blue */
-    --color-primary-dark: #0077B6;
-    --color-primary-glow: 0 0 15px rgba(0, 163, 255, 0.4);
+    --color-primary: #c8aa6e;
+    /* Hextech Gold */
+    --color-primary-dark: #A07828;
+    --color-primary-glow: 0 0 15px rgba(200, 155, 60, 0.4);
 
     /* Accents */
     --color-accent-gold: #C89B3C;
     /* Prestige Gold */
     --color-accent-gold-glow: 0 0 10px rgba(200, 155, 60, 0.3);
-    --color-accent-cyan: #00F0FF;
-    /* Energy */
+    --color-accent-cyan: #c8aa6e;
+    /* Gold (unified theme) */
     --color-accent-rose: #FF4E50;
     /* Combat */
 
@@ -41,8 +41,8 @@
     /* Admin specifics (Operations Deck) */
     --bg-admin-dark: #020617;
     --bg-admin-panel: #0D1624;
-    --border-admin: #1E293B;
-    --input-bg: #05080F;
+    --border-admin: rgba(200, 170, 110, 0.3);
+    --input-bg: rgba(0, 0, 0, 0.4);
 
     /* ==========================================================================
        EFFECTS & BORDERS
@@ -55,7 +55,7 @@
        Standard border width should be around 1px -> 0.05cqw approx */
     --border-width-std: 0.1cqw;
 
-    --border-primary: var(--border-width-std) solid rgba(0, 163, 255, 0.3);
+    --border-primary: var(--border-width-std) solid rgba(200, 155, 60, 0.3);
     --border-gold: var(--border-width-std) solid rgba(200, 155, 60, 0.3);
 
     /* Panel Standard Gradient */

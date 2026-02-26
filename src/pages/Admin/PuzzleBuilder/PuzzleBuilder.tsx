@@ -20,6 +20,7 @@ type ViewMode = 'meta' | 'player' | 'opponent' | 'augments';
 
 const PuzzleBuilder: React.FC<PuzzleBuilderProps> = ({ onClose, onSaveSuccess, initialPuzzle }) => {
     const [viewMode, setViewMode] = useState<ViewMode>('meta');
+    const [showCancelConfirm, setShowCancelConfirm] = useState(false);
 
     const {
         puzzle,
@@ -69,7 +70,7 @@ const PuzzleBuilder: React.FC<PuzzleBuilderProps> = ({ onClose, onSaveSuccess, i
                 onTabChange={(key) => setViewMode(key as ViewMode)}
                 actions={
                     <>
-                        <button onClick={onClose} className="pb-btn">Huỷ</button>
+                        <button onClick={() => setShowCancelConfirm(true)} className="pb-btn">Huỷ</button>
                         <button onClick={handleSave} className="pb-btn primary">Lưu Puzzles</button>
                     </>
                 }
@@ -158,6 +159,65 @@ const PuzzleBuilder: React.FC<PuzzleBuilderProps> = ({ onClose, onSaveSuccess, i
                     </div>
                 )}
             </div>
+
+            {/* Cancel Confirm Modal */}
+            {showCancelConfirm && (
+                <div style={{
+                    position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
+                    backgroundColor: 'rgba(0, 0, 0, 0.7)', display: 'flex',
+                    justifyContent: 'center', alignItems: 'center', zIndex: 2000,
+                    backdropFilter: 'blur(2px)'
+                }} onClick={() => setShowCancelConfirm(false)}>
+                    <div className="hex-panel" style={{
+                        width: '400px', padding: 0, display: 'flex', flexDirection: 'column',
+                        border: '1px solid #c8aa6e',
+                        background: 'linear-gradient(180deg, #153a3e 0%, #051c1e 100%)',
+                        boxShadow: '0 0 20px rgba(200, 170, 110, 0.25)',
+                        borderRadius: '4px', overflow: 'hidden'
+                    }} onClick={e => e.stopPropagation()}>
+                        <div style={{
+                            padding: '1.5rem', borderBottom: '1px solid rgba(200, 170, 110, 0.3)',
+                            textAlign: 'center'
+                        }}>
+                            <h3 style={{
+                                color: '#c8aa6e', margin: 0, fontFamily: 'Spectral, serif',
+                                textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '1.25rem'
+                            }}>Xác nhận huỷ</h3>
+                        </div>
+                        <div style={{ padding: '2rem 1.5rem' }}>
+                            <p style={{
+                                color: '#F0F6FC', textAlign: 'center', lineHeight: 1.6,
+                                margin: 0, fontFamily: 'Inter, sans-serif'
+                            }}>
+                                Bạn có chắc muốn huỷ?
+                                <span style={{ fontSize: '0.9em', color: '#94A3B8', display: 'block', marginTop: '0.5rem' }}>
+                                    Mọi thay đổi chưa lưu sẽ bị mất.
+                                </span>
+                            </p>
+                        </div>
+                        <div style={{
+                            padding: '1.5rem', borderTop: '1px solid rgba(200, 170, 110, 0.3)',
+                            display: 'flex', gap: '1rem', justifyContent: 'center',
+                            background: 'rgba(0, 0, 0, 0.2)'
+                        }}>
+                            <button onClick={() => setShowCancelConfirm(false)} style={{
+                                flex: 1, background: 'transparent', border: '1px solid #c8aa6e',
+                                color: '#c8aa6e', padding: '0.6rem 1rem', cursor: 'pointer',
+                                fontFamily: 'Inter, sans-serif', textTransform: 'uppercase',
+                                fontSize: '0.9rem', borderRadius: '2px', transition: 'all 0.2s'
+                            }}>Tiếp tục</button>
+                            <button onClick={onClose} style={{
+                                flex: 1, background: 'linear-gradient(180deg, #FF4E50 0%, #C0392B 100%)',
+                                border: '1px solid #FF4E50', color: '#FFFFFF',
+                                padding: '0.6rem 1rem', cursor: 'pointer',
+                                fontFamily: 'Inter, sans-serif', fontWeight: 600,
+                                textTransform: 'uppercase', fontSize: '0.9rem', borderRadius: '2px',
+                                boxShadow: '0 0 10px rgba(255, 78, 80, 0.4)', transition: 'all 0.2s'
+                            }}>Huỷ bỏ</button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Toast Notification */}
             {toast && (

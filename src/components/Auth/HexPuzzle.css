@@ -26,7 +26,7 @@
     width: 70px;
     height: 70px;
     background: rgba(13, 22, 36, 0.5);
-    border: 1px solid rgba(0, 163, 255, 0.3);
+    border: 1px solid rgba(200, 155, 60, 0.3);
     border-radius: 4px;
     display: flex;
     align-items: center;
@@ -35,8 +35,8 @@
 }
 
 .hex-puzzle-slot:hover {
-    border-color: rgba(0, 163, 255, 0.6);
-    box-shadow: 0 0 10px rgba(0, 163, 255, 0.2);
+    border-color: rgba(200, 155, 60, 0.7);
+    box-shadow: 0 0 10px rgba(200, 155, 60, 0.25);
 }
 
 .hex-puzzle-slot.checking {

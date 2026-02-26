@@ -189,8 +189,8 @@
 
 .gis-option.selected {
     background: rgba(21, 58, 62, 0.5);
-    border-color: #00A3FF;
-    box-shadow: 0 0 0.4cqw rgba(0, 163, 255, 0.2);
+    border-color: #c8aa6e;
+    box-shadow: 0 0 0.4cqw rgba(200, 155, 60, 0.2);
 }
 
 .gis-option-name {

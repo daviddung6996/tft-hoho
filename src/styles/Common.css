@@ -54,9 +54,50 @@
     outline: none;
 }
 
+.hex-input::placeholder {
+    color: rgba(148, 163, 184, 0.6);
+}
+
 .hex-input:focus {
-    border-color: var(--color-primary);
-    box-shadow: 0 0 0.5cqw rgba(0, 163, 255, 0.2);
+    border-color: var(--color-accent-gold);
+    box-shadow: 0 0 0.5cqw rgba(200, 155, 60, 0.2);
+}
+
+/* Select specifics for even padding with arrow */
+select.hex-input {
+    appearance: none;
+    padding-right: 2.5cqw;
+    background: #0d2a2e;
+    /* Solid dark teal - needed so dropdown panel isn't OS gray */
+    border-color: rgba(200, 170, 110, 0.4);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23c8aa6e'%3E%3Cpath d='M7 10l5 5 5-5H7z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.8cqw center;
+    background-size: 1.2cqw;
+    cursor: pointer;
+    color-scheme: dark;
+}
+
+select.hex-input:focus {
+    border-color: var(--color-accent-gold);
+    box-shadow: 0 0 0.5cqw rgba(200, 155, 60, 0.2);
+    outline: none;
+}
+
+/* Option dropdown items - dark teal Hextech theme */
+select.hex-input option,
+select option {
+    background-color: #0d2a2e;
+    color: #F0E6D2;
+    padding: 4px 8px;
+    font-family: 'Inter', sans-serif;
+}
+
+select.hex-input option:hover,
+select.hex-input option:checked,
+select option:checked {
+    background-color: #1a4d52;
+    color: #c8aa6e;
 }
 
 /* 
@@ -108,6 +149,6 @@
     text-shadow: 0 0 0.5cqw rgba(200, 155, 60, 0.5);
 }
 
-.text-glow-blue {
-    text-shadow: 0 0 0.5cqw rgba(0, 163, 255, 0.5);
+.text-glow-gold-strong {
+    text-shadow: 0 0 0.5cqw rgba(200, 155, 60, 0.5);
 }

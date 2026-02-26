@@ -20,10 +20,9 @@
 }
 
 .hextech-toast.success {
-    border-color: #00A3FF;
-    /* Hextech Blue for success variant or keep Gold? Rules say Gold is main border. Let's stick to Gold main, maybe blue glow. */
-    box-shadow: 0 0 1.5cqw rgba(0, 163, 255, 0.25);
-    border: 0.1cqw solid #00A3FF;
+    border-color: #c8aa6e;
+    box-shadow: 0 0 1.5cqw rgba(200, 170, 110, 0.35);
+    border: 0.1cqw solid #c8aa6e;
 }
 
 .hextech-toast.error {
@@ -40,7 +39,7 @@
 }
 
 .hextech-toast.success .toast-icon {
-    color: #00A3FF;
+    color: #c8aa6e;
 }
 
 .hextech-toast.error .toast-icon {
