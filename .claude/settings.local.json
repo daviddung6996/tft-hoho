@@ -24,7 +24,12 @@
       "mcp__supabase__get_advisors",
       "WebFetch(domain:leagueoflegends.fandom.com)",
       "WebFetch(domain:wiki.leagueoflegends.com)",
-      "WebFetch(domain:tftactics.gg)"
+      "WebFetch(domain:tftactics.gg)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(where npm)",
+      "Bash(where npx)",
+      "Bash(where node)",
+      "Bash(ls /d/TFT-hoho/node_modules/.bin/vite*)"
     ]
   },
   "enableAllProjectMcpServers": true,
