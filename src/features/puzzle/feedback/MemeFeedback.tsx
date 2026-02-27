@@ -8,6 +8,7 @@ export const MemeFeedback: React.FC<MemeFeedbackProps> = ({
     isCorrect,
 }) => {
     const [meme, setMeme] = useState<MemeItem | null>(null);
+    const [isWrapperVisible, setIsWrapperVisible] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
@@ -32,32 +33,43 @@ export const MemeFeedback: React.FC<MemeFeedbackProps> = ({
 
     useEffect(() => {
         if (meme) {
-            const timer = setTimeout(() => setIsVisible(true), 50);
-            return () => clearTimeout(timer);
+            // Step 1: trigger grid expand (height 0 → full) immediately
+            const wrapperTimer = setTimeout(() => setIsWrapperVisible(true), 30);
+            // Step 2: fade in content slightly after expand starts
+            const contentTimer = setTimeout(() => setIsVisible(true), 100);
+            return () => {
+                clearTimeout(wrapperTimer);
+                clearTimeout(contentTimer);
+            };
         }
     }, [meme]);
 
-    if (!meme) return null;
-
+    // Always render wrapper (collapsed at 0fr) so expansion is smooth
     return (
-        <div className={`meme-feedback ${isCorrect ? 'meme-correct' : 'meme-incorrect'} ${isVisible ? 'meme-visible' : ''}`}>
-            <div className={`meme-content ${meme.imageUrl ? 'has-image' : ''}`}>
-                {meme.imageUrl && (
-                    <div className="meme-image-wrapper">
-                        <img
-                            src={meme.imageUrl}
-                            alt={meme.text}
-                            className="meme-image"
-                            loading="eager"
-                        />
+        <div className={`meme-feedback-wrapper ${isWrapperVisible ? 'meme-wrapper-visible' : ''}`}>
+            <div className="meme-feedback-inner">
+                {meme && (
+                    <div className={`meme-feedback ${isCorrect ? 'meme-correct' : 'meme-incorrect'} ${isVisible ? 'meme-visible' : ''}`}>
+                        <div className={`meme-content ${meme.imageUrl ? 'has-image' : ''}`}>
+                            {meme.imageUrl && (
+                                <div className="meme-image-wrapper">
+                                    <img
+                                        src={meme.imageUrl}
+                                        alt={meme.text}
+                                        className="meme-image"
+                                        loading="eager"
+                                    />
+                                </div>
+                            )}
+                            <div className="meme-body">
+                                <div className="meme-text-section">
+                                    <span className="meme-emoji">{meme.emoji}</span>
+                                    <span className="meme-text">{meme.text}</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 )}
-                <div className="meme-body">
-                    <div className="meme-text-section">
-                        <span className="meme-emoji">{meme.emoji}</span>
-                        <span className="meme-text">{meme.text}</span>
-                    </div>
-                </div>
             </div>
         </div>
     );
