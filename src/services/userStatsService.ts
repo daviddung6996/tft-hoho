@@ -60,7 +60,7 @@ export const userStatsService = {
 
         const { error } = await supabase
             .from('user_puzzle_attempts')
-            .upsert({
+            .insert({
                 user_id: user.id,
                 puzzle_id: data.puzzleId,
                 user_pick_id: data.userPickId,
@@ -71,8 +71,7 @@ export const userStatsService = {
                 time_to_decide_ms: data.timeToDecideMs,
                 puzzle_stage: data.puzzleStage,
                 pro_pick_id: data.proPickId,
-                created_at: new Date().toISOString(),
-            }, { onConflict: 'user_id, puzzle_id' });
+            });
 
         if (error) {
             console.error('Error recording attempt:', error);

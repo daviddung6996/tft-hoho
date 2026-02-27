@@ -127,12 +127,20 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({ isOpen, onCl
         const date = new Date(dateString);
         const now = new Date();
         const diffMs = now.getTime() - date.getTime();
-        const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
 
-        if (diffHours < 1) return 'Vừa xong';
+        // Guard: clock skew or future timestamps
+        if (diffMs < 0) return 'Vừa xong';
+
+        const diffMins = Math.floor(diffMs / (1000 * 60));
+        if (diffMins < 2) return 'Vừa xong';
+        if (diffMins < 60) return `${diffMins} phút trước`;
+
+        const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
         if (diffHours < 24) return `${diffHours} giờ trước`;
+
         const diffDays = Math.floor(diffHours / 24);
         if (diffDays < 7) return `${diffDays} ngày trước`;
+
         return date.toLocaleDateString('vi-VN');
     };
 

@@ -2,14 +2,39 @@
    MEME FEEDBACK — Elegant Hextech entrance
    ============================================ */
 
+/*
+ * Grid-row collapse trick: animate height from 0 → auto without JS.
+ * Wrapper uses grid-template-rows: 0fr → 1fr so the inner content
+ * smoothly expands from collapsed to full height.
+ */
+.meme-feedback-wrapper {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.meme-feedback-wrapper.meme-wrapper-visible {
+  grid-template-rows: 1fr;
+}
+
+/* Inner overflow: hidden is required for the grid trick to work */
+.meme-feedback-inner {
+  overflow: hidden;
+  /* Small padding-bottom so the bottom border/shadow isn't clipped */
+  padding-bottom: 0.1cqw;
+}
+
 /* Container */
 .meme-feedback {
   padding: 0.6cqw 0.8cqw;
   border: 0.08cqw solid transparent;
   border-radius: 0.2cqw;
   opacity: 0;
-  transform: translateY(0.5cqw);
-  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+  transform: translateY(0.4cqw);
+  /* Fade starts slightly after the expand animation */
+  transition:
+    opacity 0.55s ease-out 0.15s,
+    transform 0.55s ease-out 0.15s;
 }
 
 .meme-feedback.meme-visible {
