@@ -50,6 +50,93 @@ class UserRepo {
 }
 ```
 **Used in:** Tất cả các modal popup (Add/Edit/Delete/Config) trong Control Panel (Profile, ProIqManager, AdminEditModal...). Dùng đúng chuẩn xanh gradient (#153a3e -> #051c1e) và viền vàng blur, **không dùng màu xanh Blue phẳng / Slate**.
+
+---
+
+### Hextech Modal Brightness Standard
+
+> ⚠️ Rule tuyệt đối: Modal không được để nền **pitch black**. Nền phải là **teal đậm nhưng sáng** — giống màn hình Review Decision.
+
+Cấu trúc 3 lớp background cho **Profile/Stats Modal** (modal lớn có scroll):
+
+```css
+/* Modal Shell — base teal (không phải #000) */
+.modal-shell {
+    background:
+        radial-gradient(ellipse at 50% 0%, rgba(200, 170, 110, 0.12) 0%, transparent 55%),
+        radial-gradient(ellipse at 50% 100%, rgba(21, 58, 62, 0.6) 0%, transparent 60%),
+        linear-gradient(180deg, #0d2e30 0%, #081e20 100%);
+    border: 0.06cqw solid rgba(200, 170, 110, 0.45); /* Outer gold border — REQUIRED */
+}
+
+/* Hero Section (top focal area) */
+.hero-section {
+    background:
+        radial-gradient(ellipse at 50% 0%, rgba(200, 170, 110, 0.18) 0%, transparent 60%),
+        linear-gradient(180deg, rgba(21, 58, 62, 0.95), rgba(13, 46, 48, 0.98));
+    border-bottom: 0.06cqw solid rgba(200, 170, 110, 0.30);
+}
+
+/* Metric/Stats Section */
+.metrics-section {
+    background: rgba(16, 52, 56, 0.95);
+    border-bottom: 0.06cqw solid rgba(200, 170, 110, 0.30);
+}
+
+/* Chart/Content Sections */
+.charts-section {
+    background: rgba(11, 40, 43, 0.97);
+    border-bottom: 0.06cqw solid rgba(200, 170, 110, 0.30);
+}
+
+/* Activity/Footer Sections */
+.activity-section {
+    background: rgba(13, 46, 48, 0.97);
+}
+```
+
+**Border opacity rules:**
+| Context | Opacity |
+|---|---|
+| Outer modal border | `0.45` (visible, prominent) |
+| Section dividers | `0.30` (clear but not harsh) |
+| Inner subtle dividers (vertical lines inside stat cards) | `0.30` |
+| Decorative subtle hints | `0.15` |
+
+**Text brightness rules:**
+| Role | Value |
+|---|---|
+| Stat values (numbers) | `#FFFFFF` pure white |
+| Headings / hero title | `#c8aa6e` gold |
+| Stat labels | `rgba(200, 170, 110, 0.75)` |
+| Body / meta text | `#94A3B8` |
+| Muted / disabled | `rgba(200, 170, 110, 0.45)` |
+
+**Used in:** `UserProfileModal.css` — là reference chuẩn cho mọi stats/profile panel tương lai.
+
+---
+
+### IQ Rank Color System
+
+Mỗi rank có màu riêng được dùng làm `--rank-color` CSS variable. **KHÔNG thay đổi bảng màu này.**
+
+```typescript
+// src/features/user-iq/userIqCalculator.ts — getUserIqRankColor()
+Challenger  → '#00D1C1'  // Cyan teal
+Grandmaster → '#FF6B35'  // Orange
+Master      → '#8B5CF6'  // Purple (ngoại lệ duy nhất — thương hiệu rank)
+Diamond     → '#4F46E5'  // Indigo
+Platinum    → '#0EA5E9'  // Sky blue
+Gold        → '#EAB308'  // Yellow gold
+Silver      → '#94A3B8'  // Steel
+Bronze      → '#B45309'  // Amber
+Iron        → '#4B5563'  // Gray
+Unranked    → '#4B5563'  // Same as Iron (muted)
+```
+
+Dùng trong Hero Section của `UserProfileModal.tsx` để set `--rank-color` và `--hero-atmosphere` CSS vars.
+
+**Used in:** `UserProfileModal.tsx`, `UserIqBadge.tsx`, `SettingsButton.tsx`
 ---
 
 ## 2. Gotchas

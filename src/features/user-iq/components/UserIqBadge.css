@@ -1,0 +1,132 @@
+/* ================================================
+   UserIqBadge — Hextech Premium
+   ================================================ */
+
+.user-iq-badge {
+    display: inline-flex;
+    align-items: center;
+    background: linear-gradient(180deg, rgba(21, 58, 62, 0.6) 0%, rgba(5, 28, 30, 0.9) 100%);
+    border: 0.06cqw solid rgba(200, 170, 110, 0.15);
+    border-left: 0.15cqw solid var(--rank-color);
+    box-shadow: 0 0.2cqw 1cqw rgba(0, 0, 0, 0.5);
+    color: #F0E6D2;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    position: relative;
+}
+
+.user-iq-badge::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 0% 50%, var(--rank-color), transparent 70%);
+    opacity: 0.15;
+    pointer-events: none;
+}
+
+.user-iq-badge.small {
+    padding: 0.3cqw 0.8cqw;
+    gap: 0.5cqw;
+}
+
+.user-iq-badge.large {
+    padding: 0.6cqw 1.2cqw;
+    gap: 0.8cqw;
+}
+
+.user-iq-badge.hero {
+    padding: 1.2cqw 2cqw;
+    gap: 1.2cqw;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+.user-iq-badge.hero::before {
+    opacity: 0.3;
+    background: radial-gradient(circle at 50% 50%, var(--rank-color), transparent 60%);
+}
+
+.badge-icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--rank-color);
+    filter: drop-shadow(0 0 0.3cqw var(--rank-color));
+}
+
+.user-iq-badge.small .badge-icon {
+    font-size: 1cqw;
+}
+
+.user-iq-badge.large .badge-icon {
+    font-size: 2cqw;
+}
+
+.user-iq-badge.hero .badge-icon {
+    font-size: 3cqw;
+    animation: glow-ring 3s ease-in-out infinite alternate;
+}
+
+@keyframes glow-ring {
+    from {
+        filter: drop-shadow(0 0 0.2cqw var(--rank-color));
+    }
+
+    to {
+        filter: drop-shadow(0 0 0.6cqw var(--rank-color));
+    }
+}
+
+.badge-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    line-height: 1.1;
+    z-index: 1;
+}
+
+.badge-score {
+    font-weight: 700;
+    font-family: 'Spectral', serif;
+    letter-spacing: 0.05cqw;
+}
+
+.user-iq-badge.small .badge-score {
+    font-size: 0.8cqw;
+    color: #F0E6D2;
+}
+
+.user-iq-badge.large .badge-score {
+    font-size: 1.8cqw;
+    color: var(--rank-color);
+    text-shadow: 0 0 0.8cqw rgba(0, 0, 0, 0.8);
+}
+
+.user-iq-badge.hero .badge-score {
+    font-size: 2cqw;
+    color: var(--rank-color);
+    text-shadow: 0 0 1cqw rgba(0, 0, 0, 0.8);
+}
+
+.badge-rank {
+    font-size: 0.7cqw;
+    font-weight: 600;
+    color: #c8aa6e;
+    text-transform: uppercase;
+    letter-spacing: 0.08cqw;
+    margin-bottom: 0.2cqw;
+}
+
+.user-iq-badge.hero .badge-rank {
+    font-size: 2cqw;
+    font-family: 'Spectral', serif;
+    color: #c8aa6e;
+    text-transform: uppercase;
+    letter-spacing: 0.15cqw;
+    margin-bottom: 0.4cqw;
+}

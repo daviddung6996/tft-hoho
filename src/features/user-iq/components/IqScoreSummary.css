@@ -1,0 +1,110 @@
+/* IqScoreSummary.css — IQ score always visible, badge fades + collapses */
+
+/* ── Container: permanent, beautiful for screenshotting ── */
+.iq-score-summary {
+    display: flex;
+    align-items: center;
+    gap: 0.6cqw;
+    padding: 0.5cqw 1cqw;
+    background: linear-gradient(135deg, rgba(21, 58, 62, 0.85), rgba(5, 28, 30, 0.92));
+    border: 0.08cqw solid rgba(200, 170, 110, 0.4);
+    border-radius: 0.2cqw;
+    box-shadow:
+        inset 0 0 1.5cqw rgba(0, 0, 0, 0.3),
+        0 0 0.8cqw rgba(200, 170, 110, 0.08);
+}
+
+/* ── Rank Icon ── */
+.iq-rank-icon {
+    color: var(--rank-color, #c8aa6e);
+    font-size: 1.8cqw;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    filter: drop-shadow(0 0 0.5cqw var(--rank-color, #c8aa6e));
+    opacity: 0.9;
+}
+
+/* ── Score Block ── */
+.iq-score-block {
+    display: flex;
+    align-items: baseline;
+    gap: 0.25cqw;
+    line-height: 1;
+}
+
+.iq-score-number {
+    font-family: 'Spectral', serif;
+    font-size: 1.6cqw;
+    font-weight: 700;
+    color: #F0E6D2;
+    letter-spacing: -0.02em;
+    line-height: 1;
+}
+
+.iq-score-unit {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7cqw;
+    font-weight: 700;
+    color: #c8aa6e;
+    text-transform: uppercase;
+    letter-spacing: 0.1cqw;
+    align-self: flex-start;
+    padding-top: 0.15cqw;
+}
+
+/* ── Change Badge — 3 states ── */
+.iq-change-badge {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8cqw;
+    font-weight: 700;
+    border-radius: 0.15cqw;
+    border: 0.06cqw solid transparent;
+    white-space: nowrap;
+    overflow: hidden;
+    flex-shrink: 0;
+
+    /* Default: collapsed (no space, no visual) */
+    max-width: 0;
+    padding: 0.15cqw 0;
+    opacity: 0;
+    /* Fading collapse — long and smooth */
+    transition:
+        max-width 1.2s cubic-bezier(0.4, 0, 0.2, 1),
+        padding 1.2s cubic-bezier(0.4, 0, 0.2, 1),
+        opacity 1s ease-out;
+}
+
+/* visible state — badge expands in smoothly */
+.iq-change-badge.visible {
+    max-width: 5cqw;
+    padding: 0.15cqw 0.45cqw;
+    opacity: 1;
+    transition:
+        max-width 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.4),
+        padding 0.5s ease,
+        opacity 0.35s ease;
+}
+
+/* fading state — collapses width gracefully, no layout jump */
+.iq-change-badge.fading {
+    max-width: 0;
+    padding: 0.15cqw 0;
+    opacity: 0;
+    transition:
+        max-width 1.2s cubic-bezier(0.4, 0, 0.2, 1),
+        padding 1.2s cubic-bezier(0.4, 0, 0.2, 1),
+        opacity 0.9s ease-out;
+}
+
+.iq-change-badge.positive {
+    color: #10B981;
+    border-color: rgba(16, 185, 129, 0.45);
+    background: rgba(16, 185, 129, 0.15);
+}
+
+.iq-change-badge.negative {
+    color: #F87171;
+    border-color: rgba(248, 113, 113, 0.45);
+    background: rgba(248, 113, 113, 0.15);
+}

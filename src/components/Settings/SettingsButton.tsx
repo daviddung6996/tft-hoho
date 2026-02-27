@@ -1,6 +1,48 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './SettingsButton.css';
 import { useAuth } from '../../contexts/AuthContext';
+import { getUserIqStats } from '../../features/user-iq/userIq.service';
+import { UserIqStats, USER_IQ_RANKS } from '../../features/user-iq/userIq.types';
+import { getUserIqRankColor } from '../../features/user-iq/userIqCalculator';
+import { IqRankIcon } from '../../features/user-iq/components/IqRankIcon';
+
+const getNextRankThreshold = (score: number) => {
+    const sortedRanks = [...USER_IQ_RANKS].sort((a, b) => a.min - b.min);
+    for (const rank of sortedRanks) {
+        if (rank.min > score) {
+            return rank.min;
+        }
+    }
+    return sortedRanks[sortedRanks.length - 1].min;
+};
+
+const getNextRankName = (score: number) => {
+    const sortedRanks = [...USER_IQ_RANKS].sort((a, b) => a.min - b.min);
+    for (const rank of sortedRanks) {
+        if (rank.min > score) {
+            return rank.rank;
+        }
+    }
+    return sortedRanks[sortedRanks.length - 1].rank;
+};
+
+const getRankProgress = (score: number) => {
+    const sortedRanks = [...USER_IQ_RANKS].sort((a, b) => a.min - b.min);
+    let currentRankMin = 0;
+    let nextRankMin = sortedRanks[1].min;
+
+    for (let i = 0; i < sortedRanks.length; i++) {
+        if (score >= sortedRanks[i].min) {
+            currentRankMin = sortedRanks[i].min;
+            nextRankMin = sortedRanks[i + 1] ? sortedRanks[i + 1].min : currentRankMin;
+        } else {
+            break;
+        }
+    }
+
+    if (currentRankMin === nextRankMin) return 100;
+    return Math.min(100, Math.max(0, ((score - currentRankMin) / (nextRankMin - currentRankMin)) * 100));
+};
 
 interface MenuButtonProps {
     onArenaClick?: () => void;
@@ -22,10 +64,18 @@ export const MenuButton: React.FC<MenuButtonProps> = ({
     onLoginClick,
     isAdmin
 }) => {
-    const { signOut, isGuest } = useAuth();
+    const { signOut, isGuest, user } = useAuth();
     const [isOpen, setIsOpen] = useState(false);
     const [isFullscreen, setIsFullscreen] = useState(!!document.fullscreenElement);
+    const [iqStats, setIqStats] = useState<UserIqStats | null>(null);
     const menuRef = useRef<HTMLDivElement>(null);
+
+    // Fetch IQ Stats
+    useEffect(() => {
+        if (isAuthenticated && !isGuest && user?.id) {
+            getUserIqStats(user.id).then(setIqStats).catch(console.error);
+        }
+    }, [isAuthenticated, isGuest, user?.id]);
 
     const handleLogout = async () => {
         try {
@@ -81,19 +131,75 @@ export const MenuButton: React.FC<MenuButtonProps> = ({
 
             {isOpen && (
                 <div className="menu-dropdown">
+                    {/* User Profile Section */}
                     {isAuthenticated && displayName && (
                         isGuest ? (
                             <div className="menu-user-info">
                                 <span className="menu-username">{displayName}</span>
                             </div>
                         ) : (
-                            <button
-                                className="menu-user-info menu-user-clickable"
-                                onClick={() => { onProfileClick?.(); setIsOpen(false); }}
-                            >
-                                <span className="menu-username">{displayName}</span>
-                                <span className="menu-stats-hint">Xem thống kê</span>
-                            </button>
+                            <div className="menu-profile-card">
+                                {/* Profile Header: Avatar & Name */}
+                                <div className="menu-profile-header" onClick={() => { onProfileClick?.(); setIsOpen(false); }}>
+                                    <div className="menu-avatar">
+                                        <div className="menu-avatar-inner">{displayName.charAt(0).toUpperCase()}</div>
+                                    </div>
+                                    <div className="menu-name-section">
+                                        <div className="menu-username">{displayName}</div>
+                                        <div className="menu-view-profile">View Profile <span className="menu-arrow">→</span></div>
+                                    </div>
+                                </div>
+
+                                <div className="menu-stats-divider"></div>
+
+                                {/* Two-column stats row */}
+                                <div className="menu-stats-row">
+                                    {/* IQ Panel */}
+                                    <div className="menu-stat-panel">
+                                        <div className="menu-stat-panel-header">
+                                            <span className="menu-stat-label">TFT IQ</span>
+                                        </div>
+                                        <div className="menu-iq-display">
+                                            <div className="menu-iq-icon" style={{ color: getUserIqRankColor(iqStats?.iq_rank || 'Iron') }}>
+                                                <IqRankIcon rank={iqStats?.iq_rank || 'Iron'} />
+                                            </div>
+                                            <div className="menu-iq-info">
+                                                <div className="menu-iq-score">{iqStats ? iqStats.iq_score : 0}</div>
+                                                <div className="menu-iq-rank" style={{ color: getUserIqRankColor(iqStats?.iq_rank || 'Iron') }}>
+                                                    {iqStats ? (iqStats.iq_score === 0 ? 'UNRANKED' : iqStats.iq_rank) : 'UNRANKED'}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="menu-progress-bar">
+                                            <div
+                                                className="menu-progress-fill"
+                                                style={{
+                                                    width: `${getRankProgress(iqStats?.iq_score || 0)}%`,
+                                                    '--rank-color': getUserIqRankColor(iqStats?.iq_rank || 'Iron')
+                                                } as React.CSSProperties}
+                                            />
+                                        </div>
+                                        <div className="menu-iq-next">
+                                            {getRankProgress(iqStats?.iq_score || 0) < 100
+                                                ? `${getNextRankThreshold(iqStats?.iq_score || 0) - (iqStats?.iq_score || 0)} IQ → ${getNextRankName(iqStats?.iq_score || 0)}`
+                                                : 'Max Rank'
+                                            }
+                                        </div>
+                                    </div>
+
+                                    {/* T-Coin Panel */}
+                                    <div className="menu-stat-panel">
+                                        <div className="menu-stat-panel-header">
+                                            <span className="menu-stat-label">T-Coin</span>
+                                            <button className="menu-add-coin-btn" title="Nạp T-Coin">+</button>
+                                        </div>
+                                        <div className="menu-coin-display">
+                                            <span className="menu-coin-value">1,500</span>
+                                            <span className="menu-coin-currency">TC</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         )
                     )}
 
@@ -115,11 +221,6 @@ export const MenuButton: React.FC<MenuButtonProps> = ({
                     </button>
 
                     <div className="menu-divider"></div>
-
-                    {/* Settings */}
-                    <button className="menu-item" onClick={() => setIsOpen(false)}>
-                        <span className="menu-icon">⚙</span> Cài đặt
-                    </button>
 
                     {/* Login for guests / Logout for authenticated */}
                     {isGuest ? (

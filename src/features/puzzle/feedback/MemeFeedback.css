@@ -1,5 +1,5 @@
 /* ============================================
-   MEME FEEDBACK — Hextech-compatible
+   MEME FEEDBACK — Elegant Hextech entrance
    ============================================ */
 
 /* Container */
@@ -8,30 +8,30 @@
   border: 0.08cqw solid transparent;
   border-radius: 0.2cqw;
   opacity: 0;
-  transform: translateY(-0.8cqw) scale(0.95);
-  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform: translateY(0.5cqw);
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
 }
 
 .meme-feedback.meme-visible {
   opacity: 1;
-  transform: translateY(0) scale(1);
+  transform: translateY(0);
 }
 
 /* Correct — Gold glow */
 .meme-feedback.meme-correct {
   background: linear-gradient(135deg, rgba(200, 170, 110, 0.12) 0%, rgba(200, 170, 110, 0.04) 100%);
-  border-color: rgba(200, 170, 110, 0.5);
+  border-color: rgba(200, 170, 110, 0.45);
   box-shadow: 0 0 1.2cqw rgba(200, 170, 110, 0.15);
 }
 
-/* Incorrect — Subtle grey-red */
+/* Incorrect — Subtle grey */
 .meme-feedback.meme-incorrect {
   background: linear-gradient(135deg, rgba(148, 163, 184, 0.1) 0%, rgba(100, 116, 139, 0.04) 100%);
-  border-color: rgba(148, 163, 184, 0.35);
-  box-shadow: 0 0 0.8cqw rgba(148, 163, 184, 0.1);
+  border-color: rgba(148, 163, 184, 0.3);
+  box-shadow: 0 0 0.8cqw rgba(148, 163, 184, 0.08);
 }
 
-/* Content layout */
+/* Content layout — vertical by default (no image) */
 .meme-content {
   display: flex;
   flex-direction: column;
@@ -40,35 +40,66 @@
   text-align: center;
 }
 
+/* Horizontal layout when image is present */
+.meme-content.has-image {
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  text-align: left;
+  gap: 0.8cqw;
+}
+
 /* Image/GIF wrapper */
 .meme-image-wrapper {
-  width: 100%;
   max-height: 8cqw;
   overflow: hidden;
   border-radius: 0.15cqw;
   display: flex;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .meme-image {
-  max-width: 100%;
+  max-width: 10cqw;
   max-height: 8cqw;
   object-fit: contain;
   border-radius: 0.15cqw;
 }
 
-/* Text section (emoji + text inline) */
+/* Body — text + insight grouped */
+.meme-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3cqw;
+  min-width: 0;
+}
+
+.has-image .meme-body {
+  align-items: center;
+}
+
+/* Text section */
 .meme-text-section {
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: 0.35cqw;
+}
+
+.has-image .meme-text-section {
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15cqw;
+}
+
+.meme-content:not(.has-image) .meme-text-section {
+  justify-content: center;
 }
 
 .meme-emoji {
   font-size: 1.4cqw;
   line-height: 1;
-  animation: meme-bounce 0.6s ease 0.3s both;
+  /* Elegant scale-in after container fades in */
+  animation: meme-emoji-in 0.5s ease-out 0.6s both;
 }
 
 .meme-text {
@@ -90,9 +121,12 @@
 .meme-insight {
   font-family: 'Inter', sans-serif;
   font-size: 0.7cqw;
-  color: rgba(240, 246, 252, 0.75);
+  color: rgba(240, 246, 252, 0.7);
   line-height: 1.4;
   margin: 0;
+}
+
+.meme-content:not(.has-image) .meme-insight {
   max-width: 90%;
 }
 
@@ -100,19 +134,38 @@
    ANIMATIONS
    ============================================ */
 
-@keyframes meme-bounce {
-  0% { transform: scale(0.3); opacity: 0; }
-  50% { transform: scale(1.15); }
-  70% { transform: scale(0.95); }
-  100% { transform: scale(1); opacity: 1; }
+/* Emoji: simple scale-in, no bounce */
+@keyframes meme-emoji-in {
+  from {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
-/* Pulse glow for correct answer */
+/* Correct answer: subtle ambient glow — 3 pulses then holds */
 .meme-correct.meme-visible {
-  animation: meme-glow-pulse 2s ease-in-out 0.5s infinite alternate;
+  animation: meme-glow-settle 3s ease-in-out 0.8s forwards;
 }
 
-@keyframes meme-glow-pulse {
-  0% { box-shadow: 0 0 1.2cqw rgba(200, 170, 110, 0.15); }
-  100% { box-shadow: 0 0 1.8cqw rgba(200, 170, 110, 0.28); }
+@keyframes meme-glow-settle {
+  0% {
+    box-shadow: 0 0 1.2cqw rgba(200, 170, 110, 0.15);
+  }
+
+  33% {
+    box-shadow: 0 0 2cqw rgba(200, 170, 110, 0.28);
+  }
+
+  66% {
+    box-shadow: 0 0 1.4cqw rgba(200, 170, 110, 0.18);
+  }
+
+  100% {
+    box-shadow: 0 0 1.6cqw rgba(200, 170, 110, 0.22);
+  }
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
-    LineChart,
-    Line,
+    AreaChart,
+    Area,
     BarChart,
     Bar,
     XAxis,
@@ -19,6 +19,10 @@ import {
     AccuracyTrend
 } from '../../services/userStatsService';
 import { useAuth } from '../../contexts/AuthContext';
+import { getUserIqStats } from '../../features/user-iq/userIq.service';
+import { UserIqStats, USER_IQ_RANKS } from '../../features/user-iq/userIq.types';
+import { getUserIqRankColor } from '../../features/user-iq/userIqCalculator';
+import { IqRankIcon } from '../../features/user-iq/components/IqRankIcon';
 import './UserProfileModal.css';
 
 interface UserProfileModalProps {
@@ -26,7 +30,7 @@ interface UserProfileModalProps {
     onClose: () => void;
 }
 
-/* Inline SVG icons — no emoji, no unicode, no AI-generated icons */
+/* Inline SVG icons */
 const CloseIcon = () => (
     <svg width="100%" height="100%" viewBox="0 0 16 16" fill="none">
         <path d="M4 4L12 12M12 4L4 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
@@ -42,6 +46,20 @@ const CheckIcon = () => (
 const CrossIcon = () => (
     <svg width="100%" height="100%" viewBox="0 0 16 16" fill="none">
         <path d="M4 4L12 12M12 4L4 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+);
+
+const TrendUpIcon = () => (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'inline', verticalAlign: 'middle', marginRight: '4px' }}>
+        <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+        <polyline points="16 7 22 7 22 13"></polyline>
+    </svg>
+);
+
+const TrendDownIcon = () => (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'inline', verticalAlign: 'middle', marginRight: '4px' }}>
+        <polyline points="22 17 13.5 8.5 8.5 13.5 2 7"></polyline>
+        <polyline points="16 17 22 17 22 11"></polyline>
     </svg>
 );
 
@@ -63,7 +81,9 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({ isOpen, onCl
     const [stats, setStats] = useState<UserStats | null>(null);
     const [stageBreakdown, setStageBreakdown] = useState<StageStats[]>([]);
     const [recentAttempts, setRecentAttempts] = useState<AttemptRecord[]>([]);
+    const [showAllActivities, setShowAllActivities] = useState(false);
     const [accuracyTrend, setAccuracyTrend] = useState<AccuracyTrend[]>([]);
+    const [iqStats, setIqStats] = useState<UserIqStats | null>(null);
 
     useEffect(() => {
         if (isOpen) {
@@ -74,17 +94,19 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({ isOpen, onCl
     const loadData = async () => {
         setIsLoading(true);
         try {
-            const [statsData, stagesData, attemptsData, trendData] = await Promise.all([
+            const [statsData, stagesData, attemptsData, trendData, iqData] = await Promise.all([
                 userStatsService.getUserStats(),
                 userStatsService.getStageBreakdown(),
-                userStatsService.getRecentAttempts(undefined, 10),
-                userStatsService.getAccuracyTrend(undefined, 20)
+                userStatsService.getRecentAttempts(undefined, 20), // Fetch more for progressive disclosure
+                userStatsService.getAccuracyTrend(undefined, 20),
+                user?.id ? getUserIqStats(user.id) : Promise.resolve(null)
             ]);
 
             setStats(statsData);
             setStageBreakdown(stagesData);
             setRecentAttempts(attemptsData);
             setAccuracyTrend(trendData);
+            setIqStats(iqData);
         } catch (error) {
             console.error('Failed to load profile data:', error);
         } finally {
@@ -116,209 +138,361 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({ isOpen, onCl
 
     const renderDot = useCallback((props: any) => {
         const { cx, cy, payload } = props;
-        if (cx == null || cy == null) return <circle r={0} />;
+        if (cx == null || cy == null) return null;
         return (
             <circle
                 cx={cx}
                 cy={cy}
                 r={4}
                 fill={payload.isCorrect ? '#10B981' : '#EF4444'}
-                stroke="#0a2a2d"
-                strokeWidth={2}
+                stroke="#051c1e"
+                strokeWidth={1.5}
             />
         );
     }, []);
 
     if (!isOpen) return null;
 
-    const statCards = [
-        { value: stats?.totalAttempts || 0, label: 'PUZZLES' },
-        { value: `${stats?.accuracyPercent || 0}%`, label: 'ACCURACY' },
-        { value: stats?.correctCount || 0, label: 'CORRECT' },
-        { value: formatTime(stats?.avgTimeMs || 0), label: 'AVG TIME' },
-    ];
+
+
+
+    // Calculate simple trend for accuracy
+    const getAccuracyTrendInfo = () => {
+        if (accuracyTrend.length < 2) return null;
+        const latest = accuracyTrend[accuracyTrend.length - 1].rollingAccuracy;
+        const previous = accuracyTrend[0].rollingAccuracy;
+        const diff = latest - previous;
+
+        if (Math.abs(diff) < 1) return null;
+
+        return {
+            isPositive: diff > 0,
+            value: Math.abs(diff).toFixed(1)
+        };
+    };
+
+    const accuracyTrendInfo = getAccuracyTrendInfo();
+    const displayActivities = showAllActivities ? recentAttempts : recentAttempts.slice(0, 5);
 
     return (
         <div className="profile-modal-overlay" onClick={onClose}>
             <div className="profile-modal" onClick={e => e.stopPropagation()}>
-                {/* Header */}
-                <div className="profile-modal-header">
-                    <div className="profile-header-left">
-                        <div className="profile-header-accent" />
-                        <h2 className="profile-modal-title">
-                            {user?.display_name || 'Player'} Stats
-                        </h2>
-                    </div>
-                    <button className="profile-close-btn" onClick={onClose}>
-                        <CloseIcon />
-                    </button>
-                </div>
+                <button className="profile-close-btn" onClick={onClose}>
+                    <CloseIcon />
+                </button>
 
-                {/* Content */}
                 <div className="profile-modal-content">
                     {isLoading ? (
-                        <div className="loading-state">
+                        <div className="loading-state profile-section">
                             <div className="loading-spinner" />
                             <span>Đang tải dữ liệu...</span>
                         </div>
-                    ) : stats?.totalAttempts === 0 ? (
-                        <div className="empty-state">
-                            <div className="empty-state-line" />
-                            <div className="empty-state-text">
-                                Chưa có dữ liệu. Hãy hoàn thành một số puzzle để xem thống kê!
-                            </div>
-                        </div>
                     ) : (
                         <>
-                            {/* Stats Summary Cards */}
-                            <div className="stats-summary">
-                                {statCards.map((card, i) => (
-                                    <div className="stat-card" key={i}>
-                                        <div className="stat-value">{card.value}</div>
-                                        <div className="stat-label">{card.label}</div>
-                                    </div>
-                                ))}
-                            </div>
+                            {/* SECTION 1: HERO IDENTITY */}
+                            <div className="hero-section profile-section"
+                                style={({
+                                    '--rank-color': (iqStats && iqStats.iq_score > 0)
+                                        ? getUserIqRankColor(iqStats.iq_rank)
+                                        : '#4B5563',
+                                    '--hero-atmosphere': (iqStats && iqStats.iq_score > 0)
+                                        ? `${getUserIqRankColor(iqStats.iq_rank)}26`
+                                        : 'rgba(75, 85, 99, 0.12)',
+                                } as React.CSSProperties)}
+                            >
+                                {iqStats && iqStats.iq_score > 0 ? (() => {
+                                    const rankColor = getUserIqRankColor(iqStats.iq_rank);
 
-                            {/* Charts */}
-                            <div className="charts-section">
-                                {/* Accuracy Trend */}
-                                <div className="chart-container">
-                                    <div className="chart-header">
-                                        <div className="chart-title">Accuracy Trend</div>
-                                        <div className="chart-legend">
-                                            <span className="legend-dot legend-correct" />
-                                            <span className="legend-text">Đúng</span>
-                                            <span className="legend-dot legend-incorrect" />
-                                            <span className="legend-text">Sai</span>
-                                        </div>
-                                    </div>
-                                    {accuracyTrend.length > 0 ? (
-                                        <div className="chart-wrapper">
-                                            <ResponsiveContainer width="100%" height="100%">
-                                                <LineChart data={accuracyTrend} margin={{ top: 8, right: 12, bottom: 0, left: -8 }}>
-                                                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(200,170,110,0.08)" />
-                                                    <XAxis
-                                                        dataKey="attemptNumber"
-                                                        stroke="rgba(200,170,110,0.2)"
-                                                        tick={{ fill: '#94A3B8', fontSize: 11 }}
-                                                        tickLine={false}
-                                                        axisLine={{ stroke: 'rgba(200,170,110,0.15)' }}
-                                                    />
-                                                    <YAxis
-                                                        domain={[0, 100]}
-                                                        stroke="rgba(200,170,110,0.2)"
-                                                        tick={{ fill: '#94A3B8', fontSize: 11 }}
-                                                        tickFormatter={(v) => `${v}%`}
-                                                        tickLine={false}
-                                                        axisLine={{ stroke: 'rgba(200,170,110,0.15)' }}
-                                                    />
-                                                    <Tooltip
-                                                        content={
-                                                            <ChartTooltip
-                                                                formatter={(val: number) => `${val}%`}
-                                                            />
-                                                        }
-                                                        cursor={{ stroke: 'rgba(200,170,110,0.15)' }}
-                                                    />
-                                                    <Line
-                                                        type="monotone"
-                                                        dataKey="rollingAccuracy"
-                                                        stroke="#c8aa6e"
-                                                        strokeWidth={2}
-                                                        dot={renderDot}
-                                                        activeDot={{ r: 6, fill: '#c8aa6e', stroke: '#0a2a2d', strokeWidth: 2 }}
-                                                    />
-                                                </LineChart>
-                                            </ResponsiveContainer>
-                                        </div>
-                                    ) : (
-                                        <div className="chart-placeholder">Không đủ dữ liệu</div>
-                                    )}
-                                </div>
+                                    // Progress bar calculation
+                                    const reversedRanks = [...USER_IQ_RANKS].reverse();
+                                    const currentRankDef = reversedRanks.find(r => iqStats.iq_score >= r.min);
+                                    const nextRankDef = reversedRanks.find(r => r.min > iqStats.iq_score);
 
-                                {/* Stage Breakdown */}
-                                <div className="chart-container">
-                                    <div className="chart-header">
-                                        <div className="chart-title">Accuracy by Stage</div>
-                                    </div>
-                                    {stageBreakdown.length > 0 ? (
-                                        <div className="chart-wrapper">
-                                            <ResponsiveContainer width="100%" height="100%">
-                                                <BarChart data={stageBreakdown} margin={{ top: 8, right: 12, bottom: 0, left: -8 }}>
-                                                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(200,170,110,0.08)" vertical={false} />
-                                                    <XAxis
-                                                        dataKey="stage"
-                                                        stroke="rgba(200,170,110,0.2)"
-                                                        tick={{ fill: '#94A3B8', fontSize: 11 }}
-                                                        tickLine={false}
-                                                        axisLine={{ stroke: 'rgba(200,170,110,0.15)' }}
-                                                    />
-                                                    <YAxis
-                                                        domain={[0, 100]}
-                                                        stroke="rgba(200,170,110,0.2)"
-                                                        tick={{ fill: '#94A3B8', fontSize: 11 }}
-                                                        tickFormatter={(v) => `${v}%`}
-                                                        tickLine={false}
-                                                        axisLine={{ stroke: 'rgba(200,170,110,0.15)' }}
-                                                    />
-                                                    <Tooltip
-                                                        content={
-                                                            <ChartTooltip
-                                                                formatter={(val: number, entry: any) =>
-                                                                    `${val}% (${entry?.payload?.correct ?? 0}/${entry?.payload?.total ?? 0})`
-                                                                }
-                                                            />
-                                                        }
-                                                        cursor={{ fill: 'rgba(200,170,110,0.05)' }}
-                                                    />
-                                                    <Bar dataKey="accuracyPercent" radius={[3, 3, 0, 0]} maxBarSize={60}>
-                                                        {stageBreakdown.map((entry, index) => (
-                                                            <Cell
-                                                                key={`cell-${index}`}
-                                                                fill={entry.accuracyPercent >= 70 ? '#10B981' :
-                                                                    entry.accuracyPercent >= 40 ? '#c8aa6e' : '#EF4444'}
-                                                            />
-                                                        ))}
-                                                    </Bar>
-                                                </BarChart>
-                                            </ResponsiveContainer>
-                                        </div>
-                                    ) : (
-                                        <div className="chart-placeholder">Không đủ dữ liệu</div>
-                                    )}
-                                </div>
-                            </div>
+                                    let progressPct = 100;
+                                    let progressLabel = 'Bậc cao nhất';
 
-                            {/* Recent Activity */}
-                            <div className="recent-activity">
-                                <div className="chart-title">Hoạt động gần đây</div>
-                                {recentAttempts.length > 0 ? (
-                                    <div className="activity-list">
-                                        {recentAttempts.map((attempt) => (
-                                            <div
-                                                key={attempt.id}
-                                                className={`activity-item ${attempt.isCorrect ? 'correct' : 'incorrect'}`}
-                                            >
-                                                <div className={`activity-icon ${attempt.isCorrect ? 'correct' : 'incorrect'}`}>
-                                                    {attempt.isCorrect ? <CheckIcon /> : <CrossIcon />}
-                                                </div>
-                                                <div className="activity-details">
-                                                    <div className="activity-augment">{attempt.userPickName}</div>
-                                                    <div className="activity-meta">
-                                                        Stage {attempt.puzzleStage} • {attempt.rerollCount} reroll • {formatTime(attempt.timeToDecideMs)}
-                                                    </div>
-                                                </div>
-                                                <div className="activity-time">
-                                                    {formatDate(attempt.createdAt)}
+                                    if (nextRankDef && currentRankDef) {
+                                        const range = nextRankDef.min - currentRankDef.min;
+                                        const earned = iqStats.iq_score - currentRankDef.min;
+                                        progressPct = Math.min(100, Math.round((earned / range) * 100));
+                                        progressLabel = `${nextRankDef.min - iqStats.iq_score} IQ tới ${nextRankDef.rank}`;
+                                    }
+
+                                    return (
+                                        <>
+                                            {/* Rank Emblem */}
+                                            <div className="hero-rank-emblem" style={{ '--rank-color': rankColor } as React.CSSProperties}>
+                                                <div className="hero-rank-icon">
+                                                    <IqRankIcon rank={iqStats.iq_rank} />
                                                 </div>
                                             </div>
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <div className="chart-placeholder">Chưa có hoạt động</div>
+
+                                            {/* Rank Name */}
+                                            <div className="hero-rank-name">
+                                                {iqStats.iq_rank.toUpperCase()}
+                                            </div>
+
+                                            {/* IQ Score */}
+                                            <div className="hero-iq-score">
+                                                {iqStats.iq_score.toLocaleString('vi-VN')} IQ
+                                            </div>
+
+                                            {/* Progress Bar */}
+                                            <div className="hero-progress-wrap">
+                                                <div className="hero-progress-track">
+                                                    <div
+                                                        className="hero-progress-fill"
+                                                        style={{
+                                                            width: `${progressPct}%`,
+                                                            '--rank-color': rankColor,
+                                                        } as React.CSSProperties}
+                                                    />
+                                                </div>
+                                                <div className="hero-progress-label">{progressLabel}</div>
+                                            </div>
+
+                                            {/* Diamond Divider */}
+                                            <div className="hero-diamond-divider">
+                                                <span className="hero-diamond-dot">◆</span>
+                                            </div>
+
+                                            {/* Player Name */}
+                                            <div className="hero-player-name">{user?.display_name || 'Player'}</div>
+                                        </>
+                                    );
+                                })() : (
+                                    <>
+                                        {/* UNRANKED: muted iron emblem */}
+                                        <div className="hero-rank-emblem unranked" style={{ '--rank-color': '#4B5563' } as React.CSSProperties}>
+                                            <div className="hero-rank-icon">
+                                                <IqRankIcon rank="Iron" />
+                                            </div>
+                                        </div>
+
+                                        <div className="hero-rank-name unranked">CHƯA XẾP HẠNG</div>
+
+                                        <div className="hero-iq-score unranked">0 IQ</div>
+
+                                        {/* Empty progress bar */}
+                                        <div className="hero-progress-wrap">
+                                            <div className="hero-progress-track">
+                                                <div className="hero-progress-fill" style={{ width: '0%' }} />
+                                            </div>
+                                            <div className="hero-progress-label">Hoàn thành puzzle để bắt đầu</div>
+                                        </div>
+
+                                        {/* Diamond Divider */}
+                                        <div className="hero-diamond-divider">
+                                            <span className="hero-diamond-dot">◆</span>
+                                        </div>
+
+                                        <div className="hero-player-name">{user?.display_name || 'Player'}</div>
+                                    </>
                                 )}
                             </div>
+
+                            {/* SECTION 2: CORE METRICS */}
+                            <div className="metrics-section profile-section">
+                                <div className="stat-card">
+                                    <div className="stat-value">{stats?.totalAttempts || 0}</div>
+                                    <div className="stat-label">PUZZLES</div>
+                                </div>
+                                <div className="stat-card">
+                                    <div className="stat-value">
+                                        {stats?.accuracyPercent || 0}%
+                                        {accuracyTrendInfo && (
+                                            <span className={`stat-trend ${accuracyTrendInfo.isPositive ? 'positive' : 'negative'}`}>
+                                                {accuracyTrendInfo.isPositive ? <TrendUpIcon /> : <TrendDownIcon />}
+                                                {accuracyTrendInfo.value}%
+                                            </span>
+                                        )}
+                                    </div>
+                                    <div className="stat-label">ACCURACY</div>
+                                </div>
+                                <div className="stat-card">
+                                    <div className="stat-value">{stats?.correctCount || 0}</div>
+                                    <div className="stat-label">CORRECT</div>
+                                </div>
+                                <div className="stat-card">
+                                    <div className="stat-value" style={{ fontSize: '1.8cqw' }}>{formatTime(stats?.avgTimeMs || 0)}</div>
+                                    <div className="stat-label">AVG TIME</div>
+                                </div>
+                            </div>
+
+                            {stats?.totalAttempts === 0 ? (
+                                <div className="empty-state profile-section" style={{ border: '0.06cqw solid rgba(200, 170, 110, 0.15)', borderTop: 'none', background: 'rgba(5, 28, 30, 0.8)' }}>
+                                    <div className="empty-state-text">
+                                        Hãy hoàn thành một số puzzle để xem biểu đồ và hoạt động!
+                                    </div>
+                                </div>
+                            ) : (
+                                <>
+                                    {/* SECTION 3: PERFORMANCE CHARTS */}
+                                    <div className="charts-section profile-section">
+                                        {/* Accuracy Trend */}
+                                        <div className="chart-container">
+                                            <div className="chart-header">
+                                                <div className="chart-title">Accuracy Trend</div>
+                                                <div className="chart-legend">
+                                                    <span className="legend-dot legend-correct" />
+                                                    <span className="legend-text">Đúng</span>
+                                                    <span className="legend-dot legend-incorrect" />
+                                                    <span className="legend-text">Sai</span>
+                                                </div>
+                                            </div>
+                                            {accuracyTrend.length > 0 ? (
+                                                <div className="chart-wrapper">
+                                                    <ResponsiveContainer width="100%" height="100%">
+                                                        <AreaChart data={accuracyTrend} margin={{ top: 8, right: 12, bottom: 0, left: -8 }}>
+                                                            <defs>
+                                                                <linearGradient id="colorAccuracy" x1="0" y1="0" x2="0" y2="1">
+                                                                    <stop offset="5%" stopColor="#c8aa6e" stopOpacity={0.3} />
+                                                                    <stop offset="95%" stopColor="#c8aa6e" stopOpacity={0} />
+                                                                </linearGradient>
+                                                            </defs>
+                                                            <CartesianGrid strokeDasharray="3 3" stroke="rgba(200,170,110,0.08)" vertical={false} />
+                                                            <XAxis
+                                                                dataKey="attemptNumber"
+                                                                stroke="rgba(200,170,110,0.2)"
+                                                                tick={{ fill: '#94A3B8', fontSize: 11 }}
+                                                                tickLine={false}
+                                                                axisLine={{ stroke: 'rgba(200,170,110,0.15)' }}
+                                                            />
+                                                            <YAxis
+                                                                domain={[0, 100]}
+                                                                stroke="rgba(200,170,110,0.2)"
+                                                                tick={{ fill: '#94A3B8', fontSize: 11 }}
+                                                                tickFormatter={(v) => `${v}%`}
+                                                                tickLine={false}
+                                                                axisLine={{ stroke: 'rgba(200,170,110,0.15)' }}
+                                                            />
+                                                            <Tooltip
+                                                                content={
+                                                                    <ChartTooltip
+                                                                        formatter={(val: number) => `${val.toFixed(1)}%`}
+                                                                    />
+                                                                }
+                                                                cursor={{ stroke: 'rgba(200,170,110,0.15)' }}
+                                                            />
+                                                            <Area
+                                                                type="monotone"
+                                                                dataKey="rollingAccuracy"
+                                                                stroke="#c8aa6e"
+                                                                strokeWidth={3}
+                                                                fillOpacity={1}
+                                                                fill="url(#colorAccuracy)"
+                                                                dot={renderDot}
+                                                                activeDot={{ r: 5, fill: '#c8aa6e', stroke: '#051c1e', strokeWidth: 2 }}
+                                                            />
+                                                        </AreaChart>
+                                                    </ResponsiveContainer>
+                                                </div>
+                                            ) : (
+                                                <div className="chart-placeholder">Không đủ dữ liệu</div>
+                                            )}
+                                        </div>
+
+                                        {/* Stage Breakdown */}
+                                        <div className="chart-container">
+                                            <div className="chart-header">
+                                                <div className="chart-title">Accuracy by Stage</div>
+                                            </div>
+                                            {stageBreakdown.length > 0 ? (
+                                                <div className="chart-wrapper">
+                                                    <ResponsiveContainer width="100%" height="100%">
+                                                        <BarChart data={stageBreakdown} margin={{ top: 8, right: 12, bottom: 0, left: -8 }}>
+                                                            <CartesianGrid strokeDasharray="3 3" stroke="rgba(200,170,110,0.08)" vertical={false} />
+                                                            <XAxis
+                                                                dataKey="stage"
+                                                                stroke="rgba(200,170,110,0.2)"
+                                                                tick={{ fill: '#94A3B8', fontSize: 11 }}
+                                                                tickLine={false}
+                                                                axisLine={{ stroke: 'rgba(200,170,110,0.15)' }}
+                                                            />
+                                                            <YAxis
+                                                                domain={[0, 100]}
+                                                                stroke="rgba(200,170,110,0.2)"
+                                                                tick={{ fill: '#94A3B8', fontSize: 11 }}
+                                                                tickFormatter={(v) => `${v}%`}
+                                                                tickLine={false}
+                                                                axisLine={{ stroke: 'rgba(200,170,110,0.15)' }}
+                                                            />
+                                                            <Tooltip
+                                                                content={
+                                                                    <ChartTooltip
+                                                                        formatter={(val: number, entry: any) =>
+                                                                            `${val}% (${entry?.payload?.correct ?? 0}/${entry?.payload?.total ?? 0})`
+                                                                        }
+                                                                    />
+                                                                }
+                                                                cursor={{ fill: 'rgba(200,170,110,0.05)' }}
+                                                            />
+                                                            <Bar dataKey="accuracyPercent" radius={[3, 3, 0, 0]} maxBarSize={40}>
+                                                                {stageBreakdown.map((entry, index) => (
+                                                                    <Cell
+                                                                        key={`cell-${index}`}
+                                                                        fill={entry.accuracyPercent >= 70 ? '#10B981' :
+                                                                            entry.accuracyPercent >= 40 ? '#c8aa6e' : '#EF4444'}
+                                                                    />
+                                                                ))}
+                                                            </Bar>
+                                                        </BarChart>
+                                                    </ResponsiveContainer>
+                                                </div>
+                                            ) : (
+                                                <div className="chart-placeholder">Không đủ dữ liệu</div>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    {/* SECTION 4: RECENT ACTIVITY */}
+                                    <div className="activity-section profile-section">
+                                        <div className="chart-title chart-header">Hoạt động gần đây</div>
+                                        {recentAttempts.length > 0 ? (
+                                            <div className="activity-list">
+                                                {displayActivities.map((attempt) => (
+                                                    <div key={attempt.id} className="activity-item">
+                                                        <div className="activity-icon-container">
+                                                            <div className={`activity-icon ${attempt.isCorrect ? 'correct' : 'incorrect'}`}>
+                                                                {attempt.isCorrect ? <CheckIcon /> : <CrossIcon />}
+                                                            </div>
+                                                        </div>
+
+                                                        <div className="activity-details">
+                                                            <div className="activity-augment">{attempt.userPickName}</div>
+                                                            <div className="activity-meta">
+                                                                Stage {attempt.puzzleStage} • {attempt.rerollCount} reroll • {formatTime(attempt.timeToDecideMs)}
+                                                            </div>
+                                                        </div>
+
+                                                        <div className="activity-trailing">
+                                                            {(attempt.iqChangeAmount !== undefined && attempt.iqChangeAmount !== null) && attempt.iqChangeAmount !== 0 && (
+                                                                <div className={`activity-iq-chip ${attempt.iqChangeAmount > 0 ? 'positive' : 'negative'}`}>
+                                                                    {attempt.iqChangeAmount > 0 ? '+' : ''}{attempt.iqChangeAmount} IQ
+                                                                </div>
+                                                            )}
+                                                            <div className="activity-time">
+                                                                {formatDate(attempt.createdAt)}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                ))}
+
+                                                {recentAttempts.length > 5 && (
+                                                    <button
+                                                        className="view-all-btn"
+                                                        onClick={() => setShowAllActivities(!showAllActivities)}
+                                                    >
+                                                        {showAllActivities ? 'Ẩn bớt' : `Xem tất cả ${recentAttempts.length} hoạt động`}
+                                                    </button>
+                                                )}
+                                            </div>
+                                        ) : (
+                                            <div className="chart-placeholder">Chưa có hoạt động</div>
+                                        )}
+                                    </div>
+                                </>
+                            )}
                         </>
                     )}
                 </div>

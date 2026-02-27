@@ -6,8 +6,6 @@ import './MemeFeedback.css';
 
 export const MemeFeedback: React.FC<MemeFeedbackProps> = ({
     isCorrect,
-    augmentName: _augmentName,
-    insight,
 }) => {
     const [meme, setMeme] = useState<MemeItem | null>(null);
     const [isVisible, setIsVisible] = useState(false);
@@ -41,11 +39,9 @@ export const MemeFeedback: React.FC<MemeFeedbackProps> = ({
 
     if (!meme) return null;
 
-    const displayInsight = insight || meme.insight;
-
     return (
         <div className={`meme-feedback ${isCorrect ? 'meme-correct' : 'meme-incorrect'} ${isVisible ? 'meme-visible' : ''}`}>
-            <div className="meme-content">
+            <div className={`meme-content ${meme.imageUrl ? 'has-image' : ''}`}>
                 {meme.imageUrl && (
                     <div className="meme-image-wrapper">
                         <img
@@ -56,13 +52,12 @@ export const MemeFeedback: React.FC<MemeFeedbackProps> = ({
                         />
                     </div>
                 )}
-                <div className="meme-text-section">
-                    <span className="meme-emoji">{meme.emoji}</span>
-                    <span className="meme-text">{meme.text}</span>
+                <div className="meme-body">
+                    <div className="meme-text-section">
+                        <span className="meme-emoji">{meme.emoji}</span>
+                        <span className="meme-text">{meme.text}</span>
+                    </div>
                 </div>
-                {displayInsight && (
-                    <p className="meme-insight">{displayInsight}</p>
-                )}
             </div>
         </div>
     );

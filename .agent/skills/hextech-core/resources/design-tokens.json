@@ -1,7 +1,7 @@
 {
     "meta": {
         "brand_name": "TFT Hextech",
-        "description": "Core design tokens for TFT Set 16 Hextech UI implementation. Note: All spatial units should ideally use cqw in implementation."
+        "description": "Core design tokens for TFT Set 16 Hextech UI. All spatial units use cqw in CSS."
     },
     "colors": {
         "primary": {
@@ -13,16 +13,52 @@
             "DEFAULT": "#d4b876",
             "foreground": "#051c1e"
         },
-        "background": "#153a3e",
-        "foreground": "#94A3B8",
-        "muted": "#1e4b50",
-        "accent": "#F0E6D2",
-        "destructive": "#EF4444",
-        "success": "#10B981"
+        "background": {
+            "modal_shell": "#0d2e30",
+            "modal_shell_dark": "#081e20",
+            "hero_section": "rgba(21, 58, 62, 0.95)",
+            "metrics_section": "rgba(16, 52, 56, 0.95)",
+            "charts_section": "rgba(11, 40, 43, 0.97)",
+            "activity_section": "rgba(13, 46, 48, 0.97)",
+            "LEGACY_WRONG_DO_NOT_USE": "rgba(5, 28, 30, 0.8)"
+        },
+        "border": {
+            "outer_prominent": "rgba(200, 170, 110, 0.45)",
+            "section_divider": "rgba(200, 170, 110, 0.30)",
+            "subtle_inner": "rgba(200, 170, 110, 0.15)",
+            "gold_solid": "#c8aa6e"
+        },
+        "text": {
+            "stat_values": "#FFFFFF",
+            "title_cream": "#F0E6D2",
+            "heading_gold": "#c8aa6e",
+            "labels": "rgba(200, 170, 110, 0.75)",
+            "body": "#94A3B8",
+            "muted": "rgba(200, 170, 110, 0.45)"
+        },
+        "rank": {
+            "Challenger": "#00D1C1",
+            "Grandmaster": "#FF6B35",
+            "Master": "#8B5CF6",
+            "Diamond": "#4F46E5",
+            "Platinum": "#0EA5E9",
+            "Gold": "#EAB308",
+            "Silver": "#94A3B8",
+            "Bronze": "#B45309",
+            "Iron": "#4B5563",
+            "Unranked": "#4B5563"
+        },
+        "semantic": {
+            "success": "#10B981",
+            "destructive": "#EF4444"
+        }
     },
     "gradients": {
-        "panel": "linear-gradient(180deg, #153a3e 0%, #051c1e 100%)",
-        "button_special": "linear-gradient(180deg, rgba(21, 58, 62, 0.9) 0%, rgba(5, 28, 30, 0.95) 100%)"
+        "modal_shell": "linear-gradient(180deg, #0d2e30 0%, #081e20 100%)",
+        "hero_section": "linear-gradient(180deg, rgba(21, 58, 62, 0.95), rgba(13, 46, 48, 0.98))",
+        "cta_button": "linear-gradient(180deg, #C89B3C 0%, #A07828 100%)",
+        "atmosphere_gold_top": "radial-gradient(ellipse at 50% 0%, rgba(200, 170, 110, 0.12) 0%, transparent 55%)",
+        "atmosphere_teal_bottom": "radial-gradient(ellipse at 50% 100%, rgba(21, 58, 62, 0.6) 0%, transparent 60%)"
     },
     "typography": {
         "font_family_headings": [
@@ -34,11 +70,21 @@
             "sans-serif"
         ],
         "font_weight_bold": "700",
-        "font_weight_normal": "400"
+        "font_weight_normal": "400",
+        "scales": {
+            "hero_title": "2.5cqw",
+            "section_title": "1.5-2cqw",
+            "iq_score": "1.5cqw",
+            "player_name": "1.1cqw",
+            "stat_value": "2.5cqw",
+            "stat_label": "0.75cqw",
+            "body": "0.8cqw",
+            "small": "0.65-0.7cqw"
+        }
     },
     "ui": {
         "border_radius_default": "0px",
-        "border_radius_small": "0px",
+        "border_radius_modal": "0.3cqw",
         "spacing_base_unit": "0.5cqw"
     }
 }

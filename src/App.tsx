@@ -62,13 +62,14 @@ const App: React.FC = () => {
         puzzlePhase,
         selectedAugment,
         communityVotes,
+        iqChangeResult,
         currentAugments,
         rerollOrder,
         handleAugmentReroll,
         handleAugmentSelect,
         handleReplay,
         resetFlow
-    } = useGameFlow(currentPuzzle);
+    } = useGameFlow(currentPuzzle, user?.id);
 
     // --- 3. UI State ---
     const [isAugmentOpen, setIsAugmentOpen] = useState(true);
@@ -216,6 +217,7 @@ const App: React.FC = () => {
                         rerollAugments={currentPuzzle.rerollAugments?.filter((a: any) => a !== null) || []}
                         correctAugmentId={currentPuzzle.proFinalPick?.id || ''}
                         communityVotes={communityVotes}
+                        iqChangeResult={iqChangeResult}
                         explanation={currentPuzzle.explanation}
                         onReplay={handleReplay}
                         onNextPuzzle={handleNextPuzzle}

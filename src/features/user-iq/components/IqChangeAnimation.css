@@ -1,0 +1,66 @@
+.iq-change-animation-container {
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 9999;
+    animation: iq-float-up 2.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.iq-change-text {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    font-weight: 800;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+}
+
+.iq-label {
+    font-size: 1.5rem;
+    color: rgba(255, 255, 255, 0.9);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.iq-value {
+    font-size: 3rem;
+}
+
+.iq-positive .iq-value {
+    color: #10B981;
+    /* hextech success green */
+    text-shadow: 0 0 20px rgba(16, 185, 129, 0.6);
+}
+
+.iq-negative .iq-value {
+    color: #EF4444;
+    /* hextech danger red */
+    text-shadow: 0 0 20px rgba(239, 68, 68, 0.6);
+}
+
+@keyframes iq-float-up {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -30%) scale(0.5);
+    }
+
+    15% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.1);
+    }
+
+    30% {
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    80% {
+        opacity: 1;
+        transform: translate(-50%, -80%) scale(1);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -100%) scale(0.9);
+    }
+}

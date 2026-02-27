@@ -127,17 +127,44 @@ description: The Unified System for TFT Hextech. Contains the Hextech Premium De
 | Role | Value |
 | :--- | :--- |
 | Atmosphere BG | Layered radial gradients |
-| Panel BG | `linear-gradient(180deg, #153a3e, #051c1e)` |
-| Section BG | `rgba(5, 28, 30, 0.8)` to `0.95` |
+| Modal Shell BG | `linear-gradient(180deg, #0d2e30, #081e20)` |
+| Hero/Top Section BG | `linear-gradient(180deg, rgba(21,58,62,0.95), rgba(13,46,48,0.98))` |
+| Metric Section BG | `rgba(16, 52, 56, 0.95)` |
+| Chart/Content Section BG | `rgba(11, 40, 43, 0.97)` |
+| Activity/Bottom Section BG | `rgba(13, 46, 48, 0.97)` |
 | CTA Button | `linear-gradient(180deg, #C89B3C, #A07828)` |
-| Border Gold | `#c8aa6e` |
-| Border Subtle | `rgba(200, 170, 110, 0.15)` |
-| Text Title | `#F0E6D2` |
-| Text Heading | `#c8aa6e` |
-| Text Body | `#94A3B8` |
-| Text Muted | `rgba(200, 170, 110, 0.45)` |
+| Border Gold (outer/prominent) | `rgba(200, 170, 110, 0.45)` |
+| Border Gold (section dividers) | `rgba(200, 170, 110, 0.30)` |
+| Border Gold (subtle/inner) | `rgba(200, 170, 110, 0.15)` |
+| Text — Stat Values (numbers) | `#FFFFFF` |
+| Text — Title / Cream | `#F0E6D2` |
+| Text — Heading Gold | `#c8aa6e` |
+| Text — Labels | `rgba(200, 170, 110, 0.75)` |
+| Text — Body | `#94A3B8` |
+| Text — Muted/Disabled | `rgba(200, 170, 110, 0.45)` |
 | CTA Text | `#051c1e` |
-| Accent | `#F0E6D2` |
+
+> 🔴 **WRONG**: `rgba(5, 28, 30, 0.8)` for section backgrounds = pitch black = **FAIL** 
+> ✅ **CORRECT**: Use `rgba(11–16, 40–52, 43–56, 0.95–0.97)` = teal dark = Game Client look.
+
+### C2. IQ Rank Color System
+
+Used as `--rank-color` CSS variable in Hero sections. **Do NOT change these.**
+
+| Rank | Color | Notes |
+| :--- | :--- | :--- |
+| Challenger | `#00D1C1` | Cyan teal |
+| Grandmaster | `#FF6B35` | Orange |
+| Master | `#8B5CF6` | Purple — only rank exception to Purple Ban |
+| Diamond | `#4F46E5` | Indigo |
+| Platinum | `#0EA5E9` | Sky blue |
+| Gold | `#EAB308` | Yellow gold |
+| Silver | `#94A3B8` | Steel |
+| Bronze | `#B45309` | Amber |
+| Iron | `#4B5563` | Gray |
+| Unranked | `#4B5563` | Same as Iron, with `opacity: 0.45` |
+
+Source of truth: `src/features/user-iq/userIqCalculator.ts → getUserIqRankColor()`
 
 ### D. Typography System
 
@@ -154,7 +181,23 @@ description: The Unified System for TFT Hextech. Contains the Hextech Premium De
 
 ---
 
-## 4. Reference Implementation: LoginModal
+## 4. Modal Brightness Standard
+
+> UI must feel like a **Game Client**, NOT a dark website. The reference screen is the **Review Decision** screen which uses vivid teal panels.
+
+**Rule:** Every modal/overlay background MUST use `#0d2e30` or brighter as the base — NEVER let it fall to near-black.
+
+```
+Modal Shell   → #0d2e30 base
+Hero Section  → rgba(21,58,62, 0.95) — lightest (top)
+Stats/Metrics → rgba(16,52,56, 0.95)
+Charts        → rgba(11,40,43, 0.97)
+Activity      → rgba(13,46,48, 0.97) — darkest (bottom)
+```
+
+**Outer border** on ALL modals/panels: `0.06cqw solid rgba(200, 170, 110, 0.45)` — always visible.
+
+---
 
 The Login screen is the **canonical example** of all 5 pillars applied together.
 See: `src/components/Auth/LoginModal.tsx` + `LoginModal.css`
