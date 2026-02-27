@@ -37,6 +37,7 @@ export interface AttemptRecord {
     timeToDecideMs: number;
     puzzleStage: string;
     createdAt: string;
+    iqChangeAmount?: number | null;
 }
 
 export interface AccuracyTrend {
@@ -70,6 +71,7 @@ export const userStatsService = {
                 time_to_decide_ms: data.timeToDecideMs,
                 puzzle_stage: data.puzzleStage,
                 pro_pick_id: data.proPickId,
+                created_at: new Date().toISOString(),
             }, { onConflict: 'user_id, puzzle_id' });
 
         if (error) {
@@ -156,16 +158,40 @@ export const userStatsService = {
         const uid = userId || (await supabase.auth.getUser()).data.user?.id;
         if (!uid) return [];
 
-        const { data, error } = await supabase
+        const { data: attemptsData, error: attemptsError } = await supabase
             .from('user_puzzle_attempts')
             .select('id, puzzle_id, user_pick_name, is_correct, reroll_count, time_to_decide_ms, puzzle_stage, created_at')
             .eq('user_id', uid)
             .order('created_at', { ascending: false })
             .limit(limit);
 
-        if (error || !data) return [];
+        if (attemptsError || !attemptsData) {
+            console.error('Error fetching recent attempts:', attemptsError);
+            return [];
+        }
 
-        return data.map(row => ({
+        if (attemptsData.length === 0) return [];
+
+        // Fetch IQ history — latest entry per puzzle_id
+        const puzzleIds = [...new Set(attemptsData.map(a => a.puzzle_id))];
+        const { data: iqData, error: iqError } = await supabase
+            .from('user_iq_history')
+            .select('puzzle_id, change_amount, created_at')
+            .eq('user_id', uid)
+            .in('puzzle_id', puzzleIds)
+            .order('created_at', { ascending: false });
+
+        // Keep only the latest IQ entry per puzzle_id
+        const iqByPuzzle = new Map<string, number>();
+        if (!iqError && iqData) {
+            for (const row of iqData) {
+                if (!iqByPuzzle.has(row.puzzle_id)) {
+                    iqByPuzzle.set(row.puzzle_id, row.change_amount);
+                }
+            }
+        }
+
+        return attemptsData.map((row: any) => ({
             id: row.id,
             puzzleId: row.puzzle_id,
             userPickName: row.user_pick_name,
@@ -173,7 +199,8 @@ export const userStatsService = {
             rerollCount: row.reroll_count,
             timeToDecideMs: row.time_to_decide_ms,
             puzzleStage: row.puzzle_stage,
-            createdAt: row.created_at
+            createdAt: row.created_at,
+            iqChangeAmount: iqByPuzzle.get(row.puzzle_id) ?? null
         }));
     },
 

@@ -3,13 +3,15 @@ import { CommunityVotes } from '../data/puzzleScenarios';
 import { AugmentData } from '../services/augmentService';
 import { userStatsService } from '../services/userStatsService';
 import { voteService } from '../services/voteService';
+import { updateUserIq } from '../features/user-iq/userIq.service';
 
 export type PuzzlePhase = 'selecting' | 'reviewing';
 
-export const useGameFlow = (currentPuzzle: any) => {
+export const useGameFlow = (currentPuzzle: any, userId?: string) => {
     const [puzzlePhase, setPuzzlePhase] = React.useState<PuzzlePhase>('selecting');
     const [selectedAugment, setSelectedAugment] = React.useState<AugmentData | null>(null);
     const [communityVotes, setCommunityVotes] = React.useState<CommunityVotes>({});
+    const [iqChangeResult, setIqChangeResult] = React.useState<{ changeAmount: number; newScore: number; newRank: string } | null>(null);
 
     // User's journey tracking
     const [userFirstRoll, setUserFirstRoll] = React.useState<AugmentData[]>([]);
@@ -42,6 +44,7 @@ export const useGameFlow = (currentPuzzle: any) => {
         setRollSequence(1);
         setPuzzlePhase('selecting');
         setSelectedAugment(null);
+        setIqChangeResult(null);
 
         // Fetch real community votes from DB
         voteService.getVotes(currentPuzzle.id).then(setCommunityVotes).catch(() => setCommunityVotes({}));
@@ -97,6 +100,13 @@ export const useGameFlow = (currentPuzzle: any) => {
                 .filter(idx => idx >= 0);
             const timeToDecideMs = startTime ? Date.now() - startTime : 0;
 
+            if (userId) {
+                const timeToDecideSeconds = timeToDecideMs / 1000;
+                updateUserIq(userId, currentPuzzle.id, isCorrect, timeToDecideSeconds)
+                    .then(result => setIqChangeResult(result))
+                    .catch(err => console.error('Failed to update IQ:', err));
+            }
+
             // Record vote for community percentages (works for guests too)
             voteService.recordVote(
                 currentPuzzle.id,
@@ -126,6 +136,7 @@ export const useGameFlow = (currentPuzzle: any) => {
         if (!currentPuzzle) return;
         setPuzzlePhase('selecting');
         setSelectedAugment(null);
+        setIqChangeResult(null);
         // CRITICAL: Filter nulls and limit to exactly 3 augments
         const validAugments = (currentPuzzle.augments || []).filter((a: AugmentData | null): a is AugmentData => a !== null);
         const threeAugments = validAugments.slice(0, 3);
@@ -144,12 +155,14 @@ export const useGameFlow = (currentPuzzle: any) => {
     const resetFlow = () => {
         setPuzzlePhase('selecting');
         setSelectedAugment(null);
+        setIqChangeResult(null);
     }
 
     return {
         puzzlePhase,
         selectedAugment,
         communityVotes,
+        iqChangeResult,
         userFirstRoll,
         userSecondRoll,
         userPickRound,

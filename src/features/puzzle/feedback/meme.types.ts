@@ -12,6 +12,4 @@ export interface MemeItem {
 
 export interface MemeFeedbackProps {
     isCorrect: boolean;
-    augmentName?: string;
-    insight?: string;
 }

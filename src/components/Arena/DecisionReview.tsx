@@ -7,6 +7,7 @@ import { ReviewCard } from './DecisionReviewComponents/ReviewCard';
 import { PuzzleInfo } from './DecisionReviewComponents/PuzzleInfo';
 import { ReviewActions } from './DecisionReviewComponents/ReviewActions';
 import { MemeFeedback } from '../../features/puzzle/feedback/MemeFeedback';
+import { IqScoreSummary } from '../../features/user-iq/components/IqScoreSummary';
 
 export interface DecisionReviewProps {
     userChoice: AugmentData;
@@ -28,6 +29,7 @@ export interface DecisionReviewProps {
     encounter?: string;
     streamUrl?: string;
     communityVotes?: CommunityVotes;
+    iqChangeResult?: { changeAmount: number; newScore: number; newRank: string } | null;
     proPlayerName?: string;
     explanation?: string;
 }
@@ -50,6 +52,7 @@ export const DecisionReview: React.FC<DecisionReviewProps> = ({
     encounter,
     streamUrl,
     communityVotes = {},
+    iqChangeResult,
     proPlayerName = 'Tuyển thủ',
     explanation
 }) => {
@@ -131,11 +134,7 @@ export const DecisionReview: React.FC<DecisionReviewProps> = ({
                 />
 
                 {/* --- MEME FEEDBACK --- */}
-                <MemeFeedback
-                    isCorrect={userMatchedPro}
-                    augmentName={userChoice.title}
-                    insight={explanation}
-                />
+                <MemeFeedback isCorrect={userMatchedPro} />
 
                 {/* --- TIMELINE REMOVED - DIRECT TO FINAL PICK --- */}
                 <div className="roll-timeline">
@@ -249,8 +248,17 @@ export const DecisionReview: React.FC<DecisionReviewProps> = ({
                     </div>
                 )}
 
-                {/* --- ACTIONS --- */}
-                <ReviewActions onReplay={onReplay} onNextPuzzle={onNextPuzzle} />
+                {/* --- BOTTOM BAR: IQ Score + Actions --- */}
+                <div className="review-bottom-bar">
+                    {iqChangeResult ? (
+                        <IqScoreSummary
+                            newScore={iqChangeResult.newScore}
+                            changeAmount={iqChangeResult.changeAmount}
+                            newRank={iqChangeResult.newRank}
+                        />
+                    ) : <div />}
+                    <ReviewActions onReplay={onReplay} onNextPuzzle={onNextPuzzle} />
+                </div>
             </div>
         </div>
     );
