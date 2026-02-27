@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { MemeItem, MemeCategory } from '../../../features/puzzle/feedback/meme.types';
 import { fetchAllMemes, createMeme, updateMeme, deleteMeme } from '../../../features/puzzle/feedback/memeService';
 import Toast from '../../../components/common/Toast';
+import ConfirmModal from '../../../components/common/ConfirmModal';
 import './MemeManager.css';
 
 export const MemeManager: React.FC = () => {
@@ -10,6 +11,8 @@ export const MemeManager: React.FC = () => {
     const [filter, setFilter] = useState<'all' | MemeCategory>('all');
     const [isAdding, setIsAdding] = useState(false);
     const [editingId, setEditingId] = useState<string | null>(null);
+    const [memeToDelete, setMemeToDelete] = useState<MemeItem | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
     const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
     // Form state
@@ -96,13 +99,23 @@ export const MemeManager: React.FC = () => {
         }
     };
 
-    const handleDelete = async (id: string) => {
+    const handleDeleteRequest = (meme: MemeItem) => {
+        setMemeToDelete(meme);
+    };
+
+    const confirmDelete = async () => {
+        if (!memeToDelete) return;
+
+        setIsDeleting(true);
         try {
-            await deleteMeme(id);
-            setMemes(prev => prev.map(m => m.id === id ? { ...m, isActive: false } : m));
-            setToast({ message: 'Đã vô hiệu hóa meme', type: 'success' });
+            await deleteMeme(memeToDelete.id);
+            setMemes(prev => prev.map(m => m.id === memeToDelete.id ? { ...m, isActive: false } : m));
+            setToast({ message: 'Đã đưa meme vào thùng rác', type: 'success' });
         } catch (err: any) {
             setToast({ message: `Lỗi: ${err.message}`, type: 'error' });
+        } finally {
+            setIsDeleting(false);
+            setMemeToDelete(null);
         }
     };
 
@@ -203,11 +216,22 @@ export const MemeManager: React.FC = () => {
                                 {meme.isActive ? 'Tắt' : 'Bật'}
                             </button>
                             <button className="hex-button small" onClick={() => startEdit(meme)}>Sửa</button>
-                            <button className="hex-button danger small" onClick={() => handleDelete(meme.id)}>Xóa</button>
+                            <button className="hex-button danger small" onClick={() => handleDeleteRequest(meme)}>Xóa</button>
                         </div>
                     </div>
                 ))}
             </div>
+
+            <ConfirmModal
+                isOpen={memeToDelete !== null}
+                title="Đưa vào thùng rác"
+                message="Bạn có chắc là muốn xóa Meme này? Có thể khôi phục trong thùng rác."
+                itemName={memeToDelete?.text}
+                confirmLabel="Xóa"
+                isLoading={isDeleting}
+                onClose={() => setMemeToDelete(null)}
+                onConfirm={confirmDelete}
+            />
 
             {toast && <Toast message={toast.message} type={toast.type as any} onClose={() => setToast(null)} />}
         </div>

@@ -4,13 +4,15 @@ import { traitService } from '../../../services/traitService';
 import { itemService } from '../../../services/itemService';
 import { augmentService } from '../../../services/augmentService';
 import { puzzleService } from '../../../services/puzzleService';
+import { getDeletedProPlayers } from '../../../features/tft-iq/proIqService';
+import { getDeletedMemes } from '../../../features/puzzle/feedback/memeService';
 import ConfirmModal from '../../../components/common/ConfirmModal';
 import '../../../components/Admin/AdminDataTable.css';
 
 // Type for deleted items
 export interface DeletedItem {
     id: string;
-    type: 'champions' | 'traits' | 'items' | 'augments' | 'puzzles';
+    type: 'champions' | 'traits' | 'items' | 'augments' | 'puzzles' | 'pro_players' | 'memes';
     data: any;
     deleted_at: string;
 }
@@ -25,7 +27,7 @@ type ConfirmAction = 'delete' | 'empty' | null;
 export const TrashView: React.FC<TrashViewProps> = ({ onRestore, onPermanentDelete }) => {
     const [trashItems, setTrashItems] = useState<DeletedItem[]>([]);
     const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-    const [filterType, setFilterType] = useState<'all' | 'champions' | 'traits' | 'items' | 'augments' | 'puzzles'>('all');
+    const [filterType, setFilterType] = useState<'all' | 'champions' | 'traits' | 'items' | 'augments' | 'puzzles' | 'pro_players' | 'memes'>('all');
     const [searchTerm, setSearchTerm] = useState('');
     const [confirmAction, setConfirmAction] = useState<ConfirmAction>(null);
     const [isProcessing, setIsProcessing] = useState(false);
@@ -39,7 +41,7 @@ export const TrashView: React.FC<TrashViewProps> = ({ onRestore, onPermanentDele
         setLoading(true);
         try {
             // Load ALL tables in PARALLEL for speed
-            const [champions, traits, items, augments, puzzles] = await Promise.all([
+            const [champions, traits, items, augments, puzzles, proPlayers, memes] = await Promise.all([
                 filterType === 'all' || filterType === 'champions'
                     ? championService.getDeleted() : Promise.resolve([]),
                 filterType === 'all' || filterType === 'traits'
@@ -49,7 +51,11 @@ export const TrashView: React.FC<TrashViewProps> = ({ onRestore, onPermanentDele
                 filterType === 'all' || filterType === 'augments'
                     ? augmentService.getDeleted() : Promise.resolve([]),
                 filterType === 'all' || filterType === 'puzzles'
-                    ? puzzleService.getDeleted() : Promise.resolve([])
+                    ? puzzleService.getDeleted() : Promise.resolve([]),
+                filterType === 'all' || filterType === 'pro_players'
+                    ? getDeletedProPlayers() : Promise.resolve([]),
+                filterType === 'all' || filterType === 'memes'
+                    ? getDeletedMemes() : Promise.resolve([])
             ]);
 
             const allItems: DeletedItem[] = [
@@ -82,6 +88,18 @@ export const TrashView: React.FC<TrashViewProps> = ({ onRestore, onPermanentDele
                     type: 'puzzles' as const,
                     data: p,
                     deleted_at: (p as any).deleted_at
+                })),
+                ...proPlayers.map(pr => ({
+                    id: pr.id,
+                    type: 'pro_players' as const,
+                    data: pr,
+                    deleted_at: (pr as any).updated_at || new Date().toISOString()
+                })),
+                ...memes.map(m => ({
+                    id: m.id,
+                    type: 'memes' as const,
+                    data: m,
+                    deleted_at: (m as any).created_at || new Date().toISOString()
                 }))
             ];
 
@@ -170,7 +188,7 @@ export const TrashView: React.FC<TrashViewProps> = ({ onRestore, onPermanentDele
         if (!searchTerm) return true;
         const searchLower = searchTerm.toLowerCase();
         const data = item.data;
-        const nameMatch = data.name?.toLowerCase().includes(searchLower) || data.title?.toLowerCase().includes(searchLower);
+        const nameMatch = data.name?.toLowerCase().includes(searchLower) || data.title?.toLowerCase().includes(searchLower) || data.text?.toLowerCase().includes(searchLower);
         const idMatch = data.id?.toLowerCase().includes(searchLower);
         return nameMatch || idMatch;
     });
@@ -217,6 +235,8 @@ export const TrashView: React.FC<TrashViewProps> = ({ onRestore, onPermanentDele
                         <option value="items">Trang bị</option>
                         <option value="augments">Augments</option>
                         <option value="puzzles">Puzzles</option>
+                        <option value="pro_players">Pro Player</option>
+                        <option value="memes">Meme</option>
                     </select>
                     <input
                         type="text"
@@ -323,12 +343,14 @@ export const TrashView: React.FC<TrashViewProps> = ({ onRestore, onPermanentDele
                                                 {item.type === 'champions' ? 'Tướng' :
                                                     item.type === 'traits' ? 'Tộc/Hệ' :
                                                         item.type === 'items' ? 'Trang bị' :
-                                                            item.type === 'augments' ? 'Augment' : 'Puzzle'}
+                                                            item.type === 'augments' ? 'Augment' :
+                                                                item.type === 'pro_players' ? 'Pro Player' :
+                                                                    item.type === 'memes' ? 'Meme' : 'Puzzle'}
                                             </span>
                                         </td>
                                         <td>
                                             <div style={{ fontWeight: 500, color: '#F0E6D2' }}>
-                                                {data.name || data.title || 'Không tên'}
+                                                {data.name || data.title || data.text || 'Không tên'}
                                             </div>
                                         </td>
                                         <td>
@@ -348,6 +370,8 @@ export const TrashView: React.FC<TrashViewProps> = ({ onRestore, onPermanentDele
                                                 {item.type === 'items' && `Combined: ${data.combined || 'N/A'}`}
                                                 {item.type === 'augments' && `Tier: ${data.tier || 'N/A'}`}
                                                 {item.type === 'puzzles' && `Stage: ${data.stage || 'N/A'}`}
+                                                {item.type === 'pro_players' && `Region: ${data.region || 'N/A'}`}
+                                                {item.type === 'memes' && `Category: ${data.category || 'N/A'}`}
                                             </span>
                                         </td>
                                     </tr>

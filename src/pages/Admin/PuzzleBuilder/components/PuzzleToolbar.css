@@ -100,10 +100,10 @@
 }
 
 .pt-input-wrapper input {
-    background: #05080F;
-    /* input-bg */
-    border: 1px solid #1E293B;
-    color: #F0F6FC;
+    background: rgba(5, 28, 30, 0.8);
+    /* Hextech Panel BG */
+    border: 1px solid rgba(200, 170, 110, 0.3);
+    color: #F0E6D2;
     /* text-primary */
 
     padding: 0.3rem 0.5rem;

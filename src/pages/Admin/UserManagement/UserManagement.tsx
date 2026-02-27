@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../../contexts/AuthContext';
 import { getAllUsers, updateUserRole, deleteUser, UserWithMeta, UserRole } from '../../../services/userService';
+import ConfirmModal from '../../../components/common/ConfirmModal';
 import './UserManagement.css';
 
 interface UserDetailModalProps {
@@ -143,6 +144,8 @@ export const UserManagement: React.FC = () => {
     const [filterRole, setFilterRole] = useState<UserRole | 'all'>('all');
     const [selectedUser, setSelectedUser] = useState<UserWithMeta | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
+    const [userToDelete, setUserToDelete] = useState<{ id: string, email: string } | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     useEffect(() => {
         loadUsers();
@@ -174,17 +177,25 @@ export const UserManagement: React.FC = () => {
         ));
     };
 
-    const handleDelete = async (userId: string, email: string) => {
+    const requestDelete = (userId: string, email: string) => {
         if (!canManageUsers) return;
+        setUserToDelete({ id: userId, email });
+    };
 
-        if (!confirm(`Bạn có chắc muốn xóa user ${email}? Hành động này không thể hoàn tác.`)) return;
-
+    const confirmDeleteAction = async () => {
+        if (!userToDelete) return;
+        setIsDeleting(true);
         try {
-            await deleteUser(userId);
-            setUsers(prev => prev.filter(u => u.id !== userId));
-            setSelectedUser(null);
+            await deleteUser(userToDelete.id);
+            setUsers(prev => prev.filter(u => u.id !== userToDelete.id));
+            if (selectedUser?.id === userToDelete.id) {
+                setSelectedUser(null);
+            }
         } catch (err) {
             alert(err instanceof Error ? err.message : 'Failed to delete user');
+        } finally {
+            setIsDeleting(false);
+            setUserToDelete(null);
         }
     };
 
@@ -316,10 +327,21 @@ export const UserManagement: React.FC = () => {
                     user={selectedUser}
                     onClose={() => setSelectedUser(null)}
                     onSave={(updates) => handleSaveUser(selectedUser.id, updates)}
-                    onDelete={() => handleDelete(selectedUser.id, selectedUser.email)}
+                    onDelete={() => requestDelete(selectedUser.id, selectedUser.email)}
                     canEdit={canManageUsers}
                 />
             )}
+
+            <ConfirmModal
+                isOpen={userToDelete !== null}
+                title="Xóa User"
+                message={`Bạn có chắc muốn xóa user này? Hành động này sẽ thay đổi dữ liệu đăng nhập và không thể hoàn tác!`}
+                itemName={userToDelete?.email}
+                confirmLabel="Xóa Vĩnh Viễn"
+                isLoading={isDeleting}
+                onClose={() => setUserToDelete(null)}
+                onConfirm={confirmDeleteAction}
+            />
         </div>
     );
 };
