@@ -95,10 +95,39 @@ export async function updateMeme(
     return rowToMeme(data as MemeRow);
 }
 
+export async function getDeletedMemes(): Promise<MemeItem[]> {
+    const { data, error } = await supabase
+        .from('memes')
+        .select('*')
+        .eq('is_active', false)
+        .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    return (data as MemeRow[]).map(rowToMeme);
+}
+
 export async function deleteMeme(id: string): Promise<void> {
     const { error } = await supabase
         .from('memes')
         .update({ is_active: false })
+        .eq('id', id);
+
+    if (error) throw error;
+}
+
+export async function restoreMeme(id: string): Promise<void> {
+    const { error } = await supabase
+        .from('memes')
+        .update({ is_active: true })
+        .eq('id', id);
+
+    if (error) throw error;
+}
+
+export async function hardDeleteMeme(id: string): Promise<void> {
+    const { error } = await supabase
+        .from('memes')
+        .delete()
         .eq('id', id);
 
     if (error) throw error;

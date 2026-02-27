@@ -36,14 +36,15 @@ const AdminEditModal: React.FC<AdminEditModalProps> = ({ item, type, isSaving, o
         // Hextech Input Style
         const inputStyle = {
             width: '100%',
-            background: '#05080F', // Deepest dark for inputs
-            border: '1px solid #1E293B', // Slate border
-            color: '#F0F6FC', // Bright text
+            background: 'rgba(5, 28, 30, 0.8)', // Hextech dark teal
+            border: '1px solid rgba(200, 170, 110, 0.3)', // Hextech Gold border
+            color: '#F0E6D2', // Hextech light gold text
             fontFamily: 'Inter, sans-serif',
             padding: '0.5rem',
             marginBottom: '1rem',
             borderRadius: '4px',
-            outline: 'none'
+            outline: 'none',
+            transition: 'all 0.2s'
         };
 
         const labelStyle = {

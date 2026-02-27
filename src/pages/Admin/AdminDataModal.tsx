@@ -17,13 +17,14 @@ import { TrashView, DeletedItem } from './components/TrashView';
 import { useAuth } from '../../contexts/AuthContext';
 import { UserManagement } from './UserManagement/UserManagement';
 import { MemeManager } from './MemeManager/MemeManager';
+import { ProIqManager } from './ProIqManager/ProIqManager';
 
 interface AdminDataModalProps {
     onClose: () => void;
     onPuzzleSaved?: () => void | Promise<void>;
 }
 
-type Tab = 'champions' | 'traits' | 'items' | 'augments' | 'puzzles' | 'users' | 'memes' | 'trash';
+type Tab = 'champions' | 'traits' | 'items' | 'augments' | 'puzzles' | 'users' | 'memes' | 'proiq' | 'trash';
 
 const AdminDataModal: React.FC<AdminDataModalProps> = ({ onClose, onPuzzleSaved }) => {
     const { canAccessAdmin, canManageUsers } = useAuth();
@@ -217,6 +218,8 @@ const AdminDataModal: React.FC<AdminDataModalProps> = ({ onClose, onPuzzleSaved 
                     case 'items': return itemService.restore(item.id);
                     case 'augments': return augmentService.restore(item.id);
                     case 'puzzles': return puzzleService.restore(item.id);
+                    case 'pro_players': return import('../../features/tft-iq/proIqService').then(m => m.restoreProPlayer(item.id));
+                    case 'memes': return import('../../features/puzzle/feedback/memeService').then(m => m.restoreMeme(item.id));
                     default: return Promise.resolve();
                 }
             });
@@ -250,6 +253,8 @@ const AdminDataModal: React.FC<AdminDataModalProps> = ({ onClose, onPuzzleSaved 
                     case 'items': return supabase.from('items').delete().eq('id', item.id);
                     case 'augments': return supabase.from('augments').delete().eq('id', item.id);
                     case 'puzzles': return supabase.from('puzzles').delete().eq('id', item.id);
+                    case 'pro_players': return import('../../features/tft-iq/proIqService').then(m => m.hardDeleteProPlayer(item.id));
+                    case 'memes': return import('../../features/puzzle/feedback/memeService').then(m => m.hardDeleteMeme(item.id));
                     default: return Promise.resolve();
                 }
             });
@@ -580,6 +585,7 @@ const AdminDataModal: React.FC<AdminDataModalProps> = ({ onClose, onPuzzleSaved 
                                 { key: 'augments', label: 'Augments' },
                                 { key: 'puzzles', label: 'Puzzles' },
                                 { key: 'memes', label: 'Memes' },
+                                { key: 'proiq', label: 'Pro IQ' },
                                 ...(canManageUsers ? [{ key: 'users', label: 'Users' }] : []),
                                 { key: 'trash', label: 'Thùng rác' }
                             ]}
@@ -599,6 +605,8 @@ const AdminDataModal: React.FC<AdminDataModalProps> = ({ onClose, onPuzzleSaved 
                                     <UserManagement />
                                 ) : activeTab === 'memes' ? (
                                     <MemeManager />
+                                ) : activeTab === 'proiq' ? (
+                                    <ProIqManager />
                                 ) : (
                                     <>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5cqw', gap: '1cqw', flexShrink: 0 }}>
@@ -676,7 +684,7 @@ const AdminDataModal: React.FC<AdminDataModalProps> = ({ onClose, onPuzzleSaved 
 
             <AdminEditModal
                 item={editingItem}
-                type={activeTab === 'trash' || activeTab === 'users' || activeTab === 'memes' ? 'champions' : activeTab}
+                type={activeTab === 'trash' || activeTab === 'users' || activeTab === 'memes' || activeTab === 'proiq' ? 'champions' : activeTab}
                 isSaving={isSaving}
                 onClose={() => setEditingItem(null)}
                 onSave={saveEdit}

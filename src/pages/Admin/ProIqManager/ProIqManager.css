@@ -1,0 +1,608 @@
+/* ProIqManager Admin Styles */
+
+.proiq-manager {
+    display: flex;
+    flex-direction: column;
+    gap: 1cqw;
+    height: 100%;
+    overflow-y: auto;
+}
+
+/* Stats Bar */
+.proiq-stats {
+    display: flex;
+    gap: 1cqw;
+    padding: 0.5cqw 0;
+    flex-wrap: wrap;
+}
+
+.proiq-stat {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75cqw;
+    font-weight: 600;
+    padding: 0.3cqw 0.6cqw;
+    border-radius: 0.15cqw;
+    background: rgba(255, 255, 255, 0.05);
+    border: 0.05cqw solid rgba(255, 255, 255, 0.1);
+    color: #94a3b8;
+}
+
+.proiq-stat.highlight {
+    color: #c8aa6e;
+    border-color: rgba(200, 170, 110, 0.3);
+}
+
+.proiq-stat.goat {
+    color: #FFD700;
+    border-color: rgba(255, 215, 0, 0.3);
+}
+
+.proiq-stat.elite {
+    color: #FF6B35;
+    border-color: rgba(255, 107, 53, 0.3);
+}
+
+.proiq-stat.top-pro {
+    color: #00D1C1;
+    border-color: rgba(0, 209, 193, 0.3);
+}
+
+/* Toolbar */
+.proiq-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5cqw;
+    flex-wrap: wrap;
+    padding: 0 0.8cqw;
+}
+
+.proiq-toolbar-left {
+    display: flex;
+    gap: 0.5cqw;
+    align-items: center;
+    flex: 1;
+}
+
+.proiq-toolbar-right {
+    display: flex;
+    gap: 0.4cqw;
+}
+
+.proiq-search {
+    flex: 1;
+    max-width: 20cqw;
+}
+
+.proiq-filters {
+    display: flex;
+    gap: 0.3cqw;
+}
+
+.proiq-filter-btn {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.65cqw;
+    padding: 0.25cqw 0.5cqw;
+    background: rgba(0, 0, 0, 0.3);
+    border: 0.05cqw solid rgba(200, 170, 110, 0.2);
+    color: #94a3b8;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.proiq-filter-btn.active {
+    background: rgba(200, 170, 110, 0.15);
+    border-color: #c8aa6e;
+    color: #c8aa6e;
+}
+
+.proiq-filter-btn:hover {
+    border-color: rgba(200, 170, 110, 0.5);
+}
+
+.proiq-form {
+    width: 600px;
+    max-width: 90vw;
+    max-height: 90vh;
+    /* Chỉ giới hạn chiều cao tổng của Form, không cho overflow ở đây */
+    background: linear-gradient(180deg, #153a3e 0%, #051c1e 100%);
+    border: 1px solid #c8aa6e;
+    box-shadow: 0 0 20px rgba(200, 170, 110, 0.3);
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    /* Cắt gọn phần thòi ra ngoài viền */
+}
+
+.proiq-form-title {
+    font-family: 'Spectral', serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #c8aa6e;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(200, 170, 110, 0.3);
+    margin: 0;
+    flex-shrink: 0;
+    /* Header không bị bóp khi màn hình nhỏ */
+}
+
+.proiq-form-grid {
+    padding: 1.5rem;
+    overflow-y: auto;
+    /* Chỉ cuộn dọc lưới Form thay vì toàn bộ Modal */
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    box-sizing: border-box;
+}
+
+.proiq-form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.proiq-form-field.full {
+    grid-column: 1 / -1;
+}
+
+.proiq-form-field label {
+    display: block;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    color: #c8aa6e;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+}
+
+.proiq-form-field input,
+.proiq-form-field select {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(200, 170, 110, 0.3);
+    color: #F0E6D2;
+    font-family: 'Inter', sans-serif;
+    padding: 0.5rem;
+    border-radius: 4px;
+    outline: none;
+    box-sizing: border-box;
+    transition: all 0.2s;
+}
+
+.proiq-form-field input:focus,
+.proiq-form-field select:focus {
+    border-color: #c8aa6e;
+    box-shadow: 0 0 10px rgba(200, 170, 110, 0.2);
+}
+
+.proiq-form-field select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23F0F6FC' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1rem;
+    padding-right: 2.5rem;
+    cursor: pointer;
+}
+
+.proiq-form-actions {
+    padding: 1.5rem;
+    border-top: 1px solid rgba(200, 170, 110, 0.3);
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.proiq-form-actions button.hex-button {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid #c8aa6e;
+    color: #F0E6D2;
+    padding: 0.5rem 1.5rem;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    border-radius: 2px;
+}
+
+.proiq-form-actions button.hex-button.primary {
+    background: linear-gradient(180deg, rgba(21, 58, 62, 0.6) 0%, rgba(5, 28, 30, 0.6) 100%);
+    font-weight: 600;
+    box-shadow: 0 0 10px rgba(200, 170, 110, 0.25);
+}
+
+/* Pro Card List */
+.proiq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4cqw;
+}
+
+.proiq-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6cqw 0.8cqw;
+    background: rgba(255, 255, 255, 0.03);
+    border: 0.05cqw solid rgba(255, 255, 255, 0.08);
+    transition: all 0.2s;
+}
+
+.proiq-card:hover {
+    border-color: rgba(200, 170, 110, 0.3);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.proiq-card.inactive {
+    opacity: 0.4;
+}
+
+.proiq-card-main {
+    display: flex;
+    align-items: center;
+    gap: 0.8cqw;
+    flex: 1;
+    min-width: 0;
+}
+
+.proiq-card-avatar {
+    width: 2.2cqw;
+    height: 2.2cqw;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 0.08cqw solid rgba(200, 170, 110, 0.4);
+    flex-shrink: 0;
+}
+
+.proiq-card-avatar-placeholder {
+    width: 2.2cqw;
+    height: 2.2cqw;
+    border-radius: 50%;
+    background: rgba(200, 170, 110, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1cqw;
+    flex-shrink: 0;
+}
+
+.proiq-card-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1cqw;
+    min-width: 0;
+}
+
+.proiq-card-name {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8cqw;
+    font-weight: 700;
+    color: #F0F6FC;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.proiq-card-meta {
+    display: flex;
+    gap: 0.5cqw;
+    align-items: center;
+}
+
+.proiq-card-region {
+    font-size: 0.6cqw;
+    color: #64748b;
+    font-weight: 600;
+}
+
+.proiq-card-rank {
+    font-size: 0.6cqw;
+    color: #94a3b8;
+}
+
+.proiq-card-iq {
+    display: flex;
+    align-items: center;
+    gap: 0.3cqw;
+    flex-shrink: 0;
+}
+
+.proiq-card-score {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.1cqw;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+.proiq-card-tier {
+    font-size: 0.65cqw;
+    font-weight: 600;
+    padding: 0.15cqw 0.4cqw;
+    border-radius: 0.1cqw;
+    background: rgba(200, 170, 110, 0.1);
+    border: 0.05cqw solid rgba(200, 170, 110, 0.2);
+    white-space: nowrap;
+}
+
+.proiq-card-updated {
+    font-size: 0.55cqw;
+    color: #475569;
+    flex-shrink: 0;
+    min-width: 6cqw;
+    text-align: center;
+}
+
+.proiq-card-actions {
+    display: flex;
+    gap: 0.3cqw;
+    flex-shrink: 0;
+    margin-left: 0.5cqw;
+}
+
+/* ─── IQ Update Modal — Synced with AdminEditModal Hextech ─── */
+
+.proiq-update-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    backdrop-filter: blur(2px);
+}
+
+.proiq-update-modal {
+    background: linear-gradient(180deg, #153a3e 0%, #051c1e 100%);
+    border: 1px solid #c8aa6e;
+    box-shadow: 0 0 20px rgba(200, 170, 110, 0.3);
+    border-radius: 4px;
+    width: 500px;
+    max-width: 90vw;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.proiq-update-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(200, 170, 110, 0.3);
+}
+
+.proiq-update-title {
+    font-family: 'Spectral', serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #c8aa6e;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0;
+}
+
+.proiq-update-close {
+    background: none;
+    border: none;
+    color: #64748b;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+}
+
+.proiq-update-close:hover {
+    color: #c8aa6e;
+}
+
+.proiq-update-body {
+    padding: 1.5rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.proiq-update-current {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: rgba(5, 8, 15, 0.5);
+    border: 1px solid #1E293B;
+    border-radius: 4px;
+}
+
+.proiq-update-current-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    color: #c8aa6e;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+}
+
+.proiq-update-current-value {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #F0E6D2;
+}
+
+.proiq-update-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.proiq-update-field label {
+    display: block;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    color: #c8aa6e;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+}
+
+.proiq-update-field input,
+.proiq-update-field select {
+    width: 100%;
+    background: rgba(5, 28, 30, 0.8);
+    border: 1px solid rgba(200, 170, 110, 0.3);
+    color: #F0E6D2;
+    font-family: 'Inter', sans-serif;
+    padding: 0.5rem;
+    border-radius: 4px;
+    outline: none;
+    margin-bottom: 0.25rem;
+    box-sizing: border-box;
+    transition: all 0.2s;
+}
+
+.proiq-update-field input:focus,
+.proiq-update-field select:focus {
+    border-color: #c8aa6e;
+    box-shadow: 0 0 10px rgba(200, 170, 110, 0.2);
+}
+
+.proiq-update-field select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23F0F6FC' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1rem;
+    padding-right: 2.5rem;
+    cursor: pointer;
+}
+
+.proiq-update-change {
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.proiq-update-change.positive {
+    color: #4ade80;
+}
+
+.proiq-update-change.negative {
+    color: #f87171;
+}
+
+.proiq-update-change.neutral {
+    color: #94a3b8;
+}
+
+.proiq-update-footer {
+    padding: 1.5rem;
+    border-top: 1px solid rgba(200, 170, 110, 0.3);
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.proiq-update-btn {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid #c8aa6e;
+    color: #F0E6D2;
+    padding: 0.5rem 1.5rem;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    border-radius: 2px;
+}
+
+.proiq-update-btn.primary {
+    background: linear-gradient(180deg, rgba(21, 58, 62, 0.6) 0%, rgba(5, 28, 30, 0.6) 100%);
+    font-weight: 600;
+    box-shadow: 0 0 10px rgba(200, 170, 110, 0.25);
+}
+
+/* History Section */
+.proiq-history-section label {
+    display: block;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    color: #c8aa6e;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+}
+
+.proiq-history {
+    max-height: 180px;
+    overflow-y: auto;
+    border: 1px solid #1E293B;
+    border-radius: 4px;
+    background: rgba(5, 8, 15, 0.3);
+}
+
+.proiq-history-entry {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid rgba(30, 41, 59, 0.5);
+    font-size: 0.8rem;
+}
+
+.proiq-history-entry:last-child {
+    border-bottom: none;
+}
+
+.proiq-history-reason {
+    color: #94a3b8;
+    flex: 1;
+}
+
+.proiq-history-change {
+    font-weight: 700;
+    min-width: 50px;
+    text-align: right;
+}
+
+.proiq-history-change.positive {
+    color: #4ade80;
+}
+
+.proiq-history-change.negative {
+    color: #f87171;
+}
+
+.proiq-history-date {
+    color: #475569;
+    min-width: 60px;
+    text-align: right;
+    margin-left: 0.5rem;
+}
+
+/* Empty / Loading */
+.proiq-empty {
+    text-align: center;
+    padding: 3cqw;
+    color: #64748b;
+    font-size: 0.8cqw;
+}
+
+.proiq-loading {
+    text-align: center;
+    padding: 2cqw;
+    color: #94a3b8;
+}
