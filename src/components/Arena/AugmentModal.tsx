@@ -46,15 +46,18 @@ interface AugmentModalProps {
     rerollOrder: number[];
     onReroll: (index: number) => void;
     onSelect: (augment: AugmentData) => void;
+    allPuzzlesCompleted?: boolean;
 }
 
-export const AugmentModal: React.FC<AugmentModalProps> = ({ currentAugments, rerollOrder, onReroll, onSelect }) => {
+export const AugmentModal: React.FC<AugmentModalProps> = ({ currentAugments, rerollOrder, onReroll, onSelect, allPuzzlesCompleted }) => {
     // Filter nulls and limit to exactly 3 augments
     const validAugments = currentAugments.filter((a): a is AugmentData => a !== null).slice(0, 3);
 
     return (
         <div className="augment-modal-overlay">
-            <h2 className="augment-header-title">Chọn một</h2>
+            <h2 className="augment-header-title">
+                {allPuzzlesCompleted ? 'Bạn đang giải lại câu đố cũ' : 'Chọn một'}
+            </h2>
 
             <div className="augment-cards-container">
                 {validAugments.map((augment, index) => (

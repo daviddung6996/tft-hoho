@@ -121,13 +121,14 @@
     height: 0.7cqw;
 }
 
-.share-btn {
+.action-btn.puzzle-share-btn {
     color: #c8aa6e;
+    border-color: rgba(200, 170, 110, 0.3);
 }
 
 .stream-btn {
     color: #c8aa6e;
-    border-color: rgba(200, 170, 110, 0.3);
+    border-color: rgba(200, 170, 110, 0.6);
 }
 
 /* ============================================

@@ -1,0 +1,221 @@
+/* ==========================================================================
+   SUPPORT MODAL — Gentle, humble donation page
+   Hextech-themed but warm and approachable
+   ========================================================================== */
+
+.support-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    animation: support-fade-in 0.2s ease-out;
+}
+
+@keyframes support-fade-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.support-modal {
+    position: relative;
+    width: 380px;
+    max-width: 90vw;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 1.8rem 1.5rem;
+    background: linear-gradient(180deg, rgba(21, 58, 62, 0.97) 0%, rgba(5, 28, 30, 0.99) 100%);
+    border: 1px solid rgba(200, 170, 110, 0.25);
+    border-radius: 12px;
+    box-shadow:
+        0 0 30px rgba(200, 170, 110, 0.08),
+        0 20px 60px rgba(0, 0, 0, 0.5);
+    animation: support-slide-up 0.3s ease-out;
+}
+
+@keyframes support-slide-up {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.support-modal-close {
+    position: absolute;
+    top: 0.8rem;
+    right: 0.8rem;
+    width: 28px;
+    height: 28px;
+    background: transparent;
+    border: 1px solid rgba(200, 170, 110, 0.2);
+    border-radius: 50%;
+    color: rgba(200, 170, 110, 0.6);
+    font-size: 0.75rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.support-modal-close:hover {
+    border-color: rgba(200, 170, 110, 0.5);
+    color: #c8aa6e;
+}
+
+/* Header */
+.support-modal-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.2rem;
+}
+
+.support-modal-emoji {
+    font-size: 2.2rem;
+    line-height: 1;
+}
+
+.support-modal-title {
+    font-family: 'Spectral', serif;
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: #F0E6D2;
+    margin: 0;
+    text-align: center;
+}
+
+/* Message */
+.support-modal-message {
+    margin-bottom: 1.2rem;
+}
+
+.support-modal-message p {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8rem;
+    color: #94A3B8;
+    line-height: 1.6;
+    margin: 0 0 0.6rem 0;
+    text-align: center;
+}
+
+.support-modal-message strong {
+    color: #c8aa6e;
+}
+
+.support-modal-highlight {
+    color: #F0E6D2 !important;
+    font-weight: 500;
+}
+
+/* QR Code */
+.support-modal-qr-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.support-modal-qr-frame {
+    padding: 0.6rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 0 12px rgba(200, 170, 110, 0.1);
+}
+
+.support-modal-qr-img {
+    width: 180px;
+    height: 180px;
+    display: block;
+    border-radius: 4px;
+}
+
+.support-modal-qr-hint {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.68rem;
+    color: rgba(200, 170, 110, 0.5);
+    letter-spacing: 0.03em;
+}
+
+/* Bank Info */
+.support-modal-bank {
+    padding: 0.8rem;
+    background: rgba(200, 170, 110, 0.04);
+    border: 1px solid rgba(200, 170, 110, 0.12);
+    border-radius: 8px;
+    margin-bottom: 0.8rem;
+}
+
+.support-modal-bank-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.35rem 0;
+}
+
+.support-modal-bank-row+.support-modal-bank-row {
+    border-top: 1px solid rgba(200, 170, 110, 0.08);
+}
+
+.support-modal-bank-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.72rem;
+    color: rgba(200, 170, 110, 0.5);
+}
+
+.support-modal-bank-value {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #F0E6D2;
+}
+
+.support-modal-bank-account {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.support-modal-copy-btn {
+    background: transparent;
+    border: 1px solid rgba(200, 170, 110, 0.2);
+    border-radius: 4px;
+    padding: 0.15rem 0.3rem;
+    font-size: 0.7rem;
+    cursor: pointer;
+    color: #c8aa6e;
+    transition: all 0.15s;
+    line-height: 1;
+}
+
+.support-modal-copy-btn:hover {
+    border-color: rgba(200, 170, 110, 0.5);
+    background: rgba(200, 170, 110, 0.08);
+}
+
+/* Footer */
+.support-modal-footer {
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.68rem;
+    color: rgba(200, 170, 110, 0.4);
+}
+
+.support-modal-footer strong {
+    color: rgba(200, 170, 110, 0.6);
+}

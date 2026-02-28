@@ -88,7 +88,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
             if (!isMounted) return;
 
-            console.log('[Auth] State change:', event, session ? 'has session' : 'no session');
+            // If token refresh failed (stale refresh token), clear local session data
+            if (event === 'TOKEN_REFRESHED' && !session) {
+                await supabase.auth.signOut({ scope: 'local' });
+                return;
+            }
 
             setSession(session);
 
@@ -198,8 +202,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     const signOut = async () => {
         if (!isGuest) {
-            const { error } = await supabase.auth.signOut();
-            if (error) throw error;
+            // Use scope: 'local' to clear tokens locally even if server rejects stale token
+            try {
+                await supabase.auth.signOut();
+            } catch {
+                await supabase.auth.signOut({ scope: 'local' });
+            }
         }
         setUser(null);
         setSession(null);

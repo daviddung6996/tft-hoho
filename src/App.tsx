@@ -15,10 +15,13 @@ import { ArenaSelectorModal } from './components/Settings/ArenaSelectorModal';
 import { LoginModal } from './components/Auth/LoginModal';
 import AdminDataModal from './pages/Admin/AdminDataModal';
 import { UserProfileModal } from './components/Settings/UserProfileModal';
+import { PuzzleCompletionModal } from './components/Arena/PuzzleCompletionModal';
 
 // Data
 import { ARENA_SKINS } from './data/arenas';
 import { useAuth } from './contexts/AuthContext';
+import { TCoinBalance } from './features/tcoin/components/TCoinBalance';
+import { TCoinEarnAnimation } from './features/tcoin/components/TCoinEarnAnimation';
 
 import './App.css';
 
@@ -30,16 +33,27 @@ const App: React.FC = () => {
     const [showLoginModal, setShowLoginModal] = useState(false);
 
     // useEffect to control modal visibility based on auth state
+    // IMPORTANT: Only show login modal on INITIAL load when no user exists.
+    // Do NOT re-show it during token refresh (tab switch) to prevent
+    // covering other open modals (e.g., Admin panel).
+    const hasInitializedAuth = React.useRef(false);
     useEffect(() => {
         // Wait for auth to finish loading
         if (isAuthLoading) return;
 
-        // ONLY hide modal if user is LOGGED IN (has real user object)
-        // Guests should ALWAYS see modal on every page load
-        if (!user) {
-            setShowLoginModal(true);
+        if (!hasInitializedAuth.current) {
+            // First auth resolution: show/hide login based on user
+            hasInitializedAuth.current = true;
+            if (!user) {
+                setShowLoginModal(true);
+            } else {
+                setShowLoginModal(false);
+            }
         } else {
-            setShowLoginModal(false);
+            // Subsequent auth changes (e.g., login success): only HIDE modal, never re-show
+            if (user) {
+                setShowLoginModal(false);
+            }
         }
     }, [isAuthLoading, user]);
 
@@ -53,6 +67,7 @@ const App: React.FC = () => {
         // puzzles, // Unused
         currentPuzzle,
         isLoadingPuzzles,
+        allPuzzlesCompleted,
         handleMarkCompleted,
         handleNextPuzzle: handleNext,
         refreshPuzzles
@@ -76,6 +91,7 @@ const App: React.FC = () => {
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [showAdminModal, setShowAdminModal] = useState(false);
     const [showProfileModal, setShowProfileModal] = useState(false);
+    const [showCompletionModal, setShowCompletionModal] = useState(false);
     const [scoutedPlayerId, setScoutedPlayerId] = useState<string>('1');
     const [myArenaId, setMyArenaId] = useState<string | null>(null);
 
@@ -87,6 +103,13 @@ const App: React.FC = () => {
         handleNext();
         resetFlow();
     };
+
+    // Show completion modal when all puzzles are completed
+    useEffect(() => {
+        if (allPuzzlesCompleted) {
+            setShowCompletionModal(true);
+        }
+    }, [allPuzzlesCompleted]);
 
     // Transform puzzle data to player data
     const {
@@ -145,6 +168,8 @@ const App: React.FC = () => {
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [allPlayers]);
 
+    // Removed routing for TestFlex
+
     if (!currentPuzzle) {
         return (
             <div className="layout-wrapper">
@@ -176,6 +201,16 @@ const App: React.FC = () => {
 
                 {/* --- Modals & Overlays --- */}
 
+                {/* T-Coin Header Widget */}
+                {isAuthenticated && !isGuest && (
+                    <div className="app-header-widgets">
+                        <TCoinBalance />
+                    </div>
+                )}
+
+                {/* T-Coin Earn Animation (global, always mounted for auth users) */}
+                {isAuthenticated && !isGuest && <TCoinEarnAnimation />}
+
                 <MenuButton
                     onArenaClick={() => setIsSettingsOpen(true)}
                     isAuthenticated={isAuthenticated}
@@ -201,6 +236,7 @@ const App: React.FC = () => {
                         rerollOrder={rerollOrder}
                         onReroll={handleAugmentReroll}
                         onSelect={handleAugmentSelect}
+                        allPuzzlesCompleted={allPuzzlesCompleted}
                     />
                 )}
 
@@ -215,6 +251,7 @@ const App: React.FC = () => {
                         // Removed unused props: proSecondRerollIndices, proPickIndex
                         initialAugments={currentPuzzle.augments?.filter((a: any) => a !== null) || []}
                         rerollAugments={currentPuzzle.rerollAugments?.filter((a: any) => a !== null) || []}
+                        proFinalPickData={currentPuzzle.proFinalPick}
                         correctAugmentId={currentPuzzle.proFinalPick?.id || ''}
                         communityVotes={communityVotes}
                         iqChangeResult={iqChangeResult}
@@ -258,6 +295,11 @@ const App: React.FC = () => {
                         onClose={() => setShowProfileModal(false)}
                     />
                 )}
+
+                <PuzzleCompletionModal
+                    isOpen={showCompletionModal}
+                    onClose={() => setShowCompletionModal(false)}
+                />
             </div>
         </div>
     );

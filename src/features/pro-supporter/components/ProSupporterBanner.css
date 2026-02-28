@@ -1,0 +1,138 @@
+.pro-supporter-banner {
+    position: relative;
+    padding: 1.25rem 1.5rem;
+    margin: 1rem 0;
+    background: linear-gradient(180deg, rgba(21, 58, 62, 0.95) 0%, rgba(13, 46, 48, 0.98) 100%);
+    border: 1px solid rgba(200, 170, 110, 0.35);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.pro-supporter-banner-glow {
+    position: absolute;
+    top: -30%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 60%;
+    background: radial-gradient(ellipse, rgba(200, 170, 110, 0.12) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.pro-supporter-banner-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    text-align: center;
+}
+
+.pro-supporter-banner-badge {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    color: #FFD700;
+    text-shadow: 0 0 6px rgba(255, 215, 0, 0.3);
+}
+
+.pro-supporter-banner-title {
+    font-family: 'Spectral', serif;
+    font-weight: 700;
+    font-size: 1rem;
+    color: #F0E6D2;
+    margin: 0;
+    line-height: 1.3;
+}
+
+.pro-supporter-banner-desc {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    color: #94A3B8;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.pro-supporter-banner-pricing {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 0.2rem;
+}
+
+.pro-supporter-banner-price {
+    font-family: 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: #FFD700;
+    text-shadow: 0 0 8px rgba(255, 215, 0, 0.3);
+}
+
+.pro-supporter-banner-price small {
+    font-weight: 500;
+    font-size: 0.65rem;
+    color: rgba(200, 170, 110, 0.7);
+}
+
+.pro-supporter-banner-price--lifetime {
+    color: #c8aa6e;
+}
+
+.pro-supporter-banner-divider {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7rem;
+    color: rgba(200, 170, 110, 0.45);
+}
+
+.pro-supporter-banner-cta {
+    position: relative;
+    margin-top: 0.4rem;
+    padding: 0.55rem 1.8rem;
+    background: linear-gradient(180deg, #C89B3C 0%, #A07828 100%);
+    border: 1px solid #c8aa6e;
+    color: #051c1e;
+    font-family: 'Spectral', serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    overflow: hidden;
+    clip-path: polygon(8px 0, calc(100% - 8px) 0,
+            100% 8px, 100% calc(100% - 8px),
+            calc(100% - 8px) 100%, 8px 100%,
+            0 calc(100% - 8px), 0 8px);
+    transition: box-shadow 0.2s;
+}
+
+.pro-supporter-banner-cta:hover {
+    box-shadow: 0 0 16px rgba(200, 170, 110, 0.4);
+}
+
+.pro-supporter-banner-cta-text {
+    position: relative;
+    z-index: 1;
+}
+
+.pro-supporter-banner-cta-sweep {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+    animation: pro-sweep 3s ease-in-out infinite;
+}
+
+@keyframes pro-sweep {
+
+    0%,
+    100% {
+        left: -60%;
+    }
+
+    50% {
+        left: 100%;
+    }
+}

@@ -4,6 +4,8 @@ import { AugmentData } from '../services/augmentService';
 import { userStatsService } from '../services/userStatsService';
 import { voteService } from '../services/voteService';
 import { updateUserIq } from '../features/user-iq/userIq.service';
+import { tcoinService } from '../features/tcoin/tcoin.service';
+import { tcoinEvents } from '../features/tcoin/tcoinEvents';
 
 export type PuzzlePhase = 'selecting' | 'reviewing';
 
@@ -93,7 +95,8 @@ export const useGameFlow = (currentPuzzle: any, userId?: string) => {
 
         if (currentPuzzle) {
             const proPickId = currentPuzzle.proFinalPick?.id || '';
-            const isCorrect = augment.id === proPickId;
+            const proPickTitle = currentPuzzle.proFinalPick?.title || '';
+            const isCorrect = augment.id === proPickId || augment.title === proPickTitle;
             const rerollCount = rerollOrder.filter(r => r > 0).length;
             const rerollIndices = rerollOrder
                 .map((val, idx) => val > 0 ? idx : -1)
@@ -118,7 +121,7 @@ export const useGameFlow = (currentPuzzle: any, userId?: string) => {
             }).catch(err => console.error('Failed to record vote:', err));
 
             // Record detailed attempt for analytics (authenticated users only)
-            userStatsService.recordAttempt({
+            if (userId) userStatsService.recordAttempt({
                 puzzleId: currentPuzzle.id,
                 userPickId: augment.id,
                 userPickName: augment.title || 'Unknown',
@@ -129,6 +132,35 @@ export const useGameFlow = (currentPuzzle: any, userId?: string) => {
                 puzzleStage: currentPuzzle.stage || '',
                 proPickId
             }).catch(err => console.error('Failed to record attempt:', err));
+
+            // T-Coin Earning Logic + Animation Event
+            if (userId) {
+                const earnTCoin = async () => {
+                    try {
+                        let reason: string;
+                        if (isCorrect) {
+                            if (rerollCount === 0 && timeToDecideMs < 10_000) {
+                                reason = 'puzzle_correct_fast';
+                            } else if (rerollCount === 0) {
+                                reason = 'puzzle_correct_no_reroll';
+                            } else {
+                                reason = 'puzzle_correct';
+                            }
+                        } else {
+                            reason = 'puzzle_incorrect';
+                        }
+
+                        const result = await tcoinService.earnCoins(reason as any, currentPuzzle.id);
+                        if (result) {
+                            // Emit event → triggers flying coin animation + balance pulse
+                            tcoinEvents.emit({ amount: result.earned, reason });
+                        }
+                    } catch (err) {
+                        console.error('Failed to earn T-Coin:', err);
+                    }
+                };
+                earnTCoin();
+            }
         }
     };
 

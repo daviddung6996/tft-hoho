@@ -135,12 +135,12 @@ export const usePuzzleGame = (isAuthenticated: boolean) => {
                 const index = puzzles.findIndex(p => p.id === pendingId);
                 if (index !== -1) {
                     // Found the puzzle, set it and clear the pending ID
-                    console.log(`[Deep Link] Loading puzzle from URL: ${pendingId}`);
+                    
                     setCurrentPuzzleIndex(index);
                     pendingPuzzleIdRef.current = null;
                     return; // ✅ STOP HERE, don't run random selection
                 } else if (!isLoadingPuzzles) {
-                    console.warn(`[Deep Link] Puzzle ID ${pendingId} not found.`);
+                    
                     // Clear pending ID and fallback to random selection below
                     pendingPuzzleIdRef.current = null;
                 }
@@ -149,12 +149,12 @@ export const usePuzzleGame = (isAuthenticated: boolean) => {
             // Priority 2: Random Selection - Only if NEVER had pending ID from start
             // Skip if we already have a valid currentPuzzleIndex
             if (currentPuzzleIndex >= 0 && currentPuzzleIndex < puzzles.length) {
-                console.log(`[Skip Random] Already have valid puzzle at index ${currentPuzzleIndex}`);
+                
                 return; // Already have a puzzle, don't randomize
             }
 
             // This runs on initial mount when no puzzle is set
-            console.log('[Random Selection] Selecting random puzzle...');
+            
             const unplayedPuzzles = puzzles.filter(p => !completedPuzzleIds.includes(p.id));
             const pool = unplayedPuzzles.length > 0 ? unplayedPuzzles : puzzles;
 
@@ -180,6 +180,16 @@ export const usePuzzleGame = (isAuthenticated: boolean) => {
         }
     }, [currentPuzzleIndex, puzzles, isLoadingPuzzles]);
 
+    // Compute completion state: all puzzles completed (excluding current puzzle)
+    const allPuzzlesCompleted = React.useMemo(() => {
+        if (puzzles.length === 0) return false;
+        const currentPuzzle = puzzles[currentPuzzleIndex];
+        const unplayedPuzzles = puzzles.filter(
+            p => !completedPuzzleIds.includes(p.id) && p.id !== currentPuzzle?.id
+        );
+        return unplayedPuzzles.length === 0;
+    }, [puzzles, completedPuzzleIds, currentPuzzleIndex]);
+
     const handleMarkCompleted = async (puzzleId: string) => {
         if (isAuthenticated && user?.id) {
             try {
@@ -194,10 +204,19 @@ export const usePuzzleGame = (isAuthenticated: boolean) => {
     const handleNextPuzzle = () => {
         const currentPuzzle = puzzles[currentPuzzleIndex];
         const unplayedPuzzles = puzzles.filter(p => !completedPuzzleIds.includes(p.id) && p.id !== currentPuzzle?.id);
-        const pool = unplayedPuzzles.length > 0 ? unplayedPuzzles : puzzles;
 
-        if (pool.length > 0) {
-            const randomPuzzle = pool[Math.floor(Math.random() * pool.length)];
+        // Early return if all puzzles are completed - prevent replay
+        if (unplayedPuzzles.length === 0) {
+            // Clear URL to show clean state
+            const url = new URL(window.location.href);
+            url.searchParams.delete('puzzle');
+            window.history.pushState({}, '', url);
+            return;
+        }
+
+        // Select from unplayed puzzles only
+        if (unplayedPuzzles.length > 0) {
+            const randomPuzzle = unplayedPuzzles[Math.floor(Math.random() * unplayedPuzzles.length)];
             const index = puzzles.findIndex(p => p.id === randomPuzzle.id);
             setCurrentPuzzleIndex(index);
         }
@@ -229,6 +248,7 @@ export const usePuzzleGame = (isAuthenticated: boolean) => {
         currentPuzzle: puzzles[currentPuzzleIndex],
         isLoadingPuzzles,
         completedPuzzleIds,
+        allPuzzlesCompleted,
         handleMarkCompleted,
         handleNextPuzzle,
         refreshPuzzles,

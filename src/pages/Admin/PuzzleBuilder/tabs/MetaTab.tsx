@@ -25,6 +25,20 @@ const MetaTab: React.FC<MetaTabProps> = ({ puzzle, updatePuzzle }) => {
                     </div>
                     <div className="pb-field-row">
                         <div className="pb-field-group">
+                            <label className="pb-label">Puzzle Tier</label>
+                            <select
+                                className="hex-input"
+                                value={puzzle.tier || 'free'}
+                                onChange={e => updatePuzzle({ tier: e.target.value as 'free' | 'advanced' | 'rare' })}
+                            >
+                                <option value="free">🟢 Free</option>
+                                <option value="advanced">🟡 Advanced (30 🪙)</option>
+                                <option value="rare">🔴 Rare (100 🪙)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div className="pb-field-row">
+                        <div className="pb-field-group">
                             <label className="pb-label">Tên tuyển thủ *</label>
                             <input
                                 className="hex-input"

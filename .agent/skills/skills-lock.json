@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "skills": {
+    "screenshot-to-code": {
+      "source": "onewave-ai/claude-skills",
+      "sourceType": "github",
+      "computedHash": "b56de04e968f9870a6be34c8bcb408a2e6aafea443d2f20d33ec02679cb2d7da"
+    }
+  }
+}

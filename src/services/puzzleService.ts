@@ -82,7 +82,10 @@ export const puzzleService = {
 
                 // Game Info
                 ioniaPathId: row.ionia_path_id,
-                voidModIds: row.void_mod_ids || []
+                voidModIds: row.void_mod_ids || [],
+
+                // Puzzle tier (free/advanced/rare)
+                tier: row.tier || 'free'
             };
         }) as PuzzleScenario[];
     },
@@ -166,7 +169,8 @@ export const puzzleService = {
             pro_pick_round: puzzle.proPickRound,
             // Game Info fields
             ionia_path_id: puzzle.ioniaPathId || null,
-            void_mod_ids: puzzle.voidModIds || []
+            void_mod_ids: puzzle.voidModIds || [],
+            tier: puzzle.tier || 'free'
         };
 
         // If ID is random/generated on client, we pass it. If DB generates it, we might need separate insert.

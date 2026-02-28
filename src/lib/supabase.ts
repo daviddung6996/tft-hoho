@@ -246,6 +246,107 @@ export type Database = {
                     augment_name?: string;
                 };
             };
+            user_wallets: {
+                Row: {
+                    id: string;
+                    user_id: string;
+                    balance: number;
+                    total_earned: number;
+                    total_spent: number;
+                    created_at: string;
+                    updated_at: string;
+                };
+                Insert: {
+                    user_id: string;
+                    balance?: number;
+                    total_earned?: number;
+                    total_spent?: number;
+                };
+                Update: {
+                    balance?: number;
+                    total_earned?: number;
+                    total_spent?: number;
+                    updated_at?: string;
+                };
+            };
+            tcoin_transactions: {
+                Row: {
+                    id: string;
+                    user_id: string;
+                    amount: number;
+                    balance_after: number;
+                    type: 'earn' | 'spend';
+                    reason: string;
+                    reference_id: string | null;
+                    created_at: string;
+                };
+                Insert: {
+                    user_id: string;
+                    amount: number;
+                    balance_after: number;
+                    type: 'earn' | 'spend';
+                    reason: string;
+                    reference_id?: string | null;
+                };
+                Update: {};
+            };
+            user_unlocked_puzzles: {
+                Row: {
+                    id: string;
+                    user_id: string;
+                    puzzle_id: string;
+                    tier: string;
+                    unlocked_at: string;
+                };
+                Insert: {
+                    user_id: string;
+                    puzzle_id: string;
+                    tier: string;
+                };
+                Update: {};
+            };
+            pro_supporters: {
+                Row: {
+                    id: string;
+                    user_id: string;
+                    plan: 'monthly' | 'lifetime';
+                    status: 'active' | 'expired' | 'cancelled';
+                    started_at: string;
+                    expires_at: string | null;
+                    payment_ref: string | null;
+                    created_at: string;
+                };
+                Insert: {
+                    user_id: string;
+                    plan: 'monthly' | 'lifetime';
+                    status?: string;
+                    expires_at?: string | null;
+                    payment_ref?: string | null;
+                };
+                Update: {
+                    status?: string;
+                    expires_at?: string | null;
+                };
+            };
+            donations: {
+                Row: {
+                    id: string;
+                    user_id: string | null;
+                    amount: number;
+                    tier: 'thanks' | 'superfan';
+                    message: string | null;
+                    payment_ref: string | null;
+                    created_at: string;
+                };
+                Insert: {
+                    user_id?: string | null;
+                    amount: number;
+                    tier: 'thanks' | 'superfan';
+                    message?: string | null;
+                    payment_ref?: string | null;
+                };
+                Update: {};
+            };
         };
     };
 };

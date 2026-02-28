@@ -171,7 +171,7 @@ export const userStatsService = {
 
         if (attemptsData.length === 0) return [];
 
-        // Fetch IQ history — latest entry per puzzle_id
+        // Fetch ALL IQ history entries for relevant puzzles (not just latest per puzzle)
         const puzzleIds = [...new Set(attemptsData.map(a => a.puzzle_id))];
         const { data: iqData, error: iqError } = await supabase
             .from('user_iq_history')
@@ -180,27 +180,41 @@ export const userStatsService = {
             .in('puzzle_id', puzzleIds)
             .order('created_at', { ascending: false });
 
-        // Keep only the latest IQ entry per puzzle_id
-        const iqByPuzzle = new Map<string, number>();
-        if (!iqError && iqData) {
-            for (const row of iqData) {
-                if (!iqByPuzzle.has(row.puzzle_id)) {
-                    iqByPuzzle.set(row.puzzle_id, row.change_amount);
+        // Match each attempt with closest IQ entry by timestamp proximity
+        return attemptsData.map((row: any) => {
+            const attemptTime = new Date(row.created_at).getTime();
+            
+            let closestIqEntry = null;
+            let minTimeDiff = Infinity;
+            
+            // Find IQ entry with closest timestamp for this puzzle
+            if (!iqError && iqData) {
+                for (const iqEntry of iqData) {
+                    if (iqEntry.puzzle_id === row.puzzle_id) {
+                        const iqTime = new Date(iqEntry.created_at).getTime();
+                        const timeDiff = Math.abs(attemptTime - iqTime);
+                        
+                        // Match within 5 second tolerance (5000ms)
+                        if (timeDiff < 5000 && timeDiff < minTimeDiff) {
+                            minTimeDiff = timeDiff;
+                            closestIqEntry = iqEntry;
+                        }
+                    }
                 }
             }
-        }
-
-        return attemptsData.map((row: any) => ({
-            id: row.id,
-            puzzleId: row.puzzle_id,
-            userPickName: row.user_pick_name,
-            isCorrect: row.is_correct,
-            rerollCount: row.reroll_count,
-            timeToDecideMs: row.time_to_decide_ms,
-            puzzleStage: row.puzzle_stage,
-            createdAt: row.created_at,
-            iqChangeAmount: iqByPuzzle.get(row.puzzle_id) ?? null
-        }));
+            
+            return {
+                id: row.id,
+                puzzleId: row.puzzle_id,
+                userPickName: row.user_pick_name,
+                isCorrect: row.is_correct,
+                rerollCount: row.reroll_count,
+                timeToDecideMs: row.time_to_decide_ms,
+                puzzleStage: row.puzzle_stage,
+                createdAt: row.created_at,
+                iqChangeAmount: closestIqEntry?.change_amount ?? null
+            };
+        });
     },
 
     /**

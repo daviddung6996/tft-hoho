@@ -99,3 +99,17 @@
     font-weight: 600;
     text-shadow: 0 0 0.6cqw rgba(200, 170, 110, 0.3);
 }
+
+/* ==========================================================================
+   HEADER WIDGETS - T-Coin & Donate (Top-left near Settings)
+   ========================================================================== */
+
+.app-header-widgets {
+    position: fixed;
+    top: 1.04cqw;
+    left: 1.04cqw;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    z-index: 1000;
+}

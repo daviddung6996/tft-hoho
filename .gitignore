@@ -18,3 +18,8 @@ __pycache__/
 *.sh
 Desktop.ini
 Thumbs.db
+
+.env*
+.flaskenv*
+!.env.project
+!.env.vault

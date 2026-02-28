@@ -3,9 +3,12 @@ import { Item } from '../services/itemService';
 import { UnitData } from './types';
 
 // Puzzle scenario data for TFTDojo-style gameplay
+export type PuzzleTier = 'free' | 'advanced' | 'rare';
+
 export interface PuzzleScenario {
     id: string;
     title?: string;
+    tier?: PuzzleTier;
     proPlayer: string;
     rank: string;
     stage: string;

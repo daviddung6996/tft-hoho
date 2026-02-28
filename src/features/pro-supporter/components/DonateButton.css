@@ -1,0 +1,30 @@
+.donate-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.7rem;
+    background: transparent;
+    border: 1px solid rgba(200, 170, 110, 0.3);
+    border-radius: 20px;
+    color: #c8aa6e;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.donate-button:hover {
+    border-color: rgba(200, 170, 110, 0.6);
+    box-shadow: 0 0 8px rgba(200, 170, 110, 0.15);
+    background: rgba(200, 170, 110, 0.05);
+}
+
+.donate-button-icon {
+    font-size: 0.9rem;
+}
+
+.donate-button-text {
+    letter-spacing: 0.02em;
+}

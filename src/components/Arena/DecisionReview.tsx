@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { AugmentData } from '../../services/augmentService';
 import { CommunityVotes } from '../../data/puzzleScenarios';
 import './DecisionReview.css';
@@ -8,6 +8,10 @@ import { PuzzleInfo } from './DecisionReviewComponents/PuzzleInfo';
 import { ReviewActions } from './DecisionReviewComponents/ReviewActions';
 import { MemeFeedback } from '../../features/puzzle/feedback/MemeFeedback';
 import { IqScoreSummary } from '../../features/user-iq/components/IqScoreSummary';
+import { ShareModal } from '../../features/share/components/ShareModal';
+import { useAuth } from '../../contexts/AuthContext';
+import { calculateUserIqRank } from '../../features/user-iq/userIqCalculator';
+
 
 export interface DecisionReviewProps {
     userChoice: AugmentData;
@@ -31,6 +35,7 @@ export interface DecisionReviewProps {
     communityVotes?: CommunityVotes;
     iqChangeResult?: { changeAmount: number; newScore: number; newRank: string } | null;
     proPlayerName?: string;
+    proFinalPickData?: AugmentData;
     explanation?: string;
 }
 
@@ -54,14 +59,18 @@ export const DecisionReview: React.FC<DecisionReviewProps> = ({
     communityVotes = {},
     iqChangeResult,
     proPlayerName = 'Tuyển thủ',
+    proFinalPickData,
     explanation
 }) => {
 
+    const [showShareModal, setShowShareModal] = useState(false);
+    const { user } = useAuth();
+
     const proRerolled = !!(proSecondRoll && proSecondRoll.length > 0);
 
-    const proFinalPick = (proRerolled
-        ? proSecondRoll!.find(a => a.id === correctAugmentId) || proSecondRoll![0]
-        : proFirstRoll.find(a => a.id === correctAugmentId) || proFirstRoll[0]) || {
+    const proFinalPick = proFinalPickData || (proRerolled
+        ? proSecondRoll!.find(a => a.id === correctAugmentId)
+        : proFirstRoll.find(a => a.id === correctAugmentId)) || {
             title: "Không rõ",
             id: "unknown",
             description: "Thiếu dữ liệu",
@@ -249,7 +258,7 @@ export const DecisionReview: React.FC<DecisionReviewProps> = ({
                 )}
 
                 {/* --- BOTTOM BAR: IQ Score + Actions --- */}
-                <div className="review-bottom-bar">
+                <div className="review-bottom-bar" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', marginTop: '16px' }}>
                     {iqChangeResult ? (
                         <IqScoreSummary
                             newScore={iqChangeResult.newScore}
@@ -257,8 +266,40 @@ export const DecisionReview: React.FC<DecisionReviewProps> = ({
                             newRank={iqChangeResult.newRank}
                         />
                     ) : <div />}
-                    <ReviewActions onReplay={onReplay} onNextPuzzle={onNextPuzzle} />
+                    <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                        {iqChangeResult && (
+                            <button
+                                className="review-btn"
+                                onClick={() => setShowShareModal(true)}
+                                style={{ color: '#c8aa6e' }}
+                            >
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8" />
+                                    <polyline points="16 6 12 2 8 6" />
+                                    <line x1="12" y1="2" x2="12" y2="15" />
+                                </svg>
+                                Flex
+                            </button>
+                        )}
+                        <ReviewActions onReplay={onReplay} onNextPuzzle={onNextPuzzle} />
+                    </div>
                 </div>
+
+                {/* Share Flex Modal */}
+                {showShareModal && iqChangeResult && (
+                    <ShareModal
+                        data={{
+                            username: user?.display_name || 'Summoner',
+                            iqScore: iqChangeResult.newScore,
+                            iqRank: calculateUserIqRank(iqChangeResult.newScore),
+                            recentPuzzle: {
+                                rank: 'Thách Đấu', // We will assume Challenger puzzles for now
+                                addedIq: iqChangeResult.changeAmount
+                            }
+                        }}
+                        onClose={() => setShowShareModal(false)}
+                    />
+                )}
             </div>
         </div>
     );
