@@ -6,6 +6,36 @@ Welcome, Agent. This file is a living document intended to capture common mistak
 
 ---
 
+## 0. Core Business Identity (CRITICAL — Read First)
+
+> **Every agent MUST understand this before building any feature.**
+
+### What TFTISEASY actually is:
+
+| Layer | Identity |
+|-------|----------|
+| **External (marketing)** | "Pro Training Tool" — learn to pick augments like Challenger players |
+| **Internal (real product)** | **Tilt Validation & Flex Entertainment Machine** |
+
+### The Real User Psychology Loop:
+
+```
+Tilt (lost in-game) → Play puzzle → "I picked the same as Pro!" 
+→ Validation ("I'm actually good, just unlucky") → Share flex card 
+→ Come back for more validation
+```
+
+### Why this matters for development:
+
+1. **Every feature must serve the TILT → VALIDATION → SHARE loop.** If a feature doesn't reduce tilt or provide validation, it's noise — cut it.
+2. **The "Pro Training Tool" branding exists to make users psychologically comfortable.** Nobody wants to admit they play a tool "to feel better about losing." They want to say "I'm training to get better" — even if the real dopamine hit is validation.
+3. **Motto: "Addictive first, flex second."** Don't build vanity features (cosmetics, badges, seasonal resets) until DAU > 500. Focus on making the core puzzle → validation → share loop irresistible.
+4. **VN TFT market reality:** 70% mobile casual, tilt-and-rage cycle. They flex in-game rank and meme roast, NOT third-party tool IQ scores. Distribution = FB group ego-challenge posts + small streamer Kahoot-style quiz.
+5. **Kill metric:** If < 200 DAU after 14 days of launch → pivot or kill. No vanity features can save a product nobody uses.
+6. **Monetization truth: Users don't buy puzzles or virtual coins. They buy PROXIMITY TO A REAL PRO (tftiseasy#00000).** The Pro Supporter Pass (49k VND/month) works because it's "support the dev who is a real Challenger" — NOT an IAP from a random tool. T-Coin is a free engagement layer, NOT monetization. Stop thinking T-Coin grind is core; the core is the pro player brand.
+
+---
+
 ## 1. Reusable Patterns
 
 ### Anti Over-engineering Backend

@@ -122,6 +122,79 @@
     position: relative;
 }
 
+/* ---- T-Coin Panel (left side of hero) ---- */
+.hero-tcoin-panel {
+    position: absolute;
+    left: 2.5cqw;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6cqw;
+}
+
+.hero-tcoin-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.65cqw;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1cqw;
+    color: rgba(200, 170, 110, 0.55);
+}
+
+.hero-tcoin-value {
+    display: flex;
+    align-items: center;
+    gap: 0.3cqw;
+    font-family: 'Spectral', serif;
+    font-size: 1.6cqw;
+    font-weight: 700;
+    color: #F0E6D2;
+}
+
+.hero-tcoin-value svg {
+    width: 1.3cqw;
+    height: 1.3cqw;
+    color: #c8aa6e;
+}
+
+.hero-tcoin-unit {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75cqw;
+    font-weight: 500;
+    color: rgba(200, 170, 110, 0.5);
+    margin-left: 0.1cqw;
+}
+
+.hero-tcoin-cta {
+    display: flex;
+    align-items: center;
+    gap: 0.25cqw;
+    padding: 0.35cqw 0.8cqw;
+    background: transparent;
+    border: 0.06cqw solid rgba(200, 170, 110, 0.3);
+    color: rgba(200, 170, 110, 0.75);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.6cqw;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.04cqw;
+    cursor: pointer;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.hero-tcoin-cta svg {
+    width: 0.7cqw;
+    height: 0.7cqw;
+}
+
+.hero-tcoin-cta:hover {
+    border-color: #c8aa6e;
+    color: #c8aa6e;
+    box-shadow: 0 0 0.6cqw rgba(200, 170, 110, 0.25);
+}
+
 /* ---- Rank Emblem ---- */
 .hero-rank-emblem {
     position: relative;
@@ -280,6 +353,76 @@
     font-size: 1.1cqw;
     font-weight: 500;
     color: rgba(200, 170, 110, 0.7);
+}
+
+/* ---- Share Button spacing override in hero ---- */
+.hero-share-btn {
+    margin-top: 1.2cqw;
+}
+
+/* ---- Badges Panel (right side of hero) ---- */
+.hero-badges-panel {
+    position: absolute;
+    right: 2.5cqw;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5cqw;
+}
+
+.hero-badges-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.65cqw;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1cqw;
+    color: rgba(200, 170, 110, 0.55);
+}
+
+.hero-badges-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.4cqw;
+}
+
+.hero-badge-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2cqw;
+    padding: 0.4cqw 0.5cqw;
+    background: rgba(0, 0, 0, 0.25);
+    border: 0.06cqw solid rgba(200, 170, 110, 0.2);
+    min-width: 4.5cqw;
+}
+
+.hero-badge-item.locked {
+    opacity: 0.35;
+}
+
+.hero-badge-icon {
+    width: 1.6cqw;
+    height: 1.6cqw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--badge-color, #c8aa6e);
+}
+
+.hero-badge-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.hero-badge-name {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.5cqw;
+    font-weight: 500;
+    color: rgba(200, 170, 110, 0.75);
+    text-align: center;
+    white-space: nowrap;
 }
 
 .hero-tagline {

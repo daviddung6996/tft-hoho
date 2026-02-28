@@ -198,6 +198,9 @@ export const MemeManager: React.FC = () => {
                 ) : filtered.map(meme => (
                     <div key={meme.id} className={`meme-card ${meme.isActive ? '' : 'inactive'} ${meme.category}`}>
                         <div className="meme-card-content">
+                            <span className={`meme-category-badge ${meme.category}`}>
+                                {meme.category === 'correct' ? '✓' : '✕'}
+                            </span>
                             {meme.imageUrl && <img src={meme.imageUrl} alt="" className="meme-card-img" />}
                             <span className="meme-card-emoji">{meme.emoji}</span>
                             <div className="meme-card-info">

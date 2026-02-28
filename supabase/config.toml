@@ -1,0 +1,12 @@
+
+[functions.generate-flex-card]
+enabled = true
+verify_jwt = true
+import_map = "./functions/generate-flex-card/deno.json"
+entrypoint = "./functions/generate-flex-card/index.ts"
+
+[functions.generate-caption]
+enabled = true
+verify_jwt = true
+import_map = "./functions/generate-caption/deno.json"
+entrypoint = "./functions/generate-caption/index.ts"

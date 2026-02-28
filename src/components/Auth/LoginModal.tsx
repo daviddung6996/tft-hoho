@@ -18,10 +18,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({ onClose }) => {
     const [isLoading, setIsLoading] = useState(false);
 
     const handleGuestLogin = () => {
-        console.log('Guest login clicked');
         continueAsGuest();
-        console.log('continueAsGuest called');
-        // Close modal directly via prop
         onClose();
     };
 

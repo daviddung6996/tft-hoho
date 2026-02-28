@@ -1,0 +1,35 @@
+.tcoin-balance {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.75rem;
+    background: linear-gradient(180deg, rgba(21, 58, 62, 0.9) 0%, rgba(13, 46, 48, 0.95) 100%);
+    border: 1px solid rgba(200, 170, 110, 0.35);
+    border-radius: 20px;
+    cursor: default;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.tcoin-balance:hover {
+    border-color: rgba(200, 170, 110, 0.6);
+    box-shadow: 0 0 8px rgba(200, 170, 110, 0.15);
+}
+
+.tcoin-balance--loading {
+    opacity: 0.6;
+}
+
+.tcoin-icon {
+    font-size: 1rem;
+    line-height: 1;
+    filter: drop-shadow(0 0 3px rgba(255, 215, 0, 0.4));
+}
+
+.tcoin-amount {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: #FFD700;
+    text-shadow: 0 0 6px rgba(255, 215, 0, 0.3);
+    letter-spacing: 0.02em;
+}

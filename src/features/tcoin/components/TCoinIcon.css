@@ -1,0 +1,28 @@
+.tcoin-icon-svg {
+    display: inline-block;
+    vertical-align: middle;
+    flex-shrink: 0;
+    filter: drop-shadow(0 0 3px rgba(255, 215, 0, 0.35));
+    transition: filter 0.2s ease;
+}
+
+.tcoin-icon-svg:hover {
+    filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.5));
+}
+
+/* Subtle pulse animation for when coin is earned */
+@keyframes tcoin-pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.15);
+    }
+}
+
+.tcoin-icon-svg--pulse {
+    animation: tcoin-pulse 0.4s ease-in-out;
+}

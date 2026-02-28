@@ -1,0 +1,151 @@
+.puzzle-lock-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(4px);
+    z-index: 20;
+    border-radius: inherit;
+}
+
+.puzzle-lock-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 1.5rem 2rem;
+    background: linear-gradient(180deg, rgba(21, 58, 62, 0.95) 0%, rgba(13, 46, 48, 0.98) 100%);
+    border: 1px solid rgba(200, 170, 110, 0.4);
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(200, 170, 110, 0.15);
+}
+
+.puzzle-lock-icon {
+    font-size: 2rem;
+    filter: drop-shadow(0 0 4px rgba(200, 170, 110, 0.4));
+}
+
+.puzzle-lock-tier {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.puzzle-lock-tier-icon {
+    font-size: 0.9rem;
+}
+
+.puzzle-lock-tier-label {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.puzzle-lock-cost {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.25rem 0.65rem;
+    background: rgba(255, 215, 0, 0.08);
+    border: 1px solid rgba(255, 215, 0, 0.25);
+    border-radius: 14px;
+}
+
+.puzzle-lock-cost .tcoin-icon {
+    font-size: 0.85rem;
+}
+
+.puzzle-lock-cost-amount {
+    font-family: 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 1rem;
+    color: #FFD700;
+    text-shadow: 0 0 6px rgba(255, 215, 0, 0.3);
+}
+
+.puzzle-lock-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+    margin-top: 0.3rem;
+}
+
+.puzzle-lock-btn {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 6px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+}
+
+.puzzle-lock-btn--unlock {
+    background: linear-gradient(180deg, #C89B3C 0%, #A07828 100%);
+    color: #051c1e;
+    border: 1px solid #c8aa6e;
+}
+
+.puzzle-lock-btn--unlock:hover {
+    box-shadow: 0 0 12px rgba(200, 170, 110, 0.4);
+}
+
+.puzzle-lock-btn--insufficient {
+    background: rgba(200, 170, 110, 0.1);
+    color: rgba(200, 170, 110, 0.5);
+    border: 1px solid rgba(200, 170, 110, 0.15);
+    cursor: not-allowed;
+}
+
+.puzzle-lock-btn--pro {
+    background: transparent;
+    color: #c8aa6e;
+    border: 1px solid rgba(200, 170, 110, 0.3);
+    font-size: 0.72rem;
+}
+
+.puzzle-lock-btn--pro:hover {
+    border-color: rgba(200, 170, 110, 0.6);
+    box-shadow: 0 0 8px rgba(200, 170, 110, 0.15);
+}
+
+/* Tier Badge for puzzle list */
+.puzzle-tier-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+    padding: 0.15rem 0.45rem;
+    border-radius: 10px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    line-height: 1.2;
+}
+
+.puzzle-tier-badge--free {
+    background: rgba(74, 222, 128, 0.1);
+    border: 1px solid rgba(74, 222, 128, 0.3);
+    color: #4ade80;
+}
+
+.puzzle-tier-badge--advanced {
+    background: rgba(250, 204, 21, 0.1);
+    border: 1px solid rgba(250, 204, 21, 0.3);
+    color: #facc15;
+}
+
+.puzzle-tier-badge--rare {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+}

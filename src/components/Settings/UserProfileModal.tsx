@@ -23,6 +23,7 @@ import { getUserIqStats } from '../../features/user-iq/userIq.service';
 import { UserIqStats, USER_IQ_RANKS } from '../../features/user-iq/userIq.types';
 import { getUserIqRankColor } from '../../features/user-iq/userIqCalculator';
 import { IqRankIcon } from '../../features/user-iq/components/IqRankIcon';
+
 import './UserProfileModal.css';
 
 interface UserProfileModalProps {
@@ -208,6 +209,66 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({ isOpen, onCl
                                         : 'rgba(75, 85, 99, 0.12)',
                                 } as React.CSSProperties)}
                             >
+                                {/* T-Coin Panel — left side */}
+                                <div className="hero-tcoin-panel">
+                                    <div className="hero-tcoin-label">T-Coin</div>
+                                    <div className="hero-tcoin-value">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                            <circle cx="12" cy="12" r="10" />
+                                            <path d="M8 12h8M12 8v8" />
+                                        </svg>
+                                        1,500 <span className="hero-tcoin-unit">TC</span>
+                                    </div>
+                                    <button className="hero-tcoin-cta" onClick={onClose}>
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                                        </svg>
+                                        Cày Puzzle
+                                    </button>
+                                </div>
+
+                                {/* Badges Panel — right side */}
+                                <div className="hero-badges-panel">
+                                    <div className="hero-badges-label">Danh hiệu</div>
+                                    <div className="hero-badges-grid">
+                                        <div className="hero-badge-item" style={{ '--badge-color': '#10B981' } as React.CSSProperties}>
+                                            <div className="hero-badge-icon">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z" />
+                                                </svg>
+                                            </div>
+                                            <div className="hero-badge-name">First Win</div>
+                                        </div>
+                                        <div className={`hero-badge-item ${(stats?.correctCount || 0) >= 10 ? '' : 'locked'}`} style={{ '--badge-color': '#c8aa6e' } as React.CSSProperties}>
+                                            <div className="hero-badge-icon">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                                    <circle cx="12" cy="12" r="4" />
+                                                </svg>
+                                            </div>
+                                            <div className="hero-badge-name">10 Wins</div>
+                                        </div>
+                                        <div className={`hero-badge-item ${(stats?.totalAttempts || 0) >= 50 ? '' : 'locked'}`} style={{ '--badge-color': '#0EA5E9' } as React.CSSProperties}>
+                                            <div className="hero-badge-icon">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                    <path d="M6 9l6 6 6-6" />
+                                                    <path d="M6 5l6 6 6-6" />
+                                                </svg>
+                                            </div>
+                                            <div className="hero-badge-name">50 Puzzles</div>
+                                        </div>
+                                        <div className={`hero-badge-item ${(stats?.accuracyPercent || 0) >= 80 ? '' : 'locked'}`} style={{ '--badge-color': '#EAB308' } as React.CSSProperties}>
+                                            <div className="hero-badge-icon">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                    <circle cx="12" cy="8" r="6" />
+                                                    <path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11" />
+                                                </svg>
+                                            </div>
+                                            <div className="hero-badge-name">80% Acc</div>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 {iqStats && iqStats.iq_score > 0 ? (() => {
                                     const rankColor = getUserIqRankColor(iqStats.iq_rank);
 
@@ -266,6 +327,8 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({ isOpen, onCl
 
                                             {/* Player Name */}
                                             <div className="hero-player-name">{user?.display_name || 'Player'}</div>
+
+
                                         </>
                                     );
                                 })() : (
@@ -295,6 +358,8 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({ isOpen, onCl
                                         </div>
 
                                         <div className="hero-player-name">{user?.display_name || 'Player'}</div>
+
+
                                     </>
                                 )}
                             </div>
@@ -505,6 +570,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({ isOpen, onCl
                     )}
                 </div>
             </div>
+
         </div>
     );
 };

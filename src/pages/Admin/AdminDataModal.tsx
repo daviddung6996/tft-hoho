@@ -35,8 +35,15 @@ const AdminDataModal: React.FC<AdminDataModalProps> = ({ onClose, onPuzzleSaved 
     const [isBuilderMode, setIsBuilderMode] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    // Admin Guard: Close modal if user cannot access admin panel
+    // Admin Guard: One-time mount check only.
+    // Reactive useEffect is intentionally avoided because Supabase token refresh
+    // (triggered by browser tab switch) temporarily nullifies canAccessAdmin,
+    // causing false-positive closes. The modal is already protected by conditional
+    // rendering in App.tsx ({showAdminModal && <AdminDataModal />}).
+    const hasCheckedAccess = React.useRef(false);
     useEffect(() => {
+        if (hasCheckedAccess.current) return;
+        hasCheckedAccess.current = true;
         if (!canAccessAdmin) {
             console.error('Unauthorized access attempt to admin panel');
             onClose();
@@ -595,79 +602,86 @@ const AdminDataModal: React.FC<AdminDataModalProps> = ({ onClose, onPuzzleSaved 
                         />
 
                         <div className="admin-body" style={{ padding: '2cqw', flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-                            <div key={activeTab} className="admin-content-transition" style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
-                                {activeTab === 'trash' ? (
-                                    <TrashView
-                                        onRestore={handleRestoreFromTrash}
-                                        onPermanentDelete={handlePermanentDeleteFromTrash}
-                                    />
-                                ) : activeTab === 'users' ? (
-                                    <UserManagement />
-                                ) : activeTab === 'memes' ? (
-                                    <MemeManager />
-                                ) : activeTab === 'proiq' ? (
-                                    <ProIqManager />
-                                ) : (
-                                    <>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5cqw', gap: '1cqw', flexShrink: 0 }}>
-
-                                            <input
-                                                type="text"
-                                                className="hex-input"
-                                                placeholder={`Tìm kiếm ${activeTab === 'champions' ? 'tướng' : activeTab === 'traits' ? 'tộc/hệ' : activeTab === 'items' ? 'trang bị' : activeTab === 'augments' ? 'Augments' : 'Puzzles'}...`}
-                                                value={searchTerm}
-                                                onChange={(e) => setSearchTerm(e.target.value)}
-                                                style={{ flex: 1 }}
-                                            />
-
-                                            <div style={{ display: 'flex', gap: '1cqw', alignItems: 'center' }}>
-                                                {/* BULK DELETE BUTTON */}
-                                                {selectedIds.size > 0 && (
-                                                    <button
-                                                        className="hex-button danger"
-                                                        onClick={handleBulkDelete}
-                                                        style={{ marginRight: '1cqw' }}
-                                                        disabled={isSaving}
-                                                    >
-                                                        {isSaving ? 'Đang xoá...' : `Xoá đã chọn (${selectedIds.size})`}
-                                                    </button>
-                                                )}
-
-                                                {activeTab === 'puzzles' && (
-                                                    <>
-                                                        <button
-                                                            onClick={async () => {
-                                                                setLoading(true);
-                                                                try {
-                                                                    await seedCompletePuzzles();
-                                                                    await loadData();
-                                                                    setToast({ message: 'Đã tạo 10 câu đố mẫu thành công!', type: 'success' });
-                                                                } catch (err: any) {
-                                                                    setToast({ message: `Tạo mẫu thất bại: ${err.message}`, type: 'error' });
-                                                                } finally {
-                                                                    setLoading(false);
-                                                                }
-                                                            }}
-                                                            className="hex-button primary"
-                                                        >
-                                                            Tạo 10 Puzzles mẫu
-                                                        </button>
-                                                        <button
-                                                            onClick={() => setIsBuilderMode(true)}
-                                                            className="hex-button primary"
-                                                        >
-                                                            + Tạo Puzzles mới
-                                                        </button>
-                                                    </>
-                                                )}
-
-                                            </div>
-                                        </div>
-
-                                        {renderTable()}
-                                    </>
-                                )}
+                            {/* Self-managed tabs: always rendered, shown/hidden via CSS to preserve internal state (modals, forms) */}
+                            <div style={{ display: activeTab === 'memes' ? 'flex' : 'none', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
+                                <MemeManager />
                             </div>
+                            <div style={{ display: activeTab === 'proiq' ? 'flex' : 'none', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
+                                <ProIqManager />
+                            </div>
+                            {canManageUsers && (
+                                <div style={{ display: activeTab === 'users' ? 'flex' : 'none', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
+                                    <UserManagement />
+                                </div>
+                            )}
+                            <div style={{ display: activeTab === 'trash' ? 'flex' : 'none', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
+                                <TrashView
+                                    onRestore={handleRestoreFromTrash}
+                                    onPermanentDelete={handlePermanentDeleteFromTrash}
+                                />
+                            </div>
+
+                            {/* Data-table tabs: conditional render is fine (modals managed at parent level) */}
+                            {['champions', 'traits', 'items', 'augments', 'puzzles'].includes(activeTab) && (
+                                <div className="admin-content-transition" style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5cqw', gap: '1cqw', flexShrink: 0 }}>
+
+                                        <input
+                                            type="text"
+                                            className="hex-input"
+                                            placeholder={`Tìm kiếm ${activeTab === 'champions' ? 'tướng' : activeTab === 'traits' ? 'tộc/hệ' : activeTab === 'items' ? 'trang bị' : activeTab === 'augments' ? 'Augments' : 'Puzzles'}...`}
+                                            value={searchTerm}
+                                            onChange={(e) => setSearchTerm(e.target.value)}
+                                            style={{ flex: 1 }}
+                                        />
+
+                                        <div style={{ display: 'flex', gap: '1cqw', alignItems: 'center' }}>
+                                            {/* BULK DELETE BUTTON */}
+                                            {selectedIds.size > 0 && (
+                                                <button
+                                                    className="hex-button danger"
+                                                    onClick={handleBulkDelete}
+                                                    style={{ marginRight: '1cqw' }}
+                                                    disabled={isSaving}
+                                                >
+                                                    {isSaving ? 'Đang xoá...' : `Xoá đã chọn (${selectedIds.size})`}
+                                                </button>
+                                            )}
+
+                                            {activeTab === 'puzzles' && (
+                                                <>
+                                                    <button
+                                                        onClick={async () => {
+                                                            setLoading(true);
+                                                            try {
+                                                                await seedCompletePuzzles();
+                                                                await loadData();
+                                                                setToast({ message: 'Đã tạo 10 câu đố mẫu thành công!', type: 'success' });
+                                                            } catch (err: any) {
+                                                                setToast({ message: `Tạo mẫu thất bại: ${err.message}`, type: 'error' });
+                                                            } finally {
+                                                                setLoading(false);
+                                                            }
+                                                        }}
+                                                        className="hex-button primary"
+                                                    >
+                                                        Tạo 10 Puzzles mẫu
+                                                    </button>
+                                                    <button
+                                                        onClick={() => setIsBuilderMode(true)}
+                                                        className="hex-button primary"
+                                                    >
+                                                        + Tạo Puzzles mới
+                                                    </button>
+                                                </>
+                                            )}
+
+                                        </div>
+                                    </div>
+
+                                    {renderTable()}
+                                </div>
+                            )}
                         </div>
                     </>
                 )}

@@ -5,6 +5,9 @@ import { getUserIqStats } from '../../features/user-iq/userIq.service';
 import { UserIqStats, USER_IQ_RANKS } from '../../features/user-iq/userIq.types';
 import { getUserIqRankColor } from '../../features/user-iq/userIqCalculator';
 import { IqRankIcon } from '../../features/user-iq/components/IqRankIcon';
+import { SupportModal } from './SupportModal';
+import { useTCoin } from '../../features/tcoin/hooks/useTCoin';
+import { TCoinIcon } from '../../features/tcoin/components/TCoinIcon';
 
 const getNextRankThreshold = (score: number) => {
     const sortedRanks = [...USER_IQ_RANKS].sort((a, b) => a.min - b.min);
@@ -67,15 +70,20 @@ export const MenuButton: React.FC<MenuButtonProps> = ({
     const { signOut, isGuest, user } = useAuth();
     const [isOpen, setIsOpen] = useState(false);
     const [isFullscreen, setIsFullscreen] = useState(!!document.fullscreenElement);
-    const [iqStats, setIqStats] = useState<UserIqStats | null>(null);
+    const [showSupportModal, setShowSupportModal] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
 
-    // Fetch IQ Stats
+    const userId = user?.id;
+
+    const [iqStats, setIqStats] = useState<UserIqStats | null>(null);
+
     useEffect(() => {
-        if (isAuthenticated && !isGuest && user?.id) {
-            getUserIqStats(user.id).then(setIqStats).catch(console.error);
+        if (isAuthenticated && !isGuest && userId) {
+            getUserIqStats(userId).then(setIqStats).catch(console.error);
         }
-    }, [isAuthenticated, isGuest, user?.id]);
+    }, [isAuthenticated, isGuest, userId]);
+
+    const { balance: tcoinBalance } = useTCoin();
 
     const handleLogout = async () => {
         try {
@@ -120,121 +128,131 @@ export const MenuButton: React.FC<MenuButtonProps> = ({
     };
 
     return (
-        <div className="menu-container" ref={menuRef}>
-            <button
-                className="settings-button"
-                onClick={() => setIsOpen(!isOpen)}
-                aria-label="Menu"
-            >
-                <span className="settings-icon">≡</span>
-            </button>
+        <>
+            <div className="menu-container" ref={menuRef}>
+                <button
+                    className="settings-button"
+                    onClick={() => setIsOpen(!isOpen)}
+                    aria-label="Menu"
+                >
+                    <span className="settings-icon">≡</span>
+                </button>
 
-            {isOpen && (
-                <div className="menu-dropdown">
-                    {/* User Profile Section */}
-                    {isAuthenticated && displayName && (
-                        isGuest ? (
-                            <div className="menu-user-info">
-                                <span className="menu-username">{displayName}</span>
-                            </div>
-                        ) : (
-                            <div className="menu-profile-card">
-                                {/* Profile Header: Avatar & Name */}
-                                <div className="menu-profile-header" onClick={() => { onProfileClick?.(); setIsOpen(false); }}>
-                                    <div className="menu-avatar">
-                                        <div className="menu-avatar-inner">{displayName.charAt(0).toUpperCase()}</div>
-                                    </div>
-                                    <div className="menu-name-section">
-                                        <div className="menu-username">{displayName}</div>
-                                        <div className="menu-view-profile">View Profile <span className="menu-arrow">→</span></div>
-                                    </div>
+                {isOpen && (
+                    <div className="menu-dropdown">
+                        {/* User Profile Section */}
+                        {isAuthenticated && displayName && (
+                            isGuest ? (
+                                <div className="menu-user-info">
+                                    <span className="menu-username">{displayName}</span>
                                 </div>
-
-                                <div className="menu-stats-divider"></div>
-
-                                {/* Two-column stats row */}
-                                <div className="menu-stats-row">
-                                    {/* IQ Panel */}
-                                    <div className="menu-stat-panel">
-                                        <div className="menu-stat-panel-header">
-                                            <span className="menu-stat-label">TFT IQ</span>
+                            ) : (
+                                <div className="menu-profile-card">
+                                    {/* Profile Header: Avatar & Name */}
+                                    <div className="menu-profile-header" onClick={() => { onProfileClick?.(); setIsOpen(false); }}>
+                                        <div className="menu-avatar">
+                                            <div className="menu-avatar-inner">{displayName.charAt(0).toUpperCase()}</div>
                                         </div>
-                                        <div className="menu-iq-display">
-                                            <div className="menu-iq-icon" style={{ color: getUserIqRankColor(iqStats?.iq_rank || 'Iron') }}>
-                                                <IqRankIcon rank={iqStats?.iq_rank || 'Iron'} />
+                                        <div className="menu-name-section">
+                                            <div className="menu-username">{displayName}</div>
+                                            <div className="menu-view-profile">View Profile <span className="menu-arrow">→</span></div>
+                                        </div>
+                                    </div>
+
+                                    <div className="menu-stats-divider"></div>
+
+                                    {/* Two-column stats row */}
+                                    <div className="menu-stats-row">
+                                        {/* IQ Panel */}
+                                        <div className="menu-stat-panel">
+                                            <div className="menu-stat-panel-header">
+                                                <span className="menu-stat-label">TFT IQ</span>
                                             </div>
-                                            <div className="menu-iq-info">
-                                                <div className="menu-iq-score">{iqStats ? iqStats.iq_score : 0}</div>
-                                                <div className="menu-iq-rank" style={{ color: getUserIqRankColor(iqStats?.iq_rank || 'Iron') }}>
-                                                    {iqStats ? (iqStats.iq_score === 0 ? 'UNRANKED' : iqStats.iq_rank) : 'UNRANKED'}
+                                            <div className="menu-iq-display">
+                                                <div className="menu-iq-icon" style={{ color: getUserIqRankColor(iqStats?.iq_rank || 'Iron') }}>
+                                                    <IqRankIcon rank={iqStats?.iq_rank || 'Iron'} />
+                                                </div>
+                                                <div className="menu-iq-info">
+                                                    <div className="menu-iq-score">{iqStats ? iqStats.iq_score : 0}</div>
+                                                    <div className="menu-iq-rank" style={{ color: getUserIqRankColor(iqStats?.iq_rank || 'Iron') }}>
+                                                        {iqStats ? (iqStats.iq_score === 0 ? 'UNRANKED' : iqStats.iq_rank) : 'UNRANKED'}
+                                                    </div>
                                                 </div>
                                             </div>
+                                            <div className="menu-progress-bar">
+                                                <div
+                                                    className="menu-progress-fill"
+                                                    style={{
+                                                        width: `${getRankProgress(iqStats?.iq_score || 0)}%`,
+                                                        '--rank-color': getUserIqRankColor(iqStats?.iq_rank || 'Iron')
+                                                    } as React.CSSProperties}
+                                                />
+                                            </div>
+                                            <div className="menu-iq-next">
+                                                {getRankProgress(iqStats?.iq_score || 0) < 100
+                                                    ? `${getNextRankThreshold(iqStats?.iq_score || 0) - (iqStats?.iq_score || 0)} IQ → ${getNextRankName(iqStats?.iq_score || 0)}`
+                                                    : 'Max Rank'
+                                                }
+                                            </div>
                                         </div>
-                                        <div className="menu-progress-bar">
-                                            <div
-                                                className="menu-progress-fill"
-                                                style={{
-                                                    width: `${getRankProgress(iqStats?.iq_score || 0)}%`,
-                                                    '--rank-color': getUserIqRankColor(iqStats?.iq_rank || 'Iron')
-                                                } as React.CSSProperties}
-                                            />
-                                        </div>
-                                        <div className="menu-iq-next">
-                                            {getRankProgress(iqStats?.iq_score || 0) < 100
-                                                ? `${getNextRankThreshold(iqStats?.iq_score || 0) - (iqStats?.iq_score || 0)} IQ → ${getNextRankName(iqStats?.iq_score || 0)}`
-                                                : 'Max Rank'
-                                            }
-                                        </div>
-                                    </div>
 
-                                    {/* T-Coin Panel */}
-                                    <div className="menu-stat-panel">
-                                        <div className="menu-stat-panel-header">
-                                            <span className="menu-stat-label">T-Coin</span>
-                                            <button className="menu-add-coin-btn" title="Nạp T-Coin">+</button>
-                                        </div>
-                                        <div className="menu-coin-display">
-                                            <span className="menu-coin-value">1,500</span>
-                                            <span className="menu-coin-currency">TC</span>
+                                        {/* T-Coin Panel */}
+                                        <div className="menu-stat-panel">
+                                            <div className="menu-stat-panel-header">
+                                                <span className="menu-stat-label">T-Coin</span>
+                                                <button className="menu-add-coin-btn" title="Nạp T-Coin">+</button>
+                                            </div>
+                                            <div className="menu-coin-display">
+                                                <span className="menu-coin-value">{tcoinBalance.toLocaleString()}</span>
+                                                <TCoinIcon size={20} />
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        )
-                    )}
+                            )
+                        )}
 
-                    {/* Admin Panel */}
-                    {isAdmin && (
-                        <button className="menu-item" onClick={() => { onAdminClick?.(); setIsOpen(false); }}>
-                            <span className="menu-icon">⬡</span> Quản trị
+                        {/* Admin Panel */}
+                        {isAdmin && (
+                            <button className="menu-item" onClick={() => { onAdminClick?.(); setIsOpen(false); }}>
+                                <span className="menu-icon">⬡</span> Quản trị
+                            </button>
+                        )}
+
+                        {/* Arena Selector */}
+                        <button className="menu-item" onClick={() => { onArenaClick?.(); setIsOpen(false); }}>
+                            <span className="menu-icon">◈</span> Chọn Đấu Trường
                         </button>
-                    )}
 
-                    {/* Arena Selector */}
-                    <button className="menu-item" onClick={() => { onArenaClick?.(); setIsOpen(false); }}>
-                        <span className="menu-icon">◈</span> Chọn Đấu Trường
-                    </button>
-
-                    {/* Fullscreen Toggle */}
-                    <button className="menu-item" onClick={handleFullscreen}>
-                        <span className="menu-icon">▭</span> {isFullscreen ? 'Thoát toàn màn hình' : 'Toàn màn hình'}
-                    </button>
-
-                    <div className="menu-divider"></div>
-
-                    {/* Login for guests / Logout for authenticated */}
-                    {isGuest ? (
-                        <button className="menu-item" onClick={() => { onLoginClick?.(); setIsOpen(false); }}>
-                            <span className="menu-icon">→</span> Đăng nhập
+                        {/* Fullscreen Toggle */}
+                        <button className="menu-item" onClick={handleFullscreen}>
+                            <span className="menu-icon">▭</span> {isFullscreen ? 'Thoát toàn màn hình' : 'Toàn màn hình'}
                         </button>
-                    ) : isAuthenticated ? (
-                        <button className="menu-item" onClick={handleLogout}>
-                            Đăng xuất
+
+                        {/* Support / Donate */}
+                        <button className="menu-item menu-item--support" onClick={() => { setShowSupportModal(true); setIsOpen(false); }}>
+                            <span className="menu-icon">☕</span> Ủng hộ dự án
                         </button>
-                    ) : null}
-                </div>
-            )}
-        </div>
+
+                        <div className="menu-divider"></div>
+
+                        {/* Login for guests / Logout for authenticated */}
+                        {isGuest ? (
+                            <button className="menu-item" onClick={() => { onLoginClick?.(); setIsOpen(false); }}>
+                                <span className="menu-icon">→</span> Đăng nhập
+                            </button>
+                        ) : isAuthenticated ? (
+                            <button className="menu-item" onClick={handleLogout}>
+                                Đăng xuất
+                            </button>
+                        ) : null}
+                    </div>
+                )}
+
+            </div>
+
+            <SupportModal isOpen={showSupportModal} onClose={() => setShowSupportModal(false)} />
+        </>
     );
 };
 

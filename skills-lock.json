@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "skills": {
+    "nanobanana": {
+      "source": "resciencelab/opc-skills",
+      "sourceType": "github",
+      "computedHash": "04b3d7e8b7dc1275c131984c2bbb6229783b186c48e74897fa1cc67a1b8593eb"
+    },
+    "remotion-best-practices": {
+      "source": "remotion-dev/skills",
+      "sourceType": "github",
+      "computedHash": "46a55d68886d6c104bde7803c55a479f91b45ae01441e37c800373bcb0bf3719"
+    },
+    "screenshot-to-code": {
+      "source": "onewave-ai/claude-skills",
+      "sourceType": "github",
+      "computedHash": "b56de04e968f9870a6be34c8bcb408a2e6aafea443d2f20d33ec02679cb2d7da"
+    }
+  }
+}

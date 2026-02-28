@@ -289,6 +289,7 @@ Standard templates, typical layouts, common color schemes, overused patterns = *
     - **Reveal:** All sections and main elements must have scroll-triggered (staggered) entrance animations.
     - **Micro-interactions:** Every clickable/hoverable element must provide physical feedback (`scale`, `translate`, `glow-pulse`).
     - **Spring Physics:** Animations should not be linear; they must feel organic and adhere to "spring" physics.
+    - **VIP Execution:** For premium areas (heroes, share cards), use **deterministic math-based particle systems** (e.g., embers, dust using `Math.sin`/`cos` for pseudo-randomness) and **multi-layered SVG glows** (layering `drop-shadow` for intense neon Bloom).
 - **Mandatory Visual Depth:**
     - Do not use only flat colors/shadows; Use **Overlapping Elements, Parallax Layers, and Grain Textures** for depth.
     - **Avoid:** Mesh Gradients and Glassmorphism (unless user specifically requests).
@@ -300,7 +301,8 @@ Standard templates, typical layouts, common color schemes, overused patterns = *
 **✅ EVERY design must achieve this trinity:**
 
 1. Sharp/Net Geometry (Extremism)
-2. Bold Color Palette (No Purple)
+2. Bold Color Palette (No Purple), Luxurious Gold for Highlights.
+    - **Drama Copywriting:** Never use negative/depressing metrics (-1000 IQ). Use boastful, challenging drama quotes ("Học thầy không tày học tôi nè") to drive viral loops.
 3. Fluid Animation & Modern Effects (Premium Feel)
 
 > 🔴 **If it looks generic, you have FAILED.** No exceptions. No memorized patterns. Think original. Break the "round everything" habit!

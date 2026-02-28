@@ -119,8 +119,11 @@ description: The Unified System for TFT Hextech. Contains the Hextech Premium De
 - **Backgrounds**: Layered atmosphere gradients (Pillar 1).
 - **Borders**: Gold `#c8aa6e`, subtle `rgba(200, 170, 110, 0.15)`.
 - **Corners**: Corner Accent Frames (L-shaped) for panels. Chamfer clip-path for CTA buttons.
-- **Icons**: NO Unicode symbols, NO emoji, NO AI-generated icons. Only **inline SVG** or **official Riot/TFT asset images**.
+- **Icons & Graphics**: NO Unicode symbols, NO emoji, NO AI-generated icons. Only **inline SVG** with complex gradients (e.g., VIP glowing wings) or **official Riot/TFT asset images**.
+- **Particle Systems**: Use deterministic math-based particle systems (Embers, Gold Dust) driven by pure frame-counts or CSS animations for "VIP Premium" feel.
 - **Typography**: Spectral (headings, gold), Inter (body, grey/white).
+    - **Highlights**: Important numerical or status text MUST use luxurious gold (`#fff4d6` or `#e8c252` with intense `textShadow`), strictly avoiding plain colors.
+- **Copywriting & Tone (Drama/Challenge)**: Flex Cards and Share Assets MUST NOT display negative comparisons (e.g., "-1700 IQ"). Instead, inject dramatic, toxic or challenging quotes (e.g., "Học thầy không tày học tôi nè", "Hôm nay Sắt thôi ngày mai tôi sẽ khác"). This builds the "Flex & Drama" viral loop.
 
 ### C. Color System
 

@@ -1,0 +1,139 @@
+/* ==========================================================================
+   T-COIN EARN ANIMATION
+   Elegant, Hextech-inspired soft float and typography
+   ========================================================================== */
+
+/* Container — anchored slightly right of the T-Coin icon */
+.tcoin-earn-container {
+    position: fixed;
+    top: calc(1.04cqw + 5px);
+    left: calc(1.04cqw + 70px);
+    z-index: 9999;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+}
+
+/* -- Gentle Floating Sparks ------------------------------------------- */
+.tcoin-floating-spark {
+    position: absolute;
+    top: 5px;
+    left: 0;
+    opacity: 0;
+    filter: drop-shadow(0 0 6px rgba(200, 170, 110, 0.8));
+    animation: tcoin-gentle-float 2s ease-out forwards;
+}
+
+@keyframes tcoin-gentle-float {
+    0% {
+        opacity: 0;
+        transform: translate(0, 0) scale(0.6) rotate(0deg);
+    }
+
+    30% {
+        opacity: 0.9;
+        transform: translate(calc(var(--drift-x) * 0.4), calc(var(--drift-y) * 0.4)) scale(1.1) rotate(15deg);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(calc(var(--drift-x)), calc(var(--drift-y))) scale(0.4) rotate(45deg);
+    }
+}
+
+/* Spark soft glow */
+.tcoin-floating-spark::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background: radial-gradient(circle, rgba(200, 170, 110, 0.5) 0%, transparent 60%);
+    border-radius: 50%;
+    z-index: -1;
+}
+
+/* -- +N Elegant Typography Popup -------------------------------------- */
+.tcoin-earn-popup {
+    position: absolute;
+    top: 0;
+    left: 12px;
+    animation: tcoin-popup-elegant 2.5s ease-out forwards;
+}
+
+@keyframes tcoin-popup-elegant {
+    0% {
+        opacity: 0;
+        transform: translateY(6px);
+        filter: blur(2px);
+    }
+
+    15% {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+    }
+
+    70% {
+        opacity: 1;
+        transform: translateY(-8px);
+        filter: blur(0);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(-20px);
+        filter: blur(2px);
+    }
+}
+
+.tcoin-earn-popup-text {
+    font-family: 'Beaufort for LOL', serif;
+    /* Hextech elegant font */
+    font-weight: 700;
+    font-size: 1.4rem;
+    color: #f0e6d2;
+    /* Hextech cream gold */
+    text-shadow:
+        0 0 10px rgba(200, 170, 110, 0.9),
+        0 0 20px rgba(200, 170, 110, 0.4),
+        0 2px 4px rgba(0, 0, 0, 0.8);
+    letter-spacing: 0.05em;
+    background: transparent;
+    padding: 0;
+    border: none;
+    white-space: nowrap;
+}
+
+/* Fallback if Beaufort isn't available */
+@supports not (font-family: 'Beaufort for LOL') {
+    .tcoin-earn-popup-text {
+        font-family: 'Georgia', serif;
+        font-weight: bold;
+    }
+}
+
+/* -- Soft Breathing Glow (Balance Widget) ----------------------------- */
+@keyframes tcoin-balance-breathe {
+    0% {
+        background: linear-gradient(180deg, rgba(21, 58, 62, 0.9) 0%, rgba(13, 46, 48, 0.95) 100%);
+        box-shadow: 0 0 0 rgba(200, 170, 110, 0);
+        border-color: rgba(200, 170, 110, 0.35);
+    }
+
+    40% {
+        background: linear-gradient(180deg, rgba(30, 75, 80, 0.95) 0%, rgba(20, 60, 64, 0.98) 100%);
+        box-shadow: 0 0 12px rgba(200, 170, 110, 0.4);
+        border-color: rgba(200, 170, 110, 0.8);
+    }
+
+    100% {
+        background: linear-gradient(180deg, rgba(21, 58, 62, 0.9) 0%, rgba(13, 46, 48, 0.95) 100%);
+        box-shadow: 0 0 0 rgba(200, 170, 110, 0);
+        border-color: rgba(200, 170, 110, 0.35);
+    }
+}
+
+.tcoin-balance--earning {
+    animation: tcoin-balance-breathe 2.5s ease-in-out forwards;
+}
+
+/* Glow effect is handled by tcoin-balance-breathe animation in --earning */

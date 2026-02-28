@@ -1,0 +1,38 @@
+.pro-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+    padding: 0.15rem 0.5rem;
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.12) 0%, rgba(200, 170, 110, 0.08) 100%);
+    border: 1px solid rgba(255, 215, 0, 0.35);
+    border-radius: 12px;
+    white-space: nowrap;
+}
+
+.pro-badge--sm {
+    font-size: 0.6rem;
+    padding: 0.1rem 0.4rem;
+}
+
+.pro-badge--md {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.6rem;
+}
+
+.pro-badge-star {
+    font-size: 0.7em;
+}
+
+.pro-badge-text {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    color: #FFD700;
+    text-shadow: 0 0 4px rgba(255, 215, 0, 0.25);
+    letter-spacing: 0.03em;
+}
+
+.pro-badge-check {
+    color: #4ade80;
+    font-weight: 700;
+    font-size: 0.8em;
+}
