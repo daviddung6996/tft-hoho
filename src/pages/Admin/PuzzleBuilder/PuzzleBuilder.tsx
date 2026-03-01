@@ -164,9 +164,11 @@ const PuzzleBuilder: React.FC<PuzzleBuilderProps> = ({ onClose, onSaveSuccess, i
             {showCancelConfirm && (
                 <div style={{
                     position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
-                    backgroundColor: 'rgba(0, 0, 0, 0.7)', display: 'flex',
+                    background: 'radial-gradient(ellipse at 50% 30%, rgba(200, 170, 110, 0.06) 0%, transparent 50%), radial-gradient(ellipse at 50% 80%, rgba(21, 58, 62, 0.25) 0%, transparent 50%), rgba(0, 0, 0, 0.78)',
+                    display: 'flex',
                     justifyContent: 'center', alignItems: 'center', zIndex: 2000,
-                    backdropFilter: 'blur(2px)'
+                    backdropFilter: 'blur(8px)',
+                    animation: 'hex-overlay-in 0.35s cubic-bezier(0.16, 1, 0.3, 1)'
                 }} onClick={() => setShowCancelConfirm(false)}>
                     <div className="hex-panel" style={{
                         width: '400px', padding: 0, display: 'flex', flexDirection: 'column',

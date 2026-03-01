@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { usePuzzleGame } from './hooks/usePuzzleGame';
 import { useGameFlow } from './hooks/useGameFlow';
 import { usePuzzleToPlayers } from './hooks/usePuzzleToPlayers';
@@ -22,6 +22,7 @@ import { ARENA_SKINS } from './data/arenas';
 import { useAuth } from './contexts/AuthContext';
 import { TCoinBalance } from './features/tcoin/components/TCoinBalance';
 import { TCoinEarnAnimation } from './features/tcoin/components/TCoinEarnAnimation';
+import { PuzzleLockOverlay } from './features/tcoin/components/PuzzleLockOverlay';
 
 import './App.css';
 
@@ -64,13 +65,21 @@ const App: React.FC = () => {
 
     // --- 2. Puzzle Data & Game Flow ---
     const {
-        // puzzles, // Unused
         currentPuzzle,
         isLoadingPuzzles,
         allPuzzlesCompleted,
         handleMarkCompleted,
         handleNextPuzzle: handleNext,
-        refreshPuzzles
+        handleSkipToFreePuzzle,
+        hasFreePuzzlesAvailable,
+        refreshPuzzles,
+        currentPuzzleAccess,
+        isPuzzlePlayable,
+        requiresLoginForUnlock,
+        isUnlocking,
+        lockMessageVariant,
+        handleUnlockCurrentPuzzle,
+        walletBalance,
     } = usePuzzleGame(isAuthenticated);
 
     const {
@@ -84,7 +93,7 @@ const App: React.FC = () => {
         handleAugmentSelect,
         handleReplay,
         resetFlow
-    } = useGameFlow(currentPuzzle, user?.id);
+    } = useGameFlow(currentPuzzle, user?.id, { canPlayPuzzle: isPuzzlePlayable });
 
     // --- 3. UI State ---
     const [isAugmentOpen, setIsAugmentOpen] = useState(true);
@@ -94,15 +103,29 @@ const App: React.FC = () => {
     const [showCompletionModal, setShowCompletionModal] = useState(false);
     const [scoutedPlayerId, setScoutedPlayerId] = useState<string>('1');
     const [myArenaId, setMyArenaId] = useState<string | null>(null);
+    const [isTransitioning, setIsTransitioning] = useState(false);
 
-    // Wrapper for next puzzle to also reset flow
-    const handleNextPuzzle = () => {
-        if (currentPuzzle) {
-            handleMarkCompleted(currentPuzzle.id);
-        }
-        handleNext();
-        resetFlow();
-    };
+    // Wrapper for next puzzle — smooth crossfade transition
+    // Phase 1: Fade-in overlay (250ms CSS) → Phase 2: Swap state while fully covered
+    // Phase 3: Wait for React render (rAF×2) → Phase 4: Fade-out overlay
+    const handleNextPuzzle = useCallback(() => {
+        setIsTransitioning(true);
+        // Wait for overlay to reach full opacity
+        setTimeout(() => {
+            // Swap state while overlay is fully opaque
+            if (currentPuzzle) handleMarkCompleted(currentPuzzle.id);
+            handleNext();
+            resetFlow();
+            setScoutedPlayerId('1');
+            // Wait for React to commit new components (lock overlay, augment modal)
+            // before fading out — double rAF ensures paint is complete
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    setIsTransitioning(false);
+                });
+            });
+        }, 280);
+    }, [currentPuzzle, handleMarkCompleted, handleNext, resetFlow]);
 
     // Show completion modal when all puzzles are completed
     useEffect(() => {
@@ -180,6 +203,9 @@ const App: React.FC = () => {
         );
     }
 
+    // Check if puzzle is locked and should show overlay
+    const showLockOverlay = !isMirrored && isAugmentOpen && puzzlePhase === 'selecting' && !isPuzzlePlayable && currentPuzzleAccess;
+
     return (
         <div className="layout-wrapper">
             <div className="app-container" style={{ backgroundImage: `url(${arenaSkinUrl})` }}>
@@ -196,8 +222,11 @@ const App: React.FC = () => {
                     players={allPlayersWithArena}
                     onPlayerSelect={setScoutedPlayerId}
                     synergies={synergies}
-                    items={activePlayer.items || items || []} // Prefer active player items, fallback to global items
+                    items={activePlayer.items || items || []}
                 />
+
+                {/* Puzzle transition overlay */}
+                <div className={`puzzle-transition-overlay${isTransitioning ? ' active' : ''}`} />
 
                 {/* --- Modals & Overlays --- */}
 
@@ -229,15 +258,51 @@ const App: React.FC = () => {
                     currentArena={ARENA_SKINS.find(a => a.id === (myArenaId || myPlayer.arenaId)) || ARENA_SKINS[0]}
                 />
 
-                {/* Augment Logic */}
+                {/* Augment Logic — Lock Overlay or AugmentModal */}
                 {!isMirrored && isAugmentOpen && puzzlePhase === 'selecting' && (
-                    <AugmentModal
-                        currentAugments={currentAugments}
-                        rerollOrder={rerollOrder}
-                        onReroll={handleAugmentReroll}
-                        onSelect={handleAugmentSelect}
-                        allPuzzlesCompleted={allPuzzlesCompleted}
-                    />
+                    isPuzzlePlayable ? (
+                        <AugmentModal
+                            currentAugments={currentAugments}
+                            rerollOrder={rerollOrder}
+                            onReroll={handleAugmentReroll}
+                            onSelect={handleAugmentSelect}
+                            allPuzzlesCompleted={allPuzzlesCompleted}
+                        />
+                    ) : currentPuzzleAccess && (
+                        <PuzzleLockOverlay
+                            tier={currentPuzzleAccess.tier}
+                            isProSupporter={currentPuzzleAccess.reason === 'pro_supporter'}
+                            canAfford={walletBalance >= (currentPuzzleAccess.cost ?? 0)}
+                            isLoading={isUnlocking}
+                            requiresLogin={requiresLoginForUnlock}
+                            title={
+                                lockMessageVariant === 'rare_elite'
+                                    ? 'WOW, bạn gặp Puzzle hiếm thấy.'
+                                    : lockMessageVariant === 'premium_education'
+                                    ? 'Tin vui! Bạn gặp puzzle chất lượng cao.'
+                                    : undefined
+                            }
+                            subtitle={
+                                lockMessageVariant === 'rare_elite'
+                                    ? 'Puzzle này chứa nước đi thần thánh của tuyển thủ. Xem là lên trình!'
+                                    : lockMessageVariant === 'premium_education'
+                                    ? 'Puzzle xịn + giải thích kỹ giúp bạn nâng tư duy augment thật sự.'
+                                    : undefined
+                            }
+                            onUnlock={() => {
+                                if (requiresLoginForUnlock) {
+                                    setShowLoginModal(true);
+                                } else {
+                                    handleUnlockCurrentPuzzle();
+                                }
+                            }}
+                            onProSupporter={() => {
+                                const supportBtn = document.querySelector('.menu-item--support') as HTMLButtonElement;
+                                if (supportBtn) supportBtn.click();
+                            }}
+                            onSkipToFree={hasFreePuzzlesAvailable ? handleSkipToFreePuzzle : undefined}
+                        />
+                    )
                 )}
 
                 {!isMirrored && isAugmentOpen && puzzlePhase === 'reviewing' && selectedAugment && (

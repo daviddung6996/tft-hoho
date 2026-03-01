@@ -104,6 +104,28 @@
    HEADER WIDGETS - T-Coin & Donate (Top-left near Settings)
    ========================================================================== */
 
+/* ==========================================================================
+   PUZZLE TRANSITION — Quick crossfade between puzzles
+   ========================================================================== */
+
+.puzzle-transition-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 999;
+    opacity: 0;
+    background: rgba(0, 0, 0, 0.92);
+    transition: opacity 0.25s ease-out;
+}
+
+.puzzle-transition-overlay.active {
+    opacity: 1;
+}
+
+/* ==========================================================================
+   HEADER WIDGETS
+   ========================================================================== */
+
 .app-header-widgets {
     position: fixed;
     top: 1.04cqw;

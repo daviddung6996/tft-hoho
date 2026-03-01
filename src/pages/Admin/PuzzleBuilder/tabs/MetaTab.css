@@ -106,3 +106,21 @@
     resize: vertical;
     line-height: 1.4;
 }
+
+/* Edit video link button — appears below VideoSelect when URL is set */
+.vem-edit-link {
+    background: none;
+    border: none;
+    padding: 0.2cqw 0;
+    color: rgba(200, 170, 110, 0.6);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7cqw;
+    cursor: pointer;
+    text-align: left;
+    transition: color 0.15s;
+    width: fit-content;
+}
+
+.vem-edit-link:hover {
+    color: #c8aa6e;
+}

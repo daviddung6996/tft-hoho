@@ -29,12 +29,13 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
         <div style={{
             position: 'fixed',
             inset: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            background: 'radial-gradient(ellipse at 50% 30%, rgba(200, 170, 110, 0.06) 0%, transparent 50%), radial-gradient(ellipse at 50% 80%, rgba(21, 58, 62, 0.25) 0%, transparent 50%), rgba(0, 0, 0, 0.78)',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
             zIndex: 9999,
-            backdropFilter: 'blur(2px)'
+            backdropFilter: 'blur(8px)',
+            animation: 'hex-overlay-in 0.35s cubic-bezier(0.16, 1, 0.3, 1)'
         }}>
             <div className="hex-panel" style={{
                 position: 'fixed',

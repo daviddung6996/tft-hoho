@@ -9,7 +9,7 @@ import { tcoinEvents } from '../features/tcoin/tcoinEvents';
 
 export type PuzzlePhase = 'selecting' | 'reviewing';
 
-export const useGameFlow = (currentPuzzle: any, userId?: string) => {
+export const useGameFlow = (currentPuzzle: any, userId?: string, options?: { canPlayPuzzle?: boolean }) => {
     const [puzzlePhase, setPuzzlePhase] = React.useState<PuzzlePhase>('selecting');
     const [selectedAugment, setSelectedAugment] = React.useState<AugmentData | null>(null);
     const [communityVotes, setCommunityVotes] = React.useState<CommunityVotes>({});
@@ -56,6 +56,7 @@ export const useGameFlow = (currentPuzzle: any, userId?: string) => {
     }, [currentPuzzle]);
 
     const handleAugmentReroll = (indexToReplace: number) => {
+        if (options?.canPlayPuzzle === false) return; // Puzzle is locked
         if (rerollOrder[indexToReplace] > 0) return; // Already rerolled
         if (!currentPuzzle) return;
 
@@ -89,6 +90,7 @@ export const useGameFlow = (currentPuzzle: any, userId?: string) => {
     };
 
     const handleAugmentSelect = async (augment: AugmentData) => {
+        if (options?.canPlayPuzzle === false) return; // Puzzle is locked
         setSelectedAugment(augment);
         setUserPickRound(hasRerolled ? 1 : 0);
         setPuzzlePhase('reviewing');
