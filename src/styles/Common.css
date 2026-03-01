@@ -152,3 +152,12 @@ select option:checked {
 .text-glow-gold-strong {
     text-shadow: 0 0 0.5cqw rgba(200, 155, 60, 0.5);
 }
+
+/* ==========================================================================
+   HEXTECH OVERLAY — Unified backdrop for all modals & popups
+   Standard: Atmosphere gradient + gold glow + smooth blur entrance
+   ========================================================================== */
+@keyframes hex-overlay-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}

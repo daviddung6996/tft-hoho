@@ -4,6 +4,8 @@ import { PUZZLE_SCENARIOS } from '../data/puzzleScenarios';
 import { useAuth } from '../contexts/AuthContext';
 import { useGameData } from '../contexts/GameDataContext';
 import { AugmentData } from '../services/augmentService';
+import { PuzzleAccessResult } from '../features/tcoin/tcoin.types';
+import { useTCoin } from '../features/tcoin/hooks/useTCoin';
 
 // Enrich a single augment with Vietnamese data from DB
 function enrichAugment(aug: AugmentData | null, dbAugments: AugmentData[]): AugmentData | null {
@@ -38,14 +40,23 @@ function enrichPuzzleAugments(puzzle: any, dbAugments: AugmentData[]): any {
     };
 }
 
+export type LockMessageVariant = 'default' | 'premium_education' | 'rare_elite';
+
 export const usePuzzleGame = (isAuthenticated: boolean) => {
-    const { user } = useAuth();
+    const { user, isGuest } = useAuth();
     const { augments: cachedAugments, isLoading: isGameDataLoading } = useGameData();
+    const { checkAccess, unlockPuzzle, balance } = useTCoin();
 
     // [NEW] Dynamic Puzzles State
     const [puzzles, setPuzzles] = React.useState<any[]>([]);
     const [isLoadingPuzzles, setIsLoadingPuzzles] = React.useState(true);
     const [completedPuzzleIds, setCompletedPuzzleIds] = React.useState<string[]>([]);
+
+    // Puzzle access state
+    const [currentPuzzleAccess, setCurrentPuzzleAccess] = React.useState<PuzzleAccessResult | null>(null);
+    const [isCheckingAccess, setIsCheckingAccess] = React.useState(false);
+    const [isUnlocking, setIsUnlocking] = React.useState(false);
+    const [lockMessageVariant, setLockMessageVariant] = React.useState<LockMessageVariant>('default');
 
     // URL Handling: Check for puzzle ID in URL on initial load and handle async loading
     const pendingPuzzleIdRef = React.useRef(new URLSearchParams(window.location.search).get('puzzle'));
@@ -201,9 +212,72 @@ export const usePuzzleGame = (isAuthenticated: boolean) => {
         }
     };
 
+    // Access check: runs when currentPuzzle changes
+    const currentPuzzle = puzzles[currentPuzzleIndex];
+    React.useEffect(() => {
+        if (!currentPuzzle) {
+            setCurrentPuzzleAccess(null);
+            return;
+        }
+        const tier = currentPuzzle.tier || 'free';
+        if (tier === 'free') {
+            setCurrentPuzzleAccess({ canPlay: true, reason: 'free', tier });
+            return;
+        }
+        // Guest + locked tier => requires_login shortcut (no DB call needed)
+        if (isGuest || !isAuthenticated) {
+            const cost = tier === 'advanced' ? 30 : 100;
+            setCurrentPuzzleAccess({ canPlay: false, reason: 'locked', cost, tier });
+            return;
+        }
+        let cancelled = false;
+        setIsCheckingAccess(true);
+        checkAccess(currentPuzzle.id, tier)
+            .then(result => { if (!cancelled) setCurrentPuzzleAccess(result); })
+            .catch(() => {
+                if (!cancelled) {
+                    const cost = tier === 'advanced' ? 30 : 100;
+                    setCurrentPuzzleAccess({ canPlay: false, reason: 'locked', cost, tier });
+                }
+            })
+            .finally(() => { if (!cancelled) setIsCheckingAccess(false); });
+        return () => { cancelled = true; };
+    }, [currentPuzzle?.id, currentPuzzle?.tier, isAuthenticated, isGuest, checkAccess]);
+
+    const isPuzzlePlayable = currentPuzzleAccess?.canPlay ?? true;
+    const requiresLoginForUnlock = !isAuthenticated || isGuest;
+
+    const handleUnlockCurrentPuzzle = React.useCallback(async (): Promise<boolean> => {
+        if (!currentPuzzle) return false;
+        const tier = currentPuzzle.tier || 'free';
+        if (tier === 'free') return true;
+        setIsUnlocking(true);
+        try {
+            const success = await unlockPuzzle(currentPuzzle.id, tier);
+            if (success) {
+                setCurrentPuzzleAccess({ canPlay: true, reason: 'unlocked', tier });
+            }
+            return success;
+        } catch {
+            return false;
+        } finally {
+            setIsUnlocking(false);
+        }
+    }, [currentPuzzle?.id, currentPuzzle?.tier, unlockPuzzle]);
+
+    const refreshCurrentPuzzleAccess = React.useCallback(async () => {
+        if (!currentPuzzle) return;
+        const tier = currentPuzzle.tier || 'free';
+        if (tier === 'free') return;
+        try {
+            const result = await checkAccess(currentPuzzle.id, tier);
+            setCurrentPuzzleAccess(result);
+        } catch { /* keep existing state */ }
+    }, [currentPuzzle?.id, currentPuzzle?.tier, checkAccess]);
+
     const handleNextPuzzle = () => {
-        const currentPuzzle = puzzles[currentPuzzleIndex];
-        const unplayedPuzzles = puzzles.filter(p => !completedPuzzleIds.includes(p.id) && p.id !== currentPuzzle?.id);
+        const cp = puzzles[currentPuzzleIndex];
+        const unplayedPuzzles = puzzles.filter(p => !completedPuzzleIds.includes(p.id) && p.id !== cp?.id);
 
         // Early return if all puzzles are completed - prevent replay
         if (unplayedPuzzles.length === 0) {
@@ -214,17 +288,59 @@ export const usePuzzleGame = (isAuthenticated: boolean) => {
             return;
         }
 
-        // Select from unplayed puzzles only
+        // Select from unplayed puzzles only — if locked, stop there (don't skip)
         if (unplayedPuzzles.length > 0) {
             const randomPuzzle = unplayedPuzzles[Math.floor(Math.random() * unplayedPuzzles.length)];
             const index = puzzles.findIndex(p => p.id === randomPuzzle.id);
             setCurrentPuzzleIndex(index);
+            // Pre-set lock state so lock overlay renders BEFORE transition fades out
+            if (randomPuzzle.tier && randomPuzzle.tier !== 'free') {
+                setLockMessageVariant(randomPuzzle.tier === 'rare' ? 'rare_elite' : 'premium_education');
+                const cost = randomPuzzle.tier === 'advanced' ? 30 : 100;
+                setCurrentPuzzleAccess({ canPlay: false, reason: 'locked', cost, tier: randomPuzzle.tier });
+            } else {
+                setLockMessageVariant('default');
+                setCurrentPuzzleAccess({ canPlay: true, reason: 'free', tier: 'free' });
+            }
         }
 
         const url = new URL(window.location.href);
         url.searchParams.delete('puzzle');
         window.history.pushState({}, '', url);
     };
+
+    // Check if there are free puzzles available to skip to
+    const hasFreePuzzlesAvailable = React.useMemo(() => {
+        const cp = puzzles[currentPuzzleIndex];
+        return puzzles.some(p =>
+            !completedPuzzleIds.includes(p.id) &&
+            p.id !== cp?.id &&
+            (!p.tier || p.tier === 'free')
+        );
+    }, [puzzles, currentPuzzleIndex, completedPuzzleIds]);
+
+    // Skip to next FREE puzzle (only works when hasFreePuzzlesAvailable is true)
+    const handleSkipToFreePuzzle = React.useCallback(() => {
+        const cp = puzzles[currentPuzzleIndex];
+        const unplayedFreePuzzles = puzzles.filter(p => 
+            !completedPuzzleIds.includes(p.id) && 
+            p.id !== cp?.id &&
+            (!p.tier || p.tier === 'free')
+        );
+
+        if (unplayedFreePuzzles.length > 0) {
+            const randomPuzzle = unplayedFreePuzzles[Math.floor(Math.random() * unplayedFreePuzzles.length)];
+            const index = puzzles.findIndex(p => p.id === randomPuzzle.id);
+            setCurrentPuzzleIndex(index);
+            setLockMessageVariant('default');
+            setCurrentPuzzleAccess({ canPlay: true, reason: 'free', tier: 'free' });
+
+            const url = new URL(window.location.href);
+            url.searchParams.delete('puzzle');
+            window.history.pushState({}, '', url);
+        }
+        // If no free puzzles, do nothing — button should be hidden via hasFreePuzzlesAvailable
+    }, [puzzles, currentPuzzleIndex, completedPuzzleIds]);
 
     const refreshPuzzles = React.useCallback(async () => {
         setIsLoadingPuzzles(true);
@@ -245,13 +361,25 @@ export const usePuzzleGame = (isAuthenticated: boolean) => {
 
     return {
         puzzles,
-        currentPuzzle: puzzles[currentPuzzleIndex],
+        currentPuzzle,
         isLoadingPuzzles,
         completedPuzzleIds,
         allPuzzlesCompleted,
         handleMarkCompleted,
         handleNextPuzzle,
+        handleSkipToFreePuzzle,
+        hasFreePuzzlesAvailable,
         refreshPuzzles,
-        setCompletedPuzzleIds // Exposed if needed for overrides
+        setCompletedPuzzleIds,
+        // Puzzle access / lock state
+        currentPuzzleAccess,
+        isCheckingAccess,
+        isUnlocking,
+        isPuzzlePlayable,
+        requiresLoginForUnlock,
+        lockMessageVariant,
+        handleUnlockCurrentPuzzle,
+        refreshCurrentPuzzleAccess,
+        walletBalance: balance,
     };
 };

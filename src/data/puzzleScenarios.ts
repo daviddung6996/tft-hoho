@@ -49,6 +49,7 @@ export interface PuzzleScenario {
     // Index of which roll pro made their pick (0 = first roll, 1 = second roll)
     proPickRound: 0 | 1;
     explanation?: string;
+    explanationVideoUrl?: string;  // YouTube unlisted video URL for explanation
     // Board State
     playerBoard?: UnitData[];
     // Deprecated singular opponent fields (Use opponents array instead)

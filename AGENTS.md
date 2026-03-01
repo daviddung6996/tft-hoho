@@ -53,33 +53,73 @@ class UserRepo {
 ```
 **Used in:** Tất cả các module Backend thuộc `backend/features/`
 
-### Hextech Admin Modal Theme
-```css
-/* Container/Overlay: Blur backdrop */
-.hex-modal-overlay {
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(2px);
-}
+### Hextech Overlay — Unified Pattern (CRITICAL)
 
-/* Modal Body: Green Hextech Background + Gold Glow */
+> ⚠️ **Rule tuyệt đối:** Mọi overlay/modal backdrop trong app **BẮT BUỘC** dùng đúng pattern dưới đây. **KHÔNG ĐƯỢC** dùng `background: rgba(0,0,0,0.7)` phẳng.
+
+**Shared keyframe** đã định nghĩa trong `src/styles/Common.css`:
+```css
+@keyframes hex-overlay-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+```
+
+#### Loại 1: Fixed Overlay (modal nằm ngoài game container, `position: fixed`)
+Dùng cho: UserProfileModal, SupportModal, PuzzleCompletionModal, VideoExplanationModal, ConfirmModal, Admin modals.
+```css
+.my-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background:
+        radial-gradient(ellipse at 50% 30%, rgba(200, 170, 110, 0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 80%, rgba(21, 58, 62, 0.25) 0%, transparent 50%),
+        rgba(0, 0, 0, 0.78);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: hex-overlay-in 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+```
+
+#### Loại 2: In-game Overlay (nằm trong `app-container`, `position: absolute`)
+Dùng cho: AugmentModal, DecisionReview, ArenaSelectorModal, PuzzleLockOverlay.
+```css
+.my-game-overlay {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background:
+        radial-gradient(ellipse at 50% 30%, rgba(200, 170, 110, 0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 80%, rgba(21, 58, 62, 0.25) 0%, transparent 50%),
+        rgba(0, 0, 0, 0.78);
+    /* ⛔ KHÔNG dùng backdrop-filter ở đây — gây conflict stacking context */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    animation: hex-overlay-in 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+```
+
+#### ⛔ Tuyệt đối KHÔNG làm:
+1. **KHÔNG dùng `backdrop-filter` trên overlay `position: absolute` bên trong `app-container`** — `app-container` có `filter: contrast(...)` tạo stacking context, `backdrop-filter` sẽ gây layout shift cho ScoutingPanel, ItemPanel, SynergyPanel.
+2. **KHÔNG wrap game content trong div có `filter: blur()` toggle** — toggle `filter: none` ↔ `filter: blur(8px)` tạo/huỷ stacking context, làm các panel absolute bị trượt/giật.
+3. **KHÔNG animate `backdrop-filter` trong keyframe** — GPU-expensive, gây giật. Chỉ animate `opacity`.
+4. **KHÔNG dùng `background: rgba(0,0,0,0.7)` phẳng** — phải có atmosphere gradient (gold glow + teal depth).
+
+#### Modal Body (bên trong overlay):
+```css
 .hex-modal-content {
     background: linear-gradient(180deg, #153a3e 0%, #051c1e 100%);
     border: 1px solid #c8aa6e;
     box-shadow: 0 0 20px rgba(200, 170, 110, 0.3);
 }
-
-/* Inputs within Modal: Dark, matching Hextech panel */
-.hex-modal-input {
-    background: rgba(0, 0, 0, 0.4);
-    border: 1px solid rgba(200, 170, 110, 0.3);
-    color: #F0E6D2;
-}
-.hex-modal-input:focus {
-    border-color: #c8aa6e;
-    box-shadow: 0 0 10px rgba(200, 170, 110, 0.2);
-}
 ```
-**Used in:** Tất cả các modal popup (Add/Edit/Delete/Config) trong Control Panel (Profile, ProIqManager, AdminEditModal...). Dùng đúng chuẩn xanh gradient (#153a3e -> #051c1e) và viền vàng blur, **không dùng màu xanh Blue phẳng / Slate**.
+
+**Used in:** Tất cả overlay/modal trong app. Xem `Common.css` cho keyframe gốc.
 
 ---
 
@@ -167,6 +207,58 @@ Unranked    → '#4B5563'  // Same as Iron (muted)
 Dùng trong Hero Section của `UserProfileModal.tsx` để set `--rank-color` và `--hero-atmosphere` CSS vars.
 
 **Used in:** `UserProfileModal.tsx`, `UserIqBadge.tsx`, `SettingsButton.tsx`
+
+---
+
+### T-Coin Icon — Mandatory Usage Pattern
+
+> ⚠️ **Rule tuyệt đối:** Mọi nơi hiển thị T-Coin (balance, cost, reward, lock overlay...) **BẮT BUỘC** dùng `<TCoinIcon />` component. **KHÔNG ĐƯỢC** dùng emoji 🪙, text "T-Coin", hoặc ký tự □.
+
+#### Component Location
+```
+src/features/tcoin/components/TCoinIcon.tsx
+```
+
+#### Usage
+```tsx
+import { TCoinIcon } from '../../features/tcoin/components/TCoinIcon';
+
+// Balance display
+<TCoinIcon size={22} />
+<span>{balance}</span>
+
+// Cost display (trong dropdown, lock overlay...)
+<TCoinIcon size={12} />
+<span>{cost}</span>
+
+// Reward popup animation
+<TCoinIcon size={16} />
+```
+
+#### Size Guidelines
+| Context | Size |
+|---------|------|
+| Header balance widget | `22` |
+| Puzzle lock overlay cost | `20` |
+| Tier select dropdown cost badge | `11–12` |
+| Floating earn spark animation | `16` |
+
+#### Files đã tuân thủ chuẩn này
+- `TCoinBalance.tsx` ✅
+- `TCoinEarnAnimation.tsx` ✅
+- `PuzzleLockOverlay.tsx` ✅ (fixed 2026-03-01, was using 🪙 emoji)
+- `TierSelect.tsx` ✅ (fixed 2026-03-01, was using "50 T-Coin" text string)
+
+#### Kiểm tra vi phạm
+Chạy lệnh này để tìm chỗ vi phạm chuẩn:
+```powershell
+# Tìm emoji 🪙 đang được render trong JSX
+Get-ChildItem -Path src -Recurse -Include "*.tsx" | ForEach-Object {
+    $content = Get-Content $_.FullName -Raw
+    if ($content -match '🪙') { Write-Host $_.FullName }
+}
+```
+
 ---
 
 ## 2. Gotchas
@@ -175,6 +267,16 @@ Dùng trong Hero Section của `UserProfileModal.tsx` để set `--rank-color` v
 - **Symptom:** ...
 - **Cause:** ...
 - **Avoid:** ... -->
+
+### `filter` / `backdrop-filter` gây layout shift trong game container
+- **Symptom:** ScoutingPanel, ItemPanel, SynergyPanel bị trượt lên/xuống khi overlay xuất hiện hoặc biến mất.
+- **Cause:** `app-container` có `filter: contrast(1.05) saturate(1.08) brightness(1.02)` tạo stacking context. Nếu wrap game content trong div có `filter: blur()` toggle (`none` ↔ `blur(8px)`), việc tạo/huỷ stacking context sẽ làm các panel `position: absolute` bị reflow.
+- **Avoid:** KHÔNG BAO GIỜ wrap game content trong div toggle `filter`. Overlay đã có background atmosphere đủ tối (`rgba(0,0,0,0.78)`), không cần blur content bên dưới. Xem pattern "Hextech Overlay" ở Section 1.
+
+### Supabase schema source-of-truth mismatch
+- **Symptom:** Type definitions trong `src/lib/supabase.ts` đã có bảng `user_wallets`, `tcoin_transactions`, `user_unlocked_puzzles`, `pro_supporters`, `donations`, nhưng thư mục `supabase/migrations/` chưa có SQL migration tương ứng.
+- **Cause:** Schema có thể đã tạo trực tiếp trên remote Supabase hoặc local type file được cập nhật trước khi commit migration.
+- **Avoid:** Trước khi ship môi trường mới, bắt buộc backfill migration SQL cho toàn bộ bảng đang được app sử dụng để tránh "works on one database only".
 
 ---
 
@@ -194,3 +296,6 @@ Dùng trong Hero Section của `UserProfileModal.tsx` để set `--rank-color` v
 ```lang
 // fix code
 ``` -->
+
+
+

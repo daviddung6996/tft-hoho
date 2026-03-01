@@ -1,0 +1,299 @@
+/* VideoExplanationModal.css — Hextech-styled modal, mirrors AdminEditModal design */
+
+/* ── Overlay ────────────────────────────────────────────────── */
+.vem-overlay {
+    position: fixed;
+    inset: 0;
+    background:
+        radial-gradient(ellipse at 50% 30%, rgba(200, 170, 110, 0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 80%, rgba(21, 58, 62, 0.25) 0%, transparent 50%),
+        rgba(0, 0, 0, 0.78);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 3000;
+    backdrop-filter: blur(8px);
+    animation: hex-overlay-in 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ── Panel ─────────────────────────────────────────────────── */
+.vem-panel {
+    width: 560px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(180deg, #153a3e 0%, #051c1e 100%);
+    border: 1px solid #c8aa6e;
+    border-radius: 4px;
+    box-shadow:
+        0 0 30px rgba(200, 170, 110, 0.25),
+        0 0 60px rgba(0, 0, 0, 0.6);
+    overflow: hidden;
+}
+
+/* ── Header ─────────────────────────────────────────────────── */
+.vem-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid rgba(200, 170, 110, 0.3);
+    background: rgba(21, 58, 62, 0.5);
+}
+
+.vem-header-icon {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.vem-title {
+    margin: 0;
+    flex: 1;
+    color: #c8aa6e;
+    font-family: 'Spectral', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.vem-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(200, 170, 110, 0.25);
+    border-radius: 2px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    flex-shrink: 0;
+}
+
+.vem-close:hover {
+    border-color: #c8aa6e;
+    background: rgba(200, 170, 110, 0.1);
+}
+
+/* ── Body ───────────────────────────────────────────────────── */
+.vem-body {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    overflow-y: auto;
+    flex: 1;
+    min-height: 0;
+}
+
+/* ── Field ──────────────────────────────────────────────────── */
+.vem-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.vem-label {
+    color: #c8aa6e;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.vem-input-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    position: relative;
+}
+
+.vem-input {
+    flex: 1;
+    background: rgba(5, 28, 30, 0.85);
+    border: 1px solid rgba(200, 170, 110, 0.4);
+    color: #F0E6D2;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.875rem;
+    padding: 0.55rem 0.75rem;
+    border-radius: 3px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.vem-input:focus {
+    border-color: #c8aa6e;
+    box-shadow: 0 0 8px rgba(200, 155, 60, 0.2), inset 0 0 4px rgba(200, 155, 60, 0.08);
+}
+
+.vem-input::placeholder {
+    color: rgba(148, 163, 184, 0.4);
+    font-style: italic;
+}
+
+.vem-clear-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    border-radius: 2px;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: border-color 0.15s;
+}
+
+.vem-clear-btn:hover {
+    border-color: rgba(148, 163, 184, 0.5);
+}
+
+.vem-hint {
+    margin: 0;
+    color: #64748B;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.72rem;
+    font-style: italic;
+    line-height: 1.4;
+}
+
+/* ── Preview ────────────────────────────────────────────────── */
+.vem-preview-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.vem-preview-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: rgba(200, 170, 110, 0.75);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.vem-preview-id {
+    color: rgba(148, 163, 184, 0.6);
+    font-family: monospace;
+    font-size: 0.7rem;
+    font-style: normal;
+    text-transform: none;
+    letter-spacing: 0;
+}
+
+.vem-embed-wrapper {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%;
+    /* 16:9 */
+    background: #000;
+    border: 1px solid rgba(200, 170, 110, 0.3);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.vem-embed {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.vem-preview-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 2rem 1rem;
+    background: rgba(5, 28, 30, 0.4);
+    border: 1px dashed rgba(200, 170, 110, 0.2);
+    border-radius: 3px;
+    color: rgba(200, 170, 110, 0.4);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8rem;
+    text-align: center;
+    min-height: 120px;
+}
+
+.vem-preview-error {
+    border-color: rgba(239, 68, 68, 0.3);
+    color: rgba(239, 68, 68, 0.7);
+}
+
+/* ── Footer ─────────────────────────────────────────────────── */
+.vem-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 1.5rem;
+    border-top: 1px solid rgba(200, 170, 110, 0.3);
+    background: rgba(0, 0, 0, 0.2);
+    gap: 0.75rem;
+}
+
+.vem-footer-right {
+    display: flex;
+    gap: 0.75rem;
+    margin-left: auto;
+}
+
+/* ── Buttons ─────────────────────────────────────────────────── */
+.vem-btn {
+    padding: 0.45rem 1.25rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border-radius: 2px;
+    cursor: pointer;
+    border: 1px solid;
+    transition: background 0.15s, box-shadow 0.15s;
+}
+
+.vem-btn--cancel {
+    background: rgba(0, 0, 0, 0.3);
+    border-color: rgba(200, 170, 110, 0.45);
+    color: #F0E6D2;
+}
+
+.vem-btn--cancel:hover {
+    background: rgba(200, 170, 110, 0.08);
+}
+
+.vem-btn--save {
+    background: linear-gradient(180deg, rgba(21, 58, 62, 0.7) 0%, rgba(5, 28, 30, 0.7) 100%);
+    border-color: #c8aa6e;
+    color: #F0E6D2;
+    box-shadow: 0 0 10px rgba(200, 170, 110, 0.2);
+}
+
+.vem-btn--save:hover:not(:disabled) {
+    box-shadow: 0 0 16px rgba(200, 170, 110, 0.35);
+}
+
+.vem-btn--save:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.vem-btn--danger {
+    background: rgba(127, 29, 29, 0.3);
+    border-color: rgba(239, 68, 68, 0.45);
+    color: #fca5a5;
+}
+
+.vem-btn--danger:hover {
+    background: rgba(127, 29, 29, 0.5);
+    border-color: rgba(239, 68, 68, 0.7);
+}
