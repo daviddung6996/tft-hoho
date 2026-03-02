@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import '../../components/Sidebar/ItemPanel.css';
 import { championService, Champion } from '../../services/championService';
 import { traitService } from '../../services/traitService';
@@ -35,6 +35,9 @@ const AdminDataModal: React.FC<AdminDataModalProps> = ({ onClose, onPuzzleSaved 
     const [isBuilderMode, setIsBuilderMode] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
+    // Request counter to prevent stale API responses from overwriting current tab data
+    const loadRequestRef = useRef(0);
+
     // Admin Guard: One-time mount check only.
     // Reactive useEffect is intentionally avoided because Supabase token refresh
     // (triggered by browser tab switch) temporarily nullifies canAccessAdmin,
@@ -61,13 +64,58 @@ const AdminDataModal: React.FC<AdminDataModalProps> = ({ onClose, onPuzzleSaved 
     // Search State
     const [searchTerm, setSearchTerm] = useState('');
 
-    // Fetch data when tab changes
+    // Bulk Selection State
+    const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+
+    // Fetch data when tab changes — with stale-request guard
     useEffect(() => {
-        setSearchTerm(''); // Reset search on tab change
-        loadData();
+        setSearchTerm('');
+        setSelectedIds(new Set());
+
+        const requestId = ++loadRequestRef.current;
+        setLoading(true);
+        setError(null);
+
+        const fetchData = async () => {
+            try {
+                let result;
+                switch (activeTab) {
+                    case 'champions':
+                        result = await championService.getAll();
+                        break;
+                    case 'traits':
+                        result = await traitService.getAll();
+                        break;
+                    case 'items':
+                        result = await itemService.getAll();
+                        break;
+                    case 'augments':
+                        result = await augmentService.getAll();
+                        break;
+                    case 'puzzles':
+                        result = await puzzleService.getAll();
+                        break;
+                }
+                // Guard: only update if this is still the latest request
+                if (requestId !== loadRequestRef.current) return;
+                setData(result || []);
+            } catch (err: any) {
+                if (requestId !== loadRequestRef.current) return;
+                console.error('Error fetching data:', err);
+                setError(err.message || 'Không thể tải dữ liệu. Kiểm tra console.');
+            } finally {
+                if (requestId === loadRequestRef.current) {
+                    setLoading(false);
+                }
+            }
+        };
+
+        fetchData();
     }, [activeTab]);
 
+    // Manual reload (after save/delete) — also guarded
     const loadData = async () => {
+        const requestId = ++loadRequestRef.current;
         setLoading(true);
         setError(null);
         try {
@@ -89,12 +137,16 @@ const AdminDataModal: React.FC<AdminDataModalProps> = ({ onClose, onPuzzleSaved 
                     result = await puzzleService.getAll();
                     break;
             }
+            if (requestId !== loadRequestRef.current) return;
             setData(result || []);
         } catch (err: any) {
+            if (requestId !== loadRequestRef.current) return;
             console.error('Error fetching data:', err);
             setError(err.message || 'Không thể tải dữ liệu. Kiểm tra console.');
         } finally {
-            setLoading(false);
+            if (requestId === loadRequestRef.current) {
+                setLoading(false);
+            }
         }
     };
 
@@ -325,8 +377,7 @@ const AdminDataModal: React.FC<AdminDataModalProps> = ({ onClose, onPuzzleSaved 
         setEditingItem(item);
     };
 
-    // Bulk Selection State
-    const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+
 
     // Toggle single selection
     const toggleSelect = (id: string) => {

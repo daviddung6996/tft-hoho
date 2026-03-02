@@ -6,6 +6,7 @@ import { useGameData } from '../contexts/GameDataContext';
 import { AugmentData } from '../services/augmentService';
 import { PuzzleAccessResult } from '../features/tcoin/tcoin.types';
 import { useTCoin } from '../features/tcoin/hooks/useTCoin';
+import { useProSupporter } from '../features/pro-supporter/hooks/useProSupporter';
 
 // Enrich a single augment with Vietnamese data from DB
 function enrichAugment(aug: AugmentData | null, dbAugments: AugmentData[]): AugmentData | null {
@@ -46,6 +47,7 @@ export const usePuzzleGame = (isAuthenticated: boolean) => {
     const { user, isGuest } = useAuth();
     const { augments: cachedAugments, isLoading: isGameDataLoading } = useGameData();
     const { checkAccess, unlockPuzzle, balance } = useTCoin();
+    const { isProSupporter } = useProSupporter();
 
     // [NEW] Dynamic Puzzles State
     const [puzzles, setPuzzles] = React.useState<any[]>([]);
@@ -224,6 +226,11 @@ export const usePuzzleGame = (isAuthenticated: boolean) => {
             setCurrentPuzzleAccess({ canPlay: true, reason: 'free', tier });
             return;
         }
+        // Pro Supporter bypass — never show lock
+        if (isProSupporter) {
+            setCurrentPuzzleAccess({ canPlay: true, reason: 'pro_supporter', tier });
+            return;
+        }
         // Guest + locked tier => requires_login shortcut (no DB call needed)
         if (isGuest || !isAuthenticated) {
             const cost = tier === 'advanced' ? 30 : 100;
@@ -242,7 +249,7 @@ export const usePuzzleGame = (isAuthenticated: boolean) => {
             })
             .finally(() => { if (!cancelled) setIsCheckingAccess(false); });
         return () => { cancelled = true; };
-    }, [currentPuzzle?.id, currentPuzzle?.tier, isAuthenticated, isGuest, checkAccess]);
+    }, [currentPuzzle?.id, currentPuzzle?.tier, isAuthenticated, isGuest, isProSupporter, checkAccess]);
 
     const isPuzzlePlayable = currentPuzzleAccess?.canPlay ?? true;
     const requiresLoginForUnlock = !isAuthenticated || isGuest;
@@ -294,10 +301,16 @@ export const usePuzzleGame = (isAuthenticated: boolean) => {
             const index = puzzles.findIndex(p => p.id === randomPuzzle.id);
             setCurrentPuzzleIndex(index);
             // Pre-set lock state so lock overlay renders BEFORE transition fades out
+            // Pro Supporter: NEVER pre-set locked — always play through
             if (randomPuzzle.tier && randomPuzzle.tier !== 'free') {
-                setLockMessageVariant(randomPuzzle.tier === 'rare' ? 'rare_elite' : 'premium_education');
-                const cost = randomPuzzle.tier === 'advanced' ? 30 : 100;
-                setCurrentPuzzleAccess({ canPlay: false, reason: 'locked', cost, tier: randomPuzzle.tier });
+                if (isProSupporter) {
+                    setLockMessageVariant('default');
+                    setCurrentPuzzleAccess({ canPlay: true, reason: 'pro_supporter', tier: randomPuzzle.tier });
+                } else {
+                    setLockMessageVariant(randomPuzzle.tier === 'rare' ? 'rare_elite' : 'premium_education');
+                    const cost = randomPuzzle.tier === 'advanced' ? 30 : 100;
+                    setCurrentPuzzleAccess({ canPlay: false, reason: 'locked', cost, tier: randomPuzzle.tier });
+                }
             } else {
                 setLockMessageVariant('default');
                 setCurrentPuzzleAccess({ canPlay: true, reason: 'free', tier: 'free' });

@@ -110,7 +110,7 @@ const AdvancedIcon: React.FC<{ size: number }> = ({ size }) => (
     </svg>
 );
 
-/** Rare tier — Rune crystal (deep crimson-ruby, arcane, prestigious) */
+/** Rare tier — Rune crystal (electric prismatic purple, luxury flex) */
 const RareIcon: React.FC<{ size: number }> = ({ size }) => (
     <svg
         width={size}
@@ -121,17 +121,17 @@ const RareIcon: React.FC<{ size: number }> = ({ size }) => (
     >
         <defs>
             <radialGradient id="rare-fill" cx="45%" cy="35%" r="60%">
-                <stop offset="0%" stopColor="#e8a0a0" />
-                <stop offset="55%" stopColor="#a83232" />
-                <stop offset="100%" stopColor="#5c1a1a" />
+                <stop offset="0%" stopColor="#e9d5ff" />
+                <stop offset="40%" stopColor="#c084fc" />
+                <stop offset="100%" stopColor="#581c87" />
             </radialGradient>
             <linearGradient id="rare-facet" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#f0c0c0" stopOpacity="0.7" />
-                <stop offset="100%" stopColor="#a83232" stopOpacity="0.1" />
+                <stop offset="0%" stopColor="#f3e8ff" stopOpacity="0.85" />
+                <stop offset="100%" stopColor="#a855f7" stopOpacity="0.15" />
             </linearGradient>
             <radialGradient id="rare-glow" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stopColor="#c75050" stopOpacity="0.45" />
-                <stop offset="100%" stopColor="#c75050" stopOpacity="0" />
+                <stop offset="0%" stopColor="#c084fc" stopOpacity="0.6" />
+                <stop offset="100%" stopColor="#c084fc" stopOpacity="0" />
             </radialGradient>
         </defs>
         {/* Outer glow aura */}
@@ -140,30 +140,30 @@ const RareIcon: React.FC<{ size: number }> = ({ size }) => (
         <polygon
             points="12,2 18,4 22,10 22,14 18,20 12,22 6,20 2,14 2,10 6,4"
             fill="url(#rare-fill)"
-            stroke="#c75050"
-            strokeWidth="0.5"
-            strokeOpacity="0.85"
+            stroke="#c084fc"
+            strokeWidth="0.6"
+            strokeOpacity="0.9"
         />
         {/* Inner bright facet top-left */}
         <polygon
             points="12,2 18,4 12,10 6,4"
             fill="url(#rare-facet)"
-            opacity="0.5"
+            opacity="0.6"
         />
         {/* Central rune mark */}
         <polygon
             points="12,7 15,11 12,17 9,11"
-            fill="#e8a0a0"
-            opacity="0.4"
+            fill="#e9d5ff"
+            opacity="0.5"
         />
-        <circle cx="12" cy="12" r="1.5" fill="#f0d0d0" opacity="0.7" />
+        <circle cx="12" cy="12" r="1.5" fill="#ffffff" opacity="0.8" />
     </svg>
 );
 
 export const TIER_META: Record<PuzzleTier, { label: string; color: string; costLabel: string }> = {
     free: { label: 'Free', color: '#2dd4bf', costLabel: 'Miễn phí' },
     advanced: { label: 'Advanced', color: '#c8aa6e', costLabel: '30 T-Coin' },
-    rare: { label: 'Rare', color: '#c75050', costLabel: '100 T-Coin' },
+    rare: { label: 'Rare', color: '#c084fc', costLabel: '100 T-Coin' },
 };
 
 export const TierIcon: React.FC<TierIconProps> = ({ tier, size = 16, className }) => {

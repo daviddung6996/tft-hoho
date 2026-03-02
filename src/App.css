@@ -115,7 +115,7 @@
     z-index: 999;
     opacity: 0;
     background: rgba(0, 0, 0, 0.92);
-    transition: opacity 0.25s ease-out;
+    transition: opacity 0.15s ease-out;
 }
 
 .puzzle-transition-overlay.active {

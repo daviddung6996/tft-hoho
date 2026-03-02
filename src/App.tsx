@@ -16,6 +16,7 @@ import { LoginModal } from './components/Auth/LoginModal';
 import AdminDataModal from './pages/Admin/AdminDataModal';
 import { UserProfileModal } from './components/Settings/UserProfileModal';
 import { PuzzleCompletionModal } from './components/Arena/PuzzleCompletionModal';
+import { VideoLibraryPage } from './features/video-library/components/VideoLibraryPage';
 
 // Data
 import { ARENA_SKINS } from './data/arenas';
@@ -104,27 +105,24 @@ const App: React.FC = () => {
     const [scoutedPlayerId, setScoutedPlayerId] = useState<string>('1');
     const [myArenaId, setMyArenaId] = useState<string | null>(null);
     const [isTransitioning, setIsTransitioning] = useState(false);
+    const [currentView, setCurrentView] = useState<'puzzle' | 'library'>('puzzle');
 
-    // Wrapper for next puzzle — smooth crossfade transition
-    // Phase 1: Fade-in overlay (250ms CSS) → Phase 2: Swap state while fully covered
+    // Wrapper for next puzzle — fast crossfade transition
+    // Phase 1: Fade-in overlay (150ms CSS) → Phase 2: Swap state while fully covered
     // Phase 3: Wait for React render (rAF×2) → Phase 4: Fade-out overlay
     const handleNextPuzzle = useCallback(() => {
         setIsTransitioning(true);
-        // Wait for overlay to reach full opacity
         setTimeout(() => {
-            // Swap state while overlay is fully opaque
             if (currentPuzzle) handleMarkCompleted(currentPuzzle.id);
             handleNext();
             resetFlow();
             setScoutedPlayerId('1');
-            // Wait for React to commit new components (lock overlay, augment modal)
-            // before fading out — double rAF ensures paint is complete
             requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
                     setIsTransitioning(false);
                 });
             });
-        }, 280);
+        }, 160);
     }, [currentPuzzle, handleMarkCompleted, handleNext, resetFlow]);
 
     // Show completion modal when all puzzles are completed
@@ -159,8 +157,9 @@ const App: React.FC = () => {
     // Keyboard shortcuts: Q (scout next), R (scout prev), Space (return home)
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
-            // Ignore if user is typing in an input
+            // Ignore if user is typing in an input or if library is shown
             if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+            if (currentView !== 'puzzle') return;
 
             const opponents = allPlayers.filter(p => !p.isMe);
             if (opponents.length === 0) return;
@@ -189,7 +188,7 @@ const App: React.FC = () => {
 
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [allPlayers]);
+    }, [allPlayers, currentView]);
 
     // Removed routing for TestFlex
 
@@ -210,161 +209,179 @@ const App: React.FC = () => {
         <div className="layout-wrapper">
             <div className="app-container" style={{ backgroundImage: `url(${arenaSkinUrl})` }}>
 
-                <GameScene
-                    myPlayer={myPlayerWithArena}
-                    activePlayer={activePlayer}
-                    isMirrored={isMirrored}
-                />
-
-                <GameHUD
-                    stage={currentPuzzle?.stage || '2-1'}
-                    activePlayerId={scoutedPlayerId}
-                    players={allPlayersWithArena}
-                    onPlayerSelect={setScoutedPlayerId}
-                    synergies={synergies}
-                    items={activePlayer.items || items || []}
-                />
-
-                {/* Puzzle transition overlay */}
-                <div className={`puzzle-transition-overlay${isTransitioning ? ' active' : ''}`} />
-
-                {/* --- Modals & Overlays --- */}
-
-                {/* T-Coin Header Widget */}
-                {isAuthenticated && !isGuest && (
-                    <div className="app-header-widgets">
-                        <TCoinBalance />
-                    </div>
+                {/* Video Library View */}
+                {currentView === 'library' && (
+                    <VideoLibraryPage onBack={() => setCurrentView('puzzle')} />
                 )}
 
-                {/* T-Coin Earn Animation (global, always mounted for auth users) */}
-                {isAuthenticated && !isGuest && <TCoinEarnAnimation />}
-
-                <MenuButton
-                    onArenaClick={() => setIsSettingsOpen(true)}
-                    isAuthenticated={isAuthenticated}
-                    displayName={isGuest ? 'Khách' : (user?.display_name || user?.email || 'Guest')}
-                    onLogout={() => { }}
-                    onAdminClick={() => setShowAdminModal(true)}
-                    onProfileClick={() => setShowProfileModal(true)}
-                    onLoginClick={() => setShowLoginModal(true)}
-                    isAdmin={isAdmin}
-                />
-
-                <ArenaSelectorModal
-                    isOpen={isSettingsOpen}
-                    onClose={() => setIsSettingsOpen(false)}
-                    onSelectArena={(arena) => setMyArenaId(arena.id)}
-                    currentArena={ARENA_SKINS.find(a => a.id === (myArenaId || myPlayer.arenaId)) || ARENA_SKINS[0]}
-                />
-
-                {/* Augment Logic — Lock Overlay or AugmentModal */}
-                {!isMirrored && isAugmentOpen && puzzlePhase === 'selecting' && (
-                    isPuzzlePlayable ? (
-                        <AugmentModal
-                            currentAugments={currentAugments}
-                            rerollOrder={rerollOrder}
-                            onReroll={handleAugmentReroll}
-                            onSelect={handleAugmentSelect}
-                            allPuzzlesCompleted={allPuzzlesCompleted}
+                {/* Puzzle View — kept mounted (display:none) to preserve DecisionReview state
+                    and prevent IqScoreSummary / VideoUnlockToast animations from replaying
+                    when the user navigates to the library and comes back. */}
+                <div style={{ display: currentView === 'puzzle' ? 'contents' : 'none' }}>
+                    <>
+                        <GameScene
+                            myPlayer={myPlayerWithArena}
+                            activePlayer={activePlayer}
+                            isMirrored={isMirrored}
                         />
-                    ) : currentPuzzleAccess && (
-                        <PuzzleLockOverlay
-                            tier={currentPuzzleAccess.tier}
-                            isProSupporter={currentPuzzleAccess.reason === 'pro_supporter'}
-                            canAfford={walletBalance >= (currentPuzzleAccess.cost ?? 0)}
-                            isLoading={isUnlocking}
-                            requiresLogin={requiresLoginForUnlock}
-                            title={
-                                lockMessageVariant === 'rare_elite'
-                                    ? 'WOW, bạn gặp Puzzle hiếm thấy.'
-                                    : lockMessageVariant === 'premium_education'
-                                    ? 'Tin vui! Bạn gặp puzzle chất lượng cao.'
-                                    : undefined
-                            }
-                            subtitle={
-                                lockMessageVariant === 'rare_elite'
-                                    ? 'Puzzle này chứa nước đi thần thánh của tuyển thủ. Xem là lên trình!'
-                                    : lockMessageVariant === 'premium_education'
-                                    ? 'Puzzle xịn + giải thích kỹ giúp bạn nâng tư duy augment thật sự.'
-                                    : undefined
-                            }
-                            onUnlock={() => {
-                                if (requiresLoginForUnlock) {
-                                    setShowLoginModal(true);
-                                } else {
-                                    handleUnlockCurrentPuzzle();
+
+                        <GameHUD
+                            stage={currentPuzzle?.stage || '2-1'}
+                            activePlayerId={scoutedPlayerId}
+                            players={allPlayersWithArena}
+                            onPlayerSelect={setScoutedPlayerId}
+                            synergies={synergies}
+                            items={activePlayer.items || items || []}
+                        />
+
+                        {/* Puzzle transition overlay */}
+                        <div className={`puzzle-transition-overlay${isTransitioning ? ' active' : ''}`} />
+
+                        {/* --- Modals & Overlays --- */}
+
+                        {/* T-Coin Header Widget */}
+                        {isAuthenticated && !isGuest && (
+                            <div className="app-header-widgets">
+                                <TCoinBalance />
+                            </div>
+                        )}
+
+                        {/* T-Coin Earn Animation (global, always mounted for auth users) */}
+                        {isAuthenticated && !isGuest && <TCoinEarnAnimation />}
+
+                        <MenuButton
+                            onArenaClick={() => setIsSettingsOpen(true)}
+                            isAuthenticated={isAuthenticated}
+                            displayName={isGuest ? 'Khách' : (user?.display_name || user?.email || 'Guest')}
+                            onLogout={() => { }}
+                            onAdminClick={() => setShowAdminModal(true)}
+                            onProfileClick={() => setShowProfileModal(true)}
+                            onLoginClick={() => setShowLoginModal(true)}
+                            onLibraryClick={() => setCurrentView('library')}
+                            isAdmin={isAdmin}
+                        />
+
+                        <ArenaSelectorModal
+                            isOpen={isSettingsOpen}
+                            onClose={() => setIsSettingsOpen(false)}
+                            onSelectArena={(arena) => setMyArenaId(arena.id)}
+                            currentArena={ARENA_SKINS.find(a => a.id === (myArenaId || myPlayer.arenaId)) || ARENA_SKINS[0]}
+                        />
+
+                        {/* Augment Logic — Lock Overlay or AugmentModal */}
+                        {!isMirrored && isAugmentOpen && puzzlePhase === 'selecting' && (
+                            isPuzzlePlayable ? (
+                                <AugmentModal
+                                    currentAugments={currentAugments}
+                                    rerollOrder={rerollOrder}
+                                    onReroll={handleAugmentReroll}
+                                    onSelect={handleAugmentSelect}
+                                    allPuzzlesCompleted={allPuzzlesCompleted}
+                                    puzzleTier={currentPuzzle.tier || 'free'}
+                                />
+                            ) : currentPuzzleAccess && (
+                                <PuzzleLockOverlay
+                                    tier={currentPuzzleAccess.tier}
+                                    isProSupporter={currentPuzzleAccess.reason === 'pro_supporter'}
+                                    canAfford={walletBalance >= (currentPuzzleAccess.cost ?? 0)}
+                                    isLoading={isUnlocking}
+                                    requiresLogin={requiresLoginForUnlock}
+                                    title={
+                                        lockMessageVariant === 'rare_elite'
+                                            ? 'WOW, bạn gặp Puzzle hiếm thấy.'
+                                            : lockMessageVariant === 'premium_education'
+                                                ? 'Tin vui! Bạn gặp puzzle chất lượng cao.'
+                                                : undefined
+                                    }
+                                    subtitle={
+                                        lockMessageVariant === 'rare_elite'
+                                            ? 'Puzzle này chứa nước đi thần thánh của tuyển thủ. Xem là lên trình!'
+                                            : lockMessageVariant === 'premium_education'
+                                                ? 'Puzzle xịn + giải thích kỹ giúp bạn nâng tư duy augment thật sự.'
+                                                : undefined
+                                    }
+                                    onUnlock={() => {
+                                        if (requiresLoginForUnlock) {
+                                            setShowLoginModal(true);
+                                        } else {
+                                            handleUnlockCurrentPuzzle();
+                                        }
+                                    }}
+                                    onProSupporter={() => {
+                                        const supportBtn = document.querySelector('.menu-item--support') as HTMLButtonElement;
+                                        if (supportBtn) supportBtn.click();
+                                    }}
+                                    onSkipToFree={hasFreePuzzlesAvailable ? handleSkipToFreePuzzle : undefined}
+                                />
+                            )
+                        )}
+
+                        {!isMirrored && isAugmentOpen && puzzlePhase === 'reviewing' && selectedAugment && (
+                            <DecisionReview
+                                userRerollOrder={rerollOrder}
+                                userChoice={selectedAugment}
+                                puzzleTier={currentPuzzle.tier || 'free'}
+                                proPlayerName={currentPuzzle.proPlayer}
+                                proSecondRoll={currentPuzzle.proSecondRoll}
+                                proFirstRoll={currentPuzzle.proFirstRoll}
+                                proRerollIndices={currentPuzzle.proRerollIndices || currentPuzzle.meta_data?.proRerollIndices || []}
+                                // Removed unused props: proSecondRerollIndices, proPickIndex
+                                initialAugments={currentPuzzle.augments?.filter((a: any) => a !== null) || []}
+                                rerollAugments={currentPuzzle.rerollAugments?.filter((a: any) => a !== null) || []}
+                                proFinalPickData={currentPuzzle.proFinalPick}
+                                correctAugmentId={currentPuzzle.proFinalPick?.id || ''}
+                                communityVotes={communityVotes}
+                                iqChangeResult={iqChangeResult}
+                                explanation={currentPuzzle.explanation}
+                                onReplay={handleReplay}
+                                onNextPuzzle={handleNextPuzzle}
+                                puzzleId={currentPuzzle.id}
+                                streamUrl={currentPuzzle.streamUrl}
+                                date={currentPuzzle.date}
+                                server={currentPuzzle.server}
+                                encounter={currentPuzzle.encounter}
+                                patch={currentPuzzle.patch}
+                                videoUrl={currentPuzzle.video_url}
+                                videoTitle={currentPuzzle.video_title}
+                                onViewLibrary={() => setCurrentView('library')}
+                            />
+                        )}
+
+                        {puzzlePhase !== 'reviewing' && (
+                            <AugmentButton
+                                isActive={isAugmentOpen}
+                                variant={isMirrored ? 'return' : 'default'}
+                                onClick={isMirrored
+                                    ? () => { setScoutedPlayerId('1'); setIsAugmentOpen(true); }
+                                    : () => setIsAugmentOpen(!isAugmentOpen)
                                 }
-                            }}
-                            onProSupporter={() => {
-                                const supportBtn = document.querySelector('.menu-item--support') as HTMLButtonElement;
-                                if (supportBtn) supportBtn.click();
-                            }}
-                            onSkipToFree={hasFreePuzzlesAvailable ? handleSkipToFreePuzzle : undefined}
+                            />
+                        )}
+
+                        {showLoginModal && (
+                            <LoginModal onClose={handleCloseLoginModal} />
+                        )}
+
+                        {showAdminModal && (
+                            <AdminDataModal
+                                onClose={() => setShowAdminModal(false)}
+                                onPuzzleSaved={refreshPuzzles}
+                            />
+                        )}
+
+                        {showProfileModal && (
+                            <UserProfileModal
+                                isOpen={showProfileModal}
+                                onClose={() => setShowProfileModal(false)}
+                            />
+                        )}
+
+                        <PuzzleCompletionModal
+                            isOpen={showCompletionModal}
+                            onClose={() => setShowCompletionModal(false)}
                         />
-                    )
-                )}
-
-                {!isMirrored && isAugmentOpen && puzzlePhase === 'reviewing' && selectedAugment && (
-                    <DecisionReview
-                        userRerollOrder={rerollOrder}
-                        userChoice={selectedAugment}
-                        proPlayerName={currentPuzzle.proPlayer}
-                        proSecondRoll={currentPuzzle.proSecondRoll}
-                        proFirstRoll={currentPuzzle.proFirstRoll}
-                        proRerollIndices={currentPuzzle.proRerollIndices || currentPuzzle.meta_data?.proRerollIndices || []}
-                        // Removed unused props: proSecondRerollIndices, proPickIndex
-                        initialAugments={currentPuzzle.augments?.filter((a: any) => a !== null) || []}
-                        rerollAugments={currentPuzzle.rerollAugments?.filter((a: any) => a !== null) || []}
-                        proFinalPickData={currentPuzzle.proFinalPick}
-                        correctAugmentId={currentPuzzle.proFinalPick?.id || ''}
-                        communityVotes={communityVotes}
-                        iqChangeResult={iqChangeResult}
-                        explanation={currentPuzzle.explanation}
-                        onReplay={handleReplay}
-                        onNextPuzzle={handleNextPuzzle}
-                        puzzleId={currentPuzzle.id}
-                        streamUrl={currentPuzzle.streamUrl}
-                        date={currentPuzzle.date}
-                        server={currentPuzzle.server}
-                        encounter={currentPuzzle.encounter}
-                        patch={currentPuzzle.patch}
-                    />
-                )}
-
-                {puzzlePhase !== 'reviewing' && (
-                    <AugmentButton
-                        isActive={isAugmentOpen}
-                        variant={isMirrored ? 'return' : 'default'}
-                        onClick={isMirrored
-                            ? () => { setScoutedPlayerId('1'); setIsAugmentOpen(true); }
-                            : () => setIsAugmentOpen(!isAugmentOpen)
-                        }
-                    />
-                )}
-
-                {showLoginModal && (
-                    <LoginModal onClose={handleCloseLoginModal} />
-                )}
-
-                {showAdminModal && (
-                    <AdminDataModal
-                        onClose={() => setShowAdminModal(false)}
-                        onPuzzleSaved={refreshPuzzles}
-                    />
-                )}
-
-                {showProfileModal && (
-                    <UserProfileModal
-                        isOpen={showProfileModal}
-                        onClose={() => setShowProfileModal(false)}
-                    />
-                )}
-
-                <PuzzleCompletionModal
-                    isOpen={showCompletionModal}
-                    onClose={() => setShowCompletionModal(false)}
-                />
+                    </>
+                </div>
             </div>
         </div>
     );

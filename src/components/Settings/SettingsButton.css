@@ -352,3 +352,12 @@
     font-weight: 600;
     color: #F0E6D2;
 }
+
+/* Library count badge in menu */
+.menu-library-count {
+    margin-left: auto;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65cqw;
+    color: #c8aa6e;
+    opacity: 0.7;
+}

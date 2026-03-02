@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import './SupportModal.css';
 
 interface SupportModalProps {
@@ -7,20 +6,12 @@ interface SupportModalProps {
 }
 
 export function SupportModal({ isOpen, onClose }: SupportModalProps) {
-    const [copied, setCopied] = useState(false);
-
     if (!isOpen) return null;
 
     const bankInfo = {
-        bank: 'MB Bank',
-        account: '0382022869',
-        name: 'DUNG MINH DUC',
-    };
-
-    const handleCopy = () => {
-        navigator.clipboard.writeText(bankInfo.account);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
+        bank: 'MB BANK',
+        account: '0985960305',
+        name: 'ĐỖ TẤN LỰC',
     };
 
     return (
@@ -37,25 +28,16 @@ export function SupportModal({ isOpen, onClose }: SupportModalProps) {
 
                 {/* Message - gentle, humble */}
                 <div className="support-modal-message">
-                    <p>
-                        TFTISEASY là dự án cá nhân do <strong>tftiseasy#00000</strong> phát triển
-                        — hoàn toàn miễn phí, không quảng cáo.
-                    </p>
-                    <p>
-                        Dự án sẽ tiếp tục phát triển đến <strong>Set 17</strong> và xa hơn nữa.
-                        Mỗi đóng góp nhỏ giúp mình duy trì server, cập nhật data,
-                        và tạo thêm puzzle mới cho cộng đồng TFT Việt Nam.
-                    </p>
-                    <p className="support-modal-highlight">
-                        Mọi số tiền đều được trân trọng. Cảm ơn bạn rất nhiều! 🙏
-                    </p>
+                    <p>TFTISEASY là dự án cá nhân do <strong>tftiseasy#00000</strong> phát triển<br />— hoàn toàn miễn phí, không quảng cáo.</p>
+                    <p>Dự án sẽ tiếp tục phát triển đến <strong>Set 17</strong> và xa hơn nữa.<br />Mỗi đóng góp nhỏ đều giúp mình duy trì dự án<br />và tạo thêm giá trị mới cho cộng đồng TFT Việt Nam.</p>
+                    <p className="support-modal-highlight">Mọi số tiền đều được trân trọng.<br />Cảm ơn bạn rất nhiều!</p>
                 </div>
 
                 {/* QR Code Section */}
                 <div className="support-modal-qr-section">
                     <div className="support-modal-qr-frame">
                         <img
-                            src={`https://img.vietqr.io/image/${bankInfo.bank}-${bankInfo.account}-compact.png?addInfo=Ung%20ho%20TFTISEASY&accountName=${encodeURIComponent(bankInfo.name)}`}
+                            src={`https://img.vietqr.io/image/${bankInfo.bank.replace(/\s+/g, '')}-${bankInfo.account}-compact.png?addInfo=Ung%20ho%20TFTISEASY&accountName=${encodeURIComponent(bankInfo.name)}`}
                             alt="QR chuyển khoản"
                             className="support-modal-qr-img"
                             onError={(e) => {
@@ -77,9 +59,6 @@ export function SupportModal({ isOpen, onClose }: SupportModalProps) {
                         <span className="support-modal-bank-label">Số TK</span>
                         <span className="support-modal-bank-value support-modal-bank-account">
                             {bankInfo.account}
-                            <button className="support-modal-copy-btn" onClick={handleCopy}>
-                                {copied ? '✓' : '📋'}
-                            </button>
                         </span>
                     </div>
                     <div className="support-modal-bank-row">
@@ -90,7 +69,8 @@ export function SupportModal({ isOpen, onClose }: SupportModalProps) {
 
                 {/* Footer note */}
                 <div className="support-modal-footer">
-                    <span>Nội dung CK: <strong>TFTISEASY [tên bạn]</strong></span>
+                    <span>Nội dung CK: <strong> thông tin liên hệ để mình cám ơn.</strong></span>
+                    <p style={{ marginTop: '0.75rem', marginBottom: 0 }}>Nếu không chê thì mình sẽ free coaching<br />cho bạn 1 session ~ 1h.</p>
                 </div>
             </div>
         </div>

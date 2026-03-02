@@ -4,7 +4,7 @@
 > Bên ngoài = Training tool chính danh. Bên trong = **Xả tilt + Validation machine.**
 > "Tao chọn đúng như Pro hết rồi, IQ cao gần bằng Pro — nhưng vô game cứ top 8, DO ĐEN THÔI!"
 >
-> **Ngày tạo:** 2026-02-26 | **Cập nhật:** 2026-02-28 (v3 — Reality Check Edition)
+> **Ngày tạo:** 2026-02-26 | **Cập nhật:** 2026-03-02 (v3.2 — Sprint 2 Complete Edition)
 > **Mục tiêu:** Ship Augment Pick Puzzle v1 (Free) — Tối ưu cho thị trường VN, 0 budget
 
 ---
@@ -54,6 +54,24 @@ Kill metric: Nếu không có 200 DAU active sau 14 ngày → PIVOT hoặc KILL 
 | **Authentication** | ✅ Supabase Auth | `AuthContext.tsx` |
 | **Game Data Context** | ✅ Champions + Traits + Items | `GameDataContext.tsx` |
 | **Supabase DB** | ✅ Migrations | users, RLS, puzzle_votes, user_puzzle_attempts, champion_stats |
+
+### ✅ ĐÃ HOÀN THÀNH (Sprint 2 — DONE)
+
+| Module | Trạng thái | Ghi chú |
+|--------|-----------|---------|
+| **Pro Supporter System** | ✅ Hoàn thành | `features/pro-supporter/` — service, hooks, components, ProBadge, ProSupporterBanner |
+| **Pro Supporter Bypass** | ✅ Hoạt động | Bypass lock screen + redirect cho Pro user |
+| **T-Coin Economy** | ✅ Hoàn thành | `features/tcoin/` — service, hooks, TCoinBalance, TCoinEarnAnimation, TCoinIcon |
+| **Puzzle Lock Overlay** | ✅ Hoàn thành | `PuzzleLockOverlay.tsx/css` — Free/Advanced/Rare tier gate |
+| **Admin: ProIQ Manager** | ✅ Hoàn thành | `pages/Admin/ProIqManager/` |
+| **Admin: Race Condition Fix** | ✅ Fixed | Menu/content mismatch khi navigate nhanh |
+| **CSS Unification (hextech-vars)** | ✅ Done | Tất cả component dùng design tokens từ `hextech-vars.css` |
+| **Page Transitions** | ✅ Done | Smooth transitions áp dụng toàn menu |
+| **Preloader Animation** | ✅ Restored | Pure HTML/CSS, không ảnh hưởng LCP/PageSpeed |
+| **CompList Styling** | ✅ Done | Hextech gold border, glow, delete button UX |
+| **Tier List UX (Accordion)** | ✅ Done | Inline CompDetail expand, 1 row at a time |
+| **Infographic Export** | ✅ Done | 16:9 TFT patch note style, S/A/Trap tiers |
+| **Localization (VN)** | ✅ Done | Toàn bộ UI/text dịch sang tiếng Việt |
 
 ### ❌ CẦN LÀM TIẾP (v3 — Lean & Mean)
 
@@ -523,13 +541,13 @@ Chỉ xem xét KHI đạt 200+ DAU:
 
 | # | Task | Sprint | Ưu tiên | Trạng thái |
 |---|------|--------|---------|------------|
-| 1 | Meme Feedback Engine | Sprint 1 | 🔴 P0 | ✅ Đã hoàn thành |
-| 2 | TFT IQ Score Engine | Sprint 1 | 🔴 P0 | ✅ Đã hoàn thành |
-| 3 | Profile Flex Card (Video/Image) | Sprint 1 | 🔴 P0 | ✅ Đã hoàn thành |
-| 4 | **30 Puzzles thật (Challenger data)** | Sprint 2 | 🔴 P0 | ⬜ Chưa bắt đầu |
-| 5 | **Pro Supporter Pass + Donate** | Sprint 2 | 🔴 P0 | ⬜ Chưa bắt đầu |
-| 6 | T-Coin Economy + Puzzle Tiers | Sprint 2 | 🔴 P0 | ⬜ Chưa bắt đầu |
-| 7 | Daily Challenge (global — kiểu Wordle) | Sprint 3 | 🟡 P1 | ⬜ Chưa bắt đầu |
+| 1 | Meme Feedback Engine | Sprint 1 | 🔴 P0 | ✅ Hoàn thành |
+| 2 | TFT IQ Score Engine | Sprint 1 | 🔴 P0 | ✅ Hoàn thành |
+| 3 | Profile Flex Card (Video/Image) | Sprint 1 | 🔴 P0 | ✅ Hoàn thành |
+| 4 | **Pro Supporter Pass + Donate** | Sprint 2 | 🔴 P0 | ✅ Hoàn thành |
+| 5 | **T-Coin Economy + Puzzle Tiers** | Sprint 2 | 🔴 P0 | ✅ Hoàn thành |
+| 6 | **30 Puzzles thật (Challenger data)** | Sprint 2 | 🔴 P0 | 🔄 Cần tạo content (engine ✅, data ❌) |
+| 7 | **Daily Challenge** (global — kiểu Wordle) | Sprint 3 | 🟡 P1 | ⬜ **BẮT ĐẦU TIẾP THEO** |
 | 8 | Leaderboard (top tuần — đơn giản) | Sprint 3 | 🟡 P1 | ⬜ Chưa bắt đầu |
 | 9 | Landing Page (ego hook) | Sprint 4 | 🟢 P2 | ⬜ Chưa bắt đầu |
 | 10 | Mobile Responsive Polish | Sprint 4 | 🟢 P2 | ⬜ Chưa bắt đầu |
@@ -577,17 +595,34 @@ Chỉ xem xét KHI đạt 200+ DAU:
 
 **Sprint 2 ngay — thứ tự ưu tiên (không thương lượng):**
 
-**Tuần này (P0):**
-1. **Pro Supporter Pass** — Supabase table + MoMo/ZaloPay QR (đơn giản nhất)
-2. **5 explanation đầu tiên ký tên tftiseasy#00000** — dùng uy tín pro thật
-3. **Nút Donate + Pro Pass** ở header và sau mỗi `ResultBanner`
+### ✅ Sprint 2 — ĐÃ XONG
+- Pro Supporter Pass (service, hooks, bypass logic, ProBadge)
+- T-Coin Economy (earn/spend, TCoinBalance, PuzzleLockOverlay, TCoinEarnAnimation)
+- Puzzle Tier gating (Free / Advanced / Rare)
+- Toàn bộ CSS/UX polish (Hextech design system thống nhất)
+- Preloader, page transitions, localization VN
 
-**Tuần sau:**
-4. **30 Puzzles thật** — content = sản phẩm
-5. **T-Coin Economy + Puzzle Tiers** — engagement layer
-6. **Test closed beta 50 user** — hỏi thẳng "bạn chịu chi 49k/tháng không?"
+---
 
-**Câu lệnh bắt đầu:** "Implement Pro Supporter Pass + T-Coin Economy + Puzzle Tiers"
+### 🎯 Sprint 3 — BẮT ĐẦU NGAY (Tuần này)
+
+**Priority #1 — Daily Challenge (Wordle-style):**
+1. **Admin chọn puzzle-of-the-day** — field `is_daily` + `daily_date` trong puzzle schema
+2. **Daily Challenge page** — route `/daily`, hiển thị puzzle hôm nay
+3. **Reward:** +15 🪙 (hoàn thành) / +30 🪙 (đúng) — 1 lần/ngày/user
+4. **Drama hook:** Hiển thị `X% người chơi hôm nay sai` → ego trigger → share
+5. **Auto Flex Card** sau khi giải daily → share button
+
+**Priority #2 — 30 Puzzles thật (Content):**
+- Dùng PuzzleBuilder Admin đã có
+- 20 Free + 7 Advanced + 3 Rare + tier label
+- 5 puzzle đầu có pro explanation ký tên tftiseasy#00000
+
+**Priority #3 — Leaderboard (sau daily):**
+- Top TFT IQ tuần này — reset mỗi thứ Hai
+- Chỉ 1 tab, không filter phức tạp
+
+**Câu lệnh bắt đầu:** `"Implement Daily Challenge feature (Wordle-style)"`
 
 ---
 

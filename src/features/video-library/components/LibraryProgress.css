@@ -1,0 +1,118 @@
+/* ==========================================================================
+   LIBRARY PROGRESS — Hextech Theme
+   Part of Hero section, uses teal panel background
+   ========================================================================== */
+
+.library-progress {
+    padding: 1cqw 1.5cqw;
+    background: rgba(16, 52, 56, 0.7);
+    border: 0.06cqw solid rgba(200, 170, 110, 0.15);
+}
+
+.library-progress-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5cqw;
+}
+
+.library-progress-label {
+    font-family: var(--font-body);
+    font-size: 0.8cqw;
+    color: rgba(200, 170, 110, 0.65);
+}
+
+.library-progress-count {
+    font-family: var(--font-tech);
+    font-size: 1.1cqw;
+    font-weight: 700;
+    color: #F0E6D2;
+    text-shadow: 0 0 0.4cqw rgba(200, 170, 110, 0.3);
+}
+
+.library-progress-separator {
+    margin: 0 0.15cqw;
+    color: rgba(200, 170, 110, 0.4);
+}
+
+.library-progress-total {
+    font-family: var(--font-tech);
+    font-size: 1cqw;
+    color: rgba(200, 170, 110, 0.5);
+}
+
+.library-progress-text {
+    margin-left: 0.3cqw;
+}
+
+/* Upsell CTA — Subtle Gold Hextech Button */
+.library-progress-upsell {
+    background: rgba(200, 170, 110, 0.08);
+    border: 0.06cqw solid rgba(200, 170, 110, 0.35);
+    color: #c8aa6e;
+    padding: 0.3cqw 0.9cqw;
+    font-family: var(--font-body);
+    font-size: 0.65cqw;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.03cqw;
+    transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.library-progress-upsell:hover {
+    background: rgba(200, 170, 110, 0.15);
+    border-color: #c8aa6e;
+    box-shadow: 0 0 1cqw rgba(200, 170, 110, 0.25);
+}
+
+/* ─── Progress bar ─── */
+.library-progress-bar-track {
+    position: relative;
+    height: 0.4cqw;
+    background: rgba(200, 170, 110, 0.08);
+    overflow: visible;
+}
+
+.library-progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, rgba(200, 170, 110, 0.6), #c8aa6e);
+    box-shadow: 0 0 0.6cqw rgba(200, 170, 110, 0.35);
+    transition: width 0.5s ease;
+}
+
+/* ─── Milestone markers ─── */
+.library-progress-milestone {
+    position: absolute;
+    top: -0.35cqw;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.12cqw;
+}
+
+.milestone-dot {
+    width: 0.55cqw;
+    height: 0.55cqw;
+    border-radius: 50%;
+    background: rgba(11, 40, 43, 0.95);
+    border: 0.07cqw solid rgba(200, 170, 110, 0.35);
+    transition: all 0.3s ease;
+}
+
+.library-progress-milestone.reached .milestone-dot {
+    background: #c8aa6e;
+    border-color: #c8aa6e;
+    box-shadow: 0 0 0.5cqw rgba(200, 170, 110, 0.5);
+}
+
+.milestone-label {
+    font-family: var(--font-tech);
+    font-size: 0.5cqw;
+    color: rgba(200, 170, 110, 0.4);
+    margin-top: 0.3cqw;
+}
+
+.library-progress-milestone.reached .milestone-label {
+    color: #c8aa6e;
+}
