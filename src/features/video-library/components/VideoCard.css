@@ -1,0 +1,278 @@
+/* ==========================================================================
+   VIDEO CARD — Hextech Theme
+   Tier Hierarchy: Advanced (Teal/Cyan prestige) > Rare (Gold/Warm prestige)
+   ========================================================================== */
+
+.video-card {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(180deg, rgba(16, 52, 56, 0.9) 0%, rgba(11, 40, 43, 0.95) 100%);
+    border: 0.06cqw solid rgba(200, 170, 110, 0.2);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    cursor: default;
+}
+
+.video-card.unlocked {
+    cursor: pointer;
+}
+
+.video-card.unlocked:hover {
+    border-color: rgba(200, 170, 110, 0.5);
+    box-shadow: 0 0 1.5cqw rgba(200, 170, 110, 0.2);
+}
+
+.video-card.locked {
+    opacity: 0.6;
+}
+
+/* ─── Tier-specific card border glow on hover ─── */
+/* Advanced = Gold/Yellow (warm premium) */
+.video-card.unlocked.tier-advanced-card:hover {
+    border-color: rgba(232, 194, 82, 0.6);
+    box-shadow:
+        0 0 1.5cqw rgba(232, 194, 82, 0.25),
+        inset 0 0 2cqw rgba(200, 170, 110, 0.05);
+}
+
+/* Rare = Purple (highest prestige — luxury flex) */
+.video-card.unlocked.tier-rare-card:hover {
+    border-color: rgba(192, 132, 252, 0.65);
+    box-shadow:
+        0 0 1.5cqw rgba(192, 132, 252, 0.3),
+        0 0 3cqw rgba(168, 85, 247, 0.15),
+        inset 0 0 2cqw rgba(192, 132, 252, 0.05);
+}
+
+/* ─── Thumbnail ─── */
+.video-card-thumbnail {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: rgba(5, 28, 30, 0.9);
+    overflow: hidden;
+}
+
+.video-card-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.video-card.locked .video-card-thumbnail img {
+    filter: grayscale(70%) brightness(0.4);
+}
+
+.video-card-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5cqw;
+    color: rgba(200, 170, 110, 0.2);
+}
+
+/* ─── Lock overlay ─── */
+.video-card-lock-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(5, 28, 30, 0.6);
+    gap: 0.3cqw;
+}
+
+.video-card-lock-icon {
+    font-size: 1.8cqw;
+    opacity: 0.8;
+}
+
+.video-card-lock-text {
+    font-family: var(--font-body);
+    font-size: 0.6cqw;
+    color: rgba(200, 170, 110, 0.55);
+    text-transform: uppercase;
+    letter-spacing: 0.08cqw;
+    font-weight: 500;
+}
+
+/* ─── Play overlay ─── */
+.video-card-play-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(5, 28, 30, 0.3);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+}
+
+.video-card.unlocked:hover .video-card-play-overlay {
+    opacity: 1;
+}
+
+.video-card-play-icon {
+    width: 3cqw;
+    height: 3cqw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(200, 170, 110, 0.9);
+    color: #051c1e;
+    border-radius: 50%;
+    font-size: 1.2cqw;
+    box-shadow: 0 0 2cqw rgba(200, 170, 110, 0.5);
+}
+
+/* ─── Tier Badge — Visual Hierarchy ─── */
+/* Advanced = Gold/Yellow (warm premium) */
+/* Rare = Prismatic Purple (HIGHEST prestige — luxury flex) */
+.video-card-tier {
+    position: absolute;
+    top: 0.4cqw;
+    right: 0.4cqw;
+    display: flex;
+    align-items: center;
+    gap: 0.25cqw;
+    padding: 0.2cqw 0.55cqw;
+    font-size: 0.55cqw;
+    font-weight: 700;
+    font-family: var(--font-body);
+    text-transform: uppercase;
+    letter-spacing: 0.06cqw;
+}
+
+/* Advanced Tier — Warm Gold badge (same as puzzle Advanced) */
+.video-card-tier.tier-advanced {
+    background: linear-gradient(135deg, rgba(60, 45, 10, 0.92) 0%, rgba(40, 30, 8, 0.95) 100%);
+    border: 0.06cqw solid rgba(232, 194, 82, 0.6);
+    color: #e8c252;
+    box-shadow: 0 0 0.5cqw rgba(232, 194, 82, 0.2);
+    backdrop-filter: blur(6px);
+}
+
+/* Rare Tier — Prismatic Purple badge (HIGHEST prestige — same as puzzle Rare) */
+.video-card-tier.tier-rare {
+    background: linear-gradient(135deg, rgba(75, 30, 120, 0.95) 0%, rgba(50, 15, 90, 0.97) 100%);
+    border: 0.07cqw solid rgba(192, 132, 252, 0.75);
+    color: #d8b4fe;
+    box-shadow:
+        0 0 0.8cqw rgba(192, 132, 252, 0.35),
+        0 0 1.5cqw rgba(168, 85, 247, 0.15),
+        inset 0 0 0.5cqw rgba(192, 132, 252, 0.12);
+    backdrop-filter: blur(6px);
+    animation: rare-badge-pulse 2.5s ease-in-out infinite;
+    overflow: hidden;
+    will-change: box-shadow;
+}
+
+/* Shimmer sweep on Rare badge — uses transform instead of left to avoid layout reflow */
+.video-card-tier.tier-rare::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+    transform: translateX(-160%);
+    animation: rare-sweep 3.5s ease-in-out infinite;
+    pointer-events: none;
+    will-change: transform;
+}
+
+@keyframes rare-sweep {
+
+    0%,
+    100% {
+        transform: translateX(-160%);
+    }
+
+    50% {
+        transform: translateX(260%);
+    }
+}
+
+@keyframes rare-badge-pulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 0.6cqw rgba(192, 132, 252, 0.25);
+    }
+
+    50% {
+        box-shadow: 0 0 1cqw rgba(192, 132, 252, 0.4), 0 0 2cqw rgba(168, 85, 247, 0.15);
+    }
+}
+
+/* ─── Top accent line per tier ─── */
+/* Advanced — gold accent line */
+.video-card.tier-advanced-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 0.12cqw;
+    background: linear-gradient(90deg, transparent 10%, rgba(232, 194, 82, 0.5) 50%, transparent 90%);
+    z-index: 2;
+}
+
+/* Rare — purple accent line (more prominent, higher hierarchy) */
+.video-card.tier-rare-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 0.15cqw;
+    background: linear-gradient(90deg, transparent 5%, rgba(192, 132, 252, 0.6) 50%, transparent 95%);
+    z-index: 2;
+}
+
+/* ─── Info section ─── */
+.video-card-info {
+    padding: 0.6cqw 0.8cqw 0.7cqw;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2cqw;
+    /* Subtle top border separator */
+    border-top: 0.04cqw solid rgba(200, 170, 110, 0.1);
+}
+
+.video-card-title {
+    font-family: var(--font-body);
+    font-size: 0.75cqw;
+    font-weight: 600;
+    color: #F0E6D2;
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.video-card-meta {
+    font-size: 0.6cqw;
+    color: rgba(200, 170, 110, 0.6);
+    font-family: var(--font-body);
+}
+
+.video-card-result {
+    font-size: 0.55cqw;
+    font-weight: 600;
+    font-family: var(--font-tech);
+}
+
+.video-card-result.correct {
+    color: #10B981;
+}
+
+.video-card-result.incorrect {
+    color: #EF4444;
+}

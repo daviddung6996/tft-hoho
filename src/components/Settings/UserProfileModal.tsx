@@ -19,10 +19,14 @@ import {
     AccuracyTrend
 } from '../../services/userStatsService';
 import { useAuth } from '../../contexts/AuthContext';
-import { getUserIqStats } from '../../features/user-iq/userIq.service';
+import { getUserIqStats, getCommunityRank } from '../../features/user-iq/userIq.service';
 import { UserIqStats, USER_IQ_RANKS } from '../../features/user-iq/userIq.types';
 import { getUserIqRankColor } from '../../features/user-iq/userIqCalculator';
 import { IqRankIcon } from '../../features/user-iq/components/IqRankIcon';
+import { useProSupporter } from '../../features/pro-supporter/hooks/useProSupporter';
+import { useTCoin } from '../../features/tcoin/hooks/useTCoin';
+import { TCoinIcon } from '../../features/tcoin/components/TCoinIcon';
+import { ProSupporterIcon } from '../../components/common/ProSupporterIcon';
 
 import './UserProfileModal.css';
 
@@ -78,6 +82,8 @@ const ChartTooltip = ({ active, payload, label, formatter }: any) => {
 
 export const UserProfileModal: React.FC<UserProfileModalProps> = ({ isOpen, onClose }) => {
     const { user } = useAuth();
+    const { isProSupporter, plan } = useProSupporter();
+    const { balance: tCoinBalance } = useTCoin();
     const [isLoading, setIsLoading] = useState(true);
     const [stats, setStats] = useState<UserStats | null>(null);
     const [stageBreakdown, setStageBreakdown] = useState<StageStats[]>([]);
@@ -85,6 +91,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({ isOpen, onCl
     const [showAllActivities, setShowAllActivities] = useState(false);
     const [accuracyTrend, setAccuracyTrend] = useState<AccuracyTrend[]>([]);
     const [iqStats, setIqStats] = useState<UserIqStats | null>(null);
+    const [communityRank, setCommunityRank] = useState<number | null>(null);
 
     useEffect(() => {
         if (isOpen) {
@@ -95,12 +102,13 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({ isOpen, onCl
     const loadData = async () => {
         setIsLoading(true);
         try {
-            const [statsData, stagesData, attemptsData, trendData, iqData] = await Promise.all([
+            const [statsData, stagesData, attemptsData, trendData, iqData, rankData] = await Promise.all([
                 userStatsService.getUserStats(),
                 userStatsService.getStageBreakdown(),
                 userStatsService.getRecentAttempts(undefined, 20), // Fetch more for progressive disclosure
                 userStatsService.getAccuracyTrend(undefined, 20),
-                user?.id ? getUserIqStats(user.id) : Promise.resolve(null)
+                user?.id ? getUserIqStats(user.id) : Promise.resolve(null),
+                user?.id ? getCommunityRank(user.id) : Promise.resolve(null)
             ]);
 
             setStats(statsData);
@@ -108,6 +116,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({ isOpen, onCl
             setRecentAttempts(attemptsData);
             setAccuracyTrend(trendData);
             setIqStats(iqData);
+            setCommunityRank(rankData);
         } catch (error) {
             console.error('Failed to load profile data:', error);
         } finally {
@@ -198,8 +207,8 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({ isOpen, onCl
                         </div>
                     ) : (
                         <>
-                            {/* SECTION 1: HERO IDENTITY */}
-                            <div className="hero-section profile-section"
+                            {/* SECTION 1: HERO IDENTITY — 3-Column Layout */}
+                            <div className={`hero-section profile-section${isProSupporter ? ' hero-section--pro' : ''}`}
                                 style={({
                                     '--rank-color': (iqStats && iqStats.iq_score > 0)
                                         ? getUserIqRankColor(iqStats.iq_rank)
@@ -209,159 +218,113 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({ isOpen, onCl
                                         : 'rgba(75, 85, 99, 0.12)',
                                 } as React.CSSProperties)}
                             >
-                                {/* T-Coin Panel — left side */}
-                                <div className="hero-tcoin-panel">
-                                    <div className="hero-tcoin-label">T-Coin</div>
-                                    <div className="hero-tcoin-value">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                            <circle cx="12" cy="12" r="10" />
-                                            <path d="M8 12h8M12 8v8" />
-                                        </svg>
-                                        1,500 <span className="hero-tcoin-unit">TC</span>
+                                {/* LEFT WING: T-Coin */}
+                                <div className="hero-wing hero-wing--left">
+                                    <div className="hero-wing-icon">
+                                        <TCoinIcon size={48} />
                                     </div>
-                                    <button className="hero-tcoin-cta" onClick={onClose}>
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-                                        </svg>
-                                        Cày Puzzle
-                                    </button>
+                                    <div className="hero-wing-value">{tCoinBalance.toLocaleString('vi-VN')}</div>
+                                    <div className="hero-wing-label">T-Coin</div>
                                 </div>
 
-                                {/* Badges Panel — right side */}
-                                <div className="hero-badges-panel">
-                                    <div className="hero-badges-label">Danh hiệu</div>
-                                    <div className="hero-badges-grid">
-                                        <div className="hero-badge-item" style={{ '--badge-color': '#10B981' } as React.CSSProperties}>
-                                            <div className="hero-badge-icon">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z" />
-                                                </svg>
-                                            </div>
-                                            <div className="hero-badge-name">First Win</div>
-                                        </div>
-                                        <div className={`hero-badge-item ${(stats?.correctCount || 0) >= 10 ? '' : 'locked'}`} style={{ '--badge-color': '#c8aa6e' } as React.CSSProperties}>
-                                            <div className="hero-badge-icon">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                                                    <circle cx="12" cy="12" r="4" />
-                                                </svg>
-                                            </div>
-                                            <div className="hero-badge-name">10 Wins</div>
-                                        </div>
-                                        <div className={`hero-badge-item ${(stats?.totalAttempts || 0) >= 50 ? '' : 'locked'}`} style={{ '--badge-color': '#0EA5E9' } as React.CSSProperties}>
-                                            <div className="hero-badge-icon">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                    <path d="M6 9l6 6 6-6" />
-                                                    <path d="M6 5l6 6 6-6" />
-                                                </svg>
-                                            </div>
-                                            <div className="hero-badge-name">50 Puzzles</div>
-                                        </div>
-                                        <div className={`hero-badge-item ${(stats?.accuracyPercent || 0) >= 80 ? '' : 'locked'}`} style={{ '--badge-color': '#EAB308' } as React.CSSProperties}>
-                                            <div className="hero-badge-icon">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                    <circle cx="12" cy="8" r="6" />
-                                                    <path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11" />
-                                                </svg>
-                                            </div>
-                                            <div className="hero-badge-name">80% Acc</div>
-                                        </div>
-                                    </div>
-                                </div>
+                                {/* CENTER: Main Rank Identity */}
+                                <div className="hero-center">
+                                    {iqStats && iqStats.iq_score > 0 ? (() => {
+                                        const rankColor = getUserIqRankColor(iqStats.iq_rank);
+                                        const reversedRanks = [...USER_IQ_RANKS].reverse();
+                                        const currentRankDef = reversedRanks.find(r => iqStats.iq_score >= r.min);
+                                        const nextRankDef = reversedRanks.find(r => r.min > iqStats.iq_score);
 
-                                {iqStats && iqStats.iq_score > 0 ? (() => {
-                                    const rankColor = getUserIqRankColor(iqStats.iq_rank);
+                                        let progressPct = 100;
+                                        let progressLabel = 'Bậc cao nhất';
+                                        if (nextRankDef && currentRankDef) {
+                                            const range = nextRankDef.min - currentRankDef.min;
+                                            const earned = iqStats.iq_score - currentRankDef.min;
+                                            progressPct = Math.min(100, Math.round((earned / range) * 100));
+                                            progressLabel = `${nextRankDef.min - iqStats.iq_score} IQ tới ${nextRankDef.rank}`;
+                                        }
 
-                                    // Progress bar calculation
-                                    const reversedRanks = [...USER_IQ_RANKS].reverse();
-                                    const currentRankDef = reversedRanks.find(r => iqStats.iq_score >= r.min);
-                                    const nextRankDef = reversedRanks.find(r => r.min > iqStats.iq_score);
-
-                                    let progressPct = 100;
-                                    let progressLabel = 'Bậc cao nhất';
-
-                                    if (nextRankDef && currentRankDef) {
-                                        const range = nextRankDef.min - currentRankDef.min;
-                                        const earned = iqStats.iq_score - currentRankDef.min;
-                                        progressPct = Math.min(100, Math.round((earned / range) * 100));
-                                        progressLabel = `${nextRankDef.min - iqStats.iq_score} IQ tới ${nextRankDef.rank}`;
-                                    }
-
-                                    return (
+                                        return (
+                                            <>
+                                                <div className="hero-rank-emblem" style={{ '--rank-color': rankColor } as React.CSSProperties}>
+                                                    <div className="hero-rank-icon">
+                                                        <IqRankIcon rank={iqStats.iq_rank} />
+                                                    </div>
+                                                </div>
+                                                <div className="hero-rank-name">{iqStats.iq_rank.toUpperCase()}</div>
+                                                <div className="hero-iq-score">{iqStats.iq_score.toLocaleString('vi-VN')} IQ</div>
+                                                <div className="hero-progress-wrap">
+                                                    <div className="hero-progress-track">
+                                                        <div className="hero-progress-fill" style={{ width: `${progressPct}%`, '--rank-color': rankColor } as React.CSSProperties} />
+                                                    </div>
+                                                    <div className="hero-progress-label">{progressLabel}</div>
+                                                </div>
+                                                <div className="hero-diamond-divider">
+                                                    <span className="hero-diamond-dot">◆</span>
+                                                </div>
+                                                <div className="hero-player-name">{user?.display_name || 'Player'}</div>
+                                                {isProSupporter && (
+                                                    <div className="hero-pro-badge-row">
+                                                        <div className="hero-pro-sweep" />
+                                                        <ProSupporterIcon size={18} className="hero-pro-icon" />
+                                                        <span className="hero-pro-badge-text">Pro Supporter</span>
+                                                        <span className="hero-pro-divider" />
+                                                        <span className="hero-pro-plan-label">
+                                                            {plan === 'lifetime' ? 'Trọn đời' : 'Monthly'}
+                                                        </span>
+                                                    </div>
+                                                )}
+                                            </>
+                                        );
+                                    })() : (
                                         <>
-                                            {/* Rank Emblem */}
-                                            <div className="hero-rank-emblem" style={{ '--rank-color': rankColor } as React.CSSProperties}>
+                                            <div className="hero-rank-emblem unranked" style={{ '--rank-color': '#4B5563' } as React.CSSProperties}>
                                                 <div className="hero-rank-icon">
-                                                    <IqRankIcon rank={iqStats.iq_rank} />
+                                                    <IqRankIcon rank="Iron" />
                                                 </div>
                                             </div>
-
-                                            {/* Rank Name */}
-                                            <div className="hero-rank-name">
-                                                {iqStats.iq_rank.toUpperCase()}
-                                            </div>
-
-                                            {/* IQ Score */}
-                                            <div className="hero-iq-score">
-                                                {iqStats.iq_score.toLocaleString('vi-VN')} IQ
-                                            </div>
-
-                                            {/* Progress Bar */}
+                                            <div className="hero-rank-name unranked">CHƯA XẾP HẠNG</div>
+                                            <div className="hero-iq-score unranked">0 IQ</div>
                                             <div className="hero-progress-wrap">
                                                 <div className="hero-progress-track">
-                                                    <div
-                                                        className="hero-progress-fill"
-                                                        style={{
-                                                            width: `${progressPct}%`,
-                                                            '--rank-color': rankColor,
-                                                        } as React.CSSProperties}
-                                                    />
+                                                    <div className="hero-progress-fill" style={{ width: '0%' }} />
                                                 </div>
-                                                <div className="hero-progress-label">{progressLabel}</div>
+                                                <div className="hero-progress-label">Hoàn thành puzzle để bắt đầu</div>
                                             </div>
-
-                                            {/* Diamond Divider */}
                                             <div className="hero-diamond-divider">
                                                 <span className="hero-diamond-dot">◆</span>
                                             </div>
-
-                                            {/* Player Name */}
                                             <div className="hero-player-name">{user?.display_name || 'Player'}</div>
-
-
+                                            {isProSupporter && (
+                                                <div className="hero-pro-badge-row">
+                                                    <div className="hero-pro-sweep" />
+                                                    <ProSupporterIcon size={18} className="hero-pro-icon" />
+                                                    <span className="hero-pro-badge-text">Pro Supporter</span>
+                                                    <span className="hero-pro-divider" />
+                                                    <span className="hero-pro-plan-label">
+                                                        {plan === 'lifetime' ? 'Trọn đời' : 'Monthly'}
+                                                    </span>
+                                                </div>
+                                            )}
                                         </>
-                                    );
-                                })() : (
-                                    <>
-                                        {/* UNRANKED: muted iron emblem */}
-                                        <div className="hero-rank-emblem unranked" style={{ '--rank-color': '#4B5563' } as React.CSSProperties}>
-                                            <div className="hero-rank-icon">
-                                                <IqRankIcon rank="Iron" />
-                                            </div>
-                                        </div>
+                                    )}
+                                </div>
 
-                                        <div className="hero-rank-name unranked">CHƯA XẾP HẠNG</div>
-
-                                        <div className="hero-iq-score unranked">0 IQ</div>
-
-                                        {/* Empty progress bar */}
-                                        <div className="hero-progress-wrap">
-                                            <div className="hero-progress-track">
-                                                <div className="hero-progress-fill" style={{ width: '0%' }} />
-                                            </div>
-                                            <div className="hero-progress-label">Hoàn thành puzzle để bắt đầu</div>
-                                        </div>
-
-                                        {/* Diamond Divider */}
-                                        <div className="hero-diamond-divider">
-                                            <span className="hero-diamond-dot">◆</span>
-                                        </div>
-
-                                        <div className="hero-player-name">{user?.display_name || 'Player'}</div>
-
-
-                                    </>
-                                )}
+                                {/* RIGHT WING: Community Rank */}
+                                <div className="hero-wing hero-wing--right">
+                                    <div className="hero-wing-icon">
+                                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#c8aa6e" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                            <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
+                                            <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+                                            <path d="M4 22h16" />
+                                            <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20 7 22" />
+                                            <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20 17 22" />
+                                            <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" />
+                                        </svg>
+                                    </div>
+                                    <div className="hero-wing-value">{communityRank ? `#${communityRank}` : '—'}</div>
+                                    <div className="hero-wing-label">Cộng đồng</div>
+                                </div>
                             </div>
 
                             {/* SECTION 2: CORE METRICS */}

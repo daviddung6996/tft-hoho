@@ -205,3 +205,136 @@
 .reroll-btn.disabled svg {
     opacity: 0.4;
 }
+
+/* ==========================================================================
+   TIER HIERARCHY — Visual distinction per puzzle tier
+   ========================================================================== */
+
+/* --- Tier Badge (above header title) --- */
+.augment-tier-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5cqw;
+    margin-bottom: 0.5cqw;
+    animation: hex-overlay-in 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.augment-tier-label {
+    font-family: 'Spectral', serif;
+    font-size: 1.4cqw;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15cqw;
+}
+
+.augment-tier-label.tier-advanced {
+    color: #e8c252;
+    text-shadow:
+        0 0 1cqw rgba(232, 194, 82, 0.6),
+        0 0 2.5cqw rgba(200, 170, 110, 0.25);
+}
+
+.augment-tier-label.tier-rare {
+    color: #c084fc;
+    text-shadow:
+        0 0 1.2cqw rgba(192, 132, 252, 0.7),
+        0 0 3cqw rgba(168, 85, 247, 0.3);
+    animation: rare-label-pulse 2.5s ease-in-out infinite;
+}
+
+@keyframes rare-label-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.85; text-shadow: 0 0 1.5cqw rgba(192, 132, 252, 0.9), 0 0 4cqw rgba(168, 85, 247, 0.5); }
+}
+
+/* --- ADVANCED Tier Overlay Atmosphere (Warm Gold — Premium) --- */
+.augment-modal-overlay.tier-advanced {
+    background:
+        radial-gradient(ellipse at 50% 15%, rgba(232, 194, 82, 0.10) 0%, transparent 50%),
+        radial-gradient(ellipse at 30% 65%, rgba(200, 170, 110, 0.05) 0%, transparent 45%),
+        radial-gradient(ellipse at 50% 80%, rgba(21, 58, 62, 0.22) 0%, transparent 50%),
+        rgba(0, 0, 0, 0.78);
+}
+
+/* Advanced card accents — warm gold border + subtle shimmer */
+.augment-modal-overlay.tier-advanced .augment-card {
+    border-color: rgba(232, 194, 82, 0.55);
+    box-shadow: 0 0 0.8cqw rgba(200, 170, 110, 0.1);
+    overflow: hidden;
+}
+
+.augment-modal-overlay.tier-advanced .augment-card::before {
+    background: linear-gradient(90deg, transparent, rgba(232, 194, 82, 0.6), transparent);
+}
+
+/* Shimmer sweep — slower & subtler than Rare */
+.augment-modal-overlay.tier-advanced .augment-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(232, 194, 82, 0.06), rgba(255, 255, 255, 0.03), transparent);
+    animation: adv-card-sweep 5s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes adv-card-sweep {
+    0%, 100% { left: -60%; }
+    50% { left: 100%; }
+}
+
+.augment-modal-overlay.tier-advanced .augment-card:hover {
+    border-color: #e8c252;
+    box-shadow:
+        0 0 1.2cqw rgba(232, 194, 82, 0.35),
+        0 0.6cqw 2cqw rgba(0, 0, 0, 0.5);
+}
+
+/* --- RARE Tier Overlay Atmosphere (Electric Prismatic Purple — Luxury Flex) --- */
+.augment-modal-overlay.tier-rare {
+    background:
+        radial-gradient(ellipse at 50% 15%, rgba(192, 132, 252, 0.14) 0%, transparent 50%),
+        radial-gradient(ellipse at 20% 60%, rgba(168, 85, 247, 0.07) 0%, transparent 45%),
+        radial-gradient(ellipse at 80% 70%, rgba(192, 132, 252, 0.06) 0%, transparent 40%),
+        radial-gradient(ellipse at 50% 85%, rgba(21, 58, 62, 0.18) 0%, transparent 50%),
+        rgba(0, 0, 0, 0.80);
+}
+
+/* Rare card accents — vivid purple border + shimmer sweep */
+.augment-modal-overlay.tier-rare .augment-card {
+    border-color: rgba(192, 132, 252, 0.60);
+    box-shadow: 0 0 1cqw rgba(192, 132, 252, 0.15);
+    overflow: hidden;
+}
+
+.augment-modal-overlay.tier-rare .augment-card::before {
+    background: linear-gradient(90deg, transparent, rgba(192, 132, 252, 0.65), transparent);
+}
+
+/* Shimmer sweep across rare cards */
+.augment-modal-overlay.tier-rare .augment-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(192, 132, 252, 0.08), rgba(255, 255, 255, 0.04), transparent);
+    animation: rare-card-sweep 4s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes rare-card-sweep {
+    0%, 100% { left: -60%; }
+    50% { left: 100%; }
+}
+
+.augment-modal-overlay.tier-rare .augment-card:hover {
+    border-color: #c084fc;
+    box-shadow:
+        0 0 1.5cqw rgba(192, 132, 252, 0.45),
+        0 0 3cqw rgba(168, 85, 247, 0.2),
+        0 0.6cqw 2cqw rgba(0, 0, 0, 0.5);
+}

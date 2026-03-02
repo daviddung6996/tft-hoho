@@ -35,6 +35,7 @@
     transform: translateY(3cqw);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
@@ -52,10 +53,34 @@
   opacity: 0.6;
   z-index: 2;
 }
-.puzzle-done-corner.corner-tl { top: -0.06cqw; left: -0.06cqw; border-top-width: 0.14cqw; border-left-width: 0.14cqw; }
-.puzzle-done-corner.corner-tr { top: -0.06cqw; right: -0.06cqw; border-top-width: 0.14cqw; border-right-width: 0.14cqw; }
-.puzzle-done-corner.corner-bl { bottom: -0.06cqw; left: -0.06cqw; border-bottom-width: 0.14cqw; border-left-width: 0.14cqw; }
-.puzzle-done-corner.corner-br { bottom: -0.06cqw; right: -0.06cqw; border-bottom-width: 0.14cqw; border-right-width: 0.14cqw; }
+
+.puzzle-done-corner.corner-tl {
+  top: -0.06cqw;
+  left: -0.06cqw;
+  border-top-width: 0.14cqw;
+  border-left-width: 0.14cqw;
+}
+
+.puzzle-done-corner.corner-tr {
+  top: -0.06cqw;
+  right: -0.06cqw;
+  border-top-width: 0.14cqw;
+  border-right-width: 0.14cqw;
+}
+
+.puzzle-done-corner.corner-bl {
+  bottom: -0.06cqw;
+  left: -0.06cqw;
+  border-bottom-width: 0.14cqw;
+  border-left-width: 0.14cqw;
+}
+
+.puzzle-done-corner.corner-br {
+  bottom: -0.06cqw;
+  right: -0.06cqw;
+  border-bottom-width: 0.14cqw;
+  border-right-width: 0.14cqw;
+}
 
 /* ─── Hero Section (Top) ─── */
 .puzzle-done-hero {
@@ -100,6 +125,7 @@
   position: relative;
   height: 0.08cqw;
 }
+
 .puzzle-done-divider span {
   display: block;
   width: 50%;
@@ -141,8 +167,9 @@
 
 .puzzle-done-cta {
   position: relative;
-  width: 100%;
-  padding: 1.4cqw 2cqw;
+  width: fit-content;
+  min-width: 20cqw;
+  padding: 1.2cqw 4cqw;
   background: linear-gradient(180deg, #C89B3C 0%, #A07828 100%);
   border: 0.1cqw solid #c8aa6e;
   cursor: pointer;
@@ -150,14 +177,13 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  clip-path: polygon(
-    0.8cqw 0, calc(100% - 0.8cqw) 0,
-    100% 0.8cqw, 100% calc(100% - 0.8cqw),
-    calc(100% - 0.8cqw) 100%, 0.8cqw 100%,
-    0 calc(100% - 0.8cqw), 0 0.8cqw
-  );
+  clip-path: polygon(0.8cqw 0, calc(100% - 0.8cqw) 0,
+      100% 0.8cqw, 100% calc(100% - 0.8cqw),
+      calc(100% - 0.8cqw) 100%, 0.8cqw 100%,
+      0 calc(100% - 0.8cqw), 0 0.8cqw);
   transition: filter 0.2s ease;
 }
+
 .puzzle-done-cta:hover {
   background: linear-gradient(180deg, #d4a844 0%, #b08830 100%);
   filter: drop-shadow(0 0 0.8cqw rgba(200, 170, 110, 0.4));
@@ -186,8 +212,15 @@
 }
 
 @keyframes pzDoneSweep {
-  0%, 100% { left: -60%; }
-  50% { left: 100%; }
+
+  0%,
+  100% {
+    left: -60%;
+  }
+
+  50% {
+    left: 100%;
+  }
 }
 
 /* ─── Mobile ─── */
@@ -199,15 +232,18 @@
   .puzzle-done-hero {
     padding: 6vw 5vw 3vw;
   }
+
   .puzzle-done-badge {
     font-size: 2.2vw;
     padding: 0.8vw 3vw;
     margin-bottom: 3vw;
     letter-spacing: 0.5vw;
   }
+
   .puzzle-done-title {
     font-size: 6.5vw;
   }
+
   .puzzle-done-divider {
     margin-top: 3vw;
   }
@@ -215,10 +251,12 @@
   .puzzle-done-body {
     padding: 4vw 5vw;
   }
+
   .puzzle-done-text {
     font-size: 4vw;
     margin-bottom: 2vw;
   }
+
   .puzzle-done-muted {
     font-size: 2.8vw;
   }
@@ -226,9 +264,12 @@
   .puzzle-done-cta-section {
     padding: 3vw 6vw 5vw;
   }
+
   .puzzle-done-cta {
-    padding: 2.5vw 4vw;
+    padding: 2vw 6vw;
+    min-width: 40vw;
   }
+
   .puzzle-done-cta-text {
     font-size: 3.5vw;
   }

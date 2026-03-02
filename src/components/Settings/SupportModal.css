@@ -20,7 +20,7 @@
 
 .support-modal {
     position: relative;
-    width: 380px;
+    width: 420px;
     max-width: 90vw;
     max-height: 85vh;
     overflow-y: auto;
@@ -205,7 +205,7 @@
 .support-modal-footer {
     text-align: center;
     font-family: 'Inter', sans-serif;
-    font-size: 0.68rem;
+    font-size: 0.8rem;
     color: rgba(200, 170, 110, 0.4);
 }
 

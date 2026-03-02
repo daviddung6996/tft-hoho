@@ -1,0 +1,292 @@
+/* ==========================================================================
+   VIDEO LIBRARY PAGE — Hextech Theme (Complete Redesign)
+   Follows: Hextech Core 5 Pillars — Atmosphere, Section Composition, 
+   Progressive Disclosure, Hero-CTA, Guided Attention.
+   ========================================================================== */
+
+.video-library-page {
+    position: absolute;
+    inset: 0;
+    z-index: 100;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+
+    /* Pillar 1: Atmosphere — Layered radial gradients, NOT flat color */
+    background:
+        radial-gradient(ellipse at 50% 10%, rgba(200, 170, 110, 0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 90%, rgba(21, 58, 62, 0.5) 0%, transparent 55%),
+        linear-gradient(180deg, rgba(13, 46, 48, 0.98) 0%, rgba(8, 30, 32, 0.99) 100%);
+}
+
+/* Optional ambient gold particles */
+.video-library-page::before {
+    content: '';
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background:
+        radial-gradient(1.5px 1.5px at 15% 25%, rgba(200, 170, 110, 0.2) 0%, transparent 100%),
+        radial-gradient(1px 1px at 65% 12%, rgba(200, 170, 110, 0.15) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 40% 65%, rgba(200, 170, 110, 0.1) 0%, transparent 100%);
+    animation: vlp-drift 25s linear infinite;
+    pointer-events: none;
+    z-index: 0;
+    will-change: transform;
+}
+
+@keyframes vlp-drift {
+    from {
+        transform: translate(0, 0);
+    }
+
+    to {
+        transform: translate(4%, 2%);
+    }
+}
+
+/* ─── HERO SECTION (Header + Progress) ─── */
+.video-library-hero {
+    position: relative;
+    z-index: 1;
+    padding: 2.5cqw 3cqw 1.5cqw;
+    border: 0.06cqw solid rgba(200, 170, 110, 0.25);
+    border-bottom: none;
+    background:
+        radial-gradient(ellipse at 50% 0%, rgba(200, 170, 110, 0.07) 0%, transparent 65%),
+        linear-gradient(180deg, rgba(21, 58, 62, 0.6) 0%, rgba(13, 46, 48, 0.85) 100%);
+}
+
+/* Corner Accent Frames on Hero */
+.video-library-hero .corner-accent {
+    position: absolute;
+    width: 2cqw;
+    height: 2cqw;
+    border-color: #c8aa6e;
+    border-style: solid;
+    border-width: 0;
+    opacity: 0.45;
+}
+
+.video-library-hero .corner-tl {
+    top: -0.06cqw;
+    left: -0.06cqw;
+    border-top-width: 0.12cqw;
+    border-left-width: 0.12cqw;
+}
+
+.video-library-hero .corner-tr {
+    top: -0.06cqw;
+    right: -0.06cqw;
+    border-top-width: 0.12cqw;
+    border-right-width: 0.12cqw;
+}
+
+/* Header Row */
+.video-library-header {
+    display: flex;
+    align-items: center;
+    gap: 1cqw;
+    margin-bottom: 1.5cqw;
+}
+
+.video-library-back {
+    width: 2.2cqw;
+    height: 2.2cqw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.3);
+    border: 0.06cqw solid rgba(200, 170, 110, 0.3);
+    color: rgba(200, 170, 110, 0.6);
+    font-size: 1cqw;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease;
+    flex-shrink: 0;
+}
+
+.video-library-back:hover {
+    border-color: #c8aa6e;
+    color: #c8aa6e;
+}
+
+.video-library-title-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15cqw;
+}
+
+/* Badge above title */
+.video-library-badge {
+    display: inline-block;
+    width: fit-content;
+    padding: 0.2cqw 0.8cqw;
+    background: rgba(200, 170, 110, 0.1);
+    border: 0.06cqw solid rgba(200, 170, 110, 0.3);
+    color: #c8aa6e;
+    font-family: var(--font-body);
+    font-size: 0.55cqw;
+    font-weight: 600;
+    letter-spacing: 0.12cqw;
+    text-transform: uppercase;
+    margin-bottom: 0.3cqw;
+}
+
+.video-library-title {
+    font-family: var(--font-heading);
+    font-size: 1.8cqw;
+    font-weight: 700;
+    color: #F0E6D2;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.video-library-subtitle {
+    font-family: var(--font-body);
+    font-size: 0.7cqw;
+    color: rgba(200, 170, 110, 0.65);
+    margin-top: 0.1cqw;
+}
+
+/* ─── CONTENT SECTION (Filters + Grid) ─── */
+.video-library-content {
+    position: relative;
+    z-index: 1;
+    padding: 1.5cqw 3cqw 2.5cqw;
+    border-left: 0.06cqw solid rgba(200, 170, 110, 0.25);
+    border-right: 0.06cqw solid rgba(200, 170, 110, 0.25);
+    border-bottom: 0.06cqw solid rgba(200, 170, 110, 0.25);
+    background: rgba(11, 40, 43, 0.6);
+    flex: 1;
+    min-height: 0;
+}
+
+/* Divider between hero and content */
+.video-library-divider {
+    position: relative;
+    height: 0.06cqw;
+    background: linear-gradient(90deg, transparent 5%, rgba(200, 170, 110, 0.25) 30%, rgba(200, 170, 110, 0.25) 70%, transparent 95%);
+    margin: 0 3cqw;
+    z-index: 1;
+}
+
+/* Filters */
+.video-library-filters {
+    display: flex;
+    gap: 0.5cqw;
+    margin-bottom: 1.2cqw;
+}
+
+.video-library-filter-btn {
+    padding: 0.4cqw 1cqw;
+    background: rgba(11, 40, 43, 0.7);
+    border: 0.06cqw solid rgba(200, 170, 110, 0.15);
+    color: rgba(200, 170, 110, 0.6);
+    font-family: var(--font-body);
+    font-size: 0.7cqw;
+    font-weight: 500;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+
+.video-library-filter-btn:hover {
+    border-color: rgba(200, 170, 110, 0.4);
+    color: #F0E6D2;
+}
+
+.video-library-filter-btn.active {
+    background: rgba(200, 170, 110, 0.12);
+    border-color: #c8aa6e;
+    color: #c8aa6e;
+    font-weight: 600;
+}
+
+/* Grid */
+.video-library-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(15cqw, 1fr));
+    gap: 1.2cqw;
+}
+
+/* Loading & Empty states */
+.video-library-loading,
+.video-library-empty {
+    text-align: center;
+    padding: 5cqw 2cqw;
+    color: rgba(200, 170, 110, 0.5);
+    font-family: var(--font-body);
+    font-size: 0.85cqw;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .video-library-page::before {
+        display: none;
+    }
+
+    .video-library-hero {
+        padding: 20px 16px 16px;
+    }
+
+    .video-library-header {
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    .video-library-back {
+        width: 32px;
+        height: 32px;
+        font-size: 16px;
+    }
+
+    .video-library-badge {
+        padding: 3px 10px;
+        font-size: 9px;
+        letter-spacing: 1.5px;
+    }
+
+    .video-library-title {
+        font-size: 20px;
+    }
+
+    .video-library-subtitle {
+        font-size: 12px;
+    }
+
+    .video-library-content {
+        padding: 16px;
+    }
+
+    .video-library-filters {
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 16px;
+    }
+
+    .video-library-filter-btn {
+        padding: 8px 16px;
+        font-size: 12px;
+    }
+
+    .video-library-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 16px;
+    }
+
+    .video-library-loading,
+    .video-library-empty {
+        padding: 48px 24px;
+        font-size: 14px;
+    }
+}
+
+/* Small mobile */
+@media (max-width: 480px) {
+    .video-library-grid {
+        grid-template-columns: 1fr;
+    }
+}

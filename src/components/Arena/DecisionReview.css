@@ -620,3 +620,75 @@
     font-size: 0.65cqw;
     margin: 0 0.1cqw;
 }
+
+/* ==========================================================================
+   TIER HIERARCHY — Visual distinction per puzzle tier (Decision Review)
+   ========================================================================== */
+
+/* --- Tier Badge --- */
+.review-tier-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.4cqw;
+    padding-bottom: 0.4cqw;
+}
+
+.review-tier-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75cqw;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1cqw;
+}
+
+.review-tier-label.tier-advanced {
+    color: #e8c252;
+    text-shadow:
+        0 0 0.6cqw rgba(232, 194, 82, 0.6),
+        0 0 1.5cqw rgba(200, 170, 110, 0.25);
+}
+
+.review-tier-label.tier-rare {
+    color: #c084fc;
+    text-shadow:
+        0 0 0.8cqw rgba(192, 132, 252, 0.7),
+        0 0 2cqw rgba(168, 85, 247, 0.3);
+}
+
+/* --- ADVANCED Tier — Warm Gold atmosphere (Premium) --- */
+.decision-review-overlay.tier-advanced {
+    background:
+        radial-gradient(ellipse at 50% 15%, rgba(232, 194, 82, 0.09) 0%, transparent 50%),
+        radial-gradient(ellipse at 30% 65%, rgba(200, 170, 110, 0.04) 0%, transparent 45%),
+        radial-gradient(ellipse at 50% 80%, rgba(21, 58, 62, 0.22) 0%, transparent 50%),
+        rgba(0, 0, 0, 0.78);
+}
+
+.decision-review-container.tier-advanced {
+    border-color: rgba(232, 194, 82, 0.65);
+    box-shadow:
+        0 0 2.5cqw rgba(232, 194, 82, 0.3),
+        0 0 4cqw rgba(200, 170, 110, 0.1);
+}
+
+/* --- RARE Tier — Electric Prismatic Purple (Luxury Flex) --- */
+.decision-review-overlay.tier-rare {
+    background:
+        radial-gradient(ellipse at 50% 15%, rgba(192, 132, 252, 0.12) 0%, transparent 50%),
+        radial-gradient(ellipse at 20% 60%, rgba(168, 85, 247, 0.06) 0%, transparent 45%),
+        radial-gradient(ellipse at 80% 70%, rgba(192, 132, 252, 0.05) 0%, transparent 40%),
+        radial-gradient(ellipse at 50% 85%, rgba(21, 58, 62, 0.18) 0%, transparent 50%),
+        rgba(0, 0, 0, 0.80);
+}
+
+.decision-review-container.tier-rare {
+    border-color: rgba(192, 132, 252, 0.65);
+    box-shadow:
+        0 0 2.5cqw rgba(192, 132, 252, 0.35),
+        0 0 5cqw rgba(168, 85, 247, 0.12);
+}
+
+.decision-review-container.tier-rare .roll-section.final-section {
+    background: rgba(192, 132, 252, 0.06);
+    border-color: rgba(192, 132, 252, 0.40);
+}

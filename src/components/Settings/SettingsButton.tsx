@@ -8,6 +8,7 @@ import { IqRankIcon } from '../../features/user-iq/components/IqRankIcon';
 import { SupportModal } from './SupportModal';
 import { useTCoin } from '../../features/tcoin/hooks/useTCoin';
 import { TCoinIcon } from '../../features/tcoin/components/TCoinIcon';
+import { useVideoLibrary } from '../../features/video-library/hooks/useVideoLibrary';
 
 const getNextRankThreshold = (score: number) => {
     const sortedRanks = [...USER_IQ_RANKS].sort((a, b) => a.min - b.min);
@@ -55,6 +56,7 @@ interface MenuButtonProps {
     onAdminClick?: () => void;
     onProfileClick?: () => void;
     onLoginClick?: () => void;
+    onLibraryClick?: () => void;
     isAdmin?: boolean;
 }
 
@@ -65,6 +67,7 @@ export const MenuButton: React.FC<MenuButtonProps> = ({
     onAdminClick,
     onProfileClick,
     onLoginClick,
+    onLibraryClick,
     isAdmin
 }) => {
     const { signOut, isGuest, user } = useAuth();
@@ -84,6 +87,7 @@ export const MenuButton: React.FC<MenuButtonProps> = ({
     }, [isAuthenticated, isGuest, userId]);
 
     const { balance: tcoinBalance } = useTCoin();
+    const { unlockedCount, totalCount } = useVideoLibrary();
 
     const handleLogout = async () => {
         try {
@@ -224,6 +228,22 @@ export const MenuButton: React.FC<MenuButtonProps> = ({
                             <span className="menu-icon">◈</span> Chọn Đấu Trường
                         </button>
 
+                        {/* Video Library */}
+                        <button className="menu-item" onClick={() => { onLibraryClick?.(); setIsOpen(false); }}>
+                            <span className="menu-icon" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+                                <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="2" y="3" width="20" height="18" rx="3" stroke="#c8aa6e" strokeWidth="1.5" fill="rgba(200,170,110,0.1)" />
+                                    <path d="M10 8.5L16 12L10 15.5V8.5Z" fill="#c8aa6e" />
+                                    <line x1="2" y1="7" x2="22" y2="7" stroke="#c8aa6e" strokeWidth="1" opacity="0.4" />
+                                    <circle cx="5" cy="5" r="0.8" fill="#c8aa6e" opacity="0.6" />
+                                    <circle cx="8" cy="5" r="0.8" fill="#c8aa6e" opacity="0.6" />
+                                </svg>
+                            </span> Kho Pro Analysis
+                            {totalCount > 0 && (
+                                <span className="menu-library-count">({unlockedCount}/{totalCount})</span>
+                            )}
+                        </button>
+
                         {/* Fullscreen Toggle */}
                         <button className="menu-item" onClick={handleFullscreen}>
                             <span className="menu-icon">▭</span> {isFullscreen ? 'Thoát toàn màn hình' : 'Toàn màn hình'}
@@ -231,7 +251,7 @@ export const MenuButton: React.FC<MenuButtonProps> = ({
 
                         {/* Support / Donate */}
                         <button className="menu-item menu-item--support" onClick={() => { setShowSupportModal(true); setIsOpen(false); }}>
-                            <span className="menu-icon">☕</span> Ủng hộ dự án
+                            <span className="menu-icon" style={{ color: '#c8aa6e' }}>☕</span> Ủng hộ dự án
                         </button>
 
                         <div className="menu-divider"></div>

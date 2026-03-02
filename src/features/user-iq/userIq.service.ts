@@ -2,6 +2,25 @@ import { supabase } from '../../lib/supabase';
 import { UserIqStats } from './userIq.types';
 import { calculateIqChange, calculateUserIqRank } from './userIqCalculator';
 
+export async function getCommunityRank(userId: string): Promise<number | null> {
+    const { data: userData, error: userErr } = await supabase
+        .from('users')
+        .select('iq_score')
+        .eq('id', userId)
+        .single();
+
+    if (userErr || !userData) return null;
+
+    const { count, error: countErr } = await supabase
+        .from('users')
+        .select('id', { count: 'exact', head: true })
+        .gt('iq_score', userData.iq_score ?? 0);
+
+    if (countErr) return null;
+
+    return (count ?? 0) + 1;
+}
+
 export async function getUserIqStats(userId: string): Promise<UserIqStats | null> {
     const { data, error } = await supabase
         .from('users')

@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { AugmentData } from '../../services/augmentService';
 import { CommunityVotes } from '../../data/puzzleScenarios';
+import { PuzzleTier } from '../../features/tcoin/tcoin.types';
+import { TierIcon } from '../common/TierIcon';
 import './DecisionReview.css';
 
 import { ReviewCard } from './DecisionReviewComponents/ReviewCard';
@@ -11,6 +13,8 @@ import { IqScoreSummary } from '../../features/user-iq/components/IqScoreSummary
 import { ShareModal } from '../../features/share/components/ShareModal';
 import { useAuth } from '../../contexts/AuthContext';
 import { calculateUserIqRank } from '../../features/user-iq/userIqCalculator';
+import { videoLibraryService } from '../../features/video-library/videoLibrary.service';
+import { VideoUnlockToast } from '../../features/video-library/components/VideoUnlockToast';
 
 
 export interface DecisionReviewProps {
@@ -37,6 +41,10 @@ export interface DecisionReviewProps {
     proPlayerName?: string;
     proFinalPickData?: AugmentData;
     explanation?: string;
+    puzzleTier?: PuzzleTier;
+    videoUrl?: string;
+    videoTitle?: string;
+    onViewLibrary?: () => void;
 }
 
 export const DecisionReview: React.FC<DecisionReviewProps> = ({
@@ -60,11 +68,17 @@ export const DecisionReview: React.FC<DecisionReviewProps> = ({
     iqChangeResult,
     proPlayerName = 'Tuyển thủ',
     proFinalPickData,
-    explanation
+    explanation,
+    puzzleTier = 'free',
+    videoUrl,
+    videoTitle: videoTitleProp,
+    onViewLibrary,
 }) => {
 
     const [showShareModal, setShowShareModal] = useState(false);
+    const [showVideoToast, setShowVideoToast] = useState(false);
     const { user } = useAuth();
+    const videoUnlockTriggered = useRef(false);
 
     const proRerolled = !!(proSecondRoll && proSecondRoll.length > 0);
 
@@ -127,9 +141,37 @@ export const DecisionReview: React.FC<DecisionReviewProps> = ({
         );
     };
 
+    // Video unlock effect — trigger once after iqChangeResult resolves so iqDelta is recorded correctly.
+    // Guard ref prevents re-running if other deps change after the first successful call.
+    useEffect(() => {
+        if (!videoUrl || videoUnlockTriggered.current) return;
+        if (!iqChangeResult) return; // wait for IQ update to complete before recording iqDelta
+
+        videoUnlockTriggered.current = true;
+
+        videoLibraryService.unlockVideo({
+            puzzleId,
+            videoUrl,
+            userResult: userMatchedPro ? 'correct' : 'incorrect',
+            iqDelta: iqChangeResult.changeAmount,
+        }).then(success => {
+            if (success) setShowVideoToast(true);
+        });
+    }, [videoUrl, puzzleId, userMatchedPro, iqChangeResult]);
+
     return (
-        <div className="decision-review-overlay">
-            <div className="decision-review-container">
+        <div className={`decision-review-overlay${puzzleTier && puzzleTier !== 'free' ? ` tier-${puzzleTier}` : ''}`}>
+            <div className={`decision-review-container${puzzleTier && puzzleTier !== 'free' ? ` tier-${puzzleTier}` : ''}`}>
+
+                {/* --- TIER BADGE --- */}
+                {puzzleTier && puzzleTier !== 'free' && (
+                    <div className="review-tier-badge">
+                        <TierIcon tier={puzzleTier} size={16} />
+                        <span className={`review-tier-label tier-${puzzleTier}`}>
+                            {puzzleTier === 'advanced' ? 'Advanced Puzzle' : 'Rare Puzzle'}
+                        </span>
+                    </div>
+                )}
 
                 {/* --- HEADER --- */}
                 <PuzzleInfo
@@ -301,6 +343,15 @@ export const DecisionReview: React.FC<DecisionReviewProps> = ({
                     />
                 )}
             </div>
+
+            {/* Video Unlock Toast */}
+            {showVideoToast && onViewLibrary && (
+                <VideoUnlockToast
+                    videoTitle={videoTitleProp || 'Pro Analysis'}
+                    onViewLibrary={onViewLibrary}
+                    onClose={() => setShowVideoToast(false)}
+                />
+            )}
         </div>
     );
 };

@@ -29,7 +29,10 @@ export type EarnReason =
     | 'streak_3'
     | 'streak_5'
     | 'first_share_daily'
-    | 'first_puzzle';
+    | 'first_puzzle'
+    | 'video_milestone_5'
+    | 'video_milestone_15'
+    | 'video_milestone_30';
 
 export type SpendReason =
     | 'unlock_advanced'
@@ -48,6 +51,9 @@ export const TCOIN_EARN_RATES: Record<EarnReason, number> = {
     streak_5: 25,
     first_share_daily: 5,
     first_puzzle: 30,
+    video_milestone_5: 20,
+    video_milestone_15: 50,
+    video_milestone_30: 100,
 };
 
 /** T-Coin spend costs */

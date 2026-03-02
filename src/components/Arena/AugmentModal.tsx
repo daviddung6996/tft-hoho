@@ -2,6 +2,8 @@ import React from 'react';
 import './AugmentModal.css';
 
 import { AugmentData } from '../../services/augmentService';
+import { PuzzleTier } from '../../features/tcoin/tcoin.types';
+import { TierIcon } from '../common/TierIcon';
 
 interface AugmentCardProps extends AugmentData {
     onReroll: () => void;
@@ -47,14 +49,23 @@ interface AugmentModalProps {
     onReroll: (index: number) => void;
     onSelect: (augment: AugmentData) => void;
     allPuzzlesCompleted?: boolean;
+    puzzleTier?: PuzzleTier;
 }
 
-export const AugmentModal: React.FC<AugmentModalProps> = ({ currentAugments, rerollOrder, onReroll, onSelect, allPuzzlesCompleted }) => {
+export const AugmentModal: React.FC<AugmentModalProps> = ({ currentAugments, rerollOrder, onReroll, onSelect, allPuzzlesCompleted, puzzleTier = 'free' }) => {
     // Filter nulls and limit to exactly 3 augments
     const validAugments = currentAugments.filter((a): a is AugmentData => a !== null).slice(0, 3);
 
     return (
-        <div className="augment-modal-overlay">
+        <div className={`augment-modal-overlay tier-${puzzleTier}`}>
+            {puzzleTier !== 'free' && (
+                <div className="augment-tier-badge">
+                    <TierIcon tier={puzzleTier} size={20} />
+                    <span className={`augment-tier-label tier-${puzzleTier}`}>
+                        {puzzleTier === 'advanced' ? 'Advanced Puzzle' : 'Rare Puzzle'}
+                    </span>
+                </div>
+            )}
             <h2 className="augment-header-title">
                 {allPuzzlesCompleted ? 'Bạn đang giải lại câu đố cũ' : 'Chọn một'}
             </h2>
