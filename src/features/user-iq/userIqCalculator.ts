@@ -27,20 +27,18 @@ export function getUserIqRankColor(rank: UserIqRank): string {
 }
 
 export function calculateIqChange(isCorrect: boolean, timeTakenSeconds: number): number {
-    if (!isCorrect) {
-        return -15; // Phạt ít hơn thưởng
-    }
+    if (!isCorrect) return -18;
 
-    let points = 25; // Base points cho câu trả lời đúng
+    let points = 22;
 
-    // Tốc độ (Speed bonus)
-    if (timeTakenSeconds < 10) {
+    if (timeTakenSeconds < 8) {
+        points += 8;
+    } else if (timeTakenSeconds < 15) {
         points += 5;
-    } else if (timeTakenSeconds < 20) {
-        points += 3;
-    } else if (timeTakenSeconds < 30) {
-        points += 1;
+    } else if (timeTakenSeconds < 25) {
+        points += 2;
     }
 
     return points;
 }
+

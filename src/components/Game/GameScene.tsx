@@ -8,9 +8,10 @@ interface GameSceneProps {
     myPlayer: PlayerData;
     activePlayer: PlayerData;
     isMirrored: boolean;
+    streakCount?: number;
 }
 
-export const GameScene: React.FC<GameSceneProps> = ({ myPlayer, activePlayer, isMirrored }) => {
+export const GameScene: React.FC<GameSceneProps> = ({ myPlayer, activePlayer, isMirrored, streakCount }) => {
     // Generate random Ionia Path and Void Mods once per game session
     const gameInfo = useMemo(() => ({
         ioniaPath: getRandomIoniaPath(),
@@ -36,6 +37,7 @@ export const GameScene: React.FC<GameSceneProps> = ({ myPlayer, activePlayer, is
                     playerAugments={!isMirrored ? myPlayer.augments : undefined}
                     ioniaPath={gameInfo.ioniaPath}
                     voidMods={gameInfo.voidMods}
+                    streakCount={streakCount}
                 />
             </main>
 

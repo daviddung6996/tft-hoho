@@ -1,0 +1,240 @@
+/* PathSelector — Intent Declaration Overlay */
+.path-selector-overlay {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background:
+        radial-gradient(ellipse at 50% 30%, rgba(200, 170, 110, 0.10) 0%, transparent 55%),
+        radial-gradient(ellipse at 50% 80%, rgba(21, 58, 62, 0.5) 0%, transparent 55%),
+        rgba(0, 0, 0, 0.84);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    animation: hex-overlay-in 0.3s ease;
+}
+
+@keyframes hex-overlay-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.path-selector-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.8cqw;
+    padding: 2.5cqw;
+    width: 54cqw;
+}
+
+/* ── Header ── */
+.path-selector-header { text-align: center; }
+
+.path-selector-replay-text {
+    font-family: 'Spectral', serif;
+    font-size: 1.5cqw;
+    font-weight: 700;
+    color: #c8aa6e;
+    text-transform: uppercase;
+    margin: 0 0 1.1cqw 0;
+    letter-spacing: 0.12em;
+    text-shadow: 0 0 1cqw rgba(200, 170, 110, 0.4);
+    line-height: 1.1;
+    width: 100%;
+    text-align: center;
+    padding-bottom: 0.6cqw;
+    border-bottom: 0.06cqw solid rgba(200, 170, 110, 0.30);
+}
+
+.path-selector-badge {
+    display: inline-block;
+    padding: 0.2cqw 0.9cqw;
+    margin-bottom: 0.6cqw;
+    background: rgba(200, 170, 110, 0.1);
+    border: 0.06cqw solid rgba(200, 170, 110, 0.35);
+    color: #c8aa6e;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.62cqw;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+}
+
+.path-selector-title {
+    color: #F0E6D2;
+    font-family: 'Spectral', serif;
+    font-size: 1.7cqw;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    margin: 0 0 0.7cqw 0;
+    text-shadow: 0 0 2cqw rgba(200, 170, 110, 0.4);
+    line-height: 1.25;
+}
+
+.path-selector-subtitle {
+    color: #94A3B8;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8cqw;
+    line-height: 1.6;
+    letter-spacing: 0.01em;
+    margin: 0;
+}
+
+.path-subtitle-highlight {
+    color: #c8aa6e;
+    font-weight: 600;
+}
+
+.path-selector-subtitle em {
+    color: #F0E6D2;
+    font-style: normal;
+    font-weight: 500;
+}
+
+/* ── 2×2 connected grid ── */
+.path-selector-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+    border: 0.06cqw solid rgba(200, 170, 110, 0.45);
+    background: rgba(200, 170, 110, 0.18); /* shows as inner dividers via gap */
+    gap: 0.06cqw;
+}
+
+/* ── Individual path button ── */
+.path-btn {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.55cqw;
+    padding: 2.2cqw 1.5cqw 2cqw;
+    border: none;
+    background: linear-gradient(180deg,
+        rgba(21, 58, 62, 0.97) 0%,
+        rgba(13, 46, 48, 0.98) 100%
+    );
+    cursor: pointer;
+    overflow: hidden;
+    /* NO transform on hover — Hextech Pillar 5 */
+    transition: box-shadow 0.2s ease;
+    animation: path-btn-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Path-specific ambient top glow — always on, brightens on hover */
+.path-btn::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 50%;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+    opacity: 0.55;
+}
+
+.path-btn-econ::before   { background: radial-gradient(ellipse at 50% 0%, rgba(234,179,8, 0.22)  0%, transparent 80%); }
+.path-btn-item::before   { background: radial-gradient(ellipse at 50% 0%, rgba(14,165,233,0.18)  0%, transparent 80%); }
+.path-btn-combat::before { background: radial-gradient(ellipse at 50% 0%, rgba(239,68,68, 0.22)  0%, transparent 80%); }
+.path-btn-emblem::before { background: radial-gradient(ellipse at 50% 0%, rgba(168,85,247,0.18)  0%, transparent 80%); }
+
+.path-btn:hover:not(:disabled)::before { opacity: 1; }
+
+/* Hover: only box-shadow + background brighten */
+.path-btn:hover:not(:disabled) {
+    background: linear-gradient(180deg,
+        rgba(25, 68, 72, 0.98) 0%,
+        rgba(16, 52, 56, 0.99) 100%
+    );
+}
+
+.path-btn-econ:hover:not(:disabled)   { box-shadow: inset 0 0 3cqw rgba(234,179,8,  0.10), 0 0 2cqw rgba(234,179,8,  0.25); }
+.path-btn-item:hover:not(:disabled)   { box-shadow: inset 0 0 3cqw rgba(14,165,233, 0.10), 0 0 2cqw rgba(14,165,233, 0.22); }
+.path-btn-combat:hover:not(:disabled) { box-shadow: inset 0 0 3cqw rgba(239,68,68,  0.10), 0 0 2cqw rgba(239,68,68,  0.25); }
+.path-btn-emblem:hover:not(:disabled) { box-shadow: inset 0 0 3cqw rgba(168,85,247, 0.10), 0 0 2cqw rgba(168,85,247, 0.22); }
+
+.path-btn:active:not(:disabled) { filter: brightness(0.92); }
+.path-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ── Corner accent frames (L-shaped, gold) ── */
+.corner-accent {
+    position: absolute;
+    width: 1.1cqw;
+    height: 1.1cqw;
+    border-color: #c8aa6e;
+    border-style: solid;
+    border-width: 0;
+    opacity: 0.55;
+    pointer-events: none;
+}
+.corner-tl { top: 0.4cqw;    left: 0.4cqw;    border-top-width: 0.1cqw;    border-left-width: 0.1cqw;  }
+.corner-tr { top: 0.4cqw;    right: 0.4cqw;   border-top-width: 0.1cqw;    border-right-width: 0.1cqw; }
+.corner-bl { bottom: 0.4cqw; left: 0.4cqw;    border-bottom-width: 0.1cqw; border-left-width: 0.1cqw;  }
+.corner-br { bottom: 0.4cqw; right: 0.4cqw;   border-bottom-width: 0.1cqw; border-right-width: 0.1cqw; }
+
+/* ── Icon container — sized via cqw, no Tailwind px ── */
+.path-icon {
+    width: 5.5cqw;
+    height: 5.5cqw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+/* Force SVG to fill the container regardless of size prop */
+.path-icon > svg,
+.path-icon > * > svg {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* Per-path icon drop shadow glow */
+.path-btn-econ   .path-icon { filter: drop-shadow(0 0 0.7cqw rgba(234,179,8,  0.55)); }
+.path-btn-item   .path-icon { filter: drop-shadow(0 0 0.7cqw rgba(14,165,233, 0.50)); }
+.path-btn-combat .path-icon { filter: drop-shadow(0 0 0.7cqw rgba(239,68,68,  0.55)); }
+.path-btn-emblem .path-icon { filter: drop-shadow(0 0 0.7cqw rgba(168,85,247, 0.50)); }
+
+/* ── Typography ── */
+.path-label {
+    color: #c8aa6e;
+    font-family: 'Spectral', serif;
+    font-size: 1.35cqw;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    text-shadow: 0 0 1cqw rgba(200, 170, 110, 0.4);
+    line-height: 1;
+    margin: 0;
+}
+
+.path-label-en {
+    color: rgba(200, 170, 110, 0.45);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.65cqw;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin: 0;
+}
+
+.path-desc {
+    color: #94A3B8;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.72cqw;
+    text-align: center;
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* ── Entrance animation ── */
+@keyframes path-btn-in {
+    from {
+        opacity: 0;
+        transform: translateY(6px) scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}

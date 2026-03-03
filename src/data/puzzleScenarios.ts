@@ -4,6 +4,8 @@ import { UnitData } from './types';
 
 // Puzzle scenario data for TFTDojo-style gameplay
 export type PuzzleTier = 'free' | 'advanced' | 'rare';
+export type AugmentPath = 'econ' | 'item' | 'combat' | 'emblem';
+export type PuzzleDifficulty = 'straightforward' | 'close_call' | 'counter_intuitive';
 
 export interface PuzzleScenario {
     id: string;
@@ -50,6 +52,7 @@ export interface PuzzleScenario {
     proPickRound: 0 | 1;
     explanation?: string;
     explanationVideoUrl?: string;  // YouTube unlisted video URL for explanation
+    explanationVideoTitle?: string; // Optional title for the explanation video
     // Board State
     playerBoard?: UnitData[];
     // Deprecated singular opponent fields (Use opponents array instead)
@@ -75,6 +78,17 @@ export interface PuzzleScenario {
     // Game Info (Ionia Path & Void Mods)
     ioniaPathId?: string;
     voidModIds?: string[];
+
+    // === V2: Augment Trainer 3-2 Fields ===
+    // Streak data (W/L history for rounds 1-1 through 2-5)
+    streakHistory?: boolean[];              // Array of 5 W/L (true = win, false = loss)
+    streakCount?: number;                   // Positive = win streak, negative = loss streak
+    // Augment intent data
+    augment21?: AugmentData | null;         // Augment already chosen at 2-1
+    proPickPath?: AugmentPath;              // Path the Pro chose (econ/item/combat/emblem)
+    augmentPaths?: Record<string, AugmentPath>; // Map augment ID → path (for all 3 options)
+    proReasoningIntent?: string;            // 2-3 sentence explanation for Pro's path choice
+    difficulty?: PuzzleDifficulty;          // How tricky this puzzle is
 }
 
 export interface OpponentData {

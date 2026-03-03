@@ -13,23 +13,50 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 100;
+    z-index: 300;
 }
 
 .decision-review-container {
     width: 70cqw;
-    max-height: 90cqh;
+    max-height: 92cqh;
     background: linear-gradient(180deg, #153a3e 0%, #051c1e 100%);
     border: 0.15cqw solid #c8aa6e;
+    border-radius: 0.5cqw;
     box-shadow: 0 0 2cqw rgba(200, 170, 110, 0.3);
-    padding: 1.5cqw;
+    padding: 1cqw 1.2cqw;
     display: flex;
     flex-direction: column;
-    gap: 0.8cqw;
+    gap: 0.5cqw;
     color: #F0F6FC;
     overflow-y: auto;
+    position: relative;
     /* Smoothly animate the gap between rows when meme section expands */
     transition: gap 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.review-close-btn {
+    position: absolute;
+    top: 0.55cqw;
+    right: 0.55cqw;
+    width: 1.65cqw;
+    height: 1.65cqw;
+    background: transparent;
+    border: 0.08cqw solid #c8aa6e;
+    border-radius: 0.28cqw;
+    color: #c8aa6e;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.24cqw;
+    transition: background 0.2s, color 0.2s;
+    z-index: 10;
+    flex-shrink: 0;
+}
+
+.review-close-btn:hover {
+    background: rgba(200, 170, 110, 0.15);
+    color: #F0E6D2;
 }
 
 /* ============================================
@@ -39,7 +66,9 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-bottom: 0.6cqw;
+    padding-bottom: 0.4cqw;
+    /* Reserve space for absolute close button so it never overlaps action buttons */
+    padding-right: 2.1cqw;
     border-bottom: 0.08cqw solid rgba(200, 170, 110, 0.3);
 }
 
@@ -139,17 +168,18 @@
 .roll-timeline {
     display: flex;
     flex-direction: column;
-    gap: 0.8cqw;
+    gap: 0.5cqw;
 }
 
 /* Roll Section (First Roll, Second Roll, Final Pick) */
 .roll-section {
     background: rgba(0, 0, 0, 0.25);
     border: 0.08cqw solid rgba(200, 170, 110, 0.2);
-    padding: 0.8cqw;
+    border-radius: 0.4cqw;
+    padding: 0.6cqw;
     display: flex;
     flex-direction: column;
-    gap: 0.5cqw;
+    gap: 0.35cqw;
 }
 
 .roll-section.final-section {
@@ -167,22 +197,12 @@
 
 .section-title {
     font-family: 'Spectral', serif;
-    font-size: 1cqw;
+    font-size: 0.85cqw;
     font-weight: 700;
     color: #F0F6FC;
 }
 
-.section-description {
-    font-family: 'Inter', sans-serif;
-    font-size: 0.75cqw;
-    color: #94a3b8;
-}
-
-.user-action {
-    color: #c8aa6e;
-    font-weight: 600;
-}
-
+.user-action,
 .pro-action {
     color: #c8aa6e;
     font-weight: 600;
@@ -213,22 +233,13 @@
 /* Final Description */
 .final-description {
     font-family: 'Inter', sans-serif;
-    font-size: 0.8cqw;
+    font-size: 0.7cqw;
     color: #94a3b8;
     margin: 0;
 }
 
 .final-description strong {
     color: #F0F6FC;
-}
-
-/* ============================================
-   AUGMENT ROW (3 columns)
-   ============================================ */
-.augment-row {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.6cqw;
 }
 
 /* Augment Cell */
@@ -240,80 +251,114 @@
 }
 
 /* ============================================
-   FINAL PICK GRID (flexible)
-   ============================================ */
-.final-augment-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.6cqw;
-}
-
-/* ============================================
-   ROLL MARKERS (Your Roll, Pro's Roll)
-   ============================================ */
-.roll-marker {
-    font-family: 'Inter', sans-serif;
-    font-size: 0.65cqw;
-    font-weight: 700;
-    padding: 0.15cqw 0.4cqw;
-    text-transform: uppercase;
-    text-align: center;
-}
-
-.roll-marker.user-roll {
-    color: #c8aa6e;
-}
-
-.roll-marker.pro-roll {
-    color: #c8aa6e;
-}
-
-.roll-marker.both-roll {
-    color: #c8aa6e;
-}
-
-/* ============================================
-   PICK MARKERS (Your Pick, Pro's Pick)
-   ============================================ */
-.pick-marker {
-    font-family: 'Inter', sans-serif;
-    font-size: 0.65cqw;
-    font-weight: 700;
-    padding: 0.15cqw 0.4cqw;
-    text-transform: uppercase;
-    text-align: center;
-}
-
-.pick-marker.user-pick-marker {
-    color: #c8aa6e;
-}
-
-.pick-marker.pro-pick-marker {
-    color: #c8aa6e;
-}
-
-.pick-marker.both-pick-marker {
-    position: relative;
-}
-
-/* ============================================
    EXPLANATION SECTION
    ============================================ */
 .explanation-section {
-    background: rgba(0, 0, 0, 0.4);
+    background:
+        radial-gradient(ellipse at 50% 0%, rgba(200, 170, 110, 0.04) 0%, transparent 60%),
+        rgba(11, 40, 43, 0.97);
     border: 0.08cqw solid rgba(200, 170, 110, 0.3);
-    padding: 0.8cqw;
-    border-radius: 0.2cqw;
-    margin-top: 0.2cqw;
+    padding: 0.6cqw;
+    border-radius: 0.4cqw;
+}
+
+/* Split layout when video is present */
+.explanation-section.has-video {
+    display: flex;
+    gap: 1cqw;
+    align-items: stretch;
+}
+
+.explanation-text-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.explanation-video-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3cqw;
+    min-width: 0;
+    padding-left: 1cqw;
+    border-left: 0.06cqw solid rgba(200, 170, 110, 0.25);
+}
+
+.explanation-video-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.6cqw;
+    flex-wrap: wrap;
+}
+
+.explanation-video-note-text,
+.explanation-video-note-link {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.6cqw;
+    line-height: 1.25;
+    color: rgba(148, 163, 184, 0.95);
+}
+
+.explanation-video-note-link {
+    padding: 0;
+    margin: 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 0.1cqw;
+    color: rgba(200, 170, 110, 0.9);
+}
+
+.explanation-video-note-link:hover {
+    color: #e9cd8e;
+}
+
+.explanation-video-wrapper {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%; /* 16:9 */
+    border-radius: 0.3cqw;
+    overflow: hidden;
+    border: 0.06cqw solid rgba(200, 170, 110, 0.25);
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.explanation-video-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.explanation-video-label {
+    display: flex;
+    align-items: center;
+    gap: 0.2cqw;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.6cqw;
+    color: rgba(200, 170, 110, 0.65);
+    padding-top: 0.15cqw;
+}
+
+.explanation-video-label svg {
+    width: 0.7cqw;
+    height: 0.7cqw;
+    color: rgba(200, 170, 110, 0.55);
 }
 
 .explanation-title {
     font-family: 'Spectral', serif;
-    font-size: 0.85cqw;
+    font-size: 0.75cqw;
     font-weight: 700;
     color: #c8aa6e;
     text-transform: uppercase;
-    margin-bottom: 0.4cqw;
+    margin-bottom: 0.25cqw;
     letter-spacing: 0.05cqw;
 }
 
@@ -321,7 +366,7 @@
     font-family: 'Inter', sans-serif;
     font-size: 0.75cqw;
     color: #F0F6FC;
-    line-height: 1.4;
+    line-height: 1.5;
     margin: 0;
 }
 
@@ -331,10 +376,11 @@
 .roll-augment-card {
     background: rgba(255, 255, 255, 0.03);
     border: 0.08cqw solid rgba(255, 255, 255, 0.1);
-    padding: 0.5cqw;
+    border-radius: 0.25cqw;
+    padding: 0.35cqw;
     display: flex;
     flex-direction: column;
-    gap: 0.25cqw;
+    gap: 0.15cqw;
 }
 
 /* Increased specificity (0-4-0) to strictly override .augment-cell.rolled-result ... (0-3-0) */
@@ -356,9 +402,10 @@
 }
 
 .augment-mini-icon {
-    width: 2.5cqw;
-    height: 2.5cqw;
+    width: 2cqw;
+    height: 2cqw;
     border: 0.08cqw solid #c8aa6e;
+    border-radius: 0.2cqw;
     object-fit: cover;
 }
 
@@ -372,7 +419,7 @@
 .augment-mini-title {
     font-family: 'Spectral', serif;
     color: #f1f5f9;
-    font-size: 0.8cqw;
+    font-size: 0.7cqw;
     line-height: 1.2;
     white-space: nowrap;
     overflow: hidden;
@@ -384,20 +431,21 @@
     display: flex;
     flex-direction: row;
     gap: 0.2cqw;
+    margin-top: 0.4cqw;
 }
 
-.user-marker {
-    color: #c8aa6e;
-    font-size: 0.55cqw;
+.marker-text {
+    font-size: 0.65cqw;
     font-weight: 700;
     text-transform: uppercase;
 }
 
-.pro-marker {
+.user-marker-text {
     color: #c8aa6e;
-    font-size: 0.55cqw;
-    font-weight: 700;
-    text-transform: uppercase;
+}
+
+.pro-marker-text {
+    color: #00A3FF;
 }
 
 /* Vote Section */
@@ -408,16 +456,39 @@
     margin-top: 0.15cqw;
 }
 
+.vote-stats {
+    margin-right: auto;
+    font-size: 0.8cqw;
+    font-weight: 600;
+    color: #e2e8f0;
+}
+
+.vote-count {
+    font-size: 0.6cqw;
+    color: #94a3b8;
+    font-weight: 400;
+}
+
 .vote-bar-container {
     height: 0.3cqw;
     background: rgba(255, 255, 255, 0.1);
+    border-radius: 0.15cqw;
     overflow: hidden;
     flex: 1;
+}
+
+.vote-bar-narrow {
+    flex: none;
+    width: 40%;
 }
 
 .vote-bar-fill {
     height: 100%;
     background: #c8aa6e;
+}
+
+.vote-bar-fill.both-pick-bar {
+    background: linear-gradient(90deg, #c8aa6e, #d4b876);
 }
 
 /* ============================================
@@ -427,11 +498,11 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-top: 0.8cqw;
+    padding-top: 0.5cqw;
     margin-top: auto;
     border-top: 0.08cqw solid rgba(200, 170, 110, 0.3);
     /* Prevent height jump when IQ badge collapses */
-    min-height: 3cqw;
+    min-height: 2.4cqw;
     transition: min-height 0.6s ease-out;
 }
 
@@ -450,14 +521,15 @@
     align-items: center;
     justify-content: center;
     gap: 0.3cqw;
-    padding: 0.5cqw 1cqw;
+    padding: 0.35cqw 0.8cqw;
     font-family: 'Inter', sans-serif;
-    font-size: 0.85cqw;
+    font-size: 0.75cqw;
     font-weight: 500;
     text-transform: uppercase;
     cursor: pointer;
     background: transparent;
     border: 0.1cqw solid #c8aa6e;
+    border-radius: 0.25cqw;
     color: #F0E6D2;
     transition: box-shadow 0.2s ease, border-color 0.2s ease;
 }
@@ -473,91 +545,9 @@
     box-shadow: 0 0 0.8cqw rgba(200, 170, 110, 0.3);
 }
 
-/* Replay Button */
+/* Replay button — gold text to distinguish from primary Next action */
 .replay-btn {
-    border-color: #c8aa6e;
     color: #c8aa6e;
-}
-
-/* Next Button */
-.next-btn {
-    border-color: #c8aa6e;
-    color: #F0E6D2;
-}
-
-/* Combined Marker */
-.combined-marker {
-    font-size: 0.55cqw;
-    font-weight: 700;
-    text-transform: uppercase;
-    display: flex;
-    gap: 0.15cqw;
-    align-items: center;
-}
-
-/* ============================================
-   NEW: 3-COLUMN SLOT LAYOUT
-   ============================================ */
-
-.final-augment-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1cqw;
-    margin-bottom: 0.8cqw;
-}
-
-/* Row Label for Initial/Reroll sections */
-.final-row-label {
-    font-family: 'Inter', sans-serif;
-    font-size: 0.9cqw;
-    font-weight: 600;
-    color: #c8aa6e;
-    text-transform: uppercase;
-    letter-spacing: 0.08cqw;
-    margin-bottom: 0.4cqw;
-    margin-top: 0.6cqw;
-    padding-left: 0.2cqw;
-}
-
-.final-row-label:first-of-type {
-    margin-top: 0;
-}
-
-/* Individual Slot Container */
-.slot-cell {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25cqw;
-}
-
-/* Case 2: Split Slot (User vs Pro) */
-.split-slot {
-    justify-content: space-between;
-    background: linear-gradient(180deg, rgba(200, 170, 110, 0.05) 0%, rgba(0, 0, 0, 0.2) 100%);
-    border-color: rgba(200, 170, 110, 0.15);
-}
-
-.split-card-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 0.2cqw;
-}
-
-.split-label {
-    font-family: 'Inter', sans-serif;
-    font-size: 0.6cqw;
-    color: #94a3b8;
-    text-transform: uppercase;
-    font-weight: 600;
-    margin-left: 0.2cqw;
-}
-
-.user-wrapper .split-label {
-    color: #c8aa6e;
-}
-
-.pro-wrapper .split-label {
-    color: #94a3b8;
 }
 
 /* ============================================
@@ -566,16 +556,12 @@
 .final-augment-grid-6 {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 0.6cqw;
+    gap: 0.4cqw;
 }
 
 /* Rolled away augment - dimmed */
 .augment-cell.rolled-away {
     opacity: 0.5;
-}
-
-.augment-cell.rolled-away .roll-augment-card {
-    border-style: dashed;
 }
 
 .augment-cell.rolled-away .roll-augment-card {
@@ -629,8 +615,8 @@
 .review-tier-badge {
     display: flex;
     align-items: center;
-    gap: 0.4cqw;
-    padding-bottom: 0.4cqw;
+    gap: 0.3cqw;
+    padding-bottom: 0.2cqw;
 }
 
 .review-tier-label {

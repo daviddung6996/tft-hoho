@@ -10,6 +10,7 @@ export const MemeFeedback: React.FC<MemeFeedbackProps> = ({
     const [meme, setMeme] = useState<MemeItem | null>(null);
     const [isWrapperVisible, setIsWrapperVisible] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
+    const [isHiding, setIsHiding] = useState(false);
 
     useEffect(() => {
         let cancelled = false;
@@ -37,9 +38,15 @@ export const MemeFeedback: React.FC<MemeFeedbackProps> = ({
             const wrapperTimer = setTimeout(() => setIsWrapperVisible(true), 30);
             // Step 2: fade in content slightly after expand starts
             const contentTimer = setTimeout(() => setIsVisible(true), 100);
+            // Step 3: after 3.5s of being visible, start fade-out
+            const hideContentTimer = setTimeout(() => setIsHiding(true), 3600);
+            // Step 4: collapse wrapper after content fade (~500ms later)
+            const collapseTimer = setTimeout(() => setIsWrapperVisible(false), 4150);
             return () => {
                 clearTimeout(wrapperTimer);
                 clearTimeout(contentTimer);
+                clearTimeout(hideContentTimer);
+                clearTimeout(collapseTimer);
             };
         }
     }, [meme]);
@@ -49,7 +56,7 @@ export const MemeFeedback: React.FC<MemeFeedbackProps> = ({
         <div className={`meme-feedback-wrapper ${isWrapperVisible ? 'meme-wrapper-visible' : ''}`}>
             <div className="meme-feedback-inner">
                 {meme && (
-                    <div className={`meme-feedback ${isCorrect ? 'meme-correct' : 'meme-incorrect'} ${isVisible ? 'meme-visible' : ''}`}>
+                    <div className={`meme-feedback ${isCorrect ? 'meme-correct' : 'meme-incorrect'} ${isVisible ? 'meme-visible' : ''} ${isHiding ? 'meme-hiding' : ''}`}>
                         <div className={`meme-content ${meme.imageUrl ? 'has-image' : ''}`}>
                             {meme.imageUrl && (
                                 <div className="meme-image-wrapper">

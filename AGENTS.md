@@ -278,6 +278,26 @@ Get-ChildItem -Path src -Recurse -Include "*.tsx" | ForEach-Object {
 - **Cause:** Schema có thể đã tạo trực tiếp trên remote Supabase hoặc local type file được cập nhật trước khi commit migration.
 - **Avoid:** Trước khi ship môi trường mới, bắt buộc backfill migration SQL cho toàn bộ bảng đang được app sử dụng để tránh "works on one database only".
 
+### Video library thumbnail blank when `video_thumbnail_url` is invalid
+- **Symptom:** Card trong kho video hiện nền trống (không có preview) dù `video_url` YouTube hợp lệ.
+- **Cause:** `VideoCard` chỉ hiển thị `<img>` khi có thumbnail URL nhưng lại chờ `onLoad` để bật opacity; nếu URL thumbnail lỗi thì không có `onError` fallback, ảnh giữ `opacity: 0` và placeholder cũng không render.
+- **Avoid:** Luôn tạo fallback thumbnail từ `video_url` (YouTube ID) và implement fallback chain `maxresdefault -> hqdefault -> mqdefault` trong `onError`.
+
+### YouTube playback error can come from inconsistent URL normalization across screens
+- **Symptom:** Cùng một `video_url` nhưng màn Review/Player báo lỗi YouTube kiểu `Playback ID`, trong khi thumbnail/library vẫn nhận diện được video.
+- **Cause:** Trước đây parser URL YouTube bị copy ở nhiều file (`DecisionReview`, `VideoPlayerModal`, `VideoExplanationModal`, `VideoCard`, `videoLibrary.service`) với rule khác nhau; một số format như `shorts/live/embed` không được normalize nhất quán.
+- **Avoid:** Dùng chung helper `src/utils/youtube.ts` (`extractYouTubeVideoId`, `buildYouTubeEmbedUrl`) cho mọi nơi render iframe/thumbnail để tránh mismatch parser.
+
+### T-Coin earn-rate table vs runtime trigger mismatch
+- **Symptom:** Team nghĩ app da co full economy event (daily challenge, streak, first share, first puzzle, video milestone rewards), nhung user chi thay coin tang theo ket qua puzzle.
+- **Cause:** `TCOIN_EARN_RATES` co nhieu reason (`daily_*`, `streak_*`, `first_*`, `video_milestone_*`) trong `src/features/tcoin/tcoin.types.ts`, nhung runtime hien tai chi goi `tcoinService.earnCoins(...)` tai `src/hooks/useGameFlow.ts` voi 4 case: `puzzle_correct_fast`, `puzzle_correct_no_reroll`, `puzzle_correct`, `puzzle_incorrect`. Video milestone hien tai chi check threshold (`checkMilestone`) va render UI marker, chua co call earn coin.
+- **Avoid:** Khi can tinh "farm formula", uu tien source runtime call-site (`earnCoins` usage) thay vi chi doc bang rate constant. Neu muon mo milestone reward that su, phai wire them den `tcoinService.earnCoins(milestone.earnReason, ...)`.
+
+### Intent declaration flow wrongly gated by `proPickPath` only
+- **Symptom:** Round `3-2` co man chon 4 intent, nhung round `2-1` co the nhay thang vao `AugmentModal` ma khong qua `PathSelector`.
+- **Cause:** `useGameFlow` dung dieu kien `!!currentPuzzle.proPickPath` de bat `puzzlePhase = 'declaring_intent'`. Neu puzzle `2-1` thieu `proPickPath` metadata, step intent bi skip.
+- **Avoid:** Rule hien tai: chi stage `3-2` moi vao intent step. `2-1` phai vao thang augment select, khong duoc gate theo `proPickPath`.
+
 ---
 
 ## 3. Applied Fixes
@@ -288,6 +308,17 @@ Get-ChildItem -Path src -Recurse -Include "*.tsx" | ForEach-Object {
 ```
 **Used in:** Tất cả các module Backend thuộc `backend/features/`
 
+### Video library thumbnail + incorrect text copy
+- **Date:** 2026-03-03
+- **File:** `src/features/video-library/videoLibrary.service.ts`
+- **Problem:** Nhiều puzzle có `video_url` nhưng thiếu/hỏng `video_thumbnail_url`, dẫn đến card không có preview.
+- **Fix:** Thêm helper extract YouTube ID và tự sinh thumbnail fallback (`hqdefault`) từ `video_url`.
+
+- **Date:** 2026-03-03
+- **File:** `src/features/video-library/components/VideoCard.tsx`, `src/features/video-library/components/VideoPlayerModal.tsx`
+- **Problem:** Thumbnail lỗi không có fallback runtime; text trạng thái sai hiển thị ngắn là "Sai".
+- **Fix:** Thêm fallback chain thumbnail khi `img` lỗi và đổi text sai thành `Bạn đã trả lời sai câu này.` ở cả card + player modal.
+
 <!-- ### [Bug description]
 - **Date:** YYYY-MM-DD
 - **File:** ...
@@ -297,5 +328,39 @@ Get-ChildItem -Path src -Recurse -Include "*.tsx" | ForEach-Object {
 // fix code
 ``` -->
 
+### IQ + T-Coin formula update (2026-03-03)
+- **Date:** 2026-03-03
+- **File:** src/features/user-iq/userIqCalculator.ts
+- **Problem:** IQ formula cu de leo rank qua de (-15, base +25, speed bonus nhe).
+- **Fix:** Doi sang formula moi: sai -18; dung base +22; speed bonus <8s:+8, <15s:+5, <25s:+2, con lai +0.
 
+- **Date:** 2026-03-03
+- **File:** src/hooks/useGameFlow.ts, src/features/tcoin/tcoin.types.ts, src/features/tcoin/tcoin.service.ts
+- **Problem:** T-Coin runtime chua theo cong thuc don gian moi va chua co hard cap ngay theo UTC+7.
+- **Fix:** Runtime earn ly theo if/else moi:
+  - Sai: 0
+  - Dung + co reroll: +2
+  - Dung + khong reroll + <8s: +5
+  - Dung + khong reroll + <15s: +3
+  - Dung + khong reroll + con lai: +1
+  - Daily cap puzzle earn: 15/ngay theo UTC+7 (partial award neu gan cham cap).
+  - Welcome bonus giu nguyen 30 T-Coin.
 
+### Intent declaration stage gating fix (2026-03-03)
+- **Date:** 2026-03-03
+- **File:** `src/hooks/useGameFlow.ts`
+- **Problem:** Logic gate sai requirement round: `2-1` khong duoc co man intent, chi `3-2` moi co.
+- **Fix:** Chuyen sang stage-gate ro rang: `shouldShowIntentDeclaration()` chi tra ve true cho stage `3-2`; bo fallback `proPickPath` de tranh bat intent sai o `2-1`.
+
+### YouTube embed normalization unification (2026-03-03)
+- **Date:** 2026-03-03
+- **File:** `src/utils/youtube.ts`, `src/components/Arena/DecisionReview.tsx`, `src/features/video-library/components/VideoPlayerModal.tsx`, `src/components/common/VideoExplanationModal.tsx`, `src/features/video-library/components/VideoCard.tsx`, `src/features/video-library/videoLibrary.service.ts`
+- **Problem:** Logic parse/build URL YouTube bị duplicate và lệch nhau giữa các màn, dễ gây lỗi phát video khi URL ở dạng `shorts/live/embed` hoặc có timestamp query.
+- **Fix:** Tạo utility dùng chung (`extractYouTubeVideoId`, `buildYouTubeEmbedUrl`) và thay toàn bộ call-site iframe/thumbnail sang helper này.
+
+### Puzzle completion can loop forever for guests when DB query fallback is triggered
+- **Symptom:** User plays puzzles repeatedly and never reaches completion modal, even when DB seems to have very few puzzles.
+- **Cause:** Two issues can combine:
+  1) usePuzzleGame.handleMarkCompleted only persisted for user?.id and did not update local completion list for guest sessions.
+  2) puzzleService.getAll() queried .is('deleted_at', null); if a DB is missing deleted_at, query fails and hook falls back to local PUZZLE_SCENARIOS, increasing puzzle pool silently.
+- **Avoid:** Always update completedPuzzleIds locally for both guest and authenticated sessions; persist to DB only when user?.id exists. In getAll(), retry without deleted_at filter when missing-column error is detected.

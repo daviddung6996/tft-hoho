@@ -5,11 +5,16 @@ import {
     EarnReason,
     SpendReason,
     TCOIN_EARN_RATES,
+    TCOIN_PUZZLE_DAILY_CAPPED_REASONS,
+    TCOIN_PUZZLE_DAILY_CAP,
     TCOIN_SPEND_COSTS,
     PuzzleTier,
     PuzzleAccessResult,
 } from './tcoin.types';
 import { proSupporterService } from '../pro-supporter/proSupporter.service';
+
+const UTC_PLUS_7_MS = 7 * 60 * 60 * 1000;
+const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 
 export const tcoinService = {
     /**
@@ -57,9 +62,19 @@ export const tcoinService = {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) return null;
 
-        const amount = TCOIN_EARN_RATES[reason];
+        let amount = TCOIN_EARN_RATES[reason];
         const wallet = await this.getWallet();
         if (!wallet) return null;
+
+        if (isPuzzleDailyCappedReason(reason)) {
+            const earnedToday = await getPuzzleCoinsEarnedTodayUtc7(user.id);
+            const remainingToday = Math.max(0, TCOIN_PUZZLE_DAILY_CAP - earnedToday);
+            amount = Math.min(amount, remainingToday);
+        }
+
+        if (amount <= 0) {
+            return { newBalance: wallet.balance, earned: 0 };
+        }
 
         const newBalance = wallet.balance + amount;
 
@@ -261,4 +276,45 @@ function mapTransaction(row: any): TCoinTransaction {
         referenceId: row.reference_id,
         createdAt: row.created_at,
     };
+}
+
+function isPuzzleDailyCappedReason(reason: EarnReason): boolean {
+    return TCOIN_PUZZLE_DAILY_CAPPED_REASONS.includes(reason);
+}
+
+function getUtc7DayRange(now: Date = new Date()): { startIso: string; endIso: string } {
+    const utc7Now = new Date(now.getTime() + UTC_PLUS_7_MS);
+    const utc7StartOfDayMs = Date.UTC(
+        utc7Now.getUTCFullYear(),
+        utc7Now.getUTCMonth(),
+        utc7Now.getUTCDate(),
+        0, 0, 0, 0
+    );
+
+    const startUtcMs = utc7StartOfDayMs - UTC_PLUS_7_MS;
+    const endUtcMs = startUtcMs + ONE_DAY_MS;
+
+    return {
+        startIso: new Date(startUtcMs).toISOString(),
+        endIso: new Date(endUtcMs).toISOString(),
+    };
+}
+
+async function getPuzzleCoinsEarnedTodayUtc7(userId: string): Promise<number> {
+    const { startIso, endIso } = getUtc7DayRange();
+    const { data, error } = await supabase
+        .from('tcoin_transactions')
+        .select('amount')
+        .eq('user_id', userId)
+        .eq('type', 'earn')
+        .in('reason', TCOIN_PUZZLE_DAILY_CAPPED_REASONS)
+        .gte('created_at', startIso)
+        .lt('created_at', endIso);
+
+    if (error || !data) {
+        if (error) console.error('Error checking daily T-Coin cap:', error);
+        return 0;
+    }
+
+    return data.reduce((sum, row) => sum + Math.max(0, row.amount ?? 0), 0);
 }

@@ -1,4 +1,8 @@
 .tcoin-balance {
+    position: absolute;
+    top: 1.04cqw;
+    left: 1.04cqw;
+    z-index: 310;
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;

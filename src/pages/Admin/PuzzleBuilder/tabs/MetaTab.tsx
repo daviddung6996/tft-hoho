@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { PuzzleScenario } from '../../../../data/puzzleScenarios';
+import { PuzzleScenario, AugmentPath, PuzzleDifficulty } from '../../../../data/puzzleScenarios';
 import { TierSelect } from '../../../../components/common/TierSelect';
 import { VideoSelect } from '../../../../components/common/VideoSelect';
 import { VideoExplanationModal } from '../../../../components/common/VideoExplanationModal';
@@ -95,12 +95,16 @@ const MetaTab: React.FC<MetaTabProps> = ({ puzzle, updatePuzzle }) => {
                             </div>
                             <div className="pb-field-group">
                                 <label className="pb-label">Giai đoạn *</label>
-                                <input
+                                <select
                                     className="hex-input"
-                                    value={puzzle.stage}
+                                    value={puzzle.stage || '2-1'}
                                     onChange={e => updatePuzzle({ stage: e.target.value })}
-                                    placeholder="e.g., 2-1, 3-2, 4-5"
-                                />
+                                >
+                                    <option value="2-1">2-1 — Chọn lõi 1</option>
+                                    <option value="3-2">3-2 — Chọn lõi 2</option>
+                                    <option value="4-2">4-2 — Chọn lõi 3</option>
+                                    <option value="5-6">5-6 — Chọn lõi 4</option>
+                                </select>
                             </div>
                         </div>
                         <div className="pb-field-row">
@@ -230,6 +234,125 @@ const MetaTab: React.FC<MetaTabProps> = ({ puzzle, updatePuzzle }) => {
                             />
                         </div>
                     </div>
+
+                    {/* V2: Augment Trainer Fields (for all augment rounds) */}
+                    {['2-1', '3-2', '4-2', '5-6'].includes(puzzle.stage || '') && (
+                        <div className="pb-section">
+                            <h3 className="pb-section-title" style={{ color: '#c8aa6e' }}>
+                                V2 — Augment Trainer ({puzzle.stage})
+                            </h3>
+
+                            {/* Streak History Builder */}
+                            <div className="pb-field-group">
+                                <label className="pb-label">Streak History (5 rounds trước 3-2)</label>
+                                <div style={{ display: 'flex', gap: '0.5cqw', marginTop: '0.3cqw' }}>
+                                    {[0, 1, 2, 3, 4].map(i => {
+                                        const history = puzzle.streakHistory || [true, true, true, true, true];
+                                        const isWin = history[i] ?? true;
+                                        return (
+                                            <button
+                                                key={i}
+                                                type="button"
+                                                className="hex-input"
+                                                style={{
+                                                    width: '3.5cqw',
+                                                    textAlign: 'center',
+                                                    cursor: 'pointer',
+                                                    background: isWin ? 'rgba(34,197,94,0.2)' : 'rgba(239,68,68,0.2)',
+                                                    border: `1px solid ${isWin ? 'rgba(34,197,94,0.5)' : 'rgba(239,68,68,0.5)'}`,
+                                                    color: isWin ? '#22c55e' : '#ef4444',
+                                                    fontWeight: 700,
+                                                    padding: '0.4cqw'
+                                                }}
+                                                onClick={() => {
+                                                    const newHistory = [...(puzzle.streakHistory || [true, true, true, true, true])];
+                                                    newHistory[i] = !newHistory[i];
+                                                    updatePuzzle({
+                                                        streakHistory: newHistory
+                                                    });
+                                                }}
+                                            >
+                                                {isWin ? 'W' : 'L'}
+                                            </button>
+                                        );
+                                    })}
+                                    <span className="pb-hint" style={{ alignSelf: 'center', marginLeft: '0.5cqw' }}>
+                                        Streak: {puzzle.streakCount ?? 0}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div className="pb-field-group">
+                                <label className="pb-label">Streak Count (nhập tay)</label>
+                                <input
+                                    type="number"
+                                    className="hex-input"
+                                    value={puzzle.streakCount ?? 0}
+                                    onChange={e => {
+                                        const parsed = Number.parseInt(e.target.value, 10);
+                                        const streakCount = Number.isNaN(parsed) ? 0 : parsed;
+                                        updatePuzzle({
+                                            streakCount
+                                        });
+                                    }}
+                                />
+                                <span className="pb-hint">
+                                    Dương = chuỗi thắng, âm = chuỗi thua.
+                                </span>
+                            </div>
+
+                            {/* Pro Pick Path */}
+                            <div className="pb-field-group">
+                                <label className="pb-label">Pro Pick Path (Intent) *</label>
+                                <div style={{ display: 'flex', gap: '0.8cqw', marginTop: '0.3cqw' }}>
+                                    {(['econ', 'item', 'combat', 'emblem'] as AugmentPath[]).map(path => (
+                                        <label key={path} style={{
+                                            display: 'flex', alignItems: 'center', gap: '0.3cqw',
+                                            cursor: 'pointer',
+                                            color: puzzle.proPickPath === path ? '#c8aa6e' : '#94A3B8'
+                                        }}>
+                                            <input
+                                                type="radio"
+                                                name="proPickPath"
+                                                value={path}
+                                                checked={puzzle.proPickPath === path}
+                                                onChange={() => updatePuzzle({ proPickPath: path })}
+                                            />
+                                            {path === 'econ' ? '💰 Econ' :
+                                                path === 'item' ? '⚔️ Item' :
+                                                    path === 'combat' ? '🔥 Combat' : '🏅 Emblem'}
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Difficulty */}
+                            <div className="pb-field-group">
+                                <label className="pb-label">Độ khó</label>
+                                <select
+                                    className="hex-input"
+                                    value={puzzle.difficulty || 'straightforward'}
+                                    onChange={e => updatePuzzle({ difficulty: e.target.value as PuzzleDifficulty })}
+                                >
+                                    <option value="straightforward">Đơn giản (Straightforward)</option>
+                                    <option value="close_call">Sát nút (Close Call)</option>
+                                    <option value="counter_intuitive">Ngược dòng (Counter-Intuitive)</option>
+                                </select>
+                            </div>
+
+                            {/* Pro Reasoning Intent */}
+                            <div className="pb-field-group">
+                                <label className="pb-label">Giải thích Intent của Pro</label>
+                                <textarea
+                                    className="hex-input hex-textarea"
+                                    value={puzzle.proReasoningIntent || ''}
+                                    onChange={e => updatePuzzle({ proReasoningIntent: e.target.value })}
+                                    placeholder="2-3 câu: Tại sao Pro chọn path này? Ví dụ: 'Win streak 4, board mạnh, không cần econ. Cần item để complete build...'"
+                                    rows={3}
+                                />
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
 

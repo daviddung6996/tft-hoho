@@ -1,6 +1,15 @@
 import { supabase } from '../../lib/supabase';
 import { VideoLibraryItem, VideoMilestone } from './videoLibrary.types';
 import { VIDEO_MILESTONES } from './constants/milestones';
+import { extractYouTubeVideoId } from '../../utils/youtube';
+
+function resolveVideoThumbnailUrl(rawThumbnailUrl: string | null, videoUrl: string): string {
+    const thumbnailUrl = (rawThumbnailUrl ?? '').trim();
+    if (thumbnailUrl) return thumbnailUrl;
+
+    const videoId = extractYouTubeVideoId(videoUrl);
+    return videoId ? `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg` : '';
+}
 
 export const videoLibraryService = {
     /**
@@ -67,7 +76,7 @@ export const videoLibraryService = {
                 puzzleTier: puzzle.tier || 'free',
                 videoUrl: puzzle.video_url,
                 videoTitle: puzzle.video_title || 'Pro Analysis',
-                videoThumbnailUrl: puzzle.video_thumbnail_url || '',
+                videoThumbnailUrl: resolveVideoThumbnailUrl(puzzle.video_thumbnail_url, puzzle.video_url),
                 isUnlocked: isProSupporter || !!unlock,
                 unlockedAt: unlock?.unlocked_at,
                 userResult: unlock?.user_result as 'correct' | 'incorrect' | undefined,

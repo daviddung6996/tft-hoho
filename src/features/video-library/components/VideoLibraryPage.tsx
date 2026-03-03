@@ -4,6 +4,7 @@ import { VideoLibraryItem, LibraryFilter } from '../videoLibrary.types';
 import { VideoCard } from './VideoCard';
 import { VideoPlayerModal } from './VideoPlayerModal';
 import { LibraryProgress } from './LibraryProgress';
+import { ProSupporterIcon } from '../../../components/common/ProSupporterIcon';
 import './VideoLibraryPage.css';
 
 interface VideoLibraryPageProps {
@@ -43,11 +44,17 @@ export const VideoLibraryPage: React.FC<VideoLibraryPageProps> = ({ onBack }) =>
                 <div className="corner-accent corner-tr" />
 
                 <div className="video-library-header">
-                    <button className="video-library-back" onClick={onBack}>
-                        <span>←</span>
-                    </button>
                     <div className="video-library-title-section">
-                        <span className="video-library-badge">PRO SUPPORTER</span>
+                        <div className="video-library-top-row">
+                            <button className="video-library-back" onClick={onBack} title="Quay lại">
+                                <span className="back-icon">←</span>
+                                <span className="back-label">Quay lại</span>
+                            </button>
+                            <span className="video-library-badge">
+                                <ProSupporterIcon size={16} className="video-library-badge-icon" />
+                                PRO SUPPORTER
+                            </span>
+                        </div>
                         <h1 className="video-library-title">Kho Pro Analysis</h1>
                         <span className="video-library-subtitle">
                             Video giải thích chuyên sâu từ tftiseasy

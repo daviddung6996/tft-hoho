@@ -171,12 +171,32 @@
     background: linear-gradient(180deg, rgba(21, 58, 62, 0.5) 0%, rgba(5, 28, 30, 0.8) 100%);
     border: 1px solid rgba(200, 170, 110, 0.3);
     cursor: pointer;
-    transition: border-color 0.2s ease;
+    transition: border-color 0.2s ease, transform 0.12s ease, box-shadow 0.2s ease, background 0.2s ease;
     z-index: 1;
 }
 
 .share-caption-box:hover {
     border-color: rgba(200, 170, 110, 0.5);
+    box-shadow: 0 0 14px rgba(200, 170, 110, 0.12);
+}
+
+.share-caption-box:active {
+    transform: translateY(1px) scale(0.995);
+    border-color: rgba(200, 170, 110, 0.65);
+}
+
+.share-caption-box:focus-visible {
+    outline: none;
+    border-color: rgba(200, 170, 110, 0.72);
+    box-shadow:
+        0 0 0 2px rgba(200, 170, 110, 0.18),
+        0 0 14px rgba(200, 170, 110, 0.16);
+}
+
+.share-caption-box.is-copied {
+    border-color: rgba(200, 170, 110, 0.78);
+    background: linear-gradient(180deg, rgba(29, 67, 70, 0.58) 0%, rgba(8, 34, 36, 0.86) 100%);
+    box-shadow: 0 0 16px rgba(200, 170, 110, 0.2);
 }
 
 .share-caption-label {
@@ -193,8 +213,14 @@
 }
 
 .share-caption-label .copied-tag {
-    color: #10B981;
+    color: #c8aa6e;
+    background: rgba(200, 170, 110, 0.15);
+    border: 1px solid rgba(200, 170, 110, 0.42);
+    padding: 2px 8px;
+    border-radius: 999px;
     letter-spacing: 1px;
+    font-weight: 700;
+    line-height: 1.2;
 }
 
 .share-caption-text {

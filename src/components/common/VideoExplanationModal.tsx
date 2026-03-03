@@ -1,22 +1,12 @@
 
 import React, { useState, useEffect } from 'react';
 import './VideoExplanationModal.css';
+import { buildYouTubeEmbedUrl, extractYouTubeVideoId } from '../../utils/youtube';
 
 interface VideoExplanationModalProps {
     initialUrl?: string;
     onSave: (url: string) => void;
     onClose: () => void;
-}
-
-/** Extract YouTube video ID from various URL formats */
-function extractYouTubeId(url: string): string | null {
-    if (!url) return null;
-    // Standard watch URL
-    const watchMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/);
-    if (watchMatch) return watchMatch[1];
-    // Just a video ID (11 chars)
-    if (/^[a-zA-Z0-9_-]{11}$/.test(url.trim())) return url.trim();
-    return null;
 }
 
 export const VideoExplanationModal: React.FC<VideoExplanationModalProps> = ({
@@ -25,11 +15,11 @@ export const VideoExplanationModal: React.FC<VideoExplanationModalProps> = ({
     onClose,
 }) => {
     const [url, setUrl] = useState(initialUrl);
-    const [videoId, setVideoId] = useState<string | null>(extractYouTubeId(initialUrl));
+    const [videoId, setVideoId] = useState<string | null>(extractYouTubeVideoId(initialUrl));
     const [embedError, setEmbedError] = useState(false);
 
     useEffect(() => {
-        const id = extractYouTubeId(url);
+        const id = extractYouTubeVideoId(url);
         setVideoId(id);
         setEmbedError(false);
     }, [url]);
@@ -97,7 +87,7 @@ export const VideoExplanationModal: React.FC<VideoExplanationModalProps> = ({
                             )}
                         </div>
                         <p className="vem-hint">
-                            Dùng YouTube Unlisted để host video giải thích private. Hỗ trợ: youtu.be/ID, youtube.com/watch?v=ID
+                            Dùng YouTube Unlisted để host video giải thích private. Hỗ trợ: youtu.be/ID, youtube.com/watch?v=ID, /shorts/ID, /live/ID, /embed/ID
                         </p>
                     </div>
 
@@ -113,7 +103,7 @@ export const VideoExplanationModal: React.FC<VideoExplanationModalProps> = ({
                                 <iframe
                                     key={videoId}
                                     className="vem-embed"
-                                    src={`https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1`}
+                                    src={buildYouTubeEmbedUrl(videoId)}
                                     title="YouTube video preview"
                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                     allowFullScreen

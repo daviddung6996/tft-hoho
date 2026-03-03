@@ -20,7 +20,8 @@ export interface TCoinTransaction {
 }
 
 export type EarnReason =
-    | 'puzzle_correct'
+    | 'puzzle_correct_reroll'
+    | 'puzzle_correct_slow'
     | 'puzzle_correct_no_reroll'
     | 'puzzle_correct_fast'
     | 'puzzle_incorrect'
@@ -41,10 +42,11 @@ export type SpendReason =
 
 /** T-Coin earn rates from SHIP-PLAN */
 export const TCOIN_EARN_RATES: Record<EarnReason, number> = {
-    puzzle_correct: 5,
-    puzzle_correct_no_reroll: 8,
-    puzzle_correct_fast: 10,
-    puzzle_incorrect: 1,
+    puzzle_correct_reroll: 2,
+    puzzle_correct_slow: 1,
+    puzzle_correct_no_reroll: 3,
+    puzzle_correct_fast: 5,
+    puzzle_incorrect: 0,
     daily_challenge_complete: 15,
     daily_challenge_correct: 30,
     streak_3: 10,
@@ -55,6 +57,18 @@ export const TCOIN_EARN_RATES: Record<EarnReason, number> = {
     video_milestone_15: 50,
     video_milestone_30: 100,
 };
+
+/** Puzzle earn reasons that are subject to the daily cap (UTC+7). */
+export const TCOIN_PUZZLE_DAILY_CAPPED_REASONS: EarnReason[] = [
+    'puzzle_correct_fast',
+    'puzzle_correct_no_reroll',
+    'puzzle_correct_slow',
+    'puzzle_correct_reroll',
+    'puzzle_incorrect',
+];
+
+/** Hard cap for puzzle-earned T-Coin per day (UTC+7). */
+export const TCOIN_PUZZLE_DAILY_CAP = 15;
 
 /** T-Coin spend costs */
 export const TCOIN_SPEND_COSTS: Record<SpendReason, number> = {

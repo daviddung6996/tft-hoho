@@ -24,6 +24,7 @@ interface BoardProps {
     playerAugments?: AugmentData[]; // Player's augments for the tree
     ioniaPath?: IoniaPath; // [NEW] Current game's Ionia Path
     voidMods?: VoidMod[]; // [NEW] Current game's Void Mods (3 items)
+    streakCount?: number; // [NEW] Win streak indicator near Ionia/Void icons
 }
 
 /**
@@ -41,7 +42,8 @@ export const Board: React.FC<BoardProps> = ({
     playerAugmentTreeUrl,
     playerAugments = [],
     ioniaPath,
-    voidMods = []
+    voidMods = [],
+    streakCount,
 }) => {
     const boardContainerRef = React.useRef<HTMLDivElement>(null);
 
@@ -119,7 +121,7 @@ export const Board: React.FC<BoardProps> = ({
                     {/* PLAYER VIEW: Board + Bench */}
                     {/* Game Info Icons - Ionia Path & Void Mods - Display on Player's board */}
                     {ioniaPath && voidMods.length > 0 && (
-                        <GameInfoIcons ioniaPath={ioniaPath} voidMods={voidMods} />
+                        <GameInfoIcons ioniaPath={ioniaPath} voidMods={voidMods} streakCount={streakCount} />
                     )}
                     <div className="board-half player-side">
                         <div className="board-grid">

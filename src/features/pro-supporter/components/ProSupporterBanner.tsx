@@ -1,4 +1,5 @@
 
+import { ProSupporterIcon } from '../../../components/common/ProSupporterIcon';
 import { PRO_SUPPORTER_PRICING } from '../proSupporter.types';
 import './ProSupporterBanner.css';
 
@@ -11,7 +12,10 @@ export function ProSupporterBanner({ onLearnMore }: ProSupporterBannerProps) {
         <div className="pro-supporter-banner">
             <div className="pro-supporter-banner-glow" />
             <div className="pro-supporter-banner-content">
-                <div className="pro-supporter-banner-badge">⭐ PRO SUPPORTER</div>
+                <div className="pro-supporter-banner-badge">
+                    <ProSupporterIcon size={16} style={{ verticalAlign: 'middle', marginRight: '0.4em' }} />
+                    PRO SUPPORTER
+                </div>
                 <h3 className="pro-supporter-banner-title">
                     Mở khóa tất cả puzzle + Giải thích từ tftiseasy#00000
                 </h3>

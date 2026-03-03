@@ -1,0 +1,273 @@
+/* ==========================================================================
+   TOP STATUS BAR - Hextech Core compliant
+   Rules applied:
+     - Teal dark backgrounds (rgba 13-21, 46-58, 48-62), not pitch black
+     - Gold border rgba(200,170,110) at layered opacities
+     - Corner accent frames instead of clip-path
+     - border-radius: 0 (Hextech default)
+     - Spectral for headings, Inter for labels
+     - No per-slot looping animation
+     - No hover animations
+     - cqw units throughout
+   ========================================================================== */
+
+/* -- Container -- */
+.top-status-bar {
+    position: absolute;
+    top: 0.9cqw;
+    right: calc(50% - 10.585cqw);
+    z-index: 210;
+
+    display: flex;
+    align-items: center;
+
+    height: 3.8cqw;
+
+    background:
+        radial-gradient(ellipse at 50% 0%, rgba(200, 170, 110, 0.07) 0%, transparent 58%),
+        rgba(13, 46, 48, 0.97);
+
+    border: 0.06cqw solid rgba(200, 170, 110, 0.45);
+    border-radius: 0;
+
+    filter:
+        drop-shadow(0 0.2cqw 0.7cqw rgba(0, 0, 0, 0.7)) drop-shadow(0 0 0.5cqw rgba(200, 170, 110, 0.07));
+
+    pointer-events: none;
+    animation: tsb-drop 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* -- Corner Accent Frames -- */
+.tsb-corner {
+    position: absolute;
+    width: 1.1cqw;
+    height: 1.1cqw;
+    border-color: #c8aa6e;
+    border-style: solid;
+    border-width: 0;
+    opacity: 0.65;
+    z-index: 1;
+}
+
+.tsb-corner-tl {
+    top: -0.06cqw;
+    left: -0.06cqw;
+    border-top-width: 0.15cqw;
+    border-left-width: 0.15cqw;
+}
+
+.tsb-corner-tr {
+    top: -0.06cqw;
+    right: -0.06cqw;
+    border-top-width: 0.15cqw;
+    border-right-width: 0.15cqw;
+}
+
+.tsb-corner-bl {
+    bottom: -0.06cqw;
+    left: -0.06cqw;
+    border-bottom-width: 0.15cqw;
+    border-left-width: 0.15cqw;
+}
+
+.tsb-corner-br {
+    bottom: -0.06cqw;
+    right: -0.06cqw;
+    border-bottom-width: 0.15cqw;
+    border-right-width: 0.15cqw;
+}
+
+/* -- Stage Badge -- */
+.tsb-stage-badge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0 1.3cqw 0 1.6cqw;
+    height: 100%;
+    gap: 0.08cqw;
+    flex-shrink: 0;
+}
+
+.tsb-stage-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.55cqw;
+    font-weight: 600;
+    color: rgba(200, 170, 110, 0.45);
+    letter-spacing: 0.12cqw;
+    text-transform: uppercase;
+    line-height: 1;
+}
+
+.tsb-stage-num {
+    font-family: 'Spectral', serif;
+    font-weight: 700;
+    font-size: 1.5cqw;
+    color: #c8aa6e;
+    text-shadow:
+        0 0 0.6cqw rgba(200, 170, 110, 0.55),
+        0 0.06cqw 0.2cqw rgba(0, 0, 0, 0.85);
+    letter-spacing: 0.05cqw;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+/* -- Vertical Separator -- */
+.tsb-separator {
+    width: 0.06cqw;
+    height: 2.1cqw;
+    background: linear-gradient(180deg,
+            transparent 0%,
+            rgba(200, 170, 110, 0.4) 25%,
+            rgba(200, 170, 110, 0.4) 75%,
+            transparent 100%);
+    flex-shrink: 0;
+}
+
+/* -- Rounds Container -- */
+.tsb-rounds {
+    display: flex;
+    align-items: center;
+    gap: 0.2cqw;
+    padding: 0 1cqw;
+    height: 100%;
+}
+
+/* -- Round Slot -- */
+.tsb-slot {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.1cqw;
+
+    width: 2.55cqw;
+    height: 2.95cqw;
+
+    background: rgba(11, 40, 43, 0.85);
+    border: 0.05cqw solid rgba(200, 170, 110, 0.12);
+    border-radius: 0;
+    overflow: hidden;
+}
+
+.tsb-slot--win {
+    background: rgba(16, 185, 129, 0.09);
+    border-color: rgba(16, 185, 129, 0.38);
+}
+
+.tsb-slot--loss {
+    background: rgba(239, 68, 68, 0.09);
+    border-color: rgba(239, 68, 68, 0.38);
+}
+
+.tsb-slot--past {
+    background: rgba(11, 40, 43, 0.65);
+    border-color: rgba(200, 170, 110, 0.08);
+}
+
+.tsb-slot--future {
+    opacity: 0.3;
+}
+
+.tsb-slot--active {
+    background: rgba(16, 52, 56, 0.95);
+    border-color: rgba(200, 170, 110, 0.55);
+    box-shadow:
+        0 0 0.4cqw rgba(200, 170, 110, 0.15),
+        inset 0 0 0.25cqw rgba(200, 170, 110, 0.06);
+}
+
+/* -- Active top-edge highlight bar -- */
+.tsb-active-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 0.18cqw;
+    background: linear-gradient(90deg, transparent 0%, #c8aa6e 30%, #c8aa6e 70%, transparent 100%);
+    box-shadow: 0 0 0.45cqw rgba(200, 170, 110, 0.75);
+}
+
+/* -- Icon -- */
+.tsb-icon-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    opacity: 0.7;
+    transition: opacity 0s;
+}
+
+.tsb-slot--active .tsb-icon-wrap,
+.tsb-slot--win .tsb-icon-wrap,
+.tsb-slot--loss .tsb-icon-wrap {
+    opacity: 1;
+}
+
+.tsb-icon {
+    width: 1.65cqw;
+    height: 1.65cqw;
+    display: block;
+}
+
+/* 3-2 augment icon is intentionally larger than other round icons */
+.tsb-icon--augment {
+    width: 1.95cqw;
+    height: 1.95cqw;
+}
+
+.tsb-icon--carousel {
+    width: 1.95cqw;
+    height: 1.95cqw;
+}
+
+.tsb-icon--pve {
+    width: 1.95cqw;
+    height: 1.95cqw;
+}
+
+/* -- Round sub-label (e.g. 3-2) -- */
+.tsb-round-lbl {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.5cqw;
+    font-weight: 600;
+    color: rgba(200, 170, 110, 0.38);
+    letter-spacing: 0.02cqw;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.tsb-slot--active .tsb-round-lbl {
+    color: rgba(200, 170, 110, 0.88);
+}
+
+.tsb-slot--win .tsb-round-lbl {
+    color: rgba(16, 185, 129, 0.65);
+}
+
+.tsb-slot--loss .tsb-round-lbl {
+    color: rgba(239, 68, 68, 0.65);
+}
+
+/* -- Dimmed state (during puzzle review) -- */
+.top-status-bar--dimmed {
+    opacity: 0.3;
+    filter:
+        blur(1.5px) drop-shadow(0 0.2cqw 0.7cqw rgba(0, 0, 0, 0.7));
+    pointer-events: none;
+    transition: opacity 0.3s ease, filter 0.3s ease;
+}
+
+/* -- Animations -- */
+@keyframes tsb-drop {
+    from {
+        opacity: 0;
+        transform: translateY(-115%);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

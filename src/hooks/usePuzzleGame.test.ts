@@ -33,6 +33,19 @@ Object.defineProperty(window, 'history', {
   writable: true,
 });
 
+const createPuzzle = (id: string, title?: string): PuzzleScenario => ({
+  id,
+  title: title ?? `Puzzle ${id}`,
+  proPlayer: 'TestPlayer',
+  rank: 'Challenger',
+  stage: '2-1',
+  augments: [],
+  proFirstRoll: [],
+  proSecondRoll: [],
+  proFinalPick: null,
+  proPickRound: 0,
+});
+
 describe('usePuzzleGame - Bug Condition Exploration', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -73,12 +86,9 @@ describe('usePuzzleGame - Bug Condition Exploration', () => {
         fc.integer({ min: 1, max: 20 }),
         async (puzzleCount) => {
           // Setup: Create puzzle pool
-          const mockPuzzles = Array.from({ length: puzzleCount }, (_, i) => ({
-            id: `puzzle-${i}`,
-            title: `Puzzle ${i}`,
-            description: `Test puzzle ${i}`,
-            augments: [],
-          }));
+          const mockPuzzles = Array.from({ length: puzzleCount }, (_, i) =>
+            createPuzzle(`puzzle-${i}`, `Puzzle ${i}`)
+          );
 
           // Setup: All puzzles are completed
           const allPuzzleIds = mockPuzzles.map(p => p.id);
@@ -116,7 +126,6 @@ describe('usePuzzleGame - Bug Condition Exploration', () => {
           // Assert: Expected behavior when all puzzles are completed
           
           // 1. System should expose allPuzzlesCompleted flag as true
-          // @ts-expect-error - This property should exist in the fixed version
           expect(result.current.allPuzzlesCompleted).toBe(true);
 
           // 2. handleNextPuzzle should NOT select any puzzle
@@ -160,11 +169,11 @@ describe('usePuzzleGame - Bug Condition Exploration', () => {
   it('Concrete example: 5 puzzles all completed - should detect completion', async () => {
     // Setup: 5 puzzles, all completed
     const mockPuzzles = [
-      { id: 'puzzle-1', title: 'Puzzle 1', description: 'Test 1', augments: [] },
-      { id: 'puzzle-2', title: 'Puzzle 2', description: 'Test 2', augments: [] },
-      { id: 'puzzle-3', title: 'Puzzle 3', description: 'Test 3', augments: [] },
-      { id: 'puzzle-4', title: 'Puzzle 4', description: 'Test 4', augments: [] },
-      { id: 'puzzle-5', title: 'Puzzle 5', description: 'Test 5', augments: [] },
+      createPuzzle('puzzle-1', 'Puzzle 1'),
+      createPuzzle('puzzle-2', 'Puzzle 2'),
+      createPuzzle('puzzle-3', 'Puzzle 3'),
+      createPuzzle('puzzle-4', 'Puzzle 4'),
+      createPuzzle('puzzle-5', 'Puzzle 5'),
     ];
 
     const allPuzzleIds = mockPuzzles.map(p => p.id);
@@ -191,7 +200,6 @@ describe('usePuzzleGame - Bug Condition Exploration', () => {
     await waitFor(() => true, { timeout: 100 });
 
     // Assert: Expected behavior
-    // @ts-expect-error - This property should exist in the fixed version
     expect(result.current.allPuzzlesCompleted).toBe(true);
 
     const puzzleAfterNext = result.current.currentPuzzle;
@@ -218,22 +226,6 @@ describe('usePuzzleGame - Preservation Property Tests', () => {
       },
       writable: true,
     });
-  });
-
-  /**
-   * Helper function to create a valid PuzzleScenario object
-   */
-  const createPuzzle = (id: string): PuzzleScenario => ({
-    id,
-    title: `Puzzle ${id}`,
-    proPlayer: 'TestPlayer',
-    rank: 'Challenger',
-    stage: '2-1',
-    augments: [],
-    proFirstRoll: [],
-    proSecondRoll: [],
-    proFinalPick: null,
-    proPickRound: 0,
   });
 
   /**
@@ -471,8 +463,6 @@ describe('usePuzzleGame - Preservation Property Tests', () => {
     await waitFor(() => {
       expect(result.current.currentPuzzle).toBeTruthy();
     });
-
-    const initialPuzzle = result.current.currentPuzzle;
 
     // Act: Navigate to next puzzle
     act(() => {

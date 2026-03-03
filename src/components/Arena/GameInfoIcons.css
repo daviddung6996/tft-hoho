@@ -9,8 +9,67 @@
     z-index: 50;
     display: flex;
     flex-direction: row;
-    gap: 0.5cqw;
+    align-items: center;
+    gap: 0.95cqw;
     pointer-events: auto;
+}
+
+.game-info-icons__trait-group {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5cqw;
+}
+
+.game-info-streak {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.36cqw;
+    margin-right: 0.15cqw;
+    transform: translateX(-50px);
+}
+
+.game-info-streak__emblem {
+    width: 3.35cqw;
+    height: 3.35cqw;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.game-info-streak__emblem svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    filter: drop-shadow(0 0 0.35cqw rgba(255, 170, 78, 0.48));
+}
+
+.game-info-streak--loss .game-info-streak__emblem svg {
+    filter: drop-shadow(0 0 0.16cqw rgba(56, 189, 248, 0.18));
+}
+
+.game-info-streak__count {
+    min-width: 1.2cqw;
+    height: 1.28cqw;
+    padding: 0 0.25cqw;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.76cqw;
+    font-weight: 700;
+    color: #f9e9c8;
+    background: linear-gradient(180deg, rgba(18, 30, 50, 0.96), rgba(9, 15, 28, 0.96));
+    border: 0.06cqw solid rgba(200, 170, 110, 0.52);
+    border-radius: 0.12cqw;
+    line-height: 1;
+    box-shadow: 0 0 0.24cqw rgba(0, 0, 0, 0.35);
+}
+
+.game-info-streak--loss .game-info-streak__count {
+    color: #d6f3ff;
+    background: linear-gradient(180deg, rgba(7, 11, 16, 0.98), rgba(2, 4, 7, 0.98));
+    border-color: rgba(56, 189, 248, 0.56);
+    box-shadow: 0 0 0.2cqw rgba(2, 132, 199, 0.28);
 }
 
 /* Individual Icon Container */

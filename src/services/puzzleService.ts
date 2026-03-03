@@ -18,16 +18,28 @@ const checkAdminAccess = async (): Promise<boolean> => {
 export const puzzleService = {
     // Fetch all puzzles from Supabase
     async getAll() {
-        const { data, error } = await supabase
+        let { data, error } = await supabase
             .from('puzzles')
             .select('*')
             .is('deleted_at', null)
             .order('created_at', { ascending: false });
 
+        // Backward compatibility: some DBs may not have deleted_at yet.
+        // In that case, retry without soft-delete filter instead of throwing
+        // and silently falling back to local mock puzzles.
+        if (error && isMissingDeletedAtColumnError(error)) {
+            const retry = await supabase
+                .from('puzzles')
+                .select('*')
+                .order('created_at', { ascending: false });
+            data = retry.data;
+            error = retry.error;
+        }
+
         if (error) throw error;
 
         // Map DB rows back to application domain objects if needed
-        return data.map((row: any) => {
+        return (data ?? []).map((row: any) => {
             const meta = row.meta_data || {};
             const boardState = row.board_state || {};
 
@@ -85,7 +97,23 @@ export const puzzleService = {
                 voidModIds: row.void_mod_ids || [],
 
                 // Puzzle tier (free/advanced/rare)
-                tier: row.tier || 'free'
+                tier: row.tier || 'free',
+
+                // Video explanation (raw DB columns for App.tsx usage)
+                video_url: row.video_url || null,
+                video_title: row.video_title || null,
+                // Mapped back for admin builder (PuzzleScenario field names)
+                explanationVideoUrl: row.video_url || undefined,
+                explanationVideoTitle: row.video_title || undefined,
+
+                // V2: Augment Trainer 3-2 fields
+                streakHistory: meta.streakHistory,
+                streakCount: meta.streakCount,
+                augment21: meta.augment21 || null,
+                proPickPath: meta.proPickPath,
+                augmentPaths: meta.augmentPaths,
+                proReasoningIntent: meta.proReasoningIntent,
+                difficulty: meta.difficulty
             };
         }) as PuzzleScenario[];
     },
@@ -147,7 +175,15 @@ export const puzzleService = {
                 hasExtraReroll: puzzle.hasExtraReroll,
                 proRerollIndices: puzzle.proRerollIndices,
                 proSecondRerollIndices: puzzle.proSecondRerollIndices,
-                proPickIndex: puzzle.proPickIndex
+                proPickIndex: puzzle.proPickIndex,
+                // V2: Augment Trainer 3-2 fields
+                streakHistory: puzzle.streakHistory,
+                streakCount: puzzle.streakCount,
+                augment21: puzzle.augment21,
+                proPickPath: puzzle.proPickPath,
+                augmentPaths: puzzle.augmentPaths,
+                proReasoningIntent: puzzle.proReasoningIntent,
+                difficulty: puzzle.difficulty
             },
             // Pack board state
             board_state: {
@@ -170,7 +206,10 @@ export const puzzleService = {
             // Game Info fields
             ionia_path_id: puzzle.ioniaPathId || null,
             void_mod_ids: puzzle.voidModIds || [],
-            tier: puzzle.tier || 'free'
+            tier: puzzle.tier || 'free',
+            // Video explanation
+            video_url: puzzle.explanationVideoUrl || null,
+            video_title: puzzle.explanationVideoTitle || null
         };
 
         // If ID is random/generated on client, we pass it. If DB generates it, we might need separate insert.
@@ -310,3 +349,11 @@ export const puzzleService = {
         if (error) throw error;
     }
 };
+
+function isMissingDeletedAtColumnError(error: any): boolean {
+    const text = `${error?.message ?? ''} ${error?.details ?? ''} ${error?.hint ?? ''}`.toLowerCase();
+    return text.includes('deleted_at') && (
+        text.includes('column') ||
+        text.includes('schema cache')
+    );
+}
