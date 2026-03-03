@@ -39,8 +39,8 @@ export function PuzzleLockOverlay({
     const config = TIER_META[tier];
     const cost = tier === 'advanced' ? TCOIN_SPEND_COSTS.unlock_advanced : TCOIN_SPEND_COSTS.unlock_rare;
 
-    const defaultTitle = 'Puzzle xịn được chọn lọc từ trận thật.';
-    const defaultSubtitle = 'Có giải thích chi tiết giúp bạn nâng tư duy augment.';
+    const defaultTitle = 'Puzzle xịn được chọn lọc từ game đấu hay của Pro.';
+    const defaultSubtitle = 'Có giải thích chi tiết giúp bạn nâng cấp tư duy chọn lõi.';
 
     const resolvedUnlockLabel = requiresLogin
         ? 'Đăng nhập để mở khóa'

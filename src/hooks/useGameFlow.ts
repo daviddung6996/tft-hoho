@@ -1,5 +1,5 @@
 import React from 'react';
-import { CommunityVotes } from '../data/puzzleScenarios';
+import { CommunityVotes, AugmentPath } from '../data/puzzleScenarios';
 import { AugmentData } from '../services/augmentService';
 import { userStatsService } from '../services/userStatsService';
 import { voteService } from '../services/voteService';
@@ -7,7 +7,14 @@ import { updateUserIq } from '../features/user-iq/userIq.service';
 import { tcoinService } from '../features/tcoin/tcoin.service';
 import { tcoinEvents } from '../features/tcoin/tcoinEvents';
 
-export type PuzzlePhase = 'selecting' | 'reviewing';
+export type PuzzlePhase = 'declaring_intent' | 'selecting' | 'reviewing';
+const INTENT_DECLARATION_STAGES = new Set(['3-2']);
+
+const shouldShowIntentDeclaration = (puzzle: any): boolean => {
+    if (!puzzle) return false;
+    const stage = typeof puzzle.stage === 'string' ? puzzle.stage.trim() : '';
+    return INTENT_DECLARATION_STAGES.has(stage);
+};
 
 export const useGameFlow = (currentPuzzle: any, userId?: string, options?: { canPlayPuzzle?: boolean }) => {
     const [puzzlePhase, setPuzzlePhase] = React.useState<PuzzlePhase>('selecting');
@@ -30,6 +37,12 @@ export const useGameFlow = (currentPuzzle: any, userId?: string, options?: { can
     // Timing tracking for analytics
     const [startTime, setStartTime] = React.useState<number | null>(null);
 
+    // V2: Intent declaration state
+    const [declaredPath, setDeclaredPath] = React.useState<AugmentPath | null>(null);
+    const [intentStartTime, setIntentStartTime] = React.useState<number | null>(null);
+    const [timeToPath, setTimeToPath] = React.useState<number | null>(null);
+    const isV2Puzzle = shouldShowIntentDeclaration(currentPuzzle);
+
     // Initialize on puzzle change
     React.useEffect(() => {
         if (!currentPuzzle) return;
@@ -44,16 +57,34 @@ export const useGameFlow = (currentPuzzle: any, userId?: string, options?: { can
         setUserPickRound(0); // 0 = First Roll, 1 = Second Roll
         setRerollOrder([0, 0, 0]);
         setRollSequence(1);
-        setPuzzlePhase('selecting');
+
+        // Intent declaration is only shown for stage 3-2.
+        const hasIntentDeclaration = shouldShowIntentDeclaration(currentPuzzle);
+        setPuzzlePhase(hasIntentDeclaration ? 'declaring_intent' : 'selecting');
+
         setSelectedAugment(null);
         setIqChangeResult(null);
+
+        // V2: Reset intent state
+        setDeclaredPath(null);
+        setTimeToPath(null);
 
         // Fetch real community votes from DB
         voteService.getVotes(currentPuzzle.id).then(setCommunityVotes).catch(() => setCommunityVotes({}));
 
         // Start timing when puzzle loads
         setStartTime(Date.now());
+        setIntentStartTime(Date.now());
     }, [currentPuzzle]);
+
+    // V2: Handle path declaration (intent step)
+    const handlePathDeclare = (path: AugmentPath) => {
+        if (options?.canPlayPuzzle === false) return;
+        setDeclaredPath(path);
+        const elapsed = intentStartTime ? Date.now() - intentStartTime : 0;
+        setTimeToPath(elapsed);
+        setPuzzlePhase('selecting');
+    };
 
     const handleAugmentReroll = (indexToReplace: number) => {
         if (options?.canPlayPuzzle === false) return; // Puzzle is locked
@@ -132,27 +163,40 @@ export const useGameFlow = (currentPuzzle: any, userId?: string, options?: { can
                 rerollIndices,
                 timeToDecideMs,
                 puzzleStage: currentPuzzle.stage || '',
-                proPickId
+                proPickId,
+                // V2: Intent data
+                declaredPath: declaredPath || undefined,
+                intentScore: declaredPath && currentPuzzle.proPickPath
+                    ? (declaredPath === currentPuzzle.proPickPath ? 10 : 0)
+                    : undefined,
+                timeToPathMs: timeToPath || undefined
             }).catch(err => console.error('Failed to record attempt:', err));
 
             // T-Coin Earning Logic + Animation Event
             if (userId) {
                 const earnTCoin = async () => {
                     try {
-                        let reason: string;
+                        let reason:
+                            | 'puzzle_correct_fast'
+                            | 'puzzle_correct_no_reroll'
+                            | 'puzzle_correct_slow'
+                            | 'puzzle_correct_reroll'
+                            | 'puzzle_incorrect';
                         if (isCorrect) {
-                            if (rerollCount === 0 && timeToDecideMs < 10_000) {
+                            if (rerollCount > 0) {
+                                reason = 'puzzle_correct_reroll';
+                            } else if (timeToDecideMs < 8_000) {
                                 reason = 'puzzle_correct_fast';
-                            } else if (rerollCount === 0) {
+                            } else if (timeToDecideMs < 15_000) {
                                 reason = 'puzzle_correct_no_reroll';
                             } else {
-                                reason = 'puzzle_correct';
+                                reason = 'puzzle_correct_slow';
                             }
                         } else {
                             reason = 'puzzle_incorrect';
                         }
 
-                        const result = await tcoinService.earnCoins(reason as any, currentPuzzle.id);
+                        const result = await tcoinService.earnCoins(reason, currentPuzzle.id);
                         if (result) {
                             // Emit event → triggers flying coin animation + balance pulse
                             tcoinEvents.emit({ amount: result.earned, reason });
@@ -168,7 +212,11 @@ export const useGameFlow = (currentPuzzle: any, userId?: string, options?: { can
 
     const handleReplay = () => {
         if (!currentPuzzle) return;
-        setPuzzlePhase('selecting');
+
+        // Intent declaration is only shown for stage 3-2.
+        const hasIntentDeclaration = shouldShowIntentDeclaration(currentPuzzle);
+        setPuzzlePhase(hasIntentDeclaration ? 'declaring_intent' : 'selecting');
+
         setSelectedAugment(null);
         setIqChangeResult(null);
         // CRITICAL: Filter nulls and limit to exactly 3 augments
@@ -182,8 +230,13 @@ export const useGameFlow = (currentPuzzle: any, userId?: string, options?: { can
         setRerollOrder([0, 0, 0]);
         setRollSequence(1);
 
+        // V2: Reset intent state
+        setDeclaredPath(null);
+        setTimeToPath(null);
+
         // Reset timing for replay
         setStartTime(Date.now());
+        setIntentStartTime(Date.now());
     };
 
     const resetFlow = () => {
@@ -205,7 +258,11 @@ export const useGameFlow = (currentPuzzle: any, userId?: string, options?: { can
         handleAugmentReroll,
         handleAugmentSelect,
         handleReplay,
-        resetFlow
+        resetFlow,
+        // V2: Intent declaration
+        isV2Puzzle,
+        declaredPath,
+        timeToPath,
+        handlePathDeclare
     };
 };
-

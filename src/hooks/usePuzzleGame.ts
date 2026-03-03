@@ -34,6 +34,7 @@ function enrichPuzzleAugments(puzzle: any, dbAugments: AugmentData[]): any {
         proFirstRoll: enrichArray(puzzle.proFirstRoll),
         proSecondRoll: enrichArray(puzzle.proSecondRoll),
         proFinalPick: enrichAugment(puzzle.proFinalPick, dbAugments),
+        augment21: enrichAugment(puzzle.augment21, dbAugments),
         opponents: puzzle.opponents?.map((opp: any) => ({
             ...opp,
             augments: enrichArray(opp.augments)
@@ -58,6 +59,7 @@ export const usePuzzleGame = (isAuthenticated: boolean) => {
     const [currentPuzzleAccess, setCurrentPuzzleAccess] = React.useState<PuzzleAccessResult | null>(null);
     const [isCheckingAccess, setIsCheckingAccess] = React.useState(false);
     const [isUnlocking, setIsUnlocking] = React.useState(false);
+    const [isResolvingNextPuzzle, setIsResolvingNextPuzzle] = React.useState(false);
     const [lockMessageVariant, setLockMessageVariant] = React.useState<LockMessageVariant>('default');
 
     // URL Handling: Check for puzzle ID in URL on initial load and handle async loading
@@ -204,10 +206,14 @@ export const usePuzzleGame = (isAuthenticated: boolean) => {
     }, [puzzles, completedPuzzleIds, currentPuzzleIndex]);
 
     const handleMarkCompleted = async (puzzleId: string) => {
-        if (isAuthenticated && user?.id) {
+        // Always track completion in local state (guest + authenticated),
+        // so "all completed" logic works in the current session.
+        setCompletedPuzzleIds(prev => prev.includes(puzzleId) ? prev : [...prev, puzzleId]);
+
+        // Persist completion only for authenticated users with a real user id.
+        if (user?.id) {
             try {
                 await puzzleService.markPuzzleCompleted(user.id, puzzleId);
-                setCompletedPuzzleIds(prev => [...prev, puzzleId]);
             } catch (e) {
                 console.error("Failed to mark puzzle completed:", e);
             }
@@ -282,45 +288,83 @@ export const usePuzzleGame = (isAuthenticated: boolean) => {
         } catch { /* keep existing state */ }
     }, [currentPuzzle?.id, currentPuzzle?.tier, checkAccess]);
 
-    const handleNextPuzzle = () => {
-        const cp = puzzles[currentPuzzleIndex];
-        const unplayedPuzzles = puzzles.filter(p => !completedPuzzleIds.includes(p.id) && p.id !== cp?.id);
+    const applyPuzzleAccessPreset = React.useCallback((targetPuzzle: any) => {
+        if (targetPuzzle.tier && targetPuzzle.tier !== 'free') {
+            if (isProSupporter) {
+                setLockMessageVariant('default');
+                setCurrentPuzzleAccess({ canPlay: true, reason: 'pro_supporter', tier: targetPuzzle.tier });
+            } else {
+                setLockMessageVariant(targetPuzzle.tier === 'rare' ? 'rare_elite' : 'premium_education');
+                const cost = targetPuzzle.tier === 'advanced' ? 30 : 100;
+                setCurrentPuzzleAccess({ canPlay: false, reason: 'locked', cost, tier: targetPuzzle.tier });
+            }
+        } else {
+            setLockMessageVariant('default');
+            setCurrentPuzzleAccess({ canPlay: true, reason: 'free', tier: 'free' });
+        }
+    }, [isProSupporter]);
 
-        // Early return if all puzzles are completed - prevent replay
-        if (unplayedPuzzles.length === 0) {
-            // Clear URL to show clean state
+    const getUnplayedPuzzlePool = React.useCallback((pool: any[], completedSet: Set<string>, currentPuzzleId?: string) => {
+        return pool.filter(p => !completedSet.has(p.id) && p.id !== currentPuzzleId);
+    }, []);
+
+    const fetchLatestPuzzles = React.useCallback(async (): Promise<any[]> => {
+        const dbPuzzles = await puzzleService.getAll();
+        const rawPuzzles = dbPuzzles && dbPuzzles.length > 0 ? dbPuzzles : PUZZLE_SCENARIOS;
+        return cachedAugments.length > 0
+            ? rawPuzzles.map(p => enrichPuzzleAugments(p, cachedAugments))
+            : rawPuzzles;
+    }, [cachedAugments]);
+
+    const handleNextPuzzle = React.useCallback(async (): Promise<boolean> => {
+        const cp = puzzles[currentPuzzleIndex];
+        const completedSet = new Set(completedPuzzleIds);
+        if (cp?.id) completedSet.add(cp.id);
+
+        const pickAndApply = (pool: any[]): boolean => {
+            const unplayedPuzzles = getUnplayedPuzzlePool(pool, completedSet, cp?.id);
+            if (unplayedPuzzles.length === 0) return false;
+
+            const randomPuzzle = unplayedPuzzles[Math.floor(Math.random() * unplayedPuzzles.length)];
+            const index = pool.findIndex(p => p.id === randomPuzzle.id);
+            if (index < 0) return false;
+
+            setCurrentPuzzleIndex(index);
+            applyPuzzleAccessPreset(randomPuzzle);
+            return true;
+        };
+
+        if (pickAndApply(puzzles)) {
             const url = new URL(window.location.href);
             url.searchParams.delete('puzzle');
             window.history.pushState({}, '', url);
-            return;
+            return true;
         }
 
-        // Select from unplayed puzzles only — if locked, stop there (don't skip)
-        if (unplayedPuzzles.length > 0) {
-            const randomPuzzle = unplayedPuzzles[Math.floor(Math.random() * unplayedPuzzles.length)];
-            const index = puzzles.findIndex(p => p.id === randomPuzzle.id);
-            setCurrentPuzzleIndex(index);
-            // Pre-set lock state so lock overlay renders BEFORE transition fades out
-            // Pro Supporter: NEVER pre-set locked — always play through
-            if (randomPuzzle.tier && randomPuzzle.tier !== 'free') {
-                if (isProSupporter) {
-                    setLockMessageVariant('default');
-                    setCurrentPuzzleAccess({ canPlay: true, reason: 'pro_supporter', tier: randomPuzzle.tier });
-                } else {
-                    setLockMessageVariant(randomPuzzle.tier === 'rare' ? 'rare_elite' : 'premium_education');
-                    const cost = randomPuzzle.tier === 'advanced' ? 30 : 100;
-                    setCurrentPuzzleAccess({ canPlay: false, reason: 'locked', cost, tier: randomPuzzle.tier });
-                }
-            } else {
-                setLockMessageVariant('default');
-                setCurrentPuzzleAccess({ canPlay: true, reason: 'free', tier: 'free' });
+        setIsResolvingNextPuzzle(true);
+        try {
+            const latestPuzzles = await fetchLatestPuzzles();
+            setPuzzles(latestPuzzles);
+
+            const foundAfterRefresh = pickAndApply(latestPuzzles);
+            if (foundAfterRefresh) {
+                const url = new URL(window.location.href);
+                url.searchParams.delete('puzzle');
+                window.history.pushState({}, '', url);
+                return true;
             }
-        }
 
-        const url = new URL(window.location.href);
-        url.searchParams.delete('puzzle');
-        window.history.pushState({}, '', url);
-    };
+            const url = new URL(window.location.href);
+            url.searchParams.delete('puzzle');
+            window.history.pushState({}, '', url);
+            return false;
+        } catch (err) {
+            console.error("Failed to resolve next puzzle:", err);
+            return false;
+        } finally {
+            setIsResolvingNextPuzzle(false);
+        }
+    }, [puzzles, currentPuzzleIndex, completedPuzzleIds, getUnplayedPuzzlePool, applyPuzzleAccessPreset, fetchLatestPuzzles]);
 
     // Check if there are free puzzles available to skip to
     const hasFreePuzzlesAvailable = React.useMemo(() => {
@@ -358,19 +402,14 @@ export const usePuzzleGame = (isAuthenticated: boolean) => {
     const refreshPuzzles = React.useCallback(async () => {
         setIsLoadingPuzzles(true);
         try {
-            const dbPuzzles = await puzzleService.getAll();
-            const rawPuzzles = dbPuzzles && dbPuzzles.length > 0 ? dbPuzzles : PUZZLE_SCENARIOS;
-            // Apply enrichment if augments are already loaded
-            const enriched = cachedAugments.length > 0
-                ? rawPuzzles.map(p => enrichPuzzleAugments(p, cachedAugments))
-                : rawPuzzles;
-            setPuzzles(enriched);
+            const latestPuzzles = await fetchLatestPuzzles();
+            setPuzzles(latestPuzzles);
         } catch (err) {
             console.error("Failed to refresh puzzles:", err);
         } finally {
             setIsLoadingPuzzles(false);
         }
-    }, [cachedAugments]);
+    }, [fetchLatestPuzzles]);
 
     return {
         puzzles,
@@ -388,6 +427,7 @@ export const usePuzzleGame = (isAuthenticated: boolean) => {
         currentPuzzleAccess,
         isCheckingAccess,
         isUnlocking,
+        isResolvingNextPuzzle,
         isPuzzlePlayable,
         requiresLoginForUnlock,
         lockMessageVariant,

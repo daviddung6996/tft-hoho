@@ -8,6 +8,7 @@ interface PuzzleInfoProps {
     server?: string;
     encounter?: string;
     streamUrl?: string;
+    onViewLibrary?: () => void;
     userMatchedPro: boolean;
 }
 
@@ -18,6 +19,7 @@ export const PuzzleInfo: React.FC<PuzzleInfoProps> = ({
     server,
     encounter,
     streamUrl,
+    onViewLibrary,
     userMatchedPro
 }) => {
     const [copied, setCopied] = useState(false);
@@ -29,6 +31,18 @@ export const PuzzleInfo: React.FC<PuzzleInfoProps> = ({
         setTimeout(() => setCopied(false), 2000);
     };
 
+    const canOpenProPick = Boolean(onViewLibrary || streamUrl);
+    const handleOpenProPick = () => {
+        if (onViewLibrary) {
+            onViewLibrary();
+            return;
+        }
+
+        if (streamUrl) {
+            window.open(streamUrl, '_blank', 'noopener,noreferrer');
+        }
+    };
+
     return (
         <div className="puzzle-context">
             <div className="context-row">
@@ -38,7 +52,6 @@ export const PuzzleInfo: React.FC<PuzzleInfoProps> = ({
                 {encounter && <span className="context-item"><strong>SỰ KIỆN</strong> {encounter}</span>}
             </div>
             <div className="puzzle-actions">
-                {/* Completion Status Badge */}
                 <div className={`completion-badge ${userMatchedPro ? 'matched' : 'diverged'}`}>
                     {userMatchedPro ? (
                         <>
@@ -58,7 +71,6 @@ export const PuzzleInfo: React.FC<PuzzleInfoProps> = ({
                     )}
                 </div>
 
-                {/* Share Puzzle Button */}
                 <button
                     className="action-btn puzzle-share-btn"
                     onClick={handleSharePuzzle}
@@ -70,12 +82,11 @@ export const PuzzleInfo: React.FC<PuzzleInfoProps> = ({
                     {copied ? 'Đã sao chép' : 'Chia sẻ câu đố'}
                 </button>
 
-                {/* Stream Button */}
-                {streamUrl && (
+                {canOpenProPick && (
                     <button
                         className="action-btn stream-btn"
-                        onClick={() => window.open(streamUrl, '_blank')}
-                        title="Xem stream gốc của pro player"
+                        onClick={handleOpenProPick}
+                        title="Xem Pro chọn lõi trực tiếp"
                     >
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z" />

@@ -29,7 +29,8 @@
       "Bash(where npm)",
       "Bash(where npx)",
       "Bash(where node)",
-      "Bash(ls /d/TFT-hoho/node_modules/.bin/vite*)"
+      "Bash(ls /d/TFT-hoho/node_modules/.bin/vite*)",
+      "Bash(npx skills find \"svg icon 2d game ui\")"
     ]
   },
   "enableAllProjectMcpServers": true,

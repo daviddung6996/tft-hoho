@@ -27,13 +27,13 @@
    ========================================================================== */
 .augment-header-title {
     font-family: 'Spectral', serif;
-    font-size: 3.5cqw;
+    font-size: 1.5cqw;
     font-weight: 700;
-    color: #F0E6D2;
+    color: #c8aa6e;
     text-transform: uppercase;
-    margin-bottom: 2.5cqw;
-    letter-spacing: 0.2cqw;
-    text-shadow: 0 0.3cqw 1cqw rgba(0, 0, 0, 0.6);
+    margin: 0 0 1.5cqw 0;
+    letter-spacing: 0.12em;
+    text-shadow: 0 0 1cqw rgba(200, 170, 110, 0.4);
 }
 
 /* ==========================================================================

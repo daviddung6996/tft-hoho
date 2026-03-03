@@ -1,0 +1,199 @@
+/* ==========================================================================
+   STREAK BAR - Hextech Premium (Classic Aesthetic)
+   ========================================================================== */
+.streak-bar {
+    position: absolute;
+    top: 3.5cqw;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 210;
+
+    display: flex;
+    align-items: stretch;
+    background: linear-gradient(180deg, rgba(21, 58, 62, 0.95) 0%, rgba(13, 46, 48, 0.98) 100%);
+    border: 0.06cqw solid rgba(200, 170, 110, 0.45);
+    box-shadow:
+        0 1cqw 2.5cqw rgba(0, 0, 0, 0.8),
+        inset 0 0.1cqw 0.2cqw rgba(200, 170, 110, 0.15);
+    pointer-events: none;
+
+    animation: streak-fade-in 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    white-space: nowrap;
+}
+
+/* ── Corner Accents ─────────────────────────── */
+.streak-corner {
+    position: absolute;
+    width: 0.8cqw;
+    height: 0.8cqw;
+    border-color: #c8aa6e;
+    border-style: solid;
+    border-width: 0;
+    opacity: 0.8;
+}
+
+.streak-corner-tl {
+    top: -0.06cqw;
+    left: -0.06cqw;
+    border-top-width: 0.15cqw;
+    border-left-width: 0.15cqw;
+}
+
+.streak-corner-tr {
+    top: -0.06cqw;
+    right: -0.06cqw;
+    border-top-width: 0.15cqw;
+    border-right-width: 0.15cqw;
+}
+
+.streak-corner-bl {
+    bottom: -0.06cqw;
+    left: -0.06cqw;
+    border-bottom-width: 0.15cqw;
+    border-left-width: 0.15cqw;
+}
+
+.streak-corner-br {
+    bottom: -0.06cqw;
+    right: -0.06cqw;
+    border-bottom-width: 0.15cqw;
+    border-right-width: 0.15cqw;
+}
+
+/* ── Vertical Dividers ─────────────────────── */
+.streak-divider {
+    width: 0.08cqw;
+    margin: 0.6cqw 0;
+    background: linear-gradient(180deg, transparent 0%, rgba(200, 170, 110, 0.4) 50%, transparent 100%);
+}
+
+/* ── Label Section ─────────────────────────── */
+.streak-label-container {
+    display: flex;
+    align-items: center;
+    padding: 0 1.5cqw;
+    background: radial-gradient(ellipse at 0% 50%, rgba(200, 170, 110, 0.08) 0%, transparent 80%);
+}
+
+.streak-label-text {
+    font-size: 0.85cqw;
+    font-weight: 700;
+    color: #F0E6D2;
+    font-family: 'Spectral', serif;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    text-shadow: 0 0 0.8cqw rgba(200, 170, 110, 0.5);
+}
+
+/* ── Segments Container ─────────────── */
+.streak-segments {
+    display: flex;
+    gap: 0.3cqw;
+    align-items: center;
+    padding: 0.6cqw 1.2cqw;
+}
+
+/* Individual W/L segment (Recessed Slot) */
+.streak-segment {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.15cqw;
+    padding: 0.4cqw 0.8cqw;
+    min-width: 3.2cqw;
+    height: 100%;
+
+    /* Inset/Recessed styling */
+    background: rgba(0, 0, 0, 0.45);
+    border: 0.06cqw solid rgba(200, 170, 110, 0.15);
+    border-top: 0.06cqw solid rgba(0, 0, 0, 0.8);
+    border-bottom: 0.06cqw solid rgba(255, 255, 255, 0.06);
+    box-shadow: inset 0 0.2cqw 0.5cqw rgba(0, 0, 0, 0.6);
+}
+
+.streak-segment.segment-win {
+    background: radial-gradient(ellipse at center, rgba(16, 185, 129, 0.2) 0%, rgba(0, 0, 0, 0.6) 100%);
+    border-color: rgba(16, 185, 129, 0.25);
+    border-top-color: rgba(0, 0, 0, 0.8);
+    border-bottom-color: rgba(16, 185, 129, 0.15);
+}
+
+.streak-segment.segment-loss {
+    background: radial-gradient(ellipse at center, rgba(239, 68, 68, 0.2) 0%, rgba(0, 0, 0, 0.6) 100%);
+    border-color: rgba(239, 68, 68, 0.25);
+    border-top-color: rgba(0, 0, 0, 0.8);
+    border-bottom-color: rgba(239, 68, 68, 0.15);
+}
+
+.segment-label {
+    font-size: 0.55cqw;
+    color: rgba(200, 170, 110, 0.6);
+    font-family: 'Inter', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.segment-result {
+    font-size: 1cqw;
+    font-weight: 700;
+    font-family: 'Spectral', serif;
+    line-height: 1;
+    color: #F0E6D2;
+    /* Cream text instead of plain color */
+}
+
+.segment-win .segment-result {
+    text-shadow: 0 0 0.8cqw rgba(16, 185, 129, 0.9), 0 0 1.5cqw rgba(16, 185, 129, 0.5);
+}
+
+.segment-loss .segment-result {
+    text-shadow: 0 0 0.8cqw rgba(239, 68, 68, 0.9), 0 0 1.5cqw rgba(239, 68, 68, 0.5);
+}
+
+/* ── Summary Section (Count + Gold) ─────────────── */
+.streak-summary {
+    display: flex;
+    align-items: center;
+    padding: 0 1.5cqw;
+    background: radial-gradient(ellipse at 100% 50%, rgba(200, 170, 110, 0.05) 0%, transparent 80%);
+}
+
+.streak-count {
+    font-size: 1.8cqw;
+    font-weight: 700;
+    font-family: 'Spectral', serif;
+    letter-spacing: 0.05em;
+    line-height: 1;
+    color: #e8c252;
+    /* Luxurious Gold */
+}
+
+.streak-count.streak-win {
+    text-shadow:
+        0 0 1cqw rgba(16, 185, 129, 0.6),
+        0 0 0.3cqw rgba(232, 194, 82, 0.8);
+}
+
+.streak-count.streak-lose {
+    text-shadow:
+        0 0 1cqw rgba(239, 68, 68, 0.6),
+        0 0 0.3cqw rgba(232, 194, 82, 0.8);
+}
+
+.streak-count.streak-neutral {
+    color: #94A3B8;
+    text-shadow: 0 0 0.5cqw rgba(148, 163, 184, 0.4);
+}
+
+@keyframes streak-fade-in {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-1.5cqw);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}

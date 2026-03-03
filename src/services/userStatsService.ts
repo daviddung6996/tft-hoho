@@ -11,6 +11,10 @@ export interface AttemptData {
     timeToDecideMs: number;
     puzzleStage: string;
     proPickId: string;
+    // V2: Intent declaration data
+    declaredPath?: string;
+    intentScore?: number;
+    timeToPathMs?: number;
 }
 
 export interface UserStats {
@@ -58,20 +62,29 @@ export const userStatsService = {
             return;
         }
 
+        const insertData: Record<string, any> = {
+            user_id: user.id,
+            puzzle_id: data.puzzleId,
+            user_pick_id: data.userPickId,
+            user_pick_name: data.userPickName,
+            is_correct: data.isCorrect,
+            reroll_count: data.rerollCount,
+            reroll_indices: data.rerollIndices,
+            time_to_decide_ms: data.timeToDecideMs,
+            puzzle_stage: data.puzzleStage,
+            pro_pick_id: data.proPickId,
+        };
+
+        // V2: Add intent data if present
+        if (data.declaredPath) {
+            insertData.declared_path = data.declaredPath;
+            insertData.intent_score = data.intentScore ?? 0;
+            insertData.time_to_path_ms = data.timeToPathMs ?? 0;
+        }
+
         const { error } = await supabase
             .from('user_puzzle_attempts')
-            .insert({
-                user_id: user.id,
-                puzzle_id: data.puzzleId,
-                user_pick_id: data.userPickId,
-                user_pick_name: data.userPickName,
-                is_correct: data.isCorrect,
-                reroll_count: data.rerollCount,
-                reroll_indices: data.rerollIndices,
-                time_to_decide_ms: data.timeToDecideMs,
-                puzzle_stage: data.puzzleStage,
-                pro_pick_id: data.proPickId,
-            });
+            .insert(insertData);
 
         if (error) {
             console.error('Error recording attempt:', error);

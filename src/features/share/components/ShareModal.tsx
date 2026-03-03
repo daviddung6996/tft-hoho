@@ -191,6 +191,19 @@ export const ShareModal: React.FC<ShareModalProps> = ({ data, onClose }) => {
         }
     }, [data, captionText]);
 
+    const handleCopyCaption = useCallback(async () => {
+        const text = captionText;
+        if (!text) return;
+
+        try {
+            await navigator.clipboard?.writeText(text);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 1800);
+        } catch (err) {
+            console.error('Failed to copy caption:', err);
+        }
+    }, [captionText]);
+
     return (
         <div className="share-modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
             <button className="share-modal-close" onClick={onClose}>←</button>
@@ -246,24 +259,27 @@ export const ShareModal: React.FC<ShareModalProps> = ({ data, onClose }) => {
 
             {/* Caption — single clickable box */}
             <div
-                className="share-caption-box"
-                onClick={() => {
-                    const text = captionText;
-                    if (!text) return;
-                    navigator.clipboard?.writeText(text);
-                    setCopied(true);
-                    setTimeout(() => setCopied(false), 2000);
+                className={`share-caption-box${copied ? ' is-copied' : ''}`}
+                role="button"
+                tabIndex={0}
+                aria-label="Copy caption"
+                onClick={handleCopyCaption}
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        handleCopyCaption();
+                    }
                 }}
             >
                 <div className="share-caption-label">
                     <span>COPY CAPTION NÀY NGAY!</span>
                     {copied && (
-                        <span className="copied-tag">COPIED ✓</span>
+                        <span className="copied-tag">ĐÃ SAO CHÉP</span>
                     )}
                 </div>
                 <div className="share-caption-text">
                     {captionLoading
-                        ? <span className="share-caption-loading">Đang gen caption drama...</span>
+                        ? <span className="share-caption-loading">Đang tạo caption gây drama...</span>
                         : captionText
                     }
                 </div>

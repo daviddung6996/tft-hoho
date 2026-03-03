@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { AugmentData } from '../../services/augmentService';
-import { CommunityVotes } from '../../data/puzzleScenarios';
+import { AugmentPath, CommunityVotes } from '../../data/puzzleScenarios';
 import { PuzzleTier } from '../../features/tcoin/tcoin.types';
 import { TierIcon } from '../common/TierIcon';
 import './DecisionReview.css';
@@ -14,7 +14,8 @@ import { ShareModal } from '../../features/share/components/ShareModal';
 import { useAuth } from '../../contexts/AuthContext';
 import { calculateUserIqRank } from '../../features/user-iq/userIqCalculator';
 import { videoLibraryService } from '../../features/video-library/videoLibrary.service';
-import { VideoUnlockToast } from '../../features/video-library/components/VideoUnlockToast';
+import { IntentFeedback } from '../../features/augment-trainer/components/IntentFeedback';
+import { buildYouTubeEmbedUrl } from '../../utils/youtube';
 
 
 export interface DecisionReviewProps {
@@ -45,6 +46,10 @@ export interface DecisionReviewProps {
     videoUrl?: string;
     videoTitle?: string;
     onViewLibrary?: () => void;
+    // V2: Intent declaration data
+    declaredPath?: AugmentPath;
+    proPickPath?: AugmentPath;
+    proReasoningIntent?: string;
 }
 
 export const DecisionReview: React.FC<DecisionReviewProps> = ({
@@ -73,24 +78,22 @@ export const DecisionReview: React.FC<DecisionReviewProps> = ({
     videoUrl,
     videoTitle: videoTitleProp,
     onViewLibrary,
+    // V2: Intent data
+    declaredPath,
+    proPickPath,
+    proReasoningIntent,
 }) => {
 
     const [showShareModal, setShowShareModal] = useState(false);
-    const [showVideoToast, setShowVideoToast] = useState(false);
     const { user } = useAuth();
     const videoUnlockTriggered = useRef(false);
 
     const proRerolled = !!(proSecondRoll && proSecondRoll.length > 0);
 
-    const proFinalPick = proFinalPickData || (proRerolled
-        ? proSecondRoll!.find(a => a.id === correctAugmentId)
-        : proFirstRoll.find(a => a.id === correctAugmentId)) || {
-            title: "Không rõ",
-            id: "unknown",
-            description: "Thiếu dữ liệu",
-            icon: "",
-            tier: 1
-        } as AugmentData;
+    const UNKNOWN_AUGMENT: AugmentData = { title: 'Không rõ', id: 'unknown', description: 'Thiếu dữ liệu', icon: '', tier: 1 };
+    const proFinalPick = proFinalPickData
+        ?? (proRerolled ? proSecondRoll!.find(a => a.id === correctAugmentId) : proFirstRoll.find(a => a.id === correctAugmentId))
+        ?? UNKNOWN_AUGMENT;
 
     const userMatchedPro = userChoice.title === proFinalPick.title;
 
@@ -154,14 +157,20 @@ export const DecisionReview: React.FC<DecisionReviewProps> = ({
             videoUrl,
             userResult: userMatchedPro ? 'correct' : 'incorrect',
             iqDelta: iqChangeResult.changeAmount,
-        }).then(success => {
-            if (success) setShowVideoToast(true);
         });
     }, [videoUrl, puzzleId, userMatchedPro, iqChangeResult]);
 
     return (
+        <>
         <div className={`decision-review-overlay${puzzleTier && puzzleTier !== 'free' ? ` tier-${puzzleTier}` : ''}`}>
             <div className={`decision-review-container${puzzleTier && puzzleTier !== 'free' ? ` tier-${puzzleTier}` : ''}`}>
+
+                {/* --- CLOSE BUTTON --- */}
+                <button className="review-close-btn" onClick={onNextPuzzle} aria-label="Đóng">
+                    <svg width="100%" height="100%" viewBox="0 0 16 16" fill="none">
+                        <path d="M4 4L12 12M12 4L4 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                    </svg>
+                </button>
 
                 {/* --- TIER BADGE --- */}
                 {puzzleTier && puzzleTier !== 'free' && (
@@ -181,11 +190,21 @@ export const DecisionReview: React.FC<DecisionReviewProps> = ({
                     server={server}
                     encounter={encounter}
                     streamUrl={streamUrl}
+                    onViewLibrary={onViewLibrary}
                     userMatchedPro={userMatchedPro}
                 />
 
                 {/* --- MEME FEEDBACK --- */}
                 <MemeFeedback isCorrect={userMatchedPro} />
+
+                {/* --- V2: INTENT FEEDBACK --- */}
+                {declaredPath && proPickPath && (
+                    <IntentFeedback
+                        declaredPath={declaredPath}
+                        proPickPath={proPickPath}
+                        proReasoningIntent={proReasoningIntent}
+                    />
+                )}
 
                 {/* --- TIMELINE REMOVED - DIRECT TO FINAL PICK --- */}
                 <div className="roll-timeline">
@@ -292,15 +311,60 @@ export const DecisionReview: React.FC<DecisionReviewProps> = ({
                 </div>
 
                 {/* --- EXPLANATION SECTION --- */}
-                {explanation && (
-                    <div className="explanation-section">
-                        <div className="explanation-title">GIẢI THÍCH</div>
-                        <p className="explanation-text">{explanation}</p>
+                {(explanation || videoUrl) && (
+                    <div className={`explanation-section${videoUrl ? ' has-video' : ''}`}>
+                        {videoUrl ? (
+                            <>
+                                <div className="explanation-text-col">
+                                    <div className="explanation-title">GIẢI THÍCH</div>
+                                    {explanation && <p className="explanation-text">{explanation}</p>}
+                                </div>
+                                <div className="explanation-video-col">
+                                    <div className="explanation-video-header">
+                                        <div className="explanation-title">VIDEO PHÂN TÍCH</div>
+                                        {onViewLibrary ? (
+                                            <button
+                                                type="button"
+                                                className="explanation-video-note-link"
+                                                onClick={onViewLibrary}
+                                            >
+                                                Bạn có thể xem lại trong Kho Pro Analysis
+                                            </button>
+                                        ) : (
+                                            <span className="explanation-video-note-text">
+                                                Video lỗi? Xem lại trong Kho Pro Analysis
+                                            </span>
+                                        )}
+                                    </div>
+                                    <div className="explanation-video-wrapper">
+                                        <iframe
+                                            src={buildYouTubeEmbedUrl(videoUrl)}
+                                            title={videoTitleProp || 'Video giải thích'}
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                            allowFullScreen
+                                        />
+                                    </div>
+                                    {videoTitleProp && (
+                                        <span className="explanation-video-label">
+                                            <svg viewBox="0 0 24 24" fill="currentColor" width="12" height="12">
+                                                <path d="M8 5v14l11-7z"/>
+                                            </svg>
+                                            {videoTitleProp}
+                                        </span>
+                                    )}
+                                </div>
+                            </>
+                        ) : (
+                            <>
+                                <div className="explanation-title">GIẢI THÍCH</div>
+                                <p className="explanation-text">{explanation}</p>
+                            </>
+                        )}
                     </div>
                 )}
 
                 {/* --- BOTTOM BAR: IQ Score + Actions --- */}
-                <div className="review-bottom-bar" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', marginTop: '16px' }}>
+                <div className="review-bottom-bar">
                     {iqChangeResult ? (
                         <IqScoreSummary
                             newScore={iqChangeResult.newScore}
@@ -308,7 +372,7 @@ export const DecisionReview: React.FC<DecisionReviewProps> = ({
                             newRank={iqChangeResult.newRank}
                         />
                     ) : <div />}
-                    <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                    <div className="review-actions">
                         {iqChangeResult && (
                             <button
                                 className="review-btn"
@@ -327,31 +391,25 @@ export const DecisionReview: React.FC<DecisionReviewProps> = ({
                     </div>
                 </div>
 
-                {/* Share Flex Modal */}
-                {showShareModal && iqChangeResult && (
-                    <ShareModal
-                        data={{
-                            username: user?.display_name || 'Summoner',
-                            iqScore: iqChangeResult.newScore,
-                            iqRank: calculateUserIqRank(iqChangeResult.newScore),
-                            recentPuzzle: {
-                                rank: 'Thách Đấu', // We will assume Challenger puzzles for now
-                                addedIq: iqChangeResult.changeAmount
-                            }
-                        }}
-                        onClose={() => setShowShareModal(false)}
-                    />
-                )}
             </div>
 
-            {/* Video Unlock Toast */}
-            {showVideoToast && onViewLibrary && (
-                <VideoUnlockToast
-                    videoTitle={videoTitleProp || 'Pro Analysis'}
-                    onViewLibrary={onViewLibrary}
-                    onClose={() => setShowVideoToast(false)}
-                />
-            )}
         </div>
+
+        {/* Share Flex Modal — rendered outside decision-review-overlay to escape its stacking context */}
+        {showShareModal && iqChangeResult && (
+            <ShareModal
+                data={{
+                    username: user?.display_name || 'Summoner',
+                    iqScore: iqChangeResult.newScore,
+                    iqRank: calculateUserIqRank(iqChangeResult.newScore),
+                    recentPuzzle: {
+                        rank: 'Thách Đấu',
+                        addedIq: iqChangeResult.changeAmount
+                    }
+                }}
+                onClose={() => setShowShareModal(false)}
+            />
+        )}
+        </>
     );
 };

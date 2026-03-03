@@ -26,9 +26,9 @@
 
 /* Container */
 .meme-feedback {
-  padding: 0.6cqw 0.8cqw;
+  padding: 0.4cqw 0.6cqw;
   border: 0.08cqw solid transparent;
-  border-radius: 0.2cqw;
+  border-radius: 0.4cqw;
   opacity: 0;
   transform: translateY(0.4cqw);
   /* Fade starts slightly after the expand animation */
@@ -40,6 +40,15 @@
 .meme-feedback.meme-visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* Auto-hide: fade out upward */
+.meme-feedback.meme-hiding {
+  opacity: 0;
+  transform: translateY(-0.5cqw);
+  transition:
+    opacity 0.45s ease-in,
+    transform 0.45s ease-in;
 }
 
 /* Correct — Gold glow */
@@ -76,7 +85,7 @@
 
 /* Image/GIF wrapper */
 .meme-image-wrapper {
-  max-height: 8cqw;
+  max-height: 5.5cqw;
   overflow: hidden;
   border-radius: 0.15cqw;
   display: flex;
@@ -85,8 +94,8 @@
 }
 
 .meme-image {
-  max-width: 10cqw;
-  max-height: 8cqw;
+  max-width: 7cqw;
+  max-height: 5.5cqw;
   object-fit: contain;
   border-radius: 0.15cqw;
 }
@@ -121,7 +130,7 @@
 }
 
 .meme-emoji {
-  font-size: 1.4cqw;
+  font-size: 1.1cqw;
   line-height: 1;
   /* Elegant scale-in after container fades in */
   animation: meme-emoji-in 0.5s ease-out 0.6s both;
@@ -129,7 +138,7 @@
 
 .meme-text {
   font-family: 'Spectral', serif;
-  font-size: 1cqw;
+  font-size: 0.85cqw;
   font-weight: 700;
   line-height: 1.2;
 }
@@ -145,9 +154,9 @@
 /* Insight text */
 .meme-insight {
   font-family: 'Inter', sans-serif;
-  font-size: 0.7cqw;
+  font-size: 0.6cqw;
   color: rgba(240, 246, 252, 0.7);
-  line-height: 1.4;
+  line-height: 1.3;
   margin: 0;
 }
 

@@ -7,7 +7,6 @@ import { Synergy } from '../../data/types';
 import { Item } from '../../services/itemService';
 
 interface GameHUDProps {
-    stage: string;
     activePlayerId: string;
     players: PlayerData[];
     onPlayerSelect: (id: string) => void;
@@ -16,7 +15,6 @@ interface GameHUDProps {
 }
 
 export const GameHUD: React.FC<GameHUDProps> = ({
-    stage,
     activePlayerId,
     players,
     onPlayerSelect,
@@ -25,12 +23,6 @@ export const GameHUD: React.FC<GameHUDProps> = ({
 }) => {
     return (
         <>
-            {/* Stage Indicator - Top Center */}
-            <div className="stage-indicator">
-                <span className="stage-label">Round</span>
-                <span className="stage-value">{stage}</span>
-            </div>
-
             {/* Floating UI Panels - Fixed Position */}
             <ItemPanel items={items} />
             <SynergyPanel synergies={synergies} />
