@@ -5,9 +5,11 @@
     display: inline-block;
 }
 
-.hextech-tooltip-wrapper:hover {
-    z-index: 999999;
-    isolation: isolate;
+@media (hover: hover) {
+    .hextech-tooltip-wrapper:hover {
+        z-index: 999999;
+        isolation: isolate;
+    }
 }
 
 .hextech-tooltip {
@@ -30,15 +32,14 @@
 .hextech-tooltip-portal {
     position: fixed;
     z-index: 2147483647;
-    /* Maximum z-index */
     min-width: 180px;
     max-width: 320px;
-    padding: 12px 16px;
+    padding: 10px 12px;
     background: rgba(10, 12, 15, 0.98);
-    border: 1px solid rgba(100, 100, 100, 0.4);
+    border: 1px solid rgba(200, 170, 110, 0.4);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
     pointer-events: none;
-    border-radius: 4px;
+    border-radius: 6px;
 }
 
 /* Portal tooltip positioning */
@@ -91,9 +92,11 @@
     height: 16px;
 }
 
-.hextech-tooltip-wrapper:hover .hextech-tooltip {
-    opacity: 1;
-    visibility: visible;
+@media (hover: hover) {
+    .hextech-tooltip-wrapper:hover .hextech-tooltip {
+        opacity: 1;
+        visibility: visible;
+    }
 }
 
 /* Positioning variants */
@@ -125,7 +128,50 @@
     margin-left: 0.5cqw;
 }
 
-/* Tooltip content styling */
+/* Portal tooltip text — px units (portal is outside container query) */
+.hextech-tooltip-portal .hextech-tooltip-title {
+    font-family: 'Spectral', serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #c8aa6e;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.hextech-tooltip-portal .hextech-tooltip-description {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    color: #a8b4c2;
+    line-height: 1.4;
+    white-space: pre-wrap;
+}
+
+.hextech-tooltip-portal .hextech-tooltip-meta {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    color: #6b7a8a;
+    margin-top: 6px;
+    padding-top: 4px;
+    border-top: 1px solid rgba(200, 170, 110, 0.3);
+}
+
+.hextech-tooltip-portal .hextech-tooltip-traits {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 4px;
+}
+
+.hextech-tooltip-portal .hextech-tooltip-trait-tag {
+    font-size: 10px;
+    padding: 2px 6px;
+    background: rgba(200, 170, 110, 0.15);
+    border: 1px solid rgba(200, 170, 110, 0.4);
+    color: #c8aa6e;
+}
+
+/* Non-portal tooltip text — cqw units */
 .hextech-tooltip-title {
     font-family: 'Spectral', serif;
     font-size: 1cqw;
@@ -328,4 +374,158 @@
 .ability-scaling-row .scaling-values {
     color: #6b7a8a;
     font-size: 10px;
+}
+
+/* Compact champion tooltip (mobile/touch) */
+.hextech-tooltip-portal.champion-tooltip-compact {
+    min-width: 160px;
+    max-width: 240px;
+    padding: 6px 8px;
+}
+
+.champion-tooltip-compact-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 10px;
+    margin-top: 4px;
+    padding-top: 4px;
+    border-top: 1px solid rgba(200, 170, 110, 0.2);
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    color: #F0E6D2;
+}
+
+.champion-tooltip-compact-stats span {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.compact-stat-icon {
+    width: 12px;
+    height: 12px;
+    object-fit: contain;
+    vertical-align: middle;
+}
+
+/* ==========================================================================
+   MOBILE: compact tooltip, centered near tap
+   ========================================================================== */
+@media (pointer: coarse),
+(max-width: 1024px) and (orientation: landscape),
+(max-width: 768px) {
+
+    /* Base portal — compact */
+    .hextech-tooltip-portal {
+        min-width: 140px;
+        max-width: min(85vw, 240px);
+        /* Slightly narrower to prevent edge clipping */
+        padding: 6px 8px;
+        /* Tighter padding */
+        border-radius: 4px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        /* Ensure controlled spacing between title/desc */
+    }
+
+    /* Champion tooltip — compact, NO 400px min */
+    .hextech-tooltip-portal.champion-tooltip {
+        min-width: 200px;
+        max-width: min(85vw, 300px);
+        padding: 8px 10px;
+    }
+
+    /* Stack ability + stats vertically */
+    .hextech-tooltip-content-grid {
+        grid-template-columns: 1fr;
+        gap: 6px;
+        margin-top: 6px;
+        padding-top: 6px;
+    }
+
+    /* Smaller text */
+    .hextech-tooltip-portal .hextech-tooltip-title {
+        font-size: 11px;
+        margin-bottom: 0;
+        /* Managed by flex gap */
+        line-height: 1.2;
+    }
+
+    .hextech-tooltip-portal .hextech-tooltip-description {
+        font-size: 10px;
+        line-height: 1.3;
+        margin-top: 0;
+    }
+
+    .hextech-tooltip-portal .hextech-tooltip-meta {
+        font-size: 9px;
+        margin-top: 4px;
+        padding-top: 4px;
+    }
+
+    .hextech-tooltip-ability-name {
+        font-size: 10px;
+    }
+
+    .hextech-tooltip-ability-desc {
+        font-size: 9px;
+        line-height: 1.3;
+    }
+
+    .hextech-tooltip-mana {
+        font-size: 9px;
+    }
+
+    .stat-icon {
+        width: 14px;
+        height: 14px;
+    }
+
+    .stat-icon[src*="cdn.tft.tools"] {
+        width: 12px;
+        height: 12px;
+    }
+
+    .hextech-tooltip-stats .stat-item {
+        font-size: 10px;
+        gap: 2px;
+    }
+
+    .hextech-tooltip-stats .stat-values {
+        font-size: 10px;
+    }
+
+    .ability-scaling-section {
+        margin-top: 6px;
+        padding-top: 6px;
+        gap: 3px;
+    }
+
+    .ability-scaling-row {
+        font-size: 9px;
+        gap: 4px;
+    }
+
+    .ability-scaling-row .scaling-name {
+        min-width: 55px;
+    }
+
+    .ability-scaling-row .scaling-current {
+        min-width: 30px;
+    }
+
+    .ability-scaling-row .scaling-icon {
+        width: 10px;
+        height: 10px;
+    }
+
+    .ability-scaling-row .scaling-values {
+        font-size: 8px;
+    }
+
+    .hextech-tooltip-portal .hextech-tooltip-trait-tag {
+        font-size: 8px;
+        padding: 1px 4px;
+    }
 }

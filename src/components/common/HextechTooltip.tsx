@@ -1,41 +1,32 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import './HextechTooltip.css';
 
 export type TooltipPosition = 'top' | 'bottom' | 'left' | 'right';
 
-interface HextechTooltipProps {
-    title: string;
-    description?: string;
-    meta?: string;
-    position?: TooltipPosition;
-    children: React.ReactNode;
-    className?: string;
-}
+// Detect touch device once
+const isTouchDevice = () => 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
-// Calculate tooltip position with smart auto-flip to prevent clipping
-const calculateSmartTooltipPosition = (
+// Safe zone margins (avoid side panels: left ~15%, right ~15%, top ~8%)
+// Calculate tooltip position centered near the trigger element
+const calculateTooltipPosition = (
     triggerRect: DOMRect,
     preferredPosition: TooltipPosition,
-    tooltipWidth: number = 520,
-    tooltipHeight: number = 400
+    tooltipWidth: number = 280,
+    tooltipHeight: number = 200
 ) => {
     const gap = 8;
-    const viewport = {
-        width: window.innerWidth,
-        height: window.innerHeight
-    };
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
 
-    // Calculate available space in each direction
+    // Smart positioning with auto-flip (Unified for Desktop and Touch)
     const spaceTop = triggerRect.top;
-    const spaceBottom = viewport.height - triggerRect.bottom;
+    const spaceBottom = vh - triggerRect.bottom;
     const spaceLeft = triggerRect.left;
-    const spaceRight = viewport.width - triggerRect.right;
+    const spaceRight = vw - triggerRect.right;
 
-    // Determine best position based on available space
     let finalPosition = preferredPosition;
 
-    // Auto-flip logic
     if (preferredPosition === 'top' && spaceTop < tooltipHeight + gap) {
         finalPosition = spaceBottom >= tooltipHeight + gap ? 'bottom' :
             spaceRight >= tooltipWidth + gap ? 'right' : 'left';
@@ -72,17 +63,108 @@ const calculateSmartTooltipPosition = (
             break;
     }
 
-    // Clamp to viewport bounds
+    // Clamp to viewport (with safe area allowance on mobile)
+    const safeMarginX = isTouchDevice() ? 32 : gap; // Notch protection
     const halfWidth = tooltipWidth / 2;
     if (finalPosition === 'top' || finalPosition === 'bottom') {
-        left = Math.max(halfWidth + gap, Math.min(left, viewport.width - halfWidth - gap));
+        left = Math.max(halfWidth + safeMarginX, Math.min(left, vw - halfWidth - safeMarginX));
     }
     if (finalPosition === 'left' || finalPosition === 'right') {
-        top = Math.max(gap, Math.min(top, viewport.height - tooltipHeight - gap));
+        // Fix for vertical clamping: Since tooltip is Y-translated by -50%, top represents the center
+        const halfHeight = tooltipHeight / 2;
+        top = Math.max(halfHeight + gap, Math.min(top, vh - halfHeight - gap));
     }
 
     return { left, top, position: finalPosition };
 };
+
+// Shared hook for tooltip touch/mouse behavior
+function useTooltipInteraction(
+    position: TooltipPosition,
+    tooltipWidth: number,
+    tooltipHeight: number
+) {
+    const [isVisible, setIsVisible] = useState(false);
+    const [tooltipPos, setTooltipPos] = useState({ left: 0, top: 0 });
+    const [actualPosition, setActualPosition] = useState<TooltipPosition>(position);
+    const triggerRef = useRef<HTMLDivElement>(null);
+    const isTouchedRef = useRef(false);
+
+    const updatePosition = useCallback(() => {
+        if (!triggerRef.current) return;
+        const rect = triggerRef.current.getBoundingClientRect();
+        const result = calculateTooltipPosition(rect, position, tooltipWidth, tooltipHeight);
+        setTooltipPos({ left: result.left, top: result.top });
+        setActualPosition(result.position);
+    }, [position, tooltipWidth, tooltipHeight]);
+
+    // On touch: mark as touched so mouseEnter is skipped
+    const handleTouchStart = useCallback((_e: React.TouchEvent) => {
+        isTouchedRef.current = true;
+    }, []);
+
+    const handleClick = useCallback((e: React.MouseEvent) => {
+        if (!isTouchedRef.current) return; // Desktop click → ignore, mouse events handle it
+        e.stopPropagation();
+        e.preventDefault();
+        updatePosition();
+        setIsVisible(prev => !prev);
+    }, [updatePosition]);
+
+    const handleMouseEnter = useCallback(() => {
+        if (isTouchedRef.current) return; // Skip on touch device
+        updatePosition();
+        setIsVisible(true);
+    }, [updatePosition]);
+
+    const handleMouseLeave = useCallback(() => {
+        if (isTouchedRef.current) return; // Skip on touch device
+        setIsVisible(false);
+    }, []);
+
+    // Dismiss on outside tap/click
+    useEffect(() => {
+        if (!isVisible) return;
+        const dismiss = (e: Event) => {
+            const target = e.target as Node;
+            if (triggerRef.current?.contains(target)) return;
+            setIsVisible(false);
+        };
+        // Use setTimeout to avoid the current tap from immediately dismissing
+        const timer = setTimeout(() => {
+            document.addEventListener('touchstart', dismiss, { passive: true });
+            document.addEventListener('mousedown', dismiss);
+        }, 10);
+        return () => {
+            clearTimeout(timer);
+            document.removeEventListener('touchstart', dismiss);
+            document.removeEventListener('mousedown', dismiss);
+        };
+    }, [isVisible]);
+
+    const wrapperProps = {
+        ref: triggerRef,
+        onTouchStart: handleTouchStart,
+        onClick: handleClick,
+        onMouseEnter: handleMouseEnter,
+        onMouseLeave: handleMouseLeave,
+    };
+
+    return { isVisible, tooltipPos, actualPosition, wrapperProps };
+}
+
+// ==========================================================================
+// HextechTooltip (generic)
+// ==========================================================================
+
+interface HextechTooltipProps {
+    title: string;
+    description?: string;
+    meta?: string;
+    position?: TooltipPosition;
+    children: React.ReactNode;
+    className?: string;
+}
 
 export const HextechTooltip: React.FC<HextechTooltipProps> = ({
     title,
@@ -92,58 +174,33 @@ export const HextechTooltip: React.FC<HextechTooltipProps> = ({
     children,
     className = ''
 }) => {
-    const [isVisible, setIsVisible] = useState(false);
-    const [tooltipPos, setTooltipPos] = useState({ left: 0, top: 0 });
-    const [actualPosition, setActualPosition] = useState<TooltipPosition>(position);
-    const triggerRef = useRef<HTMLDivElement>(null);
-
-    const handleMouseEnter = useCallback(() => {
-        if (triggerRef.current) {
-            const rect = triggerRef.current.getBoundingClientRect();
-            const result = calculateSmartTooltipPosition(rect, position, 320, 200);
-            setTooltipPos({ left: result.left, top: result.top });
-            setActualPosition(result.position);
-            setIsVisible(true);
-        }
-    }, [position]);
-
-    const handleMouseLeave = useCallback(() => {
-        setIsVisible(false);
-    }, []);
+    const { isVisible, tooltipPos, actualPosition, wrapperProps } =
+        useTooltipInteraction(position, 280, 150);
 
     const tooltipContent = isVisible ? createPortal(
         <div
             className={`hextech-tooltip-portal position-${actualPosition}`}
-            style={{
-                left: tooltipPos.left,
-                top: tooltipPos.top,
-            }}
+            style={{ left: tooltipPos.left, top: tooltipPos.top }}
         >
             <div className="hextech-tooltip-title">{title}</div>
-            {description && (
-                <div className="hextech-tooltip-description">{description}</div>
-            )}
-            {meta && (
-                <div className="hextech-tooltip-meta">{meta}</div>
-            )}
+            {description && <div className="hextech-tooltip-description">{description}</div>}
+            {meta && <div className="hextech-tooltip-meta">{meta}</div>}
         </div>,
         document.body
     ) : null;
 
     return (
-        <div
-            ref={triggerRef}
-            className={`hextech-tooltip-wrapper ${className}`}
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-        >
+        <div {...wrapperProps} className={`hextech-tooltip-wrapper ${className}`}>
             {children}
             {tooltipContent}
         </div>
     );
 };
 
-// Specialized tooltip for Champions
+// ==========================================================================
+// ChampionTooltip
+// ==========================================================================
+
 interface ChampionStats {
     hp: [number, number, number];
     ad: [number, number, number];
@@ -155,13 +212,11 @@ interface ChampionStats {
     dps: [number, number, number];
 }
 
-// Ability variable with values per star level
 interface AbilityVariable {
     name: string;
     value: number[];
 }
 
-// Helper to get human-readable variable name
 const getVariableDisplayName = (name: string): string => {
     const nameMap: Record<string, string> = {
         'Shield': 'Lá Chắn',
@@ -182,7 +237,6 @@ const getVariableDisplayName = (name: string): string => {
     return nameMap[name] || name;
 };
 
-// Helper to get scaling type icon URL
 const getScalingIconUrl = (name: string): string => {
     if (name.includes('AD') || name.includes('Attack')) return 'https://ap.tft.tools/img/general/ad.png?w=14';
     if (name.includes('AP') || name.includes('Magic') || name.includes('Damage')) return 'https://ap.tft.tools/img/general/ap.png?w=14';
@@ -219,38 +273,16 @@ export const ChampionTooltip: React.FC<ChampionTooltipProps> = ({
     position = 'top',
     children
 }) => {
-    const [isVisible, setIsVisible] = useState(false);
-    const [tooltipPos, setTooltipPos] = useState({ left: 0, top: 0 });
-    const [actualPosition, setActualPosition] = useState<TooltipPosition>(position);
-    const triggerRef = useRef<HTMLDivElement>(null);
+    const touch = isTouchDevice();
+    const { isVisible, tooltipPos, actualPosition, wrapperProps } =
+        useTooltipInteraction(position, touch ? 220 : 360, touch ? 120 : 300);
 
-    const handleMouseEnter = useCallback(() => {
-        if (triggerRef.current) {
-            const rect = triggerRef.current.getBoundingClientRect();
-            const result = calculateSmartTooltipPosition(rect, position);
-            setTooltipPos({ left: result.left, top: result.top });
-            setActualPosition(result.position);
-            setIsVisible(true);
-        }
-    }, [position]);
-
-    const handleMouseLeave = useCallback(() => {
-        setIsVisible(false);
-    }, []);
-
-    const tooltipContent = isVisible ? createPortal(
-        <div
-            className={`hextech-tooltip-portal champion-tooltip position-${actualPosition}`}
-            style={{
-                left: tooltipPos.left,
-                top: tooltipPos.top,
-            }}
-        >
+    // Mobile: compact content — name, traits, key stats inline, items
+    const mobileContent = (
+        <>
             <div className="hextech-tooltip-title">
                 {name}
-                <span className={`hextech-tooltip-cost-${cost}`} style={{ marginLeft: '8px' }}>
-                    ${cost}
-                </span>
+                <span className={`hextech-tooltip-cost-${cost}`} style={{ marginLeft: '6px' }}>${cost}</span>
             </div>
             {traits.length > 0 && (
                 <div className="hextech-tooltip-traits">
@@ -259,23 +291,45 @@ export const ChampionTooltip: React.FC<ChampionTooltipProps> = ({
                     ))}
                 </div>
             )}
+            {stats && (
+                <div className="champion-tooltip-compact-stats">
+                    <span><img src="https://cdn.tft.tools/general/hp.png" alt="HP" className="compact-stat-icon" />{stats.hp[currentStars - 1]}</span>
+                    <span><img src="https://raw.communitydragon.org/latest/game/assets/perks/statmods/statmodsattackdamageicon.png" alt="AD" className="compact-stat-icon" />{stats.ad[currentStars - 1]}</span>
+                    <span><img src="https://raw.communitydragon.org/latest/game/assets/perks/statmods/statmodsarmoricon.png" alt="AR" className="compact-stat-icon" />{stats.armor}<img src="https://raw.communitydragon.org/latest/game/assets/perks/statmods/statmodsmagicresicon.png" alt="MR" className="compact-stat-icon" style={{ marginLeft: '4px' }} />{stats.mr}</span>
+                    <span><img src="https://raw.communitydragon.org/latest/game/assets/perks/statmods/statmodsattackspeedicon.png" alt="AS" className="compact-stat-icon" />{stats.as.toFixed(2)}</span>
+                </div>
+            )}
+            {items.length > 0 && (
+                <div className="hextech-tooltip-meta">
+                    Trang bị: {items.join(', ')}
+                </div>
+            )}
+        </>
+    );
 
-            {/* 2-Column Layout: Ability Left | Stats Right */}
+    // Desktop: full content with ability, scaling, and detailed stats
+    const desktopContent = (
+        <>
+            <div className="hextech-tooltip-title">
+                {name}
+                <span className={`hextech-tooltip-cost-${cost}`} style={{ marginLeft: '8px' }}>${cost}</span>
+            </div>
+            {traits.length > 0 && (
+                <div className="hextech-tooltip-traits">
+                    {traits.map((trait, i) => (
+                        <span key={i} className="hextech-tooltip-trait-tag">{trait}</span>
+                    ))}
+                </div>
+            )}
             {(abilityName || stats) && (
                 <div className="hextech-tooltip-content-grid">
-                    {/* Left Column: Ability */}
                     {abilityName && (
                         <div className="hextech-tooltip-ability">
-                            {/* Ability Name + Mana on same line */}
                             <div className="hextech-tooltip-ability-header">
                                 <div className="hextech-tooltip-ability-name">{abilityName}</div>
                                 {stats && (
                                     <div className="hextech-tooltip-mana">
-                                        <img
-                                            src="https://cdn.tft.tools/general/mana.png"
-                                            alt="Mana"
-                                            className="stat-icon"
-                                        />
+                                        <img src="https://cdn.tft.tools/general/mana.png" alt="Mana" className="stat-icon" />
                                         <span>{stats.mana.min}/{stats.mana.max}</span>
                                     </div>
                                 )}
@@ -283,42 +337,25 @@ export const ChampionTooltip: React.FC<ChampionTooltipProps> = ({
                             {abilityDescription && (
                                 <div className="hextech-tooltip-ability-desc">{abilityDescription}</div>
                             )}
-
-                            {/* Ability Scaling Values */}
                             {abilityVariables && abilityVariables.length > 0 && (
                                 <div className="ability-scaling-section">
                                     {abilityVariables
                                         .filter(v => {
-                                            // Only show variables with meaningful scaling (different values per star)
                                             const starValues = [v.value[1], v.value[2], v.value[3]];
                                             return starValues.some(val => val !== 0 && val !== starValues[0]);
                                         })
-                                        .slice(0, 4) // Limit to 4 most important variables
+                                        .slice(0, 4)
                                         .map((variable, idx) => {
-                                            // Skip line 297 starValues - it's unused
                                             const currentValue = variable.value[currentStars] || variable.value[1];
                                             const displayValues = [
-                                                variable.value[1],
-                                                variable.value[2],
-                                                variable.value[3]
+                                                variable.value[1], variable.value[2], variable.value[3]
                                             ].map(v => Math.round(v * 100) / 100);
-
                                             return (
                                                 <div key={idx} className="ability-scaling-row">
-                                                    <span className="scaling-name">
-                                                        {getVariableDisplayName(variable.name)}:
-                                                    </span>
-                                                    <span className="scaling-current">
-                                                        {Math.round(currentValue * 100) / 100}
-                                                    </span>
-                                                    <img
-                                                        src={getScalingIconUrl(variable.name)}
-                                                        alt="scaling"
-                                                        className="scaling-icon"
-                                                    />
-                                                    <span className="scaling-values">
-                                                        [{displayValues.join('/')}]
-                                                    </span>
+                                                    <span className="scaling-name">{getVariableDisplayName(variable.name)}:</span>
+                                                    <span className="scaling-current">{Math.round(currentValue * 100) / 100}</span>
+                                                    <img src={getScalingIconUrl(variable.name)} alt="scaling" className="scaling-icon" />
+                                                    <span className="scaling-values">[{displayValues.join('/')}]</span>
                                                 </div>
                                             );
                                         })
@@ -327,85 +364,62 @@ export const ChampionTooltip: React.FC<ChampionTooltipProps> = ({
                             )}
                         </div>
                     )}
-
-                    {/* Right Column: Stats */}
                     {stats && (
                         <div className="hextech-tooltip-stats">
                             <div className="stat-item">
-                                <img
-                                    src="https://cdn.tft.tools/general/hp.png"
-                                    alt="HP"
-                                    className="stat-icon"
-                                />
+                                <img src="https://cdn.tft.tools/general/hp.png" alt="HP" className="stat-icon" />
                                 <span className="stat-values">{stats.hp[0]}/{stats.hp[1]}/{stats.hp[2]}</span>
                             </div>
                             <div className="stat-item">
-                                <img
-                                    src="https://raw.communitydragon.org/latest/game/assets/perks/statmods/statmodsattackdamageicon.png"
-                                    alt="AD"
-                                    className="stat-icon"
-                                />
+                                <img src="https://raw.communitydragon.org/latest/game/assets/perks/statmods/statmodsattackdamageicon.png" alt="AD" className="stat-icon" />
                                 <span className="stat-values">{stats.ad[0]}/{stats.ad[1]}/{stats.ad[2]}</span>
                             </div>
                             <div className="stat-item">
-                                <img
-                                    src="https://raw.communitydragon.org/latest/game/assets/perks/statmods/statmodsarmoricon.png"
-                                    alt="AR"
-                                    className="stat-icon"
-                                />
+                                <img src="https://raw.communitydragon.org/latest/game/assets/perks/statmods/statmodsarmoricon.png" alt="AR" className="stat-icon" />
                                 <span className="stat-values">{stats.armor}</span>
-                                <img
-                                    src="https://raw.communitydragon.org/latest/game/assets/perks/statmods/statmodsmagicresicon.png"
-                                    alt="MR"
-                                    className="stat-icon"
-                                    style={{ marginLeft: '8px' }}
-                                />
+                                <img src="https://raw.communitydragon.org/latest/game/assets/perks/statmods/statmodsmagicresicon.png" alt="MR" className="stat-icon" style={{ marginLeft: '8px' }} />
                                 <span className="stat-values">{stats.mr}</span>
                             </div>
                             <div className="stat-item">
-                                <img
-                                    src="https://raw.communitydragon.org/latest/game/assets/perks/statmods/statmodsattackspeedicon.png"
-                                    alt="AS"
-                                    className="stat-icon"
-                                />
+                                <img src="https://raw.communitydragon.org/latest/game/assets/perks/statmods/statmodsattackspeedicon.png" alt="AS" className="stat-icon" />
                                 <span className="stat-values">{stats.as.toFixed(2)}</span>
                             </div>
                             <div className="stat-item">
-                                <img
-                                    src="https://cdn.tft.tools/general/range.png"
-                                    alt="Range"
-                                    className="stat-icon"
-                                />
+                                <img src="https://cdn.tft.tools/general/range.png" alt="Range" className="stat-icon" />
                                 <span className="stat-values">{stats.range}</span>
                             </div>
                         </div>
                     )}
                 </div>
             )}
-
             {items.length > 0 && (
-                <div className="hextech-tooltip-meta">
-                    Trang bị: {items.join(', ')}
-                </div>
+                <div className="hextech-tooltip-meta">Trang bị: {items.join(', ')}</div>
             )}
+        </>
+    );
+
+    const tooltipContent = isVisible ? createPortal(
+        <div
+            className={`hextech-tooltip-portal champion-tooltip ${touch ? 'champion-tooltip-compact' : ''} position-${actualPosition}`}
+            style={{ left: tooltipPos.left, top: tooltipPos.top }}
+        >
+            {touch ? mobileContent : desktopContent}
         </div>,
         document.body
     ) : null;
 
     return (
-        <div
-            ref={triggerRef}
-            className="hextech-tooltip-wrapper"
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-        >
+        <div {...wrapperProps} className="hextech-tooltip-wrapper">
             {children}
             {tooltipContent}
         </div>
     );
 };
 
-// Specialized tooltip for Traits
+// ==========================================================================
+// TraitTooltip
+// ==========================================================================
+
 interface TraitTooltipProps {
     name: string;
     description: string;
@@ -421,20 +435,32 @@ export const TraitTooltip: React.FC<TraitTooltipProps> = ({
     position = 'right',
     children
 }) => {
+    const { isVisible, tooltipPos, actualPosition, wrapperProps } =
+        useTooltipInteraction(position, 280, 150);
+
+    const tooltipContent = isVisible ? createPortal(
+        <div
+            className={`hextech-tooltip-portal position-${actualPosition}`}
+            style={{ left: tooltipPos.left, top: tooltipPos.top }}
+        >
+            <div className="hextech-tooltip-title">{name}</div>
+            {description && <div className="hextech-tooltip-description">{description}</div>}
+        </div>,
+        document.body
+    ) : null;
+
     return (
-        <div className="hextech-tooltip-wrapper">
+        <div {...wrapperProps} className="hextech-tooltip-wrapper">
             {children}
-            <div className={`hextech-tooltip position-${position}`}>
-                <div className="hextech-tooltip-title">{name}</div>
-                {description && (
-                    <div className="hextech-tooltip-description">{description}</div>
-                )}
-            </div>
+            {tooltipContent}
         </div>
     );
 };
 
-// Specialized tooltip for Items
+// ==========================================================================
+// ItemTooltip
+// ==========================================================================
+
 interface ItemTooltipProps {
     name: string;
     description: string;
@@ -448,20 +474,32 @@ export const ItemTooltip: React.FC<ItemTooltipProps> = ({
     position = 'left',
     children
 }) => {
+    const { isVisible, tooltipPos, actualPosition, wrapperProps } =
+        useTooltipInteraction(position, 280, 150);
+
+    const tooltipContent = isVisible ? createPortal(
+        <div
+            className={`hextech-tooltip-portal position-${actualPosition}`}
+            style={{ left: tooltipPos.left, top: tooltipPos.top }}
+        >
+            <div className="hextech-tooltip-title">{name}</div>
+            {description && <div className="hextech-tooltip-description">{description}</div>}
+        </div>,
+        document.body
+    ) : null;
+
     return (
-        <div className="hextech-tooltip-wrapper">
+        <div {...wrapperProps} className="hextech-tooltip-wrapper">
             {children}
-            <div className={`hextech-tooltip position-${position}`}>
-                <div className="hextech-tooltip-title">{name}</div>
-                {description && (
-                    <div className="hextech-tooltip-description">{description}</div>
-                )}
-            </div>
+            {tooltipContent}
         </div>
     );
 };
 
-// Specialized tooltip for Augments
+// ==========================================================================
+// AugmentTooltip
+// ==========================================================================
+
 interface AugmentTooltipProps {
     title: string;
     description: string;
@@ -476,13 +514,24 @@ export const AugmentTooltip: React.FC<AugmentTooltipProps> = ({
     position = 'bottom',
     children
 }) => {
+    const { isVisible, tooltipPos, actualPosition, wrapperProps } =
+        useTooltipInteraction(position, 280, 150);
+
+    const tooltipContent = isVisible ? createPortal(
+        <div
+            className={`hextech-tooltip-portal position-${actualPosition}`}
+            style={{ left: tooltipPos.left, top: tooltipPos.top }}
+        >
+            <div className="hextech-tooltip-title">{title}</div>
+            <div className="hextech-tooltip-description">{description}</div>
+        </div>,
+        document.body
+    ) : null;
+
     return (
-        <div className="hextech-tooltip-wrapper">
+        <div {...wrapperProps} className="hextech-tooltip-wrapper">
             {children}
-            <div className={`hextech-tooltip position-${position}`}>
-                <div className="hextech-tooltip-title">{title}</div>
-                <div className="hextech-tooltip-description">{description}</div>
-            </div>
+            {tooltipContent}
         </div>
     );
 };

@@ -122,20 +122,20 @@
    GAME INFO TOOLTIP STYLING
    ========================================================================== */
 
+/* Portal tooltip — uses px because it renders at body level (no container query) */
 .game-info-tooltip-portal {
     position: fixed;
     z-index: 999999;
     pointer-events: none;
 
-    /* Hextech Panel Style */
     background: linear-gradient(180deg, #153a3e 0%, #051c1e 100%);
-    border: 0.1cqw solid #c8aa6e;
-    box-shadow: 0 0 1.5cqw rgba(200, 170, 110, 0.25);
-    backdrop-filter: blur(8px);
+    border: 1px solid #c8aa6e;
+    box-shadow: 0 0 12px rgba(200, 170, 110, 0.25);
 
-    padding: 1cqw 1.2cqw;
-    min-width: 18cqw;
-    max-width: 24cqw;
+    padding: 10px 12px;
+    min-width: 180px;
+    max-width: 260px;
+    border-radius: 6px;
 }
 
 /* Position adjustments */
@@ -145,27 +145,25 @@
 
 .game-info-tooltip-portal.position-top {
     transform: translate(-50%, -100%);
-    margin-top: -0.5cqw;
 }
 
 .game-info-tooltip-portal.position-bottom {
     transform: translateX(-50%);
-    margin-top: 0.5cqw;
 }
 
 /* Header with icon and title */
 .game-info-header {
     display: flex;
     align-items: center;
-    gap: 0.6cqw;
-    margin-bottom: 0.6cqw;
-    padding-bottom: 0.5cqw;
-    border-bottom: 0.05cqw solid rgba(200, 170, 110, 0.3);
+    gap: 6px;
+    margin-bottom: 6px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid rgba(200, 170, 110, 0.3);
 }
 
 .game-info-header-icon {
-    width: 2cqw;
-    height: 2cqw;
+    width: 20px;
+    height: 20px;
     flex-shrink: 0;
 }
 
@@ -177,41 +175,41 @@
 
 .game-info-title {
     font-family: 'Spectral', serif;
-    font-size: 1cqw;
+    font-size: 13px;
     font-weight: 700;
     color: #c8aa6e;
     text-transform: uppercase;
-    letter-spacing: 0.05cqw;
+    letter-spacing: 0.5px;
 }
 
 /* Description */
 .game-info-description {
     font-family: 'Inter', sans-serif;
-    font-size: 0.7cqw;
+    font-size: 11px;
     color: #94A3B8;
     line-height: 1.4;
-    margin-bottom: 0.6cqw;
+    margin-bottom: 6px;
 }
 
 /* Breakpoints table for Ionia */
 .game-info-breakpoints {
     display: flex;
     flex-direction: column;
-    gap: 0.3cqw;
+    gap: 3px;
 }
 
 .game-info-breakpoint {
     display: flex;
     align-items: center;
-    gap: 0.5cqw;
+    gap: 6px;
     font-family: 'Inter', sans-serif;
-    font-size: 0.65cqw;
+    font-size: 11px;
 }
 
 .game-info-breakpoint-level {
     color: #c8aa6e;
     font-weight: 600;
-    min-width: 1.5cqw;
+    min-width: 20px;
 }
 
 .game-info-breakpoint-stats {
@@ -222,30 +220,30 @@
 .game-info-mods-list {
     display: flex;
     flex-direction: column;
-    gap: 0.5cqw;
+    gap: 5px;
 }
 
 .game-info-mod-item {
     display: flex;
-    align-items: flex-start;
-    gap: 0.5cqw;
+    align-items: center;
+    gap: 6px;
 }
 
 .game-info-mod-index {
     font-family: 'Spectral', serif;
-    font-size: 0.75cqw;
+    font-size: 12px;
     font-weight: 700;
     color: #c8aa6e;
-    min-width: 1cqw;
+    min-width: 14px;
 }
 
 .game-info-mod-icon {
-    width: 1.5cqw;
-    height: 1.5cqw;
+    width: 20px;
+    height: 20px;
     flex-shrink: 0;
     background: rgba(0, 0, 0, 0.3);
-    border-radius: 0.15cqw;
-    padding: 0.1cqw;
+    border-radius: 2px;
+    padding: 1px;
 }
 
 .game-info-mod-icon img {
@@ -260,15 +258,14 @@
 
 .game-info-mod-name {
     font-family: 'Inter', sans-serif;
-    font-size: 0.7cqw;
+    font-size: 11px;
     font-weight: 600;
     color: #F0E6D2;
-    margin-bottom: 0.15cqw;
 }
 
 .game-info-mod-desc {
     font-family: 'Inter', sans-serif;
-    font-size: 0.6cqw;
+    font-size: 10px;
     color: #94A3B8;
     line-height: 1.3;
 }

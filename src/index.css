@@ -1,7 +1,17 @@
 /* ==========================================================================
-   GLOBAL STYLES - TFT-hoho (Hextech HUD System)
+   GLOBAL STYLES - TFTISEASY Training Tool (Hextech HUD System)
    ========================================================================== */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Share+Tech+Mono&family=Spectral:wght@400;600;700&display=swap');
+/* Self-hosted fonts via @fontsource — NO external CDN requests */
+@import '@fontsource/inter/300.css';
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/600.css';
+@import '@fontsource/inter/700.css';
+@import '@fontsource/spectral/400.css';
+@import '@fontsource/spectral/600.css';
+@import '@fontsource/spectral/700.css';
+@import '@fontsource/share-tech-mono/400.css';
+@import './styles/mobile.css';
 
 :root {
     /* ==========================================================================
@@ -79,6 +89,8 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    /* Prevent default mobile touch highlight globally */
+    -webkit-tap-highlight-color: transparent;
 }
 
 html {
@@ -95,6 +107,16 @@ body {
     overflow: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    /* Prevent text selection globally except on inputs */
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* Re-enable text selection only for input fields */
+input,
+textarea {
+    user-select: auto;
+    -webkit-user-select: auto;
 }
 
 #root {
