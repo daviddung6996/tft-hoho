@@ -12,6 +12,7 @@ import bunbunImg from '../assets/tacticians/bunbun.webp';
 import fenroarImg from '../assets/tacticians/fenroar.webp';
 import spriteImg from '../assets/tacticians/sprite.webp';
 import molediverImg from '../assets/tacticians/molediver.webp';
+import augmentTreeImg from '../assets/augment-tree/augment-tree.png';
 
 export interface PlayerData {
     id: string;
@@ -45,7 +46,7 @@ export const MOCK_PLAYERS: PlayerData[] = [
         status: 'active',
         isMe: true,
         arenaId: 'summoners_rift',
-        augmentTreeUrl: '/src/assets/augment-tree/augment-tree.png',
+        augmentTreeUrl: augmentTreeImg,
         units: [
             { id: 'p1', name: 'Jhin', row: 3, col: 3, cost: 4, stars: 1, image: getChampionIconUrl('Jhin'), items: ['InfinityEdge', 'GiantSlayer'] },
             { id: 'p2', name: 'Ahri', row: 3, col: 1, cost: 3, stars: 2, image: getChampionIconUrl('Ahri') },
@@ -64,7 +65,7 @@ export const MOCK_PLAYERS: PlayerData[] = [
         status: 'active',
         isMe: false,
         arenaId: 'deep_sea',
-        augmentTreeUrl: '/src/assets/augment-tree/augment-tree.png',
+        augmentTreeUrl: augmentTreeImg,
         units: [
             { id: 'c1', name: 'Nautilus', row: 0, col: 3, cost: 4, stars: 1, image: getChampionIconUrl('Nautilus'), items: ['Redemption'] },
             { id: 'c2', name: 'Fizz', row: 1, col: 2, cost: 2, stars: 1, image: getChampionIconUrl('Fizz') },
@@ -84,7 +85,7 @@ export const MOCK_PLAYERS: PlayerData[] = [
         status: 'active',
         isMe: false,
         arenaId: 'lotus_pond',
-        augmentTreeUrl: '/src/assets/augment-tree/augment-tree.png',
+        augmentTreeUrl: augmentTreeImg,
         units: [
             { id: 'a1', name: 'Lux', row: 2, col: 0, cost: 4, stars: 2, image: getChampionIconUrl('Lux'), items: ['RabadonsDeathcap', 'Morellonomicon'] },
             { id: 'a2', name: 'Diana', row: 2, col: 6, cost: 3, stars: 1, image: getChampionIconUrl('Diana') },
@@ -103,7 +104,7 @@ export const MOCK_PLAYERS: PlayerData[] = [
         status: 'active',
         isMe: false,
         arenaId: 'yuumi_library',
-        augmentTreeUrl: '/src/assets/augment-tree/augment-tree.png',
+        augmentTreeUrl: augmentTreeImg,
         units: [
             { id: 'n1', name: 'Sona', row: 3, col: 3, cost: 2, stars: 1, image: getChampionIconUrl('Sona'), items: ['Redemption'] },
             { id: 'n2', name: 'Poppy', row: 2, col: 3, cost: 1, stars: 1, image: getChampionIconUrl('Poppy') },
@@ -119,7 +120,7 @@ export const MOCK_PLAYERS: PlayerData[] = [
         status: 'active',
         isMe: false,
         arenaId: 'monsters_attack',
-        augmentTreeUrl: '/src/assets/augment-tree/augment-tree.png',
+        augmentTreeUrl: augmentTreeImg,
         units: [
             { id: 'b1', name: 'Aatrox', row: 0, col: 3, cost: 5, stars: 1, image: getChampionIconUrl('Aatrox'), items: ['HandOfJustice', 'Bloodthirster', 'TitansResolve'] },
         ],
@@ -138,7 +139,7 @@ export const MOCK_PLAYERS: PlayerData[] = [
         status: 'active',
         isMe: false,
         arenaId: 'bilgewater_depths',
-        augmentTreeUrl: '/src/assets/augment-tree/augment-tree.png',
+        augmentTreeUrl: augmentTreeImg,
         units: [
             { id: 'f1', name: 'Miss Fortune', row: 3, col: 2, cost: 4, stars: 1, image: getChampionIconUrl('Miss Fortune'), items: ['GuinsoosRageblade'] },
             { id: 'f2', name: 'Tahm Kench', row: 3, col: 4, cost: 3, stars: 1, image: getChampionIconUrl('Tahm Kench') },
@@ -155,7 +156,7 @@ export const MOCK_PLAYERS: PlayerData[] = [
         status: 'active',
         isMe: false,
         arenaId: 'cyber_city',
-        augmentTreeUrl: '/src/assets/augment-tree/augment-tree.png',
+        augmentTreeUrl: augmentTreeImg,
         units: [
             { id: 's1', name: 'Ziggs', row: 0, col: 0, cost: 2, stars: 2, image: getChampionIconUrl('Ziggs'), items: ['StatikkShiv'] },
             { id: 's2', name: 'Orianna', row: 0, col: 6, cost: 3, stars: 1, image: getChampionIconUrl('Orianna') },
@@ -174,7 +175,7 @@ export const MOCK_PLAYERS: PlayerData[] = [
         status: 'active',
         isMe: false,
         arenaId: 'water_dragon_village',
-        augmentTreeUrl: '/src/assets/augment-tree/augment-tree.png',
+        augmentTreeUrl: augmentTreeImg,
         units: [
             { id: 'm1', name: 'Yone', row: 1, col: 3, cost: 4, stars: 1, image: getChampionIconUrl('Yone'), items: ['SunfireCape', 'IonicSpark'] },
             { id: 'm2', name: 'Xin Zhao', row: 2, col: 2, cost: 2, stars: 1, image: getChampionIconUrl('Xin Zhao') },
