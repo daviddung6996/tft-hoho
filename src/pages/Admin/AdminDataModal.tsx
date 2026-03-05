@@ -6,6 +6,7 @@ import { itemService } from '../../services/itemService';
 import { augmentService } from '../../services/augmentService';
 import { puzzleService } from '../../services/puzzleService';
 import { seedCompletePuzzles } from '../../utils/seedCompletePuzzles';
+import { getLocalUrl } from '../../utils/localAssetUrl';
 import PuzzleBuilder from './PuzzleBuilder/PuzzleBuilder';
 import AdminHeader from '../../components/Admin/AdminHeader';
 import '../../components/Admin/AdminDataTable.css';
@@ -476,7 +477,7 @@ const AdminDataModal: React.FC<AdminDataModalProps> = ({ onClose, onPuzzleSaved 
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '1cqw' }}>
                                             {activeTab === 'champions' && (item as Champion).avatar && (
                                                 <img
-                                                    src={(item as Champion).avatar}
+                                                    src={getLocalUrl((item as Champion).avatar)}
                                                     alt={item.name}
                                                     className={`champion-avatar cost-${(item as Champion).cost}`}
                                                     onError={() => {
@@ -487,7 +488,7 @@ const AdminDataModal: React.FC<AdminDataModalProps> = ({ onClose, onPuzzleSaved 
                                             {/* Icons for items/traits/augments */}
                                             {(activeTab === 'items' || activeTab === 'traits' || activeTab === 'augments') && (item as any).icon && (
                                                 <img
-                                                    src={(item as any).icon}
+                                                    src={getLocalUrl((item as any).icon)}
                                                     alt={item.name}
                                                     className="champion-avatar"
                                                     style={{ borderRadius: '4px' }}

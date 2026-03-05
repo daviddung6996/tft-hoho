@@ -78,12 +78,18 @@ export async function updateUserIq(
             user_id: userId,
             puzzle_id: puzzleId,
             change_amount: changeAmount,
-            time_taken_ms: timeTakenSeconds * 1000,
+            time_taken_ms: Math.round(timeTakenSeconds * 1000),
             is_correct: isCorrect
         });
 
     if (historyErr) {
-        console.error('Lỗi khi thêm history:', historyErr);
+        console.error('Lỗi khi thêm history:', JSON.stringify(historyErr, null, 2), {
+            user_id: userId,
+            puzzle_id: puzzleId,
+            change_amount: changeAmount,
+            time_taken_ms: Math.round(timeTakenSeconds * 1000),
+            is_correct: isCorrect
+        });
     }
 
     return { changeAmount, newScore, newRank };

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { getAllAssetUrls, AssetType } from '../utils/assetUrlBuilder';
+import { getLocalUrl } from '../utils/localAssetUrl';
 
 /**
  * Asset Image component with automatic fallback
@@ -15,6 +16,7 @@ export function AssetImage({ type, name, alt, className, style, ...props }: Asse
     const [currentUrlIndex, setCurrentUrlIndex] = useState(0);
     const urls = getAllAssetUrls({ type, name });
     const currentUrl = urls[currentUrlIndex] || '';
+    const displayUrl = getLocalUrl(currentUrl);
 
     const handleError = () => {
         const nextIndex = currentUrlIndex + 1;
@@ -27,7 +29,7 @@ export function AssetImage({ type, name, alt, className, style, ...props }: Asse
 
     return (
         <img
-            src={currentUrl}
+            src={displayUrl}
             alt={alt}
             className={className}
             style={style}
