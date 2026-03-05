@@ -372,3 +372,10 @@ Get-ChildItem -Path src -Recurse -Include "*.tsx" | ForEach-Object {
 - **Fix 1:** Changed `Promise.all` to `Promise.allSettled` so that successful API calls still render their data gracefully.
 - **Problem 2 (RLS Silent Failure):** When calling `.update({ deleted_at: ... }).eq('id', id)` on Supabase, if the user role does not satisfy the RLS policy for `UPDATE`, Supabase fails silently. It returns `data: []` and no error instead of an unauthorized exception. Thus the UI shows success, but the database isn't updated.
 - **Fix 2:** Ensure backend services allow `mod` roles in JS `checkAdminAccess()`, and critically, ensure the PostgreSQL RLS Policy for `UPDATE` is explicitly configured to allow the `mod` role. (Supabase requires both `UPDATE` and identifying rows via `SELECT` permissions to fully succeed).
+
+### Cloudflare Pages MIME Type text/html Error on Subdomain Deployment (2026-03-05)
+- **Date:** 2026-03-05
+- **File:** `vite.config.ts`, `public/_redirects`, `public/_headers`
+- **Problem:** When setting up a subdomain like `training.tftiseasy.com` on Cloudflare Pages, configuring Vite with `base: '/training/'` causes the React Router to fetch JS/CSS files from `training.tftiseasy.com/training/assets/...` which do not exist at that path when deployed to the root of a subdomain. Cloudflare throws a fallback SPA `index.html` file, leading to multiple "MIME type text/html is not supported" errors in the browser console.
+- **Fix:** If deployed directly to the root of a subdomain (i.e. `training.tftiseasy.com/...`), treat it as a root domain deployment. Remove the `base: '/training/'` config from `vite.config.ts` (leave empty so it defaults to `/`). Set `public/_redirects` to `/* /index.html 200` to correctly handle SPA routing for the root domain.
+
