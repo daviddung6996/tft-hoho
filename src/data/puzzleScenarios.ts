@@ -5,6 +5,9 @@ import { UnitData } from './types';
 // Puzzle scenario data for TFTDojo-style gameplay
 export type PuzzleTier = 'free' | 'advanced' | 'rare';
 export type AugmentPath = 'econ' | 'item' | 'combat' | 'emblem';
+export type StabilizationPlan = 'stabilize' | 'cap' | 'patch' | 'greed';
+export type BoardStrength = 'weak' | 'medium' | 'strong';
+export type HPPressure = 'safe' | 'medium' | 'panic';
 export type PuzzleDifficulty = 'straightforward' | 'close_call' | 'counter_intuitive';
 
 export interface PuzzleScenario {
@@ -89,6 +92,15 @@ export interface PuzzleScenario {
     augmentPaths?: Record<string, AugmentPath>; // Map augment ID → path (for all 3 options)
     proReasoningIntent?: string;            // 2-3 sentence explanation for Pro's path choice
     difficulty?: PuzzleDifficulty;          // How tricky this puzzle is
+
+    // === V3: Augment Trainer 4-2 Fields ===
+    boardStrength?: BoardStrength;           // weak/medium/strong — board power at 4-2
+    hpPressure?: HPPressure;                 // safe (60-100) / medium (30-59) / panic (1-29)
+    rollState?: string;                      // e.g., "rolled down 30g at 8"
+    proPlan?: StabilizationPlan;             // Plan the Pro chose (stabilize/cap/patch/greed)
+    planReasoning?: string;                  // 2-3 sentence explanation for Pro's plan
+    augmentPlans?: Record<string, StabilizationPlan>; // Map augment ID → plan category
+    previousAugments?: (AugmentData | null)[]; // Augments chosen at 2-1 and 3-2
 }
 
 export interface OpponentData {

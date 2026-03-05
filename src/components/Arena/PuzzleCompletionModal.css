@@ -226,56 +226,56 @@
 /* ─── Mobile ─── */
 @media (max-width: 768px) {
   .puzzle-done-modal {
-    width: 85vw;
+    width: 72vw;
   }
 
   .puzzle-done-hero {
-    padding: 6vw 5vw 3vw;
+    padding: 4vw 4vw 2vw;
   }
 
   .puzzle-done-badge {
-    font-size: 2.2vw;
-    padding: 0.8vw 3vw;
-    margin-bottom: 3vw;
-    letter-spacing: 0.5vw;
+    font-size: 1.8vw;
+    padding: 0.5vw 2.2vw;
+    margin-bottom: 2vw;
+    letter-spacing: 0.3vw;
   }
 
   .puzzle-done-title {
-    font-size: 6.5vw;
+    font-size: 4.5vw;
   }
 
   .puzzle-done-divider {
-    margin-top: 3vw;
+    margin-top: 2vw;
   }
 
   .puzzle-done-body {
-    padding: 4vw 5vw;
+    padding: 2.5vw 4vw;
   }
 
   .puzzle-done-text {
-    font-size: 4vw;
-    margin-bottom: 2vw;
+    font-size: 3vw;
+    margin-bottom: 1.5vw;
   }
 
   .puzzle-done-muted {
-    font-size: 2.8vw;
+    font-size: 2.2vw;
   }
 
   .puzzle-done-cta-section {
-    padding: 3vw 6vw 5vw;
+    padding: 2vw 5vw 3.5vw;
   }
 
   .puzzle-done-cta {
-    padding: 2vw 6vw;
-    min-width: 40vw;
+    padding: 1.5vw 5vw;
+    min-width: 35vw;
   }
 
   .puzzle-done-cta-text {
-    font-size: 3.5vw;
+    font-size: 2.8vw;
   }
 
   .puzzle-done-corner {
-    width: 4vw;
-    height: 4vw;
+    width: 3vw;
+    height: 3vw;
   }
 }

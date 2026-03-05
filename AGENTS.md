@@ -364,3 +364,11 @@ Get-ChildItem -Path src -Recurse -Include "*.tsx" | ForEach-Object {
   1) usePuzzleGame.handleMarkCompleted only persisted for user?.id and did not update local completion list for guest sessions.
   2) puzzleService.getAll() queried .is('deleted_at', null); if a DB is missing deleted_at, query fails and hook falls back to local PUZZLE_SCENARIOS, increasing puzzle pool silently.
 - **Avoid:** Always update completedPuzzleIds locally for both guest and authenticated sessions; persist to DB only when user?.id exists. In getAll(), retry without deleted_at filter when missing-column error is detected.
+
+### TrashView load failure & Supabase RLS silent UPDATE failure (2026-03-04)
+- **Date:** 2026-03-04
+- **File:** `src/pages/Admin/components/TrashView.tsx`, `src/services/championService.ts` (and other services)
+- **Problem 1 (Trash View):** `TrashView` used `Promise.all` to fetch deleted items from 7 different tables. If even ONE service call failed (e.g., due to insufficient permissions), the entire trash view failed to load and appeared empty.
+- **Fix 1:** Changed `Promise.all` to `Promise.allSettled` so that successful API calls still render their data gracefully.
+- **Problem 2 (RLS Silent Failure):** When calling `.update({ deleted_at: ... }).eq('id', id)` on Supabase, if the user role does not satisfy the RLS policy for `UPDATE`, Supabase fails silently. It returns `data: []` and no error instead of an unauthorized exception. Thus the UI shows success, but the database isn't updated.
+- **Fix 2:** Ensure backend services allow `mod` roles in JS `checkAdminAccess()`, and critically, ensure the PostgreSQL RLS Policy for `UPDATE` is explicitly configured to allow the `mod` role. (Supabase requires both `UPDATE` and identifying rows via `SELECT` permissions to fully succeed).

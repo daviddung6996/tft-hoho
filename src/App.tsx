@@ -12,6 +12,7 @@ import { AugmentModal } from './components/Arena/AugmentModal';
 import { DecisionReview } from './components/Arena/DecisionReview';
 import { TopStatusBar } from './components/Arena/TopStatusBar';
 import { PathSelector } from './features/augment-trainer/components/PathSelector';
+import { PlanSelector } from './features/augment-trainer/components/PlanSelector';
 import { MenuButton } from './components/Settings/SettingsButton';
 import { ArenaSelectorModal } from './components/Settings/ArenaSelectorModal';
 import { LoginModal } from './components/Auth/LoginModal';
@@ -100,7 +101,11 @@ const App: React.FC = () => {
         // V2: Intent declaration
         isV2Puzzle,
         declaredPath,
-        handlePathDeclare
+        handlePathDeclare,
+        // V3: Plan declaration (4-2)
+        is42Puzzle,
+        declaredPlan,
+        handlePlanDeclare
     } = useGameFlow(currentPuzzle, user?.id, { canPlayPuzzle: isPuzzlePlayable });
 
     // --- 3. UI State ---
@@ -161,8 +166,8 @@ const App: React.FC = () => {
         p.isMe && myArenaId ? { ...p, arenaId: myArenaId } : p
     );
 
-    // ScoutingPanel players: sort ALL by HP desc at 3-2 (no pinning)
-    const scoutingPlayers = currentPuzzle?.stage === '3-2'
+    // ScoutingPanel players: sort ALL by HP desc at 3-2/4-2 lobby view
+    const scoutingPlayers = (currentPuzzle?.stage === '3-2' || currentPuzzle?.stage === '4-2')
         ? allPlayersWithArena.slice().sort((a, b) => b.hp - a.hp)
         : allPlayersWithArena;
 
@@ -238,14 +243,12 @@ const App: React.FC = () => {
                             myPlayer={myPlayerWithArena}
                             activePlayer={activePlayer}
                             isMirrored={isMirrored}
-                            streakCount={currentPuzzle.streakCount}
                         />
-
                         <TopStatusBar
                             stage={currentPuzzle.stage || ''}
                             streakHistory={currentPuzzle.streakHistory}
                             streakCount={currentPuzzle.streakCount}
-                            dimmed={puzzlePhase === 'reviewing'}
+                            dimmed={isAugmentOpen && !isMirrored}
                         />
 
                         <GameHUD
@@ -279,161 +282,196 @@ const App: React.FC = () => {
                         )}
 
                         {/* V2: PathSelector — shown during declaring_intent phase */}
-                            {!isMirrored && isAugmentOpen && puzzlePhase === 'declaring_intent' && isV2Puzzle && (
-                                isPuzzlePlayable ? (
-                                    <PathSelector
-                                        onPathDeclare={handlePathDeclare}
-                                        stage={currentPuzzle.stage}
-                                        allPuzzlesCompleted={allPuzzlesCompleted}
-                                    />
-                                ) : currentPuzzleAccess && (
-                                    <PuzzleLockOverlay
-                                        tier={currentPuzzleAccess.tier}
-                                        isProSupporter={currentPuzzleAccess.reason === 'pro_supporter'}
-                                        canAfford={walletBalance >= (currentPuzzleAccess.cost ?? 0)}
-                                        isLoading={isUnlocking}
-                                        requiresLogin={requiresLoginForUnlock}
-                                        title={
-                                            lockMessageVariant === 'rare_elite'
-                                                ? 'WOW, báº¡n gáº·p Puzzle hiáº¿m tháº¥y.'
-                                                : lockMessageVariant === 'premium_education'
-                                                    ? 'Tin vui! Báº¡n gáº·p puzzle cháº¥t lÆ°á»£ng cao.'
-                                                    : undefined
-                                        }
-                                        subtitle={
-                                            lockMessageVariant === 'rare_elite'
-                                                ? 'Puzzle nÃ y chá»©a nÆ°á»›c Ä‘i tháº§n thÃ¡nh cá»§a tuyá»ƒn thá»§. Xem lÃ  lÃªn trÃ¬nh!'
-                                                : lockMessageVariant === 'premium_education'
-                                                    ? 'Puzzle xá»‹n + giáº£i thÃ­ch ká»¹ giÃºp báº¡n nÃ¢ng tÆ° duy augment tháº­t sá»±.'
-                                                    : undefined
-                                        }
-                                        onUnlock={() => {
-                                            if (requiresLoginForUnlock) {
-                                                setShowLoginModal(true);
-                                            } else {
-                                                handleUnlockCurrentPuzzle();
-                                            }
-                                        }}
-                                        onProSupporter={() => {
-                                            const supportBtn = document.querySelector('.menu-item--support') as HTMLButtonElement;
-                                            if (supportBtn) supportBtn.click();
-                                        }}
-                                        onSkipToFree={hasFreePuzzlesAvailable ? handleSkipToFreePuzzle : undefined}
-                                    />
-                                )
-                            )}
-
-                            {/* Augment Logic — Lock Overlay or AugmentModal */}
-                            {!isMirrored && isAugmentOpen && puzzlePhase === 'selecting' && (
-                                isPuzzlePlayable ? (
-                                    <AugmentModal
-                                        currentAugments={currentAugments}
-                                        rerollOrder={rerollOrder}
-                                        onReroll={handleAugmentReroll}
-                                        onSelect={handleAugmentSelect}
-                                        allPuzzlesCompleted={allPuzzlesCompleted}
-                                        puzzleTier={currentPuzzle.tier || 'free'}
-                                    />
-                                ) : currentPuzzleAccess && (
-                                    <PuzzleLockOverlay
-                                        tier={currentPuzzleAccess.tier}
-                                        isProSupporter={currentPuzzleAccess.reason === 'pro_supporter'}
-                                        canAfford={walletBalance >= (currentPuzzleAccess.cost ?? 0)}
-                                        isLoading={isUnlocking}
-                                        requiresLogin={requiresLoginForUnlock}
-                                        title={
-                                            lockMessageVariant === 'rare_elite'
-                                                ? 'WOW, bạn gặp Puzzle hiếm thấy.'
-                                                : lockMessageVariant === 'premium_education'
-                                                    ? 'Tin vui! Bạn gặp puzzle chất lượng cao.'
-                                                    : undefined
-                                        }
-                                        subtitle={
-                                            lockMessageVariant === 'rare_elite'
-                                                ? 'Puzzle này chứa nước đi thần thánh của tuyển thủ. Xem là lên trình!'
-                                                : lockMessageVariant === 'premium_education'
-                                                    ? 'Puzzle xịn + giải thích kỹ giúp bạn nâng tư duy augment thật sự.'
-                                                    : undefined
-                                        }
-                                        onUnlock={() => {
-                                            if (requiresLoginForUnlock) {
-                                                setShowLoginModal(true);
-                                            } else {
-                                                handleUnlockCurrentPuzzle();
-                                            }
-                                        }}
-                                        onProSupporter={() => {
-                                            const supportBtn = document.querySelector('.menu-item--support') as HTMLButtonElement;
-                                            if (supportBtn) supportBtn.click();
-                                        }}
-                                        onSkipToFree={hasFreePuzzlesAvailable ? handleSkipToFreePuzzle : undefined}
-                                    />
-                                )
-                            )}
-
-                            {!isMirrored && isAugmentOpen && puzzlePhase === 'reviewing' && selectedAugment && (
-                                <DecisionReview
-                                    userRerollOrder={rerollOrder}
-                                    userChoice={selectedAugment}
-                                    puzzleTier={currentPuzzle.tier || 'free'}
-                                    proPlayerName={currentPuzzle.proPlayer}
-                                    proSecondRoll={currentPuzzle.proSecondRoll}
-                                    proFirstRoll={currentPuzzle.proFirstRoll}
-                                    proRerollIndices={currentPuzzle.proRerollIndices || currentPuzzle.meta_data?.proRerollIndices || []}
-                                    // Removed unused props: proSecondRerollIndices, proPickIndex
-                                    initialAugments={currentPuzzle.augments?.filter((a: any) => a !== null) || []}
-                                    rerollAugments={currentPuzzle.rerollAugments?.filter((a: any) => a !== null) || []}
-                                    proFinalPickData={currentPuzzle.proFinalPick}
-                                    correctAugmentId={currentPuzzle.proFinalPick?.id || ''}
-                                    communityVotes={communityVotes}
-                                    iqChangeResult={iqChangeResult}
-                                    explanation={currentPuzzle.explanation}
-                                    onReplay={handleReplay}
-                                    onNextPuzzle={handleNextPuzzle}
-                                    puzzleId={currentPuzzle.id}
-                                    streamUrl={currentPuzzle.streamUrl}
-                                    date={currentPuzzle.date}
-                                    server={currentPuzzle.server}
-                                    encounter={currentPuzzle.encounter}
-                                    patch={currentPuzzle.patch}
-                                    videoUrl={currentPuzzle.video_url}
-                                    videoTitle={currentPuzzle.video_title}
-                                    onViewLibrary={() => setCurrentView('library')}
-                                    // V2: Intent data
-                                    declaredPath={declaredPath || undefined}
-                                    proPickPath={currentPuzzle.proPickPath}
-                                    proReasoningIntent={currentPuzzle.proReasoningIntent}
+                        {!isMirrored && isAugmentOpen && puzzlePhase === 'declaring_intent' && isV2Puzzle && (
+                            isPuzzlePlayable ? (
+                                <PathSelector
+                                    onPathDeclare={handlePathDeclare}
+                                    stage={currentPuzzle.stage}
+                                    allPuzzlesCompleted={allPuzzlesCompleted}
                                 />
-                            )}
-
-                            {puzzlePhase !== 'reviewing' && (
-                                <AugmentButton
-                                    isActive={isAugmentOpen}
-                                    variant={isMirrored ? 'return' : 'default'}
-                                    onClick={isMirrored
-                                        ? () => { setScoutedPlayerId('1'); setIsAugmentOpen(true); }
-                                        : () => setIsAugmentOpen(!isAugmentOpen)
+                            ) : currentPuzzleAccess && (
+                                <PuzzleLockOverlay
+                                    tier={currentPuzzleAccess.tier}
+                                    isProSupporter={currentPuzzleAccess.reason === 'pro_supporter'}
+                                    canAfford={walletBalance >= (currentPuzzleAccess.cost ?? 0)}
+                                    isLoading={isUnlocking}
+                                    requiresLogin={requiresLoginForUnlock}
+                                    title={
+                                        lockMessageVariant === 'rare_elite'
+                                            ? 'WOW, báº¡n gáº·p Puzzle hiáº¿m tháº¥y.'
+                                            : lockMessageVariant === 'premium_education'
+                                                ? 'Tin vui! Báº¡n gáº·p puzzle cháº¥t lÆ°á»£ng cao.'
+                                                : undefined
                                     }
+                                    subtitle={
+                                        lockMessageVariant === 'rare_elite'
+                                            ? 'Puzzle nÃ y chá»©a nÆ°á»›c Ä‘i tháº§n thÃ¡nh cá»§a tuyá»ƒn thá»§. Xem lÃ  lÃªn trÃ¬nh!'
+                                            : lockMessageVariant === 'premium_education'
+                                                ? 'Puzzle xá»‹n + giáº£i thÃ­ch ká»¹ giÃºp báº¡n nÃ¢ng tÆ° duy augment tháº­t sá»±.'
+                                                : undefined
+                                    }
+                                    onUnlock={() => {
+                                        if (requiresLoginForUnlock) {
+                                            setShowLoginModal(true);
+                                        } else {
+                                            handleUnlockCurrentPuzzle();
+                                        }
+                                    }}
+                                    onProSupporter={() => {
+                                        const supportBtn = document.querySelector('.menu-item--support') as HTMLButtonElement;
+                                        if (supportBtn) supportBtn.click();
+                                    }}
+                                    onSkipToFree={hasFreePuzzlesAvailable ? handleSkipToFreePuzzle : undefined}
                                 />
-                            )}
+                            )
+                        )}
 
-                            {showLoginModal && (
-                                <LoginModal onClose={handleCloseLoginModal} />
-                            )}
-
-                            {showAdminModal && (
-                                <AdminDataModal
-                                    onClose={() => setShowAdminModal(false)}
-                                    onPuzzleSaved={refreshPuzzles}
+                        {/* V3: PlanSelector — shown during declaring_plan phase (4-2) */}
+                        {!isMirrored && isAugmentOpen && puzzlePhase === 'declaring_plan' && is42Puzzle && (
+                            isPuzzlePlayable ? (
+                                <PlanSelector
+                                    onPlanDeclare={handlePlanDeclare}
+                                    stage={currentPuzzle.stage}
+                                    allPuzzlesCompleted={allPuzzlesCompleted}
                                 />
-                            )}
-
-                            {showProfileModal && (
-                                <UserProfileModal
-                                    isOpen={showProfileModal}
-                                    onClose={() => setShowProfileModal(false)}
+                            ) : currentPuzzleAccess && (
+                                <PuzzleLockOverlay
+                                    tier={currentPuzzleAccess.tier}
+                                    isProSupporter={currentPuzzleAccess.reason === 'pro_supporter'}
+                                    canAfford={walletBalance >= (currentPuzzleAccess.cost ?? 0)}
+                                    isLoading={isUnlocking}
+                                    requiresLogin={requiresLoginForUnlock}
+                                    onUnlock={() => {
+                                        if (requiresLoginForUnlock) {
+                                            setShowLoginModal(true);
+                                        } else {
+                                            handleUnlockCurrentPuzzle();
+                                        }
+                                    }}
+                                    onProSupporter={() => {
+                                        const supportBtn = document.querySelector('.menu-item--support') as HTMLButtonElement;
+                                        if (supportBtn) supportBtn.click();
+                                    }}
+                                    onSkipToFree={hasFreePuzzlesAvailable ? handleSkipToFreePuzzle : undefined}
                                 />
-                            )}
+                            )
+                        )}
+
+                        {/* Augment Logic — Lock Overlay or AugmentModal */}
+                        {!isMirrored && isAugmentOpen && puzzlePhase === 'selecting' && (
+                            isPuzzlePlayable ? (
+                                <AugmentModal
+                                    currentAugments={currentAugments}
+                                    rerollOrder={rerollOrder}
+                                    onReroll={handleAugmentReroll}
+                                    onSelect={handleAugmentSelect}
+                                    allPuzzlesCompleted={allPuzzlesCompleted}
+                                    puzzleTier={currentPuzzle.tier || 'free'}
+                                />
+                            ) : currentPuzzleAccess && (
+                                <PuzzleLockOverlay
+                                    tier={currentPuzzleAccess.tier}
+                                    isProSupporter={currentPuzzleAccess.reason === 'pro_supporter'}
+                                    canAfford={walletBalance >= (currentPuzzleAccess.cost ?? 0)}
+                                    isLoading={isUnlocking}
+                                    requiresLogin={requiresLoginForUnlock}
+                                    title={
+                                        lockMessageVariant === 'rare_elite'
+                                            ? 'WOW, bạn gặp Puzzle hiếm thấy.'
+                                            : lockMessageVariant === 'premium_education'
+                                                ? 'Tin vui! Bạn gặp puzzle chất lượng cao.'
+                                                : undefined
+                                    }
+                                    subtitle={
+                                        lockMessageVariant === 'rare_elite'
+                                            ? 'Puzzle này chứa nước đi thần thánh của tuyển thủ. Xem là lên trình!'
+                                            : lockMessageVariant === 'premium_education'
+                                                ? 'Puzzle xịn + giải thích kỹ giúp bạn nâng tư duy augment thật sự.'
+                                                : undefined
+                                    }
+                                    onUnlock={() => {
+                                        if (requiresLoginForUnlock) {
+                                            setShowLoginModal(true);
+                                        } else {
+                                            handleUnlockCurrentPuzzle();
+                                        }
+                                    }}
+                                    onProSupporter={() => {
+                                        const supportBtn = document.querySelector('.menu-item--support') as HTMLButtonElement;
+                                        if (supportBtn) supportBtn.click();
+                                    }}
+                                    onSkipToFree={hasFreePuzzlesAvailable ? handleSkipToFreePuzzle : undefined}
+                                />
+                            )
+                        )}
+
+                        {!isMirrored && isAugmentOpen && puzzlePhase === 'reviewing' && selectedAugment && (
+                            <DecisionReview
+                                userRerollOrder={rerollOrder}
+                                userChoice={selectedAugment}
+                                puzzleTier={currentPuzzle.tier || 'free'}
+                                proPlayerName={currentPuzzle.proPlayer}
+                                proSecondRoll={currentPuzzle.proSecondRoll}
+                                proFirstRoll={currentPuzzle.proFirstRoll}
+                                proRerollIndices={currentPuzzle.proRerollIndices || currentPuzzle.meta_data?.proRerollIndices || []}
+                                // Removed unused props: proSecondRerollIndices, proPickIndex
+                                initialAugments={currentPuzzle.augments?.filter((a: any) => a !== null) || []}
+                                rerollAugments={currentPuzzle.rerollAugments?.filter((a: any) => a !== null) || []}
+                                proFinalPickData={currentPuzzle.proFinalPick}
+                                correctAugmentId={currentPuzzle.proFinalPick?.id || ''}
+                                communityVotes={communityVotes}
+                                iqChangeResult={iqChangeResult}
+                                explanation={currentPuzzle.explanation}
+                                onReplay={handleReplay}
+                                onNextPuzzle={handleNextPuzzle}
+                                puzzleId={currentPuzzle.id}
+                                streamUrl={currentPuzzle.streamUrl}
+                                date={currentPuzzle.date}
+                                server={currentPuzzle.server}
+                                encounter={currentPuzzle.encounter}
+                                patch={currentPuzzle.patch}
+                                videoUrl={currentPuzzle.video_url}
+                                videoTitle={currentPuzzle.video_title}
+                                onViewLibrary={() => setCurrentView('library')}
+                                // V2: Intent data
+                                declaredPath={declaredPath || undefined}
+                                proPickPath={currentPuzzle.proPickPath}
+                                proReasoningIntent={currentPuzzle.proReasoningIntent}
+                                // V3: Plan data (4-2)
+                                declaredPlan={declaredPlan || undefined}
+                                proPlan={currentPuzzle.proPlan}
+                                planReasoning={currentPuzzle.planReasoning}
+                            />
+                        )}
+
+                        {puzzlePhase !== 'reviewing' && (
+                            <AugmentButton
+                                isActive={isAugmentOpen}
+                                variant={isMirrored ? 'return' : 'default'}
+                                onClick={isMirrored
+                                    ? () => { setScoutedPlayerId('1'); setIsAugmentOpen(true); }
+                                    : () => setIsAugmentOpen(!isAugmentOpen)
+                                }
+                            />
+                        )}
+
+                        {showLoginModal && (
+                            <LoginModal onClose={handleCloseLoginModal} />
+                        )}
+
+                        {showAdminModal && (
+                            <AdminDataModal
+                                onClose={() => setShowAdminModal(false)}
+                                onPuzzleSaved={refreshPuzzles}
+                            />
+                        )}
+
+                        {showProfileModal && (
+                            <UserProfileModal
+                                isOpen={showProfileModal}
+                                onClose={() => setShowProfileModal(false)}
+                            />
+                        )}
 
                         <PuzzleCompletionModal
                             isOpen={showCompletionModal}

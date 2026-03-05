@@ -670,6 +670,7 @@ const AdminDataModal: React.FC<AdminDataModalProps> = ({ onClose, onPuzzleSaved 
                                 <TrashView
                                     onRestore={handleRestoreFromTrash}
                                     onPermanentDelete={handlePermanentDeleteFromTrash}
+                                    isActive={activeTab === 'trash'}
                                 />
                             </div>
 

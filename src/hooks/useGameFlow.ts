@@ -1,5 +1,5 @@
 import React from 'react';
-import { CommunityVotes, AugmentPath } from '../data/puzzleScenarios';
+import { CommunityVotes, AugmentPath, StabilizationPlan } from '../data/puzzleScenarios';
 import { AugmentData } from '../services/augmentService';
 import { userStatsService } from '../services/userStatsService';
 import { voteService } from '../services/voteService';
@@ -7,13 +7,20 @@ import { updateUserIq } from '../features/user-iq/userIq.service';
 import { tcoinService } from '../features/tcoin/tcoin.service';
 import { tcoinEvents } from '../features/tcoin/tcoinEvents';
 
-export type PuzzlePhase = 'declaring_intent' | 'selecting' | 'reviewing';
+export type PuzzlePhase = 'declaring_intent' | 'declaring_plan' | 'selecting' | 'reviewing';
 const INTENT_DECLARATION_STAGES = new Set(['3-2']);
+const PLAN_DECLARATION_STAGES = new Set(['4-2']);
 
 const shouldShowIntentDeclaration = (puzzle: any): boolean => {
     if (!puzzle) return false;
     const stage = typeof puzzle.stage === 'string' ? puzzle.stage.trim() : '';
     return INTENT_DECLARATION_STAGES.has(stage);
+};
+
+const shouldShowPlanDeclaration = (puzzle: any): boolean => {
+    if (!puzzle) return false;
+    const stage = typeof puzzle.stage === 'string' ? puzzle.stage.trim() : '';
+    return PLAN_DECLARATION_STAGES.has(stage);
 };
 
 export const useGameFlow = (currentPuzzle: any, userId?: string, options?: { canPlayPuzzle?: boolean }) => {
@@ -43,6 +50,12 @@ export const useGameFlow = (currentPuzzle: any, userId?: string, options?: { can
     const [timeToPath, setTimeToPath] = React.useState<number | null>(null);
     const isV2Puzzle = shouldShowIntentDeclaration(currentPuzzle);
 
+    // V3: Plan declaration state (4-2)
+    const [declaredPlan, setDeclaredPlan] = React.useState<StabilizationPlan | null>(null);
+    const [planStartTime, setPlanStartTime] = React.useState<number | null>(null);
+    const [timeToPlan, setTimeToPlan] = React.useState<number | null>(null);
+    const is42Puzzle = shouldShowPlanDeclaration(currentPuzzle);
+
     // Initialize on puzzle change
     React.useEffect(() => {
         if (!currentPuzzle) return;
@@ -58,9 +71,16 @@ export const useGameFlow = (currentPuzzle: any, userId?: string, options?: { can
         setRerollOrder([0, 0, 0]);
         setRollSequence(1);
 
-        // Intent declaration is only shown for stage 3-2.
+        // Determine initial phase based on stage type
+        const hasPlanDeclaration = shouldShowPlanDeclaration(currentPuzzle);
         const hasIntentDeclaration = shouldShowIntentDeclaration(currentPuzzle);
-        setPuzzlePhase(hasIntentDeclaration ? 'declaring_intent' : 'selecting');
+        if (hasPlanDeclaration) {
+            setPuzzlePhase('declaring_plan');
+        } else if (hasIntentDeclaration) {
+            setPuzzlePhase('declaring_intent');
+        } else {
+            setPuzzlePhase('selecting');
+        }
 
         setSelectedAugment(null);
         setIqChangeResult(null);
@@ -69,20 +89,34 @@ export const useGameFlow = (currentPuzzle: any, userId?: string, options?: { can
         setDeclaredPath(null);
         setTimeToPath(null);
 
+        // V3: Reset plan state
+        setDeclaredPlan(null);
+        setTimeToPlan(null);
+
         // Fetch real community votes from DB
         voteService.getVotes(currentPuzzle.id).then(setCommunityVotes).catch(() => setCommunityVotes({}));
 
         // Start timing when puzzle loads
         setStartTime(Date.now());
         setIntentStartTime(Date.now());
+        setPlanStartTime(Date.now());
     }, [currentPuzzle]);
 
-    // V2: Handle path declaration (intent step)
+    // V2: Handle path declaration (intent step — 3-2)
     const handlePathDeclare = (path: AugmentPath) => {
         if (options?.canPlayPuzzle === false) return;
         setDeclaredPath(path);
         const elapsed = intentStartTime ? Date.now() - intentStartTime : 0;
         setTimeToPath(elapsed);
+        setPuzzlePhase('selecting');
+    };
+
+    // V3: Handle plan declaration (4-2)
+    const handlePlanDeclare = (plan: StabilizationPlan) => {
+        if (options?.canPlayPuzzle === false) return;
+        setDeclaredPlan(plan);
+        const elapsed = planStartTime ? Date.now() - planStartTime : 0;
+        setTimeToPlan(elapsed);
         setPuzzlePhase('selecting');
     };
 
@@ -169,7 +203,13 @@ export const useGameFlow = (currentPuzzle: any, userId?: string, options?: { can
                 intentScore: declaredPath && currentPuzzle.proPickPath
                     ? (declaredPath === currentPuzzle.proPickPath ? 10 : 0)
                     : undefined,
-                timeToPathMs: timeToPath || undefined
+                timeToPathMs: timeToPath || undefined,
+                // V3: Plan data (4-2)
+                declaredPlan: declaredPlan || undefined,
+                planScore: declaredPlan && currentPuzzle.proPlan
+                    ? (declaredPlan === currentPuzzle.proPlan ? 10 : 0)
+                    : undefined,
+                timeToPlanMs: timeToPlan || undefined
             }).catch(err => console.error('Failed to record attempt:', err));
 
             // T-Coin Earning Logic + Animation Event
@@ -213,9 +253,16 @@ export const useGameFlow = (currentPuzzle: any, userId?: string, options?: { can
     const handleReplay = () => {
         if (!currentPuzzle) return;
 
-        // Intent declaration is only shown for stage 3-2.
+        // Determine initial phase based on stage type
+        const hasPlanDeclaration = shouldShowPlanDeclaration(currentPuzzle);
         const hasIntentDeclaration = shouldShowIntentDeclaration(currentPuzzle);
-        setPuzzlePhase(hasIntentDeclaration ? 'declaring_intent' : 'selecting');
+        if (hasPlanDeclaration) {
+            setPuzzlePhase('declaring_plan');
+        } else if (hasIntentDeclaration) {
+            setPuzzlePhase('declaring_intent');
+        } else {
+            setPuzzlePhase('selecting');
+        }
 
         setSelectedAugment(null);
         setIqChangeResult(null);
@@ -234,9 +281,14 @@ export const useGameFlow = (currentPuzzle: any, userId?: string, options?: { can
         setDeclaredPath(null);
         setTimeToPath(null);
 
+        // V3: Reset plan state
+        setDeclaredPlan(null);
+        setTimeToPlan(null);
+
         // Reset timing for replay
         setStartTime(Date.now());
         setIntentStartTime(Date.now());
+        setPlanStartTime(Date.now());
     };
 
     const resetFlow = () => {
@@ -263,6 +315,11 @@ export const useGameFlow = (currentPuzzle: any, userId?: string, options?: { can
         isV2Puzzle,
         declaredPath,
         timeToPath,
-        handlePathDeclare
+        handlePathDeclare,
+        // V3: Plan declaration (4-2)
+        is42Puzzle,
+        declaredPlan,
+        timeToPlan,
+        handlePlanDeclare
     };
 };
