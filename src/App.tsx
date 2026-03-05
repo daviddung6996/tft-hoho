@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect, useCallback, Suspense } from 'react';
+import { useArenaPreloader } from './hooks/useArenaPreloader';
 import { usePuzzleGame } from './hooks/usePuzzleGame';
 import { useGameFlow } from './hooks/useGameFlow';
 import { usePuzzleToPlayers } from './hooks/usePuzzleToPlayers';
@@ -186,6 +187,10 @@ const App: React.FC = () => {
     const playerArena = ARENA_SKINS.find(a => a.id === activePlayer.arenaId) || ARENA_SKINS[0];
     const arenaSkinUrl = playerArena.backgroundUrl || playerArena.iconUrl;
 
+    // Preload all arena images so scouting never shows bare teal background
+    const { isArenaReady } = useArenaPreloader();
+    const arenaLoaded = isArenaReady(arenaSkinUrl);
+
     // Keyboard shortcuts: Q (scout next), R (scout prev), Space (return home)
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
@@ -239,7 +244,11 @@ const App: React.FC = () => {
         <>
             <LandscapePrompt />
             <div className="layout-wrapper" style={{ backgroundImage: `url(${arenaSkinUrl})` }}>
-                <div className="app-container" style={{ backgroundImage: `url(${arenaSkinUrl})` }}>
+                <div className="app-container" style={{
+                    backgroundImage: `url(${arenaSkinUrl})`,
+                    opacity: arenaLoaded ? 1 : 0,
+                    transition: 'opacity 150ms ease-in',
+                }}>
 
                     {/* Video Library View */}
                     {currentView === 'library' && (
