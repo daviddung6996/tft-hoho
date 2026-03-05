@@ -5,18 +5,18 @@
     z-index: 310;
     display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
-    padding: 0.35rem 0.75rem;
+    gap: 0.5cqw;
+    padding: 0.4cqw 0.9cqw;
     background: linear-gradient(180deg, rgba(21, 58, 62, 0.9) 0%, rgba(13, 46, 48, 0.95) 100%);
-    border: 1px solid rgba(200, 170, 110, 0.35);
-    border-radius: 20px;
+    border: 0.08cqw solid rgba(200, 170, 110, 0.35);
+    border-radius: 2cqw;
     cursor: default;
     transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .tcoin-balance:hover {
     border-color: rgba(200, 170, 110, 0.6);
-    box-shadow: 0 0 8px rgba(200, 170, 110, 0.15);
+    box-shadow: 0 0 0.8cqw rgba(200, 170, 110, 0.15);
 }
 
 .tcoin-balance--loading {
@@ -24,16 +24,21 @@
 }
 
 .tcoin-icon {
-    font-size: 1rem;
+    font-size: 1.2cqw;
     line-height: 1;
-    filter: drop-shadow(0 0 3px rgba(255, 215, 0, 0.4));
+    filter: drop-shadow(0 0 0.3cqw rgba(255, 215, 0, 0.4));
+}
+
+.tcoin-balance .tcoin-icon-svg {
+    width: 2.2cqw !important;
+    height: 2.2cqw !important;
 }
 
 .tcoin-amount {
     font-family: 'Inter', sans-serif;
     font-weight: 700;
-    font-size: 0.85rem;
+    font-size: 1cqw;
     color: #FFD700;
-    text-shadow: 0 0 6px rgba(255, 215, 0, 0.3);
+    text-shadow: 0 0 0.6cqw rgba(255, 215, 0, 0.3);
     letter-spacing: 0.02em;
 }

@@ -3,7 +3,7 @@ import { AugmentPath } from '../../../data/puzzleScenarios';
 import './IntentFeedback.css';
 
 interface IntentFeedbackProps {
-    declaredPath: AugmentPath;
+    declaredPath?: AugmentPath;
     proPickPath: AugmentPath;
     proReasoningIntent?: string;
 }
@@ -20,9 +20,29 @@ export const IntentFeedback: React.FC<IntentFeedbackProps> = ({
     proPickPath,
     proReasoningIntent
 }) => {
+    const proLabel = PATH_LABELS[proPickPath];
+
+    if (!declaredPath) {
+        return (
+            <div className="intent-feedback intent-feedback--info">
+                <div className="intent-feedback__title">HƯỚNG CHỌN CỦA PRO</div>
+                <p className="intent-feedback__summary">
+                    Pro chọn <strong style={{ color: proLabel.color }}>{proLabel.vi}</strong>.
+                </p>
+                {proReasoningIntent && (
+                    <>
+                        <div className="intent-feedback__reasoning-label">
+                            TẠI SAO PRO CHỌN {proLabel.vi.toUpperCase()}?
+                        </div>
+                        <p className="intent-feedback__reasoning-text">{proReasoningIntent}</p>
+                    </>
+                )}
+            </div>
+        );
+    }
+
     const isMatch = declaredPath === proPickPath;
     const userLabel = PATH_LABELS[declaredPath];
-    const proLabel = PATH_LABELS[proPickPath];
 
     return (
         <div className={`intent-feedback ${isMatch ? 'intent-feedback--match' : 'intent-feedback--mismatch'}`}>

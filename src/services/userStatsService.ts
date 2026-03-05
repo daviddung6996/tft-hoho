@@ -15,6 +15,10 @@ export interface AttemptData {
     declaredPath?: string;
     intentScore?: number;
     timeToPathMs?: number;
+    // V3: Plan declaration data (4-2)
+    declaredPlan?: string;
+    planScore?: number;
+    timeToPlanMs?: number;
 }
 
 export interface UserStats {
@@ -80,6 +84,13 @@ export const userStatsService = {
             insertData.declared_path = data.declaredPath;
             insertData.intent_score = data.intentScore ?? 0;
             insertData.time_to_path_ms = data.timeToPathMs ?? 0;
+        }
+
+        // V3: Add plan data if present (4-2)
+        if (data.declaredPlan) {
+            insertData.declared_plan = data.declaredPlan;
+            insertData.plan_score = data.planScore ?? 0;
+            insertData.time_to_plan_ms = data.timeToPlanMs ?? 0;
         }
 
         const { error } = await supabase

@@ -1,5 +1,5 @@
-/* IntentFeedback - single frame, aligned with Explanation frame */
-.intent-feedback {
+/* PlanFeedback - single frame, aligned with Explanation frame */
+.plan-feedback {
     background:
         radial-gradient(ellipse at 50% 0%, rgba(200, 170, 110, 0.04) 0%, transparent 60%),
         rgba(11, 40, 43, 0.97);
@@ -8,7 +8,7 @@
     padding: 0.6cqw;
 }
 
-.intent-feedback__title {
+.plan-feedback__title {
     font-family: 'Spectral', serif;
     font-size: 0.75cqw;
     font-weight: 700;
@@ -17,19 +17,19 @@
     margin-bottom: 0.22cqw;
 }
 
-.intent-feedback--match .intent-feedback__title {
+.plan-feedback--match .plan-feedback__title {
     color: #10B981;
 }
 
-.intent-feedback--mismatch .intent-feedback__title {
+.plan-feedback--mismatch .plan-feedback__title {
     color: #EF4444;
 }
 
-.intent-feedback--info .intent-feedback__title {
+.plan-feedback--info .plan-feedback__title {
     color: #c8aa6e;
 }
 
-.intent-feedback__summary {
+.plan-feedback__summary {
     margin: 0 0 0.34cqw 0;
     font-family: 'Inter', sans-serif;
     font-size: 0.75cqw;
@@ -37,11 +37,11 @@
     color: #F0F6FC;
 }
 
-.intent-feedback__summary strong {
+.plan-feedback__summary strong {
     font-weight: 700;
 }
 
-.intent-feedback__reasoning-label {
+.plan-feedback__reasoning-label {
     font-family: 'Inter', sans-serif;
     font-size: 0.65cqw;
     font-weight: 600;
@@ -50,7 +50,7 @@
     margin-bottom: 0.12cqw;
 }
 
-.intent-feedback__reasoning-text {
+.plan-feedback__reasoning-text {
     margin: 0;
     font-family: 'Inter', sans-serif;
     font-size: 0.7cqw;

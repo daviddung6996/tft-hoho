@@ -11,7 +11,7 @@ const checkAdminAccess = async (): Promise<boolean> => {
         .eq('id', user.id)
         .single();
 
-    return data?.role === 'admin';
+    return data?.role === 'admin' || data?.role === 'mod';
 };
 
 export interface Trait {

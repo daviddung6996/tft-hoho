@@ -12,7 +12,7 @@ const checkAdminAccess = async (): Promise<boolean> => {
         .eq('id', user.id)
         .single();
 
-    return data?.role === 'admin';
+    return data?.role === 'admin' || data?.role === 'mod';
 };
 
 export const puzzleService = {
@@ -113,7 +113,15 @@ export const puzzleService = {
                 proPickPath: meta.proPickPath,
                 augmentPaths: meta.augmentPaths,
                 proReasoningIntent: meta.proReasoningIntent,
-                difficulty: meta.difficulty
+                difficulty: meta.difficulty,
+                // V3: Augment Trainer 4-2 fields
+                boardStrength: meta.boardStrength,
+                hpPressure: meta.hpPressure,
+                rollState: meta.rollState,
+                proPlan: meta.proPlan,
+                planReasoning: meta.planReasoning,
+                augmentPlans: meta.augmentPlans,
+                previousAugments: meta.previousAugments
             };
         }) as PuzzleScenario[];
     },
@@ -183,7 +191,15 @@ export const puzzleService = {
                 proPickPath: puzzle.proPickPath,
                 augmentPaths: puzzle.augmentPaths,
                 proReasoningIntent: puzzle.proReasoningIntent,
-                difficulty: puzzle.difficulty
+                difficulty: puzzle.difficulty,
+                // V3: Augment Trainer 4-2 fields
+                boardStrength: puzzle.boardStrength,
+                hpPressure: puzzle.hpPressure,
+                rollState: puzzle.rollState,
+                proPlan: puzzle.proPlan,
+                planReasoning: puzzle.planReasoning,
+                augmentPlans: puzzle.augmentPlans,
+                previousAugments: puzzle.previousAugments
             },
             // Pack board state
             board_state: {

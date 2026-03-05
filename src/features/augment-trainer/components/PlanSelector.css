@@ -1,5 +1,5 @@
-/* PathSelector — Intent Declaration Overlay */
-.path-selector-overlay {
+/* PlanSelector — Stabilization Plan Declaration Overlay */
+.plan-selector-overlay {
     position: absolute;
     top: 0; left: 0;
     width: 100%; height: 100%;
@@ -14,12 +14,7 @@
     animation: hex-overlay-in 0.3s ease;
 }
 
-@keyframes hex-overlay-in {
-    from { opacity: 0; }
-    to   { opacity: 1; }
-}
-
-.path-selector-container {
+.plan-selector-container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -30,9 +25,9 @@
 }
 
 /* ── Header ── */
-.path-selector-header { text-align: center; }
+.plan-selector-header { text-align: center; }
 
-.path-selector-replay-text {
+.plan-selector-replay-text {
     font-family: 'Spectral', serif;
     font-size: 1.5cqw;
     font-weight: 700;
@@ -48,7 +43,7 @@
     border-bottom: 0.06cqw solid rgba(200, 170, 110, 0.30);
 }
 
-.path-selector-badge {
+.plan-selector-badge {
     display: inline-block;
     padding: 0.2cqw 0.9cqw;
     margin-bottom: 0.6cqw;
@@ -62,7 +57,7 @@
     text-transform: uppercase;
 }
 
-.path-selector-title {
+.plan-selector-title {
     color: #F0E6D2;
     font-family: 'Spectral', serif;
     font-size: 1.7cqw;
@@ -73,7 +68,7 @@
     line-height: 1.25;
 }
 
-.path-selector-subtitle {
+.plan-selector-subtitle {
     color: #94A3B8;
     font-family: 'Inter', sans-serif;
     font-size: 0.8cqw;
@@ -82,19 +77,19 @@
     margin: 0;
 }
 
-.path-subtitle-highlight {
+.plan-subtitle-highlight {
     color: #c8aa6e;
     font-weight: 600;
 }
 
-.path-selector-subtitle em {
+.plan-selector-subtitle em {
     color: #F0E6D2;
     font-style: normal;
     font-weight: 500;
 }
 
 /* ── 2×2 connected grid ── */
-.path-selector-grid {
+.plan-selector-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     width: 100%;
@@ -103,8 +98,8 @@
     gap: 0.06cqw;
 }
 
-/* ── Individual path button ── */
-.path-btn {
+/* ── Individual plan button ── */
+.plan-btn {
     position: relative;
     display: flex;
     flex-direction: column;
@@ -120,11 +115,11 @@
     overflow: hidden;
     /* NO transform on hover — Hextech Pillar 5 */
     transition: box-shadow 0.2s ease;
-    animation: path-btn-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation: plan-btn-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-/* Path-specific ambient top glow — always on, brightens on hover */
-.path-btn::before {
+/* Plan-specific ambient top glow — always on, brightens on hover */
+.plan-btn::before {
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0;
@@ -134,47 +129,33 @@
     opacity: 0.55;
 }
 
-.path-btn-econ::before   { background: radial-gradient(ellipse at 50% 0%, rgba(234,179,8, 0.22)  0%, transparent 80%); }
-.path-btn-item::before   { background: radial-gradient(ellipse at 50% 0%, rgba(14,165,233,0.18)  0%, transparent 80%); }
-.path-btn-combat::before { background: radial-gradient(ellipse at 50% 0%, rgba(239,68,68, 0.22)  0%, transparent 80%); }
-.path-btn-emblem::before { background: radial-gradient(ellipse at 50% 0%, rgba(168,85,247,0.18)  0%, transparent 80%); }
+.plan-btn-stabilize::before { background: radial-gradient(ellipse at 50% 0%, rgba(34,197,94, 0.22) 0%, transparent 80%); }
+.plan-btn-cap::before       { background: radial-gradient(ellipse at 50% 0%, rgba(14,165,233,0.18) 0%, transparent 80%); }
+.plan-btn-patch::before     { background: radial-gradient(ellipse at 50% 0%, rgba(234,179,8, 0.22) 0%, transparent 80%); }
+.plan-btn-greed::before     { background: radial-gradient(ellipse at 50% 0%, rgba(239,68,68, 0.22) 0%, transparent 80%); }
 
-.path-btn:hover:not(:disabled)::before { opacity: 1; }
+.plan-btn:hover:not(:disabled)::before { opacity: 1; }
 
 /* Hover: only box-shadow + background brighten */
-.path-btn:hover:not(:disabled) {
+.plan-btn:hover:not(:disabled) {
     background: linear-gradient(180deg,
         rgba(25, 68, 72, 0.98) 0%,
         rgba(16, 52, 56, 0.99) 100%
     );
 }
 
-.path-btn-econ:hover:not(:disabled)   { box-shadow: inset 0 0 3cqw rgba(234,179,8,  0.10), 0 0 2cqw rgba(234,179,8,  0.25); }
-.path-btn-item:hover:not(:disabled)   { box-shadow: inset 0 0 3cqw rgba(14,165,233, 0.10), 0 0 2cqw rgba(14,165,233, 0.22); }
-.path-btn-combat:hover:not(:disabled) { box-shadow: inset 0 0 3cqw rgba(239,68,68,  0.10), 0 0 2cqw rgba(239,68,68,  0.25); }
-.path-btn-emblem:hover:not(:disabled) { box-shadow: inset 0 0 3cqw rgba(168,85,247, 0.10), 0 0 2cqw rgba(168,85,247, 0.22); }
+.plan-btn-stabilize:hover:not(:disabled) { box-shadow: inset 0 0 3cqw rgba(34,197,94,  0.10), 0 0 2cqw rgba(34,197,94,  0.25); }
+.plan-btn-cap:hover:not(:disabled)       { box-shadow: inset 0 0 3cqw rgba(14,165,233, 0.10), 0 0 2cqw rgba(14,165,233, 0.22); }
+.plan-btn-patch:hover:not(:disabled)     { box-shadow: inset 0 0 3cqw rgba(234,179,8,  0.10), 0 0 2cqw rgba(234,179,8,  0.25); }
+.plan-btn-greed:hover:not(:disabled)     { box-shadow: inset 0 0 3cqw rgba(239,68,68,  0.10), 0 0 2cqw rgba(239,68,68,  0.25); }
 
-.path-btn:active:not(:disabled) { filter: brightness(0.92); }
-.path-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.plan-btn:active:not(:disabled) { filter: brightness(0.92); }
+.plan-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-/* ── Corner accent frames (L-shaped, gold) ── */
-.corner-accent {
-    position: absolute;
-    width: 1.1cqw;
-    height: 1.1cqw;
-    border-color: #c8aa6e;
-    border-style: solid;
-    border-width: 0;
-    opacity: 0.55;
-    pointer-events: none;
-}
-.corner-tl { top: 0.4cqw;    left: 0.4cqw;    border-top-width: 0.1cqw;    border-left-width: 0.1cqw;  }
-.corner-tr { top: 0.4cqw;    right: 0.4cqw;   border-top-width: 0.1cqw;    border-right-width: 0.1cqw; }
-.corner-bl { bottom: 0.4cqw; left: 0.4cqw;    border-bottom-width: 0.1cqw; border-left-width: 0.1cqw;  }
-.corner-br { bottom: 0.4cqw; right: 0.4cqw;   border-bottom-width: 0.1cqw; border-right-width: 0.1cqw; }
+/* ── Corner accent frames (L-shaped, gold) — reuse from PathSelector ── */
 
 /* ── Icon container — sized via cqw, no Tailwind px ── */
-.path-icon {
+.plan-icon {
     width: 5.5cqw;
     height: 5.5cqw;
     display: flex;
@@ -184,20 +165,20 @@
 }
 
 /* Force SVG to fill the container regardless of size prop */
-.path-icon > svg,
-.path-icon > * > svg {
+.plan-icon > svg,
+.plan-icon > * > svg {
     width: 100% !important;
     height: 100% !important;
 }
 
-/* Per-path icon drop shadow glow */
-.path-btn-econ   .path-icon { filter: drop-shadow(0 0 0.7cqw rgba(234,179,8,  0.55)); }
-.path-btn-item   .path-icon { filter: drop-shadow(0 0 0.7cqw rgba(14,165,233, 0.50)); }
-.path-btn-combat .path-icon { filter: drop-shadow(0 0 0.7cqw rgba(239,68,68,  0.55)); }
-.path-btn-emblem .path-icon { filter: drop-shadow(0 0 0.7cqw rgba(168,85,247, 0.50)); }
+/* Per-plan icon drop shadow glow */
+.plan-btn-stabilize .plan-icon { filter: drop-shadow(0 0 0.7cqw rgba(34,197,94,  0.55)); }
+.plan-btn-cap       .plan-icon { filter: drop-shadow(0 0 0.7cqw rgba(14,165,233, 0.50)); }
+.plan-btn-patch     .plan-icon { filter: drop-shadow(0 0 0.7cqw rgba(234,179,8,  0.55)); }
+.plan-btn-greed     .plan-icon { filter: drop-shadow(0 0 0.7cqw rgba(239,68,68,  0.55)); }
 
 /* ── Typography ── */
-.path-label {
+.plan-label {
     color: #c8aa6e;
     font-family: 'Spectral', serif;
     font-size: 1.35cqw;
@@ -209,7 +190,7 @@
     margin: 0;
 }
 
-.path-label-en {
+.plan-label-en {
     color: rgba(200, 170, 110, 0.45);
     font-family: 'Inter', sans-serif;
     font-size: 0.65cqw;
@@ -219,7 +200,7 @@
     margin: 0;
 }
 
-.path-desc {
+.plan-desc {
     color: #94A3B8;
     font-family: 'Inter', sans-serif;
     font-size: 0.72cqw;
@@ -229,7 +210,7 @@
 }
 
 /* ── Entrance animation ── */
-@keyframes path-btn-in {
+@keyframes plan-btn-in {
     from {
         opacity: 0;
         transform: translateY(6px) scale(0.97);

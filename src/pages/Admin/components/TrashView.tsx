@@ -20,11 +20,12 @@ export interface DeletedItem {
 interface TrashViewProps {
     onRestore: (items: DeletedItem[]) => void;
     onPermanentDelete: (items: DeletedItem[]) => Promise<void>;
+    isActive?: boolean;
 }
 
 type ConfirmAction = 'delete' | 'empty' | null;
 
-export const TrashView: React.FC<TrashViewProps> = ({ onRestore, onPermanentDelete }) => {
+export const TrashView: React.FC<TrashViewProps> = ({ onRestore, onPermanentDelete, isActive }) => {
     const [trashItems, setTrashItems] = useState<DeletedItem[]>([]);
     const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
     const [filterType, setFilterType] = useState<'all' | 'champions' | 'traits' | 'items' | 'augments' | 'puzzles' | 'pro_players' | 'memes'>('all');
@@ -34,14 +35,16 @@ export const TrashView: React.FC<TrashViewProps> = ({ onRestore, onPermanentDele
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        loadTrash();
-    }, [filterType]);
+        if (isActive !== false) {
+            loadTrash();
+        }
+    }, [filterType, isActive]);
 
     const loadTrash = async () => {
         setLoading(true);
         try {
-            // Load ALL tables in PARALLEL for speed
-            const [champions, traits, items, augments, puzzles, proPlayers, memes] = await Promise.all([
+            // Load ALL tables in PARALLEL using allSettled so one failing table doesn't break everything
+            const results = await Promise.allSettled([
                 filterType === 'all' || filterType === 'champions'
                     ? championService.getDeleted() : Promise.resolve([]),
                 filterType === 'all' || filterType === 'traits'
@@ -57,6 +60,31 @@ export const TrashView: React.FC<TrashViewProps> = ({ onRestore, onPermanentDele
                 filterType === 'all' || filterType === 'memes'
                     ? getDeletedMemes() : Promise.resolve([])
             ]);
+
+            const [
+                championsRes,
+                traitsRes,
+                itemsRes,
+                augmentsRes,
+                puzzlesRes,
+                proPlayersRes,
+                memesRes
+            ] = results;
+
+            // Log failures for debugging
+            results.forEach((res, idx) => {
+                if (res.status === 'rejected') {
+                    console.error(`Trash load failed for index ${idx}:`, res.reason);
+                }
+            });
+
+            const champions = championsRes.status === 'fulfilled' ? championsRes.value : [];
+            const traits = traitsRes.status === 'fulfilled' ? traitsRes.value : [];
+            const items = itemsRes.status === 'fulfilled' ? itemsRes.value : [];
+            const augments = augmentsRes.status === 'fulfilled' ? augmentsRes.value : [];
+            const puzzles = puzzlesRes.status === 'fulfilled' ? puzzlesRes.value : [];
+            const proPlayers = proPlayersRes.status === 'fulfilled' ? proPlayersRes.value : [];
+            const memes = memesRes.status === 'fulfilled' ? memesRes.value : [];
 
             const allItems: DeletedItem[] = [
                 ...champions.map(c => ({

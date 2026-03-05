@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { AugmentData } from '../../services/augmentService';
-import { AugmentPath, CommunityVotes } from '../../data/puzzleScenarios';
+import { AugmentPath, StabilizationPlan, CommunityVotes } from '../../data/puzzleScenarios';
 import { PuzzleTier } from '../../features/tcoin/tcoin.types';
 import { TierIcon } from '../common/TierIcon';
 import './DecisionReview.css';
@@ -15,6 +15,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { calculateUserIqRank } from '../../features/user-iq/userIqCalculator';
 import { videoLibraryService } from '../../features/video-library/videoLibrary.service';
 import { IntentFeedback } from '../../features/augment-trainer/components/IntentFeedback';
+import { PlanFeedback } from '../../features/augment-trainer/components/PlanFeedback';
 import { buildYouTubeEmbedUrl } from '../../utils/youtube';
 
 
@@ -50,6 +51,10 @@ export interface DecisionReviewProps {
     declaredPath?: AugmentPath;
     proPickPath?: AugmentPath;
     proReasoningIntent?: string;
+    // V3: Plan declaration data (4-2)
+    declaredPlan?: StabilizationPlan;
+    proPlan?: StabilizationPlan;
+    planReasoning?: string;
 }
 
 export const DecisionReview: React.FC<DecisionReviewProps> = ({
@@ -82,6 +87,10 @@ export const DecisionReview: React.FC<DecisionReviewProps> = ({
     declaredPath,
     proPickPath,
     proReasoningIntent,
+    // V3: Plan data (4-2)
+    declaredPlan,
+    proPlan,
+    planReasoning,
 }) => {
 
     const [showShareModal, setShowShareModal] = useState(false);
@@ -197,12 +206,21 @@ export const DecisionReview: React.FC<DecisionReviewProps> = ({
                 {/* --- MEME FEEDBACK --- */}
                 <MemeFeedback isCorrect={userMatchedPro} />
 
-                {/* --- V2: INTENT FEEDBACK --- */}
-                {declaredPath && proPickPath && (
+                {/* --- V2: INTENT FEEDBACK (3-2 only — skip if 4-2 plan exists) --- */}
+                {proPickPath && !proPlan && (
                     <IntentFeedback
                         declaredPath={declaredPath}
                         proPickPath={proPickPath}
                         proReasoningIntent={proReasoningIntent}
+                    />
+                )}
+
+                {/* --- V3: PLAN FEEDBACK (4-2) --- */}
+                {proPlan && (
+                    <PlanFeedback
+                        declaredPlan={declaredPlan}
+                        proPlan={proPlan}
+                        planReasoning={planReasoning}
                     />
                 )}
 
