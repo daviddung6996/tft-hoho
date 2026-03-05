@@ -6,7 +6,7 @@
     "scripts": {
         "dev": "vite",
         "build": "tsc && vite build",
-        "build:deploy": "npm run build && mkdir -p deploy/training && cp -r dist/* deploy/training/ && cp public/_redirects deploy/ && cp public/_headers deploy/",
+        "build:deploy": "npm run build && node -e \"const fs=require('fs'); fs.mkdirSync('deploy/training', {recursive:true}); fs.cpSync('dist', 'deploy/training', {recursive:true}); fs.copyFileSync('public/_redirects', 'deploy/_redirects'); fs.copyFileSync('public/_headers', 'deploy/_headers');\"",
         "preview": "vite preview",
         "test": "vitest --run",
         "test:watch": "vitest"
