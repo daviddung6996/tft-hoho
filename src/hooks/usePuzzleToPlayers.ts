@@ -19,7 +19,7 @@ import bunbunImg from '../assets/tacticians/bunbun.webp';
 import fenroarImg from '../assets/tacticians/fenroar.webp';
 import spriteImg from '../assets/tacticians/sprite.webp';
 import molediverImg from '../assets/tacticians/molediver.webp';
-import augmentTreeImg from '../assets/augment-tree/augment-tree.png';
+import augmentTreeImg from '../assets/augment-tree/augment-tree.webp';
 
 const OPPONENT_AVATARS = [chonccImg, ahriImg, norraImg, bunbunImg, fenroarImg, spriteImg, molediverImg];
 

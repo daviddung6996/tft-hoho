@@ -1,5 +1,5 @@
 import React from 'react';
-import goldIconImg from '../../../assets/golds/gold.png';
+import goldIconImg from '../../../assets/golds/gold.webp';
 
 export const GoldPillarHexes: React.FC<{ goldAmount: number }> = ({ goldAmount }) => {
     const slots = [0, 1, 2, 3, 4];
