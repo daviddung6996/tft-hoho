@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useId } from 'react';
+import React, { useState, useRef, useCallback, useId, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import './GameInfoIcons.css';
 import { IoniaPath, VoidMod } from '../../data/gameInfoData';
@@ -235,26 +235,72 @@ interface IoniaIconProps {
 const IoniaIcon: React.FC<IoniaIconProps> = ({ path }) => {
     const [isVisible, setIsVisible] = useState(false);
     const [tooltipPos, setTooltipPos] = useState({ left: 0, top: 0 });
+    const [posClass, setPosClass] = useState('position-right');
     const triggerRef = useRef<HTMLDivElement>(null);
+    const isTouchedRef = useRef(false);
 
-    const handleMouseEnter = useCallback(() => {
-        if (triggerRef.current) {
-            const rect = triggerRef.current.getBoundingClientRect();
+    const updatePosition = useCallback(() => {
+        if (!triggerRef.current) return;
+        const rect = triggerRef.current.getBoundingClientRect();
+        const isTouch = isTouchedRef.current;
+        if (isTouch) {
+            // Place above the icon, centered horizontally
+            setTooltipPos({
+                left: rect.left + rect.width / 2,
+                top: rect.top - 8
+            });
+            setPosClass('position-top');
+        } else {
             setTooltipPos({
                 left: rect.right + 8,
                 top: rect.top + rect.height / 2
             });
-            setIsVisible(true);
+            setPosClass('position-right');
         }
     }, []);
 
+    const handleTouchStart = useCallback(() => { isTouchedRef.current = true; }, []);
+
+    const handleClick = useCallback((e: React.MouseEvent) => {
+        if (!isTouchedRef.current) return;
+        e.stopPropagation();
+        e.preventDefault();
+        updatePosition();
+        setIsVisible(prev => !prev);
+    }, [updatePosition]);
+
+    const handleMouseEnter = useCallback(() => {
+        if (isTouchedRef.current) return;
+        updatePosition();
+        setIsVisible(true);
+    }, [updatePosition]);
+
     const handleMouseLeave = useCallback(() => {
+        if (isTouchedRef.current) return;
         setIsVisible(false);
     }, []);
 
+    useEffect(() => {
+        if (!isVisible) return;
+        const dismiss = (e: Event) => {
+            const target = e.target as Node;
+            if (triggerRef.current?.contains(target)) return;
+            setIsVisible(false);
+        };
+        const timer = setTimeout(() => {
+            document.addEventListener('touchstart', dismiss, { passive: true });
+            document.addEventListener('mousedown', dismiss);
+        }, 10);
+        return () => {
+            clearTimeout(timer);
+            document.removeEventListener('touchstart', dismiss);
+            document.removeEventListener('mousedown', dismiss);
+        };
+    }, [isVisible]);
+
     const tooltipContent = isVisible ? createPortal(
         <div
-            className="game-info-tooltip-portal position-right"
+            className={`game-info-tooltip-portal ${posClass}`}
             style={{
                 left: tooltipPos.left,
                 top: tooltipPos.top,
@@ -283,6 +329,8 @@ const IoniaIcon: React.FC<IoniaIconProps> = ({ path }) => {
         <div
             ref={triggerRef}
             className="game-info-icon ionia-icon"
+            onTouchStart={handleTouchStart}
+            onClick={handleClick}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
         >
@@ -303,26 +351,71 @@ interface VoidIconProps {
 const VoidIcon: React.FC<VoidIconProps> = ({ mods }) => {
     const [isVisible, setIsVisible] = useState(false);
     const [tooltipPos, setTooltipPos] = useState({ left: 0, top: 0 });
+    const [posClass, setPosClass] = useState('position-right');
     const triggerRef = useRef<HTMLDivElement>(null);
+    const isTouchedRef = useRef(false);
 
-    const handleMouseEnter = useCallback(() => {
-        if (triggerRef.current) {
-            const rect = triggerRef.current.getBoundingClientRect();
+    const updatePosition = useCallback(() => {
+        if (!triggerRef.current) return;
+        const rect = triggerRef.current.getBoundingClientRect();
+        const isTouch = isTouchedRef.current;
+        if (isTouch) {
+            setTooltipPos({
+                left: rect.left + rect.width / 2,
+                top: rect.top - 8
+            });
+            setPosClass('position-top');
+        } else {
             setTooltipPos({
                 left: rect.right + 8,
                 top: rect.top + rect.height / 2
             });
-            setIsVisible(true);
+            setPosClass('position-right');
         }
     }, []);
 
+    const handleTouchStart = useCallback(() => { isTouchedRef.current = true; }, []);
+
+    const handleClick = useCallback((e: React.MouseEvent) => {
+        if (!isTouchedRef.current) return;
+        e.stopPropagation();
+        e.preventDefault();
+        updatePosition();
+        setIsVisible(prev => !prev);
+    }, [updatePosition]);
+
+    const handleMouseEnter = useCallback(() => {
+        if (isTouchedRef.current) return;
+        updatePosition();
+        setIsVisible(true);
+    }, [updatePosition]);
+
     const handleMouseLeave = useCallback(() => {
+        if (isTouchedRef.current) return;
         setIsVisible(false);
     }, []);
 
+    useEffect(() => {
+        if (!isVisible) return;
+        const dismiss = (e: Event) => {
+            const target = e.target as Node;
+            if (triggerRef.current?.contains(target)) return;
+            setIsVisible(false);
+        };
+        const timer = setTimeout(() => {
+            document.addEventListener('touchstart', dismiss, { passive: true });
+            document.addEventListener('mousedown', dismiss);
+        }, 10);
+        return () => {
+            clearTimeout(timer);
+            document.removeEventListener('touchstart', dismiss);
+            document.removeEventListener('mousedown', dismiss);
+        };
+    }, [isVisible]);
+
     const tooltipContent = isVisible ? createPortal(
         <div
-            className="game-info-tooltip-portal position-right"
+            className={`game-info-tooltip-portal ${posClass}`}
             style={{
                 left: tooltipPos.left,
                 top: tooltipPos.top,
@@ -355,6 +448,8 @@ const VoidIcon: React.FC<VoidIconProps> = ({ mods }) => {
         <div
             ref={triggerRef}
             className="game-info-icon void-icon"
+            onTouchStart={handleTouchStart}
+            onClick={handleClick}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
         >

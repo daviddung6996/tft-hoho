@@ -76,6 +76,8 @@
     justify-content: center;
     align-items: center;
     /* No transition needed for static style */
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 /* Hover effects removed as requested */
@@ -92,6 +94,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 /* Elevate unit wrapper on hover so tooltip appears above everything */

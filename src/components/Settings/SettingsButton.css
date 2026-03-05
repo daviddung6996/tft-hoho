@@ -3,13 +3,47 @@
     top: 1.04cqw;
     right: 1.04cqw;
     z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 0.5cqw;
+}
+
+/* ================================================
+   Fullscreen Toggle Button — next to hamburger
+   ================================================ */
+.fullscreen-button {
+    width: 2.5cqw;
+    height: 2.5cqw;
+    background: rgba(0, 0, 0, 0.7);
+    border: 0.05cqw solid rgba(200, 170, 110, 0.4);
+    border-radius: 0.42cqw;
+    color: #c8aa6e;
+    font-size: 1.1cqw;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(0.21cqw);
+    transition: opacity 0.2s ease;
+}
+
+.fullscreen-button:hover {
+    filter: brightness(1.3);
+}
+
+.fullscreen-button:active {
+    transform: scale(0.95);
+}
+
+.fullscreen-button svg {
+    display: block;
 }
 
 .settings-button {
     width: 2.5cqw;
     height: 2.5cqw;
     background: rgba(0, 0, 0, 0.7);
-    border: 0.05cqw solid #c89b3c;
+    border: 0.05cqw solid rgba(200, 170, 110, 0.4);
     border-radius: 0.42cqw;
     color: #f0e6d2;
     font-size: 1.25cqw;
@@ -18,10 +52,15 @@
     align-items: center;
     justify-content: center;
     backdrop-filter: blur(0.21cqw);
+    transition: opacity 0.2s ease;
 }
 
 .settings-button:hover {
-    opacity: 0.9;
+    filter: brightness(1.3);
+}
+
+.settings-button:active {
+    transform: scale(0.95);
 }
 
 /* ================================================

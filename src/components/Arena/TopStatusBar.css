@@ -16,7 +16,7 @@
     position: absolute;
     top: 0.9cqw;
     right: calc(50% - 10.585cqw);
-    z-index: 210;
+    z-index: 150;
 
     display: flex;
     align-items: center;

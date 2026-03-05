@@ -128,12 +128,33 @@ export const MenuButton: React.FC<MenuButtonProps> = ({
         } else {
             document.exitFullscreen();
         }
-        setIsOpen(false);
     };
 
     return (
         <>
             <div className="menu-container" ref={menuRef}>
+                <button
+                    className="fullscreen-button"
+                    onClick={handleFullscreen}
+                    aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
+                    title={isFullscreen ? 'Thoát toàn màn hình' : 'Toàn màn hình'}
+                >
+                    {isFullscreen ? (
+                        <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9 9L4 4M9 9H5M9 9V5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                            <path d="M15 9L20 4M15 9H19M15 9V5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                            <path d="M9 15L4 20M9 15H5M9 15V19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                            <path d="M15 15L20 20M15 15H19M15 15V19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                    ) : (
+                        <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M4 4L9 9M4 4H8M4 4V8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                            <path d="M20 4L15 9M20 4H16M20 4V8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                            <path d="M4 20L9 15M4 20H8M4 20V16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                            <path d="M20 20L15 15M20 20H16M20 20V16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                    )}
+                </button>
                 <button
                     className="settings-button"
                     onClick={() => setIsOpen(!isOpen)}
@@ -244,10 +265,7 @@ export const MenuButton: React.FC<MenuButtonProps> = ({
                             )}
                         </button>
 
-                        {/* Fullscreen Toggle */}
-                        <button className="menu-item" onClick={handleFullscreen}>
-                            <span className="menu-icon">▭</span> {isFullscreen ? 'Thoát toàn màn hình' : 'Toàn màn hình'}
-                        </button>
+
 
                         {/* Support / Donate */}
                         <button className="menu-item menu-item--support" onClick={() => { setShowSupportModal(true); setIsOpen(false); }}>

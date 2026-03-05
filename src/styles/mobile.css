@@ -1,0 +1,344 @@
+/* ==========================================================================
+   MOBILE FIXES - Touch & Hover Corrections
+   Import this in index.css after all other imports
+   ========================================================================== */
+
+/* ==========================================================================
+   1. HOVER STATE FIX — Prevent sticky hover on touch devices
+   Wrap hover effects in @media (hover: hover) so they only apply
+   on devices with real pointer hover (mouse/trackpad).
+   ========================================================================== */
+
+/* --- AugmentModal --- */
+@media (hover: hover) {
+    .augment-card:hover {
+        border-color: #c8aa6e;
+        box-shadow:
+            0 0 1.2cqw rgba(200, 170, 110, 0.3),
+            0 0.6cqw 2cqw rgba(0, 0, 0, 0.5);
+    }
+
+    .reroll-btn:not(.disabled):hover {
+        border-color: #c8aa6e;
+        box-shadow: 0 0 0.6cqw rgba(200, 170, 110, 0.25);
+    }
+
+    .augment-modal-overlay.tier-advanced .augment-card:hover {
+        border-color: #e8c252;
+        box-shadow:
+            0 0 1.2cqw rgba(232, 194, 82, 0.35),
+            0 0.6cqw 2cqw rgba(0, 0, 0, 0.5);
+    }
+
+    .augment-modal-overlay.tier-rare .augment-card:hover {
+        border-color: #c084fc;
+        box-shadow:
+            0 0 1.5cqw rgba(192, 132, 252, 0.45),
+            0 0 3cqw rgba(168, 85, 247, 0.2),
+            0 0.6cqw 2cqw rgba(0, 0, 0, 0.5);
+    }
+}
+
+/* --- ScoutingPanel --- */
+/* Prevent text selection and default touch highlight on mobile */
+.player-row {
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+@media (hover: hover) {
+    .player-row:not(.scouting):not(.is-me):hover {
+        opacity: 1;
+        filter: brightness(1);
+    }
+}
+
+/* --- PuzzleLockOverlay --- */
+@media (hover: hover) {
+
+    .puzzle-lock-btn--pro:hover,
+    .puzzle-lock-btn--unlock:hover,
+    .puzzle-lock-btn--skip:hover {
+        box-shadow: 0 0 0.8cqw rgba(200, 170, 110, 0.3);
+    }
+}
+
+/* --- LoginModal --- */
+@media (hover: hover) {
+    .login-close-btn:hover {
+        border-color: #c8aa6e;
+        color: #c8aa6e;
+    }
+
+    .login-play-button:hover:not(:disabled) {
+        background: linear-gradient(180deg, #d4a844 0%, #b08830 100%);
+        filter: drop-shadow(0 0 1cqw rgba(200, 170, 110, 0.4));
+    }
+
+    .login-google:hover:not(:disabled),
+    .login-email-toggle:hover:not(:disabled) {
+        border-color: rgba(200, 170, 110, 0.5);
+        background: rgba(200, 170, 110, 0.08);
+    }
+
+    .login-register-hint button:hover {
+        color: #F0E6D2;
+    }
+
+    .login-submit:hover:not(:disabled) {
+        filter: brightness(1.1);
+    }
+
+    .login-back-btn:hover,
+    .login-toggle-btn:hover {
+        color: #c8aa6e;
+    }
+}
+
+/* --- SettingsButton / Menu --- */
+@media (hover: hover) {
+    .menu-button:hover {
+        border-color: #c8aa6e;
+        box-shadow: 0 0 0.6cqw rgba(200, 170, 110, 0.3);
+    }
+
+    .menu-item:hover {
+        background: rgba(200, 170, 110, 0.08);
+        border-color: rgba(200, 170, 110, 0.4);
+    }
+}
+
+/* --- TCoinBalance --- */
+@media (hover: hover) {
+    .tcoin-balance:hover {
+        box-shadow: 0 0 0.6cqw rgba(200, 170, 110, 0.3);
+    }
+}
+
+/* --- VideoCard --- */
+@media (hover: hover) {
+    .video-card.unlocked:hover {
+        border-color: rgba(200, 170, 110, 0.5);
+        box-shadow: 0 0 0.8cqw rgba(200, 170, 110, 0.15);
+    }
+}
+
+/* --- Tooltip hover fix --- */
+@media (hover: hover) {
+    .hextech-tooltip-wrapper:hover {
+        z-index: 999999;
+        isolation: isolate;
+    }
+}
+
+/* --- Common hex buttons --- */
+@media (hover: hover) {
+    .hex-close-btn:hover {
+        border-color: #c8aa6e;
+        color: #c8aa6e;
+    }
+
+    .hex-button:hover {
+        border-color: #c8aa6e;
+        box-shadow: 0 0 0.5cqw rgba(200, 170, 110, 0.25);
+    }
+}
+
+/* ==========================================================================
+   2. TOUCH TARGET ENFORCEMENT — Minimum 44px tap areas on mobile
+   These overrides ensure buttons and interactive areas are large enough
+   to tap on mobile landscape screens.
+   ========================================================================== */
+
+@media (max-width: 1024px) and (orientation: landscape) {
+
+    /* Augment cards & columns — better proportions */
+    .augment-cards-container {
+        gap: 2.5cqw;
+    }
+
+    .augment-column {
+        width: 22cqw;
+        gap: 1cqw;
+    }
+
+    .augment-card {
+        min-height: 34cqw;
+        padding: 2cqw 1.2cqw;
+    }
+
+    /* Reroll button — balanced scaling */
+    .reroll-btn {
+        height: 4.5cqw;
+        min-height: 36px;
+    }
+
+    /* Scouting panel rows:
+       Instead of forcing a fixed px min-height which breaks the flex spacing,
+       we increase the base cqw dimensions slightly for mobile to make them more tappable,
+       while preserving the original aspect ratio and layout structure. 
+    */
+    .player-row {
+        height: 5.5cqw;
+        margin-bottom: 0.2cqw;
+        /* Add slight gap to prevent overlap if scaled */
+    }
+
+    .player-pill,
+    .player-pill-border {
+        height: 4.5cqw;
+        min-width: 11cqw;
+    }
+
+    /* Fix the "Me" row which has a different internal structure */
+    .player-pill-border {
+        padding: 0.15cqw;
+    }
+
+    .player-row.is-me .player-pill {
+        height: 100%;
+        margin: 0;
+        min-width: 0;
+        padding-left: 2cqw;
+    }
+
+    .player-row.is-me .player-health {
+        font-size: 1.5cqw;
+    }
+
+    .player-avatar-wrapper {
+        width: 5.2cqw;
+        height: 5.2cqw;
+        min-width: unset;
+        min-height: unset;
+    }
+
+    /* Make avatar closer to the wrapper size to reduce ring gap */
+    .player-avatar-img {
+        width: 4.7cqw;
+        height: 4.7cqw;
+    }
+
+    .player-health {
+        font-size: 1.1cqw;
+    }
+
+    .player-name {
+        font-size: 0.9cqw;
+        max-width: 6.5cqw;
+    }
+
+    /* Menu button — larger touch target */
+    .menu-button {
+        min-width: 44px;
+        min-height: 44px;
+    }
+
+    /* Augment toggle button — bigger */
+    .augment-btn {
+        min-width: 48px;
+        min-height: 48px;
+    }
+
+    /* Login buttons — adequate sizing */
+    .login-play-button {
+        min-height: 52px;
+    }
+
+    .login-google,
+    .login-email-toggle {
+        min-height: 44px;
+    }
+
+    .login-field input {
+        min-height: 44px;
+        font-size: max(0.8cqw, 16px);
+        /* Prevent iOS zoom on input focus */
+    }
+
+    .login-submit {
+        min-height: 44px;
+    }
+
+    .login-close-btn {
+        min-width: 36px;
+        min-height: 36px;
+    }
+
+    /* PuzzleLockOverlay buttons */
+    .puzzle-lock-btn--pro,
+    .puzzle-lock-btn--unlock,
+    .puzzle-lock-btn--skip {
+        min-height: 44px;
+    }
+
+    /* TCoin balance: Scale contents proportionally instead of forcing a rigid min-height */
+    .tcoin-balance {
+        padding: 0.5cqw 1cqw;
+        border-radius: 2.5cqw;
+    }
+
+    .tcoin-balance .tcoin-icon-svg {
+        width: 2.5cqw !important;
+        height: 2.5cqw !important;
+    }
+
+    .tcoin-amount {
+        font-size: 1.2cqw;
+    }
+
+    /* Hex close buttons */
+    .hex-close-btn {
+        min-width: 36px;
+        min-height: 36px;
+    }
+
+    /* Common hex button */
+    .hex-button {
+        min-height: 44px;
+    }
+
+    /* Video library filter buttons */
+    .video-library-filter-btn {
+        min-height: 36px;
+    }
+
+    /* Video card — adequate tap zone */
+    .video-card {
+        min-height: 80px;
+    }
+}
+
+/* ==========================================================================
+   3. iOS INPUT ZOOM PREVENTION
+   iOS Safari zooms in when focusing inputs with font-size < 16px.
+   Force minimum 16px on all inputs within mobile viewport.
+   ========================================================================== */
+
+@media (max-width: 1024px) {
+
+    input,
+    select,
+    textarea {
+        font-size: max(inherit, 16px) !important;
+    }
+}
+
+/* ==========================================================================
+   4. SAFE AREA — Fixed modal overlays need safe-area padding on mobile
+   ========================================================================== */
+
+@media (max-width: 1024px) and (orientation: landscape) {
+
+    /* Fixed modals — respect notch */
+    .login-overlay,
+    .um-overlay,
+    .video-player-overlay,
+    .video-library-page,
+    .share-modal-overlay,
+    .support-modal-overlay {
+        padding-left: env(safe-area-inset-left, 0);
+        padding-right: env(safe-area-inset-right, 0);
+    }
+}

@@ -20,10 +20,19 @@ export const ScoutingPanel: React.FC<{
                         onClick={() => onPlayerSelect(player.id)}
                     >
                         {/* Info Pill (Text) - Tucked under avatar */}
-                        <div className="player-pill">
-                            <span className="player-name">{player.name}</span>
-                            <span className="player-health">{player.hp}</span>
-                        </div>
+                        {player.isMe ? (
+                            <div className="player-pill-border">
+                                <div className="player-pill">
+                                    <span className="player-name">{player.name}</span>
+                                    <span className="player-health">{player.hp}</span>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="player-pill">
+                                <span className="player-name">{player.name}</span>
+                                <span className="player-health">{player.hp}</span>
+                            </div>
+                        )}
 
                         {/* Avatar Wrapper - On top */}
                         <div className="player-avatar-wrapper">
