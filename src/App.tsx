@@ -9,6 +9,7 @@ import { GameHUD } from './components/Game/GameHUD';
 
 // Components
 import { AugmentButton } from './components/Arena/AugmentButton';
+import { GoldDisplay } from './components/Arena/GoldDisplay';
 import { AugmentModal } from './components/Arena/AugmentModal';
 import { DecisionReview } from './components/Arena/DecisionReview';
 import { TopStatusBar } from './components/Arena/TopStatusBar';
@@ -467,15 +468,21 @@ const App: React.FC = () => {
                                 />
                             )}
 
+                            {puzzlePhase !== 'reviewing' && !isMirrored && (
+                                <GoldDisplay gold={myPlayer.gold} />
+                            )}
+
                             {puzzlePhase !== 'reviewing' && (
-                                <AugmentButton
-                                    isActive={isAugmentOpen}
-                                    variant={isMirrored ? 'return' : 'default'}
-                                    onClick={isMirrored
-                                        ? () => { setScoutedPlayerId('1'); setIsAugmentOpen(false); }
-                                        : () => setIsAugmentOpen(!isAugmentOpen)
-                                    }
-                                />
+                                <>
+                                    <AugmentButton
+                                        isActive={isAugmentOpen}
+                                        variant={isMirrored ? 'return' : 'default'}
+                                        onClick={isMirrored
+                                            ? () => { setScoutedPlayerId('1'); setIsAugmentOpen(false); }
+                                            : () => setIsAugmentOpen(!isAugmentOpen)
+                                        }
+                                    />
+                                </>
                             )}
 
                             {showLoginModal && (

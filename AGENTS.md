@@ -6,6 +6,13 @@ Welcome, Agent. This file is a living document intended to capture common mistak
 
 ---
 
+## -1. Critical Agent Operation Rules (MANDATORY)
+
+> **⚠️ DO NOT AUTO-COMMIT AND PUSH:**
+> Never run `git commit` or `git push` unless the user EXPLICITLY asks you to (e.g., "commit and push", "lưu code lên git"). Auto-committing disrupts the user's workflow and version control history. If you finish a task, just tell the user the code is ready for review.
+
+---
+
 ## 0. Core Business Identity (CRITICAL — Read First)
 
 > **Every agent MUST understand this before building any feature.**

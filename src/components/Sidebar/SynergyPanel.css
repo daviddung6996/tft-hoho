@@ -19,7 +19,7 @@
     transform: none;
     flex-direction: row;
     flex-wrap: wrap;
-    gap: 1.2cqw;
+    gap: 2.5cqw;
     padding: 0;
     width: 100%;
     justify-content: center;
@@ -30,20 +30,24 @@
 .synergy-floating-row {
     display: flex;
     align-items: center;
-    gap: -0.7cqw;
-    /* More overlap for tight integration */
+    gap: 0;
     transition: transform 0.2s ease;
+}
+
+.synergy-floating-row .synergy-label-bar {
+    margin-left: -0.7cqw;
 }
 
 /* Horizontal mode: larger elements */
 .horizontal .synergy-floating-row {
-    gap: 0.8cqw;
+    gap: 0;
     transform: scale(1.5);
-    /* Make traits 50% larger */
     transform-origin: center bottom;
-    /* Scale up from bottom to avoid overlap issues */
     margin: 0.8cqw 1.2cqw;
-    /* Add margin to account for scaling */
+}
+
+.horizontal .synergy-floating-row .synergy-label-bar {
+    margin-left: -0.7cqw;
 }
 
 
