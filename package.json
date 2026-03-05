@@ -8,7 +8,8 @@
         "build": "tsc && vite build",
         "preview": "vite preview",
         "test": "vitest --run",
-        "test:watch": "vitest"
+        "test:watch": "vitest",
+        "download-assets": "tsx scripts/download_tft_assets.ts"
     },
     "dependencies": {
         "@fontsource/inter": "^5.2.8",

@@ -6,7 +6,7 @@
     display: inline-flex;
     align-items: center;
     gap: 0.5cqw;
-    padding: 0.4cqw 0.9cqw;
+    padding: 0.4cqw 0.8cqw;
     background: linear-gradient(180deg, rgba(21, 58, 62, 0.9) 0%, rgba(13, 46, 48, 0.95) 100%);
     border: 0.08cqw solid rgba(200, 170, 110, 0.35);
     border-radius: 2cqw;

@@ -1,5 +1,6 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { createPortal } from 'react-dom';
+import { getLocalUrl } from '../../utils/localAssetUrl';
 import './HextechTooltip.css';
 
 export type TooltipPosition = 'top' | 'bottom' | 'left' | 'right';
@@ -294,9 +295,9 @@ export const ChampionTooltip: React.FC<ChampionTooltipProps> = ({
             {stats && (
                 <div className="champion-tooltip-compact-stats">
                     <span><img src="https://cdn.tft.tools/general/hp.png" alt="HP" className="compact-stat-icon" />{stats.hp[currentStars - 1]}</span>
-                    <span><img src="https://raw.communitydragon.org/latest/game/assets/perks/statmods/statmodsattackdamageicon.png" alt="AD" className="compact-stat-icon" />{stats.ad[currentStars - 1]}</span>
-                    <span><img src="https://raw.communitydragon.org/latest/game/assets/perks/statmods/statmodsarmoricon.png" alt="AR" className="compact-stat-icon" />{stats.armor}<img src="https://raw.communitydragon.org/latest/game/assets/perks/statmods/statmodsmagicresicon.png" alt="MR" className="compact-stat-icon" style={{ marginLeft: '4px' }} />{stats.mr}</span>
-                    <span><img src="https://raw.communitydragon.org/latest/game/assets/perks/statmods/statmodsattackspeedicon.png" alt="AS" className="compact-stat-icon" />{stats.as.toFixed(2)}</span>
+                    <span><img src={getLocalUrl("https://raw.communitydragon.org/latest/game/assets/perks/statmods/statmodsattackdamageicon.png")} alt="AD" className="compact-stat-icon" />{stats.ad[currentStars - 1]}</span>
+                    <span><img src={getLocalUrl("https://raw.communitydragon.org/latest/game/assets/perks/statmods/statmodsarmoricon.png")} alt="AR" className="compact-stat-icon" />{stats.armor}<img src={getLocalUrl("https://raw.communitydragon.org/latest/game/assets/perks/statmods/statmodsmagicresicon.png")} alt="MR" className="compact-stat-icon" style={{ marginLeft: '4px' }} />{stats.mr}</span>
+                    <span><img src={getLocalUrl("https://raw.communitydragon.org/latest/game/assets/perks/statmods/statmodsattackspeedicon.png")} alt="AS" className="compact-stat-icon" />{stats.as.toFixed(2)}</span>
                 </div>
             )}
             {items.length > 0 && (
@@ -371,17 +372,17 @@ export const ChampionTooltip: React.FC<ChampionTooltipProps> = ({
                                 <span className="stat-values">{stats.hp[0]}/{stats.hp[1]}/{stats.hp[2]}</span>
                             </div>
                             <div className="stat-item">
-                                <img src="https://raw.communitydragon.org/latest/game/assets/perks/statmods/statmodsattackdamageicon.png" alt="AD" className="stat-icon" />
+                                <img src={getLocalUrl("https://raw.communitydragon.org/latest/game/assets/perks/statmods/statmodsattackdamageicon.png")} alt="AD" className="stat-icon" />
                                 <span className="stat-values">{stats.ad[0]}/{stats.ad[1]}/{stats.ad[2]}</span>
                             </div>
                             <div className="stat-item">
-                                <img src="https://raw.communitydragon.org/latest/game/assets/perks/statmods/statmodsarmoricon.png" alt="AR" className="stat-icon" />
+                                <img src={getLocalUrl("https://raw.communitydragon.org/latest/game/assets/perks/statmods/statmodsarmoricon.png")} alt="AR" className="stat-icon" />
                                 <span className="stat-values">{stats.armor}</span>
-                                <img src="https://raw.communitydragon.org/latest/game/assets/perks/statmods/statmodsmagicresicon.png" alt="MR" className="stat-icon" style={{ marginLeft: '8px' }} />
+                                <img src={getLocalUrl("https://raw.communitydragon.org/latest/game/assets/perks/statmods/statmodsmagicresicon.png")} alt="MR" className="stat-icon" style={{ marginLeft: '8px' }} />
                                 <span className="stat-values">{stats.mr}</span>
                             </div>
                             <div className="stat-item">
-                                <img src="https://raw.communitydragon.org/latest/game/assets/perks/statmods/statmodsattackspeedicon.png" alt="AS" className="stat-icon" />
+                                <img src={getLocalUrl("https://raw.communitydragon.org/latest/game/assets/perks/statmods/statmodsattackspeedicon.png")} alt="AS" className="stat-icon" />
                                 <span className="stat-values">{stats.as.toFixed(2)}</span>
                             </div>
                             <div className="stat-item">

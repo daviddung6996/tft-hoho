@@ -349,10 +349,7 @@
 
 @media (prefers-reduced-motion: no-preference) {
 
-    /* Task 2: Scouting ring gently pulses */
-    .player-row.scouting:not(.is-me) .avatar-ring {
-        animation: ring-pulse 2s ease-in-out infinite;
-    }
+    /* Task 2: Scouting ring gently pulses (Removed per user request for non-me rows) */
 
     /* Task 2: is-me scouting ring — brighter pulse */
     .player-row.is-me.scouting .avatar-ring {
