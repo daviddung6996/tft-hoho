@@ -43,6 +43,7 @@ export const AugmentButton: React.FC<AugmentButtonProps> = ({ isActive, onClick,
         <button
             className={`augment-button ${isActive ? 'active' : ''}`}
             onClick={onClick}
+            aria-label={variant === 'return' ? 'Return to board' : 'Toggle augment panel'}
         >
             <div className="augment-button-content">
                 {variant === 'return' ? (

@@ -177,6 +177,7 @@ export const TierIcon: React.FC<TierIconProps> = ({ tier, size = 16, className }
         <span
             className={className}
             style={{ display: 'inline-flex', alignItems: 'center', flexShrink: 0 }}
+            role="img"
             aria-label={`Tier: ${TIER_META[tier].label}`}
         >
             {icons[tier]}

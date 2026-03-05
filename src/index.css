@@ -2,14 +2,15 @@
    GLOBAL STYLES - TFTISEASY Training Tool (Hextech HUD System)
    ========================================================================== */
 /* Self-hosted fonts via @fontsource — NO external CDN requests */
-@import '@fontsource/inter/300.css';
+/* Inter: 400 (body), 500 (emphasis), 600 (bold labels), 700 (headings) */
+/* 300 removed — only used in admin (lazy-loaded) */
 @import '@fontsource/inter/400.css';
 @import '@fontsource/inter/500.css';
 @import '@fontsource/inter/600.css';
 @import '@fontsource/inter/700.css';
-@import '@fontsource/spectral/400.css';
+/* Spectral: 600 (main heading weight per design system) */
+/* 400/700 removed — headings always use 600, saves 2 woff2 files */
 @import '@fontsource/spectral/600.css';
-@import '@fontsource/spectral/700.css';
 @import '@fontsource/share-tech-mono/400.css';
 @import './styles/mobile.css';
 
