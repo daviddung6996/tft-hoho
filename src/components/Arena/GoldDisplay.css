@@ -1,0 +1,56 @@
+/* ==========================================================================
+   GOLD DISPLAY - Player gold indicator above AugmentButton
+   Positioned between AugmentButton (bottom: 4cqw) and Bench (bottom: 12.5cqw)
+   z-index matched with GameInfoIcons (50)
+   ========================================================================== */
+
+.gold-display {
+    position: absolute;
+    bottom: 7.8cqw;
+    left: 50%;
+    transform: translateX(-50%);
+
+    /* Layout */
+    display: flex;
+    align-items: center;
+    gap: 0.4cqw;
+
+    /* Hextech teal panel — game client look, NOT dark website */
+    background:
+        radial-gradient(ellipse at 50% 30%, rgba(200, 170, 110, 0.06) 0%, transparent 70%),
+        linear-gradient(180deg, rgba(21, 58, 62, 0.92) 0%, rgba(13, 46, 48, 0.95) 100%);
+    border: 0.06cqw solid rgba(200, 170, 110, 0.45);
+    border-radius: 0.6cqw;
+    padding: 0.25cqw 0.8cqw 0.25cqw 0.5cqw;
+
+    /* Match GameInfoIcons z-index */
+    z-index: 50;
+    pointer-events: none;
+
+    /* Subtle gold ambient glow — slightly prominent */
+    box-shadow:
+        0 0 0.5cqw rgba(0, 0, 0, 0.4),
+        0 0 0.6cqw rgba(200, 170, 110, 0.15),
+        inset 0 0 0.4cqw rgba(200, 170, 110, 0.05);
+}
+
+/* Coin icon sizing */
+.gold-display svg {
+    width: 1.6cqw;
+    height: 1.6cqw;
+    flex-shrink: 0;
+    filter: drop-shadow(0 0 0.15cqw rgba(232, 194, 82, 0.4));
+}
+
+/* Gold amount text — luxurious gold highlight per Hextech typography */
+.gold-display-amount {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.2cqw;
+    font-weight: 700;
+    color: #e8c252;
+    text-shadow:
+        0 0 0.3cqw rgba(232, 194, 82, 0.5),
+        0 0.05cqw 0.15cqw rgba(0, 0, 0, 0.8);
+    line-height: 1;
+    letter-spacing: 0.03cqw;
+}
