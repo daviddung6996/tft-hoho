@@ -321,16 +321,16 @@ const App: React.FC = () => {
                                         requiresLogin={requiresLoginForUnlock}
                                         title={
                                             lockMessageVariant === 'rare_elite'
-                                                ? 'WOW, báº¡n gáº·p Puzzle hiáº¿m tháº¥y.'
+                                                ? 'WOW, bạn gặp Puzzle hiếm thấy.'
                                                 : lockMessageVariant === 'premium_education'
-                                                    ? 'Tin vui! Báº¡n gáº·p puzzle cháº¥t lÆ°á»£ng cao.'
+                                                    ? 'Tin vui! Bạn gặp puzzle chất lượng cao.'
                                                     : undefined
                                         }
                                         subtitle={
                                             lockMessageVariant === 'rare_elite'
-                                                ? 'Puzzle nÃ y chá»©a nÆ°á»›c Ä‘i tháº§n thÃ¡nh cá»§a tuyá»ƒn thá»§. Xem lÃ  lÃªn trÃ¬nh!'
+                                                ? 'Puzzle này chứa nước đi thần thánh của tuyển thủ. Xem là lên trình!'
                                                 : lockMessageVariant === 'premium_education'
-                                                    ? 'Puzzle xá»‹n + giáº£i thÃ­ch ká»¹ giÃºp báº¡n nÃ¢ng tÆ° duy augment tháº­t sá»±.'
+                                                    ? 'Puzzle xịn + giải thích kỹ giúp bạn nâng tư duy augment thật sự.'
                                                     : undefined
                                         }
                                         onUnlock={() => {
