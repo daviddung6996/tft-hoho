@@ -4,7 +4,7 @@ import { PuzzleScenario } from '../../../../data/puzzleScenarios';
 import { Champion } from '../../../../data/types';
 import { AugmentData } from '../../../../services/augmentService';
 import { Item } from '../../../../services/itemService';
-import { validatePuzzleWithAI } from '../services/puzzleAiValidator';
+import { validatePuzzleWithAI, resolveAugmentsLocally } from '../services/puzzleAiValidator';
 import './JsonImportModal.css';
 
 interface JsonImportModalProps {
@@ -46,7 +46,11 @@ const JsonImportModal: React.FC<JsonImportModalProps> = ({
         showToast('⏳ Đang khớp dữ liệu với database...', 'info');
 
         try {
-            const corrected = await validatePuzzleWithAI(parsed, {
+            // Step 1: Deterministic local resolution (strings → AugmentData objects)
+            const locallyResolved = resolveAugmentsLocally(parsed, dbAugments);
+
+            // Step 2: AI validation for fuzzy matching (champions, items, etc.)
+            const corrected = await validatePuzzleWithAI(locallyResolved, {
                 champions,
                 augments: dbAugments,
                 items: dbItems,
@@ -56,8 +60,10 @@ const JsonImportModal: React.FC<JsonImportModalProps> = ({
             showToast('Import thành công! Dữ liệu đã được khớp với DB.', 'success');
             onClose();
         } catch (err) {
-            console.error('[JsonImport] AI validation failed, importing raw:', err);
-            onImport(parsed as unknown as PuzzleScenario);
+            console.error('[JsonImport] AI validation failed, importing locally-resolved:', err);
+            // Still use locally-resolved data (strings→objects already applied)
+            const locallyResolved = resolveAugmentsLocally(parsed, dbAugments);
+            onImport(locallyResolved as unknown as PuzzleScenario);
             showToast('⚠️ AI validation lỗi. Import dữ liệu gốc (chưa khớp DB).', 'error');
             onClose();
         } finally {
