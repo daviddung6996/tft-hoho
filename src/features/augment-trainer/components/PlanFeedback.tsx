@@ -20,7 +20,7 @@ export const PlanFeedback: React.FC<PlanFeedbackProps> = ({
     proPlan,
     planReasoning
 }) => {
-    const proLabel = PLAN_LABELS[proPlan];
+    const proLabel = PLAN_LABELS[proPlan] || { vi: proPlan || 'Không rõ', color: '#94A3B8' };
 
     if (!declaredPlan) {
         return (
@@ -42,7 +42,7 @@ export const PlanFeedback: React.FC<PlanFeedbackProps> = ({
     }
 
     const isMatch = declaredPlan === proPlan;
-    const userLabel = PLAN_LABELS[declaredPlan];
+    const userLabel = PLAN_LABELS[declaredPlan] || { vi: declaredPlan || 'Không rõ', color: '#94A3B8' };
 
     return (
         <div className={`plan-feedback ${isMatch ? 'plan-feedback--match' : 'plan-feedback--mismatch'}`}>

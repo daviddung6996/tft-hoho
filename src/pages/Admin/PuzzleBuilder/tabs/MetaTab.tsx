@@ -1,17 +1,29 @@
 import React, { useState } from 'react';
 import { PuzzleScenario, AugmentPath, PuzzleDifficulty, StabilizationPlan } from '../../../../data/puzzleScenarios';
+import { Champion } from '../../../../data/types';
+import { AugmentData } from '../../../../services/augmentService';
+import { Item } from '../../../../services/itemService';
 import { TierSelect } from '../../../../components/common/TierSelect';
 import { VideoSelect } from '../../../../components/common/VideoSelect';
 import { VideoExplanationModal } from '../../../../components/common/VideoExplanationModal';
+import JsonImportModal from '../components/JsonImportModal';
 import './MetaTab.css';
 
 interface MetaTabProps {
     puzzle: PuzzleScenario;
     updatePuzzle: (updates: Partial<PuzzleScenario>) => void;
+    overwritePuzzle: (newPuzzle: PuzzleScenario) => void;
+    showToast: (message: string, type: 'success' | 'error' | 'info') => void;
+    champions: Champion[];
+    dbAugments: AugmentData[];
+    dbItems: Item[];
 }
 
-const MetaTab: React.FC<MetaTabProps> = ({ puzzle, updatePuzzle }) => {
+const MetaTab: React.FC<MetaTabProps> = ({
+    puzzle, updatePuzzle, overwritePuzzle, showToast, champions, dbAugments, dbItems
+}) => {
     const [showVideoModal, setShowVideoModal] = useState(false);
+    const [showJsonImport, setShowJsonImport] = useState(false);
 
     const handleVideoSelectChange = (hasVideo: boolean) => {
         if (hasVideo) {
@@ -27,7 +39,17 @@ const MetaTab: React.FC<MetaTabProps> = ({ puzzle, updatePuzzle }) => {
                 <div className="pb-meta-container">
                     {/* Match Information */}
                     <div className="pb-section">
-                        <h3 className="pb-section-title">Thông tin trận đấu</h3>
+                        <div className="pb-section-header">
+                            <h3 className="pb-section-title">Thông tin trận đấu</h3>
+                            <button
+                                type="button"
+                                className="json-import-trigger-btn"
+                                onClick={() => setShowJsonImport(true)}
+                                title="Import Puzzle từ JSON"
+                            >
+                                📋 Import JSON
+                            </button>
+                        </div>
                         <div className="pb-field-group" style={{ marginBottom: '1cqw' }}>
                             <label className="pb-label">Tiêu đề Puzzles</label>
                             <input
@@ -466,6 +488,17 @@ const MetaTab: React.FC<MetaTabProps> = ({ puzzle, updatePuzzle }) => {
                     initialUrl={puzzle.explanationVideoUrl || ''}
                     onSave={url => updatePuzzle({ explanationVideoUrl: url })}
                     onClose={() => setShowVideoModal(false)}
+                />
+            )}
+
+            {showJsonImport && (
+                <JsonImportModal
+                    onImport={overwritePuzzle}
+                    onClose={() => setShowJsonImport(false)}
+                    showToast={showToast}
+                    champions={champions}
+                    dbAugments={dbAugments}
+                    dbItems={dbItems}
                 />
             )}
         </>

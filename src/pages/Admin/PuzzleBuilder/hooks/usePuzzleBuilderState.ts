@@ -4,6 +4,7 @@ import { Champion } from '../../../../data/types';
 import { puzzleService } from '../../../../services/puzzleService';
 import { championService } from '../../../../services/championService';
 import { AugmentData, augmentService } from '../../../../services/augmentService';
+import { Item, itemService } from '../../../../services/itemService';
 
 export interface ToastState {
     message: string;
@@ -75,6 +76,7 @@ export const usePuzzleBuilderState = (onSaveSuccess: (puzzleId: string, shareUrl
     });
     const [champions, setChampions] = useState<Champion[]>([]);
     const [dbAugments, setDbAugments] = useState<AugmentData[]>([]);
+    const [dbItems, setDbItems] = useState<Item[]>([]);
     const [loading, setLoading] = useState(true);
     const [selectedOpponentIndex, setSelectedOpponentIndex] = useState(0);
     const [toast, setToast] = useState<ToastState | null>(null);
@@ -100,12 +102,14 @@ export const usePuzzleBuilderState = (onSaveSuccess: (puzzleId: string, shareUrl
     useEffect(() => {
         const loadData = async () => {
             try {
-                const [champData, augData] = await Promise.all([
+                const [champData, augData, itemData] = await Promise.all([
                     championService.getAll(),
-                    augmentService.getAll()
+                    augmentService.getAll(),
+                    itemService.getAll()
                 ]);
                 setChampions(champData || []);
                 setDbAugments(augData || []);
+                setDbItems(itemData || []);
             } catch (err) {
                 console.error('Failed to load data:', err);
             } finally {
@@ -117,6 +121,27 @@ export const usePuzzleBuilderState = (onSaveSuccess: (puzzleId: string, shareUrl
 
     const updatePuzzle = (updates: Partial<PuzzleScenario>) => {
         setPuzzle(prev => ({ ...prev, ...updates }));
+    };
+
+    const overwritePuzzle = (newPuzzle: PuzzleScenario) => {
+        // Sanitize: replace null/undefined values with INITIAL_PUZZLE defaults
+        // This prevents React controlled→uncontrolled warnings
+        const sanitized = { ...INITIAL_PUZZLE } as Record<string, unknown>;
+        for (const [key, value] of Object.entries(newPuzzle)) {
+            if (value !== null && value !== undefined) {
+                sanitized[key] = value;
+            }
+        }
+        // Validate id: must be a valid UUID or clear it (handleSave will generate one)
+        const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+        if (sanitized.id && !UUID_RE.test(sanitized.id as string)) {
+            sanitized.id = '';
+        }
+        setPuzzle(sanitized as unknown as PuzzleScenario);
+    };
+
+    const showToast = (message: string, type: 'success' | 'error' | 'info' = 'info') => {
+        setToast({ message, type });
     };
 
     const updateOpponent = (index: number, updates: Partial<any>) => {
@@ -197,13 +222,17 @@ export const usePuzzleBuilderState = (onSaveSuccess: (puzzleId: string, shareUrl
     return {
         puzzle,
         champions,
+        dbAugments,
+        dbItems,
         loading,
         selectedOpponentIndex,
         setSelectedOpponentIndex,
         updatePuzzle,
+        overwritePuzzle,
         updateOpponent,
         handleSave,
         toast,
+        showToast,
         clearToast
     };
 };

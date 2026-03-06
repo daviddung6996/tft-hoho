@@ -124,3 +124,30 @@
 .vem-edit-link:hover {
     color: #c8aa6e;
 }
+
+/* Section header with inline action button */
+.pb-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1cqw;
+}
+
+.json-import-trigger-btn {
+    background: transparent;
+    border: 1px solid rgba(200, 170, 110, 0.4);
+    color: #c8aa6e;
+    padding: 0.3cqw 0.8cqw;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7cqw;
+    cursor: pointer;
+    border-radius: 0.2cqw;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.json-import-trigger-btn:hover {
+    background: rgba(200, 170, 110, 0.12);
+    border-color: #c8aa6e;
+    box-shadow: 0 0 8px rgba(200, 170, 110, 0.2);
+}
