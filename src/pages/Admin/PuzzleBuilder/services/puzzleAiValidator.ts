@@ -24,6 +24,7 @@ You will receive:
 Your task:
 - For each champion in playerBoard, opponentBoard, playerBench, opponentBench, and opponents[].board/bench: match the "name" and "id" against the champion catalog. If the name is close but not exact, correct it. Set the correct "image" field from the champion's avatar/icon. Preserve row, col, benchIndex, cost, stars, and items.
 - For each augment in augments, rerollAugments, secondRerollAugments, proFirstRoll, proSecondRoll, proFinalPick, opponents[].augments, augment21, previousAugments: match against the augment catalog by title/id. Correct title, icon, tier, and id to exact DB values. Keep description if present.
+- IMPORTANT: If proFirstRoll, proSecondRoll, or similar augment fields contain PLAIN STRINGS instead of objects (e.g. ["Thẻ Ước Bảo Hộ", "Gói Bảo Hộ"]), you MUST convert each string into a full augment object by matching the string against augment titles in the catalog. The result should be {id, title, icon, tier, description} from the catalog. If proFinalPick is a plain string, convert it to an augment object the same way.
 - For each item in startingItems and opponents[].startingItems: match against the item catalog by name/id. Correct name, icon, and id.
 - For unit items (the "items" array inside each unit on the board): these are item name strings. Match them against the item catalog names.
 - DO NOT add or remove entries. Only correct the values of existing entries.
@@ -48,6 +49,81 @@ function buildCompactCatalog(catalogs: DbCatalogs): string {
     }));
 
     return JSON.stringify({ champions: champList, augments: augList, items: itemList });
+}
+
+/**
+ * Deterministic local resolver: converts plain string augment names
+ * to full AugmentData objects by matching against the DB catalog.
+ * Runs BEFORE AI validation to handle the common case without needing AI.
+ */
+function resolveStringToAugment(value: unknown, dbAugments: AugmentData[]): unknown {
+    if (typeof value === 'string') {
+        // Plain string → try to match against DB augment titles
+        const normalized = value.toLowerCase().trim();
+        const match = dbAugments.find(a => a.title.toLowerCase().trim() === normalized);
+        if (match) {
+            return { id: match.id, title: match.title, description: match.description || '', icon: match.icon, tier: match.tier };
+        }
+        // No match — return as-is (AI might fix it)
+        console.warn(`[PuzzleAI] Could not locally resolve augment string: "${value}"`);
+        return value;
+    }
+    if (value && typeof value === 'object' && !Array.isArray(value)) {
+        // Already an object — enrich with DB data if possible
+        const aug = value as Record<string, unknown>;
+        const title = (aug.title as string) || (aug.name as string) || '';
+        if (!title) return value;
+        const normalized = title.toLowerCase().trim();
+        const match = dbAugments.find(a => a.title.toLowerCase().trim() === normalized)
+            || dbAugments.find(a => a.id === aug.id);
+        if (match) {
+            return { ...aug, id: match.id, title: match.title, description: match.description || '', icon: match.icon, tier: match.tier };
+        }
+    }
+    return value;
+}
+
+function resolveAugmentArray(arr: unknown, dbAugments: AugmentData[]): unknown {
+    if (!Array.isArray(arr)) return arr;
+    return arr.map(item => resolveStringToAugment(item, dbAugments));
+}
+
+export function resolveAugmentsLocally(
+    rawJson: Record<string, unknown>,
+    dbAugments: AugmentData[]
+): Record<string, unknown> {
+    if (!dbAugments.length) return rawJson;
+
+    const result = { ...rawJson };
+
+    // Augment array fields
+    const arrayFields = ['augments', 'rerollAugments', 'secondRerollAugments', 'proFirstRoll', 'proSecondRoll', 'previousAugments'];
+    for (const field of arrayFields) {
+        if (result[field]) {
+            result[field] = resolveAugmentArray(result[field], dbAugments);
+        }
+    }
+
+    // Single augment fields
+    const singleFields = ['proFinalPick', 'augment21'];
+    for (const field of singleFields) {
+        if (result[field] !== undefined && result[field] !== null) {
+            result[field] = resolveStringToAugment(result[field], dbAugments);
+        }
+    }
+
+    // Opponents augments
+    if (Array.isArray(result.opponents)) {
+        result.opponents = (result.opponents as Record<string, unknown>[]).map(opp => {
+            if (opp && typeof opp === 'object' && opp.augments) {
+                return { ...opp, augments: resolveAugmentArray(opp.augments, dbAugments) };
+            }
+            return opp;
+        });
+    }
+
+    console.log('[PuzzleAI] Local augment resolution complete');
+    return result;
 }
 
 export async function validatePuzzleWithAI(

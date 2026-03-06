@@ -150,7 +150,7 @@ export function usePuzzleToPlayers(puzzle: PuzzleScenario | null): PuzzlePlayers
             bench: normalizeBench(puzzle.playerBench || [], champions),
             gold: playerState.gold,
             hp: playerState.hp,
-            augments: enrichAugments((puzzle.augments || []).filter((a): a is NonNullable<typeof a> => Boolean(a))),
+            augments: enrichAugments(getChosenAugments(puzzle)),
             arenaId: arenaIds[0],
             items: myItems
         });
@@ -208,6 +208,29 @@ export function usePuzzleToPlayers(puzzle: PuzzleScenario | null): PuzzlePlayers
 
 
 /**
+ * Get the augments already CHOSEN (not the current options).
+ * - Round 2-1: No augments chosen yet → empty
+ * - Round 3-2: Has augment21 (1 prior choice) → [augment21]
+ * - Round 4-2: Has previousAugments (2 prior choices) → previousAugments
+ */
+export function getChosenAugments(puzzle: PuzzleScenario): AugmentData[] {
+    const stage = puzzle.stage || '';
+
+    if (stage.startsWith('4-2') || stage === '4-2') {
+        // 4-2: Show the 2 previously chosen augments
+        return (puzzle.previousAugments || []).filter((a): a is AugmentData => Boolean(a));
+    }
+
+    if (stage.startsWith('3-2') || stage === '3-2') {
+        // 3-2: Show only the 1 augment chosen at 2-1
+        return puzzle.augment21 ? [puzzle.augment21] : [];
+    }
+
+    // 2-1: No augments chosen yet, tree should be empty
+    return [];
+}
+
+/**
  * Create PlayerData from config
  */
 function createPlayerData(config: {
@@ -241,13 +264,15 @@ function createPlayerData(config: {
     };
 }
 
+const OPPONENT_NAMES = ['Choncc', 'Ahri', 'Irelia', 'BunBun', 'Chihuahua', 'Fuwa', 'Mèo bánh mì'];
+
 /**
  * Create PlayerData from OpponentData
  */
 function createOpponentPlayerData(opp: OpponentData, index: number, champions: Champion[], arenaId: string): PlayerData {
     return {
         id: String(index),
-        name: opp.name || `Opponent ${index - 1}`,
+        name: OPPONENT_NAMES[(index - 2) % OPPONENT_NAMES.length],
         avatar: OPPONENT_AVATARS[(index - 2) % OPPONENT_AVATARS.length],
         hp: opp.state?.hp || 100,
         gold: opp.state?.gold || 0,
