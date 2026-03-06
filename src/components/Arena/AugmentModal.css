@@ -243,8 +243,16 @@
 }
 
 @keyframes rare-label-pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.85; text-shadow: 0 0 1.5cqw rgba(192, 132, 252, 0.9), 0 0 4cqw rgba(168, 85, 247, 0.5); }
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.85;
+        text-shadow: 0 0 1.5cqw rgba(192, 132, 252, 0.9), 0 0 4cqw rgba(168, 85, 247, 0.5);
+    }
 }
 
 /* --- ADVANCED Tier Overlay Atmosphere (Warm Gold — Premium) --- */
@@ -267,7 +275,8 @@
     background: linear-gradient(90deg, transparent, rgba(232, 194, 82, 0.6), transparent);
 }
 
-/* Shimmer sweep — slower & subtler than Rare */
+/* Shimmer sweep — slower & subtler than Rare
+   animation-delay is injected via JS inline style on the .augment-card element */
 .augment-modal-overlay.tier-advanced .augment-card::after {
     content: '';
     position: absolute;
@@ -277,12 +286,20 @@
     height: 100%;
     background: linear-gradient(90deg, transparent, rgba(232, 194, 82, 0.06), rgba(255, 255, 255, 0.03), transparent);
     animation: adv-card-sweep 5s ease-in-out infinite;
+    animation-delay: inherit;
     pointer-events: none;
 }
 
 @keyframes adv-card-sweep {
-    0%, 100% { left: -60%; }
-    50% { left: 100%; }
+
+    0%,
+    100% {
+        left: -60%;
+    }
+
+    50% {
+        left: 100%;
+    }
 }
 
 .augment-modal-overlay.tier-advanced .augment-card:hover {
@@ -313,7 +330,8 @@
     background: linear-gradient(90deg, transparent, rgba(192, 132, 252, 0.65), transparent);
 }
 
-/* Shimmer sweep across rare cards */
+/* Shimmer sweep across rare cards
+   animation-delay is injected via JS inline style on the .augment-card element */
 .augment-modal-overlay.tier-rare .augment-card::after {
     content: '';
     position: absolute;
@@ -323,12 +341,20 @@
     height: 100%;
     background: linear-gradient(90deg, transparent, rgba(192, 132, 252, 0.08), rgba(255, 255, 255, 0.04), transparent);
     animation: rare-card-sweep 4s ease-in-out infinite;
+    animation-delay: inherit;
     pointer-events: none;
 }
 
 @keyframes rare-card-sweep {
-    0%, 100% { left: -60%; }
-    50% { left: 100%; }
+
+    0%,
+    100% {
+        left: -60%;
+    }
+
+    50% {
+        left: 100%;
+    }
 }
 
 .augment-modal-overlay.tier-rare .augment-card:hover {

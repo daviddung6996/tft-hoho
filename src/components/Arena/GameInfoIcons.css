@@ -80,7 +80,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    cursor: pointer;
 
     /* Hexagon shape - pointy topped (mũi nhọn lên) */
     clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);

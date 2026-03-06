@@ -9,6 +9,9 @@ export default defineConfig({
             '@': path.resolve(__dirname, './src'),
         },
     },
+    esbuild: {
+        drop: ['console', 'debugger'],
+    },
     build: {
         // Use esbuild minification (fast, default in Vite)
         minify: 'esbuild',

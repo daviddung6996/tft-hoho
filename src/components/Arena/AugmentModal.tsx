@@ -1,20 +1,40 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import './AugmentModal.css';
 
 import { AugmentData } from '../../services/augmentService';
 import { PuzzleTier } from '../../features/tcoin/tcoin.types';
 import { TierIcon } from '../common/TierIcon';
 
+// Duration must match CSS keyframe durations
+const SWEEP_DURATION: Record<string, number> = {
+    advanced: 5000,
+    rare: 4000,
+};
+
 interface AugmentCardProps extends AugmentData {
     onReroll: () => void;
     isRerolled: boolean;
     onSelect: () => void;
+    puzzleTier?: PuzzleTier;
 }
 
-const AugmentCard: React.FC<AugmentCardProps> = ({ title, description, icon, tier, onReroll, isRerolled, onSelect }) => {
+const AugmentCard: React.FC<AugmentCardProps> = ({ title, description, icon, tier, onReroll, isRerolled, onSelect, puzzleTier = 'free' }) => {
+    // Compute phase-aligned animationDelay once at mount.
+    // Uses performance.now() so every card — including re-rendered ones after roll —
+    // joins the SAME global animation timeline instead of restarting from 0.
+    const delayRef = useRef<string>((() => {
+        const duration = SWEEP_DURATION[puzzleTier] ?? 5000;
+        const phase = performance.now() % duration;
+        return `-${phase}ms`;
+    })());
+
+    const cardStyle = (puzzleTier === 'advanced' || puzzleTier === 'rare')
+        ? { animationDelay: delayRef.current } as React.CSSProperties
+        : undefined;
+
     return (
         <div className="augment-column">
-            <div className={`augment-card tier-${tier}`} onClick={onSelect}>
+            <div className={`augment-card tier-${tier}`} onClick={onSelect} style={cardStyle}>
                 <div className="augment-content">
                     <div className="augment-icon-container">
                         <img src={icon} alt={title} className="augment-icon" />
@@ -79,6 +99,7 @@ export const AugmentModal: React.FC<AugmentModalProps> = ({ currentAugments, rer
                         title={augment.title}
                         description={augment.description}
                         icon={augment.icon}
+                        puzzleTier={puzzleTier}
                         onReroll={() => onReroll(index)}
                         isRerolled={(rerollOrder[index] ?? 0) > 0}
                         onSelect={() => onSelect(augment)}

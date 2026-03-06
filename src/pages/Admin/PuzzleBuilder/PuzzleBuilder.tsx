@@ -25,13 +25,17 @@ const PuzzleBuilder: React.FC<PuzzleBuilderProps> = ({ onClose, onSaveSuccess, i
     const {
         puzzle,
         champions,
+        dbAugments,
+        dbItems,
         loading,
         selectedOpponentIndex,
         setSelectedOpponentIndex,
         updatePuzzle,
+        overwritePuzzle,
         updateOpponent,
         handleSave,
         toast,
+        showToast,
         clearToast
     } = usePuzzleBuilderState(onSaveSuccess, initialPuzzle);
 
@@ -78,7 +82,15 @@ const PuzzleBuilder: React.FC<PuzzleBuilderProps> = ({ onClose, onSaveSuccess, i
 
             <div className="pb-content">
                 {viewMode === 'meta' && (
-                    <MetaTab puzzle={puzzle} updatePuzzle={updatePuzzle} />
+                    <MetaTab
+                        puzzle={puzzle}
+                        updatePuzzle={updatePuzzle}
+                        overwritePuzzle={overwritePuzzle}
+                        showToast={showToast}
+                        champions={champions}
+                        dbAugments={dbAugments}
+                        dbItems={dbItems}
+                    />
                 )}
 
                 {viewMode === 'player' && (

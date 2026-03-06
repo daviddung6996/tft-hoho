@@ -33,13 +33,14 @@ export const PuzzleInfo: React.FC<PuzzleInfoProps> = ({
 
     const canOpenProPick = Boolean(onViewLibrary || streamUrl);
     const handleOpenProPick = () => {
-        if (onViewLibrary) {
-            onViewLibrary();
+        // Priority: VOD link first, then video library fallback
+        if (streamUrl) {
+            window.open(streamUrl, '_blank', 'noopener,noreferrer');
             return;
         }
 
-        if (streamUrl) {
-            window.open(streamUrl, '_blank', 'noopener,noreferrer');
+        if (onViewLibrary) {
+            onViewLibrary();
         }
     };
 
