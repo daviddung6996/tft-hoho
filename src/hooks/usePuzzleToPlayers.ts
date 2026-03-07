@@ -9,6 +9,7 @@ import { traitService } from '../services/traitService';
 import { AugmentData, augmentService } from '../services/augmentService';
 import { calculateSynergies } from '../utils/synergyCalculator';
 import { ARENA_SKINS } from '../data/arenas';
+import { normalizeCompactLookupValue, normalizeLookupValue } from '../utils/stringNormalization';
 
 // Tactician Images
 import penguImg from '../assets/tacticians/pengu.webp';
@@ -108,7 +109,7 @@ export function usePuzzleToPlayers(puzzle: PuzzleScenario | null): PuzzlePlayers
             return rawAugs.map((aug: any) => {
                 if (!aug) return aug;
                 const dbAug = dbAugments.find(db => db.id === aug.id) ||
-                    dbAugments.find(db => db.title.toLowerCase() === (aug.title || '').toLowerCase());
+                    dbAugments.find(db => normalizeLookupValue(db.title) === normalizeLookupValue(aug.title));
                 if (dbAug) {
                     return { ...aug, title: dbAug.title, description: dbAug.description, icon: dbAug.icon || aug.icon };
                 }
@@ -120,15 +121,15 @@ export function usePuzzleToPlayers(puzzle: PuzzleScenario | null): PuzzlePlayers
         const enrichItems = (rawItems: (Item | null)[]) => {
             return (rawItems || []).map(item => {
                 if (!item) return null;
-                const normalizedName = item.name.toLowerCase().replace(/\s+/g, '');
+                const normalizedName = normalizeCompactLookupValue(item.name || item.name_en || item.id);
                 const dbItem = dbItems.find(db => {
-                    const dbNormalized = db.name.toLowerCase().replace(/\s+/g, '');
-                    const dbEnNormalized = (db.name_en || '').toLowerCase().replace(/\s+/g, '');
+                    const dbNormalized = normalizeCompactLookupValue(db.name);
+                    const dbEnNormalized = normalizeCompactLookupValue(db.name_en);
                     return dbNormalized === normalizedName || dbEnNormalized === normalizedName || db.id === item.id;
                 });
                 return {
                     ...item,
-                    name: dbItem?.name || item.name,
+                    name: dbItem?.name || item.name || item.name_en || item.id,
                     icon: dbItem?.icon || item.icon || ''
                 };
             });
@@ -315,8 +316,9 @@ function normalizeUnits(units: UnitData[], champions: Champion[]): UnitData[] {
     return units
         .filter(u => u && u.row !== undefined && u.col !== undefined)
         .map((u): UnitData | null => {
+            const normalizedUnitName = normalizeLookupValue(u.name);
             const adminChamp = u.name
-                ? champions.find(c => c.name && c.name.toLowerCase() === u.name!.toLowerCase())
+                ? champions.find(c => normalizeLookupValue(c.name) === normalizedUnitName)
                 : undefined;
             const row = u.row as number;
             let col = u.col as number;
@@ -353,8 +355,9 @@ function normalizeBench(bench: UnitData[], champions: Champion[]): UnitData[] {
         .filter(u => u && (u.benchIndex !== undefined || u.row === -1))
         .map((u, idx) => {
             // [NEW] Lookup champion in admin data
+            const normalizedUnitName = normalizeLookupValue(u.name);
             const adminChamp = u.name
-                ? champions.find(c => c.name && c.name.toLowerCase() === u.name!.toLowerCase())
+                ? champions.find(c => normalizeLookupValue(c.name) === normalizedUnitName)
                 : undefined;
 
             const benchIdx = u.benchIndex ?? idx;

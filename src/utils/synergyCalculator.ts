@@ -1,5 +1,6 @@
 import { UnitData, Synergy, Champion } from '../data/types';
 import { Trait } from '../services/traitService';
+import { normalizeLookupValue } from './stringNormalization';
 
 interface SynergyInput {
     units: UnitData[];
@@ -9,10 +10,10 @@ interface SynergyInput {
 
 /** Match a trait name (English, from champion.traits) against trait definitions */
 function findTraitDef(traitName: string, traitData: Trait[]): Trait | undefined {
-    const lower = traitName.toLowerCase();
+    const lower = normalizeLookupValue(traitName);
     return traitData.find(t =>
-        t.name_en?.toLowerCase() === lower ||
-        t.name.toLowerCase() === lower
+        normalizeLookupValue(t.name_en) === lower ||
+        normalizeLookupValue(t.name) === lower
     );
 }
 
@@ -33,9 +34,12 @@ export function calculateSynergies(input: SynergyInput): Synergy[] {
     const uniqueChampionIds = new Set<string>();
 
     units.forEach(unit => {
+        const normalizedUnitName = normalizeLookupValue(unit.name);
+        if (!normalizedUnitName) return;
+
         const champion = championData.find(c =>
-            c.name.toLowerCase() === unit.name.toLowerCase() ||
-            c.id?.toLowerCase() === unit.name.toLowerCase()
+            normalizeLookupValue(c.name) === normalizedUnitName ||
+            normalizeLookupValue(c.id) === normalizedUnitName
         );
 
         // Only count each unique champion once for traits
@@ -86,7 +90,7 @@ export function calculateSynergies(input: SynergyInput): Synergy[] {
 
         // Use English name for id (asset lookup), Vietnamese name for display
         synergies.push({
-            id: traitName.toLowerCase().replace(/\s+/g, '-'),
+            id: normalizeLookupValue(traitName).replace(/\s+/g, '-'),
             name: traitDef?.name || traitName, // Vietnamese from DB
             breakpoints,
             styles,
@@ -123,9 +127,12 @@ export function getAllTraitsFromBoard(input: SynergyInput): Synergy[] {
     const uniqueChampionIds = new Set<string>();
 
     units.forEach(unit => {
+        const normalizedUnitName = normalizeLookupValue(unit.name);
+        if (!normalizedUnitName) return;
+
         const champion = championData.find(c =>
-            c.name.toLowerCase() === unit.name.toLowerCase() ||
-            c.id?.toLowerCase() === unit.name.toLowerCase()
+            normalizeLookupValue(c.name) === normalizedUnitName ||
+            normalizeLookupValue(c.id) === normalizedUnitName
         );
 
         // Only count each unique champion once for traits
@@ -171,7 +178,7 @@ export function getAllTraitsFromBoard(input: SynergyInput): Synergy[] {
             }
 
             return {
-                id: traitName.toLowerCase().replace(/\s+/g, '-'),
+                id: normalizeLookupValue(traitName).replace(/\s+/g, '-'),
                 name: traitDef?.name || traitName, // Vietnamese from DB
                 breakpoints,
                 styles,

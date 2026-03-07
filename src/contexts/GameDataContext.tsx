@@ -3,6 +3,7 @@ import { traitService, Trait } from '../services/traitService';
 import { itemService, Item } from '../services/itemService';
 import { championService, Champion } from '../services/championService';
 import { augmentService, AugmentData } from '../services/augmentService';
+import { normalizeLookupValue } from '../utils/stringNormalization';
 
 interface GameDataContextType {
     traits: Trait[];
@@ -60,10 +61,10 @@ export const GameDataProvider: React.FC<GameDataProviderProps> = ({ children }) 
     // Lookup by English name (from champion.traits array)
     // Handles various ID formats: TFT16_Void, Void, Set16_Void, etc.
     const getTraitByNameEn = (nameEn: string): Trait | undefined => {
-        const normalized = nameEn.toLowerCase().replace(/tft\d+_|set\d+_/gi, '');
+        const normalized = normalizeLookupValue(nameEn).replace(/tft\d+_|set\d+_/gi, '');
         return traits.find(t => {
-            const tNameEn = (t.name_en || '').toLowerCase().replace(/tft\d+_|set\d+_/gi, '');
-            const tId = (t.id || '').toLowerCase().replace(/tft\d+_|set\d+_/gi, '');
+            const tNameEn = normalizeLookupValue(t.name_en).replace(/tft\d+_|set\d+_/gi, '');
+            const tId = normalizeLookupValue(t.id).replace(/tft\d+_|set\d+_/gi, '');
             return tNameEn === normalized || tId === normalized ||
                 t.id === nameEn || t.name_en === nameEn;
         });

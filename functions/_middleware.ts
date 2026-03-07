@@ -1,4 +1,4 @@
-export async function onRequest(context) {
+export async function onRequest(context: EventContext<unknown, string, unknown>) {
   const response = await context.next();
   const url = new URL(context.request.url);
 

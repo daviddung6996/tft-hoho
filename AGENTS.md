@@ -290,6 +290,11 @@ Get-ChildItem -Path src -Recurse -Include "*.tsx" | ForEach-Object {
 - **Cause:** `app-container` có `filter: contrast(1.05) saturate(1.08) brightness(1.02)` tạo stacking context. Nếu wrap game content trong div có `filter: blur()` toggle (`none` ↔ `blur(8px)`), việc tạo/huỷ stacking context sẽ làm các panel `position: absolute` bị reflow.
 - **Avoid:** KHÔNG BAO GIỜ wrap game content trong div toggle `filter`. Overlay đã có background atmosphere đủ tối (`rgba(0,0,0,0.78)`), không cần blur content bên dưới. Xem pattern "Hextech Overlay" ở Section 1.
 
+### Production puzzle/game data can contain null-ish strings despite TypeScript types saying `string`
+- **Symptom:** App crashes with `Cannot read properties of undefined (reading 'toLowerCase')`, often only on production data first, then locally after the same bad record is loaded.
+- **Cause:** Supabase/admin data can contain missing `name`, `title`, or trait fields even though local TS interfaces mark them as required. Direct `.toLowerCase()` inside puzzle/item/augment/synergy normalization is not safe against real DB drift.
+- **Avoid:** When matching DB-driven strings, always normalize through a safe helper (e.g. `normalizeLookupValue`) instead of calling `.toLowerCase()` directly on puzzle/item/augment/unit fields.
+
 ### Supabase schema source-of-truth mismatch
 - **Symptom:** Type definitions trong `src/lib/supabase.ts` đã có bảng `user_wallets`, `tcoin_transactions`, `user_unlocked_puzzles`, `pro_supporters`, `donations`, nhưng thư mục `supabase/migrations/` chưa có SQL migration tương ứng.
 - **Cause:** Schema có thể đã tạo trực tiếp trên remote Supabase hoặc local type file được cập nhật trước khi commit migration.
