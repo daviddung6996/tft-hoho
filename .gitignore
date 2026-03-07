@@ -1,5 +1,8 @@
 node_modules/
 dist/
+deploy/
+test_deploy/
+test_deploy2/
 .env
 .env.local
 .env.*.local
@@ -11,6 +14,8 @@ coverage/
 build/
 .gemini/
 .claude/
+.agent/
+.kiro/
 .venv/
 __pycache__/
 *.py[cod]
@@ -18,6 +23,8 @@ __pycache__/
 *.sh
 Desktop.ini
 Thumbs.db
+tsconfig.node.tsbuildinfo
+agentic-logs/
 
 .env*
 .flaskenv*

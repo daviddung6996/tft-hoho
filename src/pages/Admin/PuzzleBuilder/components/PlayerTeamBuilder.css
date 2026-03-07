@@ -337,6 +337,12 @@
     box-shadow: 0 0 2cqw rgba(200, 170, 110, 0.4);
 }
 
+.hb-hex-cell.drag-over--swap {
+    /* Purple highlight — swap incoming */
+    background: rgba(147, 51, 234, 0.25);
+    box-shadow: 0 0 2cqw rgba(147, 51, 234, 0.5);
+}
+
 .hb-hex-cell.occupied {
     background: transparent;
 }
@@ -509,6 +515,12 @@
     /* Synced Gold drag over, removing blue */
     background: rgba(200, 170, 110, 0.2);
     box-shadow: 0 0 2cqw rgba(200, 170, 110, 0.4);
+}
+
+.hb-bench-slot.drag-over--swap::before {
+    /* Purple highlight — swap incoming */
+    background: rgba(147, 51, 234, 0.25);
+    box-shadow: 0 0 2cqw rgba(147, 51, 234, 0.5);
 }
 
 .hb-bench-unit {

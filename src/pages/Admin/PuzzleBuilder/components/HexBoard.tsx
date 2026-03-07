@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { UnitData, Champion, Synergy } from '../../../../data/types';
 import { AssetImage } from '../../../../hooks/useAssetUrl';
 import { SynergyPanel } from '../../../../components/Sidebar/SynergyPanel';
+import { calculateHexPosition, getGridDimensions, swapOrMoveToBoard, swapOrMoveToBench, type HexConfig } from '../../../../utils/hexGrid';
 
 // Board configuration
 const BOARD_ROWS = 4;
@@ -9,9 +10,11 @@ const BOARD_COLS = 7;
 const BENCH_SIZE = 9;
 
 // Hex sizing in cqw - synced with Bench CSS
-const HEX_WIDTH = 9;
-const HEX_HEIGHT = 10;
-const HEX_GAP = 0.5;
+const HEX_CONFIG: HexConfig = {
+    WIDTH: 9,
+    HEIGHT: 10,
+    GAP: 0.5,
+};
 
 export interface DragItem {
     type: 'champion' | 'unit';
@@ -28,22 +31,6 @@ interface HexBoardProps {
     onSafeDrop: () => void;
     synergies: Synergy[];
 }
-
-const calculateHexPosition = (row: number, col: number) => {
-    const offsetX = row % 2 === 0 ? 0 : (HEX_WIDTH + HEX_GAP) * 0.5;
-    return {
-        left: col * (HEX_WIDTH + HEX_GAP) + offsetX,
-        top: row * (HEX_HEIGHT * 0.75 + HEX_GAP * 0.5)
-    };
-};
-
-// Calculate grid dimensions
-const getGridDimensions = () => {
-    const lastRowOffset = 1 % 2 === 0 ? 0 : (HEX_WIDTH + HEX_GAP) * 0.5;
-    const width = (BOARD_COLS - 1) * (HEX_WIDTH + HEX_GAP) + HEX_WIDTH + lastRowOffset;
-    const height = (BOARD_ROWS - 1) * (HEX_HEIGHT * 0.75 + HEX_GAP * 0.5) + HEX_HEIGHT;
-    return { width, height };
-};
 
 const HexBoard: React.FC<HexBoardProps> = ({
     units,
@@ -67,7 +54,7 @@ const HexBoard: React.FC<HexBoardProps> = ({
         const isOccupied = boardUnits.some(u => u.row === row && u.col === col);
 
         if (dragItem.source === 'pool') {
-            // Adding from champion pool
+            // Adding from champion pool — only allowed on empty cells
             if (isOccupied) return;
             const champ = dragItem.data as Champion;
             const newUnit: UnitData = {
@@ -83,23 +70,15 @@ const HexBoard: React.FC<HexBoardProps> = ({
             onUnitsChange([...units, newUnit]);
             onDropSuccess();
         } else if (dragItem.source === 'board') {
-            // Moving on board
             const unit = dragItem.data as UnitData;
-            if (isOccupied && boardUnits.find(u => u.row === row && u.col === col)?.id !== unit.id) {
-                return; // Block move to occupied cell
-            }
-            const updatedUnits = units.map(u =>
-                u.id === unit.id ? { ...u, row, col, benchIndex: undefined } : u
-            );
+            const source = { sourceRow: unit.row, sourceCol: unit.col };
+            const updatedUnits = swapOrMoveToBoard(units, unit.id, row, col, source);
             onUnitsChange(updatedUnits);
             onDropSuccess();
         } else if (dragItem.source === 'bench') {
-            // Moving from bench to board
-            if (isOccupied) return;
             const unit = dragItem.data as UnitData;
-            const updatedUnits = units.map(u =>
-                u.id === unit.id ? { ...u, row, col, benchIndex: undefined } : u
-            );
+            const source = { sourceBenchIndex: dragItem.sourceIndex };
+            const updatedUnits = swapOrMoveToBoard(units, unit.id, row, col, source);
             onUnitsChange(updatedUnits);
             onDropSuccess();
         }
@@ -113,6 +92,7 @@ const HexBoard: React.FC<HexBoardProps> = ({
         const isOccupied = benchUnits[benchIndex] !== null;
 
         if (dragItem.source === 'pool') {
+            // Adding from champion pool — only allowed on empty slots
             if (isOccupied) return;
             const champ = dragItem.data as Champion;
             const newUnit: UnitData = {
@@ -127,30 +107,16 @@ const HexBoard: React.FC<HexBoardProps> = ({
             onUnitsChange([...units, newUnit]);
             onDropSuccess();
         } else if (dragItem.source === 'board') {
-            if (isOccupied) return;
             const unit = dragItem.data as UnitData;
-            const updatedUnits = units.map(u =>
-                u.id === unit.id ? { ...u, row: undefined, col: undefined, benchIndex } : u
-            );
+            const source = { sourceRow: unit.row, sourceCol: unit.col };
+            const updatedUnits = swapOrMoveToBench(units, unit.id, benchIndex, source);
             onUnitsChange(updatedUnits);
             onDropSuccess();
         } else if (dragItem.source === 'bench') {
             const unit = dragItem.data as UnitData;
-            if (isOccupied && benchUnits[benchIndex]?.id !== unit.id) {
-                // Swap
-                const targetUnit = benchUnits[benchIndex]!;
-                const updatedUnits = units.map(u => {
-                    if (u.id === unit.id) return { ...u, benchIndex };
-                    if (u.id === targetUnit.id) return { ...u, benchIndex: dragItem.sourceIndex };
-                    return u;
-                });
-                onUnitsChange(updatedUnits);
-            } else {
-                const updatedUnits = units.map(u =>
-                    u.id === unit.id ? { ...u, benchIndex } : u
-                );
-                onUnitsChange(updatedUnits);
-            }
+            const source = { sourceBenchIndex: dragItem.sourceIndex };
+            const updatedUnits = swapOrMoveToBench(units, unit.id, benchIndex, source);
+            onUnitsChange(updatedUnits);
             onDropSuccess();
         }
 
@@ -171,7 +137,7 @@ const HexBoard: React.FC<HexBoardProps> = ({
         onUnitsChange(updatedUnits);
     };
 
-    const gridDims = getGridDimensions();
+    const gridDims = getGridDimensions(BOARD_ROWS, BOARD_COLS, HEX_CONFIG);
 
     return (
         <div
@@ -223,19 +189,21 @@ const HexBoard: React.FC<HexBoardProps> = ({
                     {/* Render hex cells */}
                     {Array.from({ length: BOARD_ROWS }).map((_, r) =>
                         Array.from({ length: BOARD_COLS }).map((_, c) => {
-                            const { left, top } = calculateHexPosition(r, c);
+                            const { left, top } = calculateHexPosition(r, c, HEX_CONFIG);
                             const isHovered = hoverTarget?.type === 'board' && hoverTarget.row === r && hoverTarget.col === c;
                             const isOccupied = boardUnits.some(u => u.row === r && u.col === c);
+                            const dragIsUnit = dragItem?.source === 'board' || dragItem?.source === 'bench';
+                            const willSwap = isHovered && isOccupied && dragIsUnit;
 
                             return (
                                 <div
                                     key={`cell-${r}-${c}`}
-                                    className={`hb-hex-cell ${isHovered ? 'drag-over' : ''} ${isOccupied ? 'occupied' : ''}`}
+                                    className={`hb-hex-cell ${isHovered && !willSwap ? 'drag-over' : ''} ${willSwap ? 'drag-over--swap' : ''} ${isOccupied ? 'occupied' : ''}`}
                                     style={{
                                         left: `${left}cqw`,
                                         top: `${top}cqw`,
-                                        width: `${HEX_WIDTH}cqw`,
-                                        height: `${HEX_HEIGHT}cqw`
+                                        width: `${HEX_CONFIG.WIDTH}cqw`,
+                                        height: `${HEX_CONFIG.HEIGHT}cqw`
                                     }}
                                     onDragOver={(e) => {
                                         e.preventDefault();
@@ -254,7 +222,7 @@ const HexBoard: React.FC<HexBoardProps> = ({
 
                     {/* Render units on board */}
                     {boardUnits.map(unit => {
-                        const { left, top } = calculateHexPosition(unit.row!, unit.col!);
+                        const { left, top } = calculateHexPosition(unit.row!, unit.col!, HEX_CONFIG);
                         const isDragging = dragItem?.source === 'board' && (dragItem.data as UnitData).id === unit.id;
 
                         return (
@@ -265,8 +233,8 @@ const HexBoard: React.FC<HexBoardProps> = ({
                                 style={{
                                     left: `${left}cqw`,
                                     top: `${top}cqw`,
-                                    width: `${HEX_WIDTH}cqw`,
-                                    height: `${HEX_HEIGHT}cqw`
+                                    width: `${HEX_CONFIG.WIDTH}cqw`,
+                                    height: `${HEX_CONFIG.HEIGHT}cqw`
                                 }}
                                 draggable
                                 onDragStart={(e) => {
@@ -309,11 +277,13 @@ const HexBoard: React.FC<HexBoardProps> = ({
                     {benchUnits.map((unit, index) => {
                         const isHovered = hoverTarget?.type === 'bench' && hoverTarget.index === index;
                         const isDragging = dragItem?.source === 'bench' && unit && (dragItem.data as UnitData).id === unit.id;
+                        const dragIsUnit = dragItem?.source === 'board' || dragItem?.source === 'bench';
+                        const willSwap = isHovered && !!unit && dragIsUnit;
 
                         return (
                             <div
                                 key={`bench-${index}`}
-                                className={`hb-bench-slot ${unit ? 'occupied' : ''} ${isHovered ? 'drag-over' : ''}`}
+                                className={`hb-bench-slot ${unit ? 'occupied' : ''} ${isHovered && !willSwap ? 'drag-over' : ''} ${willSwap ? 'drag-over--swap' : ''}`}
                                 onDragOver={(e) => {
                                     e.preventDefault();
                                     setHoverTarget({ type: 'bench', index });

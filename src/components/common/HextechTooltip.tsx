@@ -90,6 +90,7 @@ function useTooltipInteraction(
     const [actualPosition, setActualPosition] = useState<TooltipPosition>(position);
     const triggerRef = useRef<HTMLDivElement>(null);
     const isTouchedRef = useRef(false);
+    const hoverTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     const updatePosition = useCallback(() => {
         if (!triggerRef.current) return;
@@ -114,12 +115,18 @@ function useTooltipInteraction(
 
     const handleMouseEnter = useCallback(() => {
         if (isTouchedRef.current) return; // Skip on touch device
-        updatePosition();
-        setIsVisible(true);
+        hoverTimerRef.current = setTimeout(() => {
+            updatePosition();
+            setIsVisible(true);
+        }, 400);
     }, [updatePosition]);
 
     const handleMouseLeave = useCallback(() => {
         if (isTouchedRef.current) return; // Skip on touch device
+        if (hoverTimerRef.current) {
+            clearTimeout(hoverTimerRef.current);
+            hoverTimerRef.current = null;
+        }
         setIsVisible(false);
     }, []);
 

@@ -1,32 +1,47 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { UnitData } from '../../../data/types';
 import { UnitVisual } from './UnitVisual';
+import { calculateHexPosition, type HexConfig, type DragItem } from '../../../utils/hexGrid';
 
-/**
- * HELPER: Calculates the absolute X, Y position for a hex cell in cqw.
- */
-export const calculatePosition = (row: number, col: number, config: { WIDTH: number; HEIGHT: number; GAP: number }) => {
-    const { WIDTH, HEIGHT, GAP } = config;
-    const offsetX = row % 2 === 0 ? 0 : (WIDTH + GAP) * 0.5;
-    return {
-        left: col * (WIDTH + GAP) + offsetX,
-        top: row * (HEIGHT * 0.75 + GAP * 0.5)
-    };
-};
+// Re-export calculatePosition for backward compatibility
+export const calculatePosition = calculateHexPosition;
 
-export const BoardUnit: React.FC<{ unit: UnitData, hexConfig: { WIDTH: number; HEIGHT: number; GAP: number } }> = ({ unit, hexConfig }) => {
-    const { left, top } = calculatePosition(unit.row || 0, unit.col || 0, hexConfig);
+interface BoardUnitProps {
+    unit: UnitData & { row: number; col: number };
+    hexConfig: HexConfig;
+    isDraggable?: boolean;
+    isDragging?: boolean;
+    onPointerDragStart?: (e: React.PointerEvent, item: DragItem, sourceEl: HTMLElement) => void;
+}
+
+export const BoardUnit: React.FC<BoardUnitProps> = ({ unit, hexConfig, isDraggable = false, isDragging = false, onPointerDragStart }) => {
+    const { left, top } = calculateHexPosition(unit.row, unit.col, hexConfig);
     const { WIDTH, HEIGHT } = hexConfig;
+    const wrapperRef = useRef<HTMLDivElement>(null);
+
+    const handlePointerDown = (e: React.PointerEvent) => {
+        if (!isDraggable || !onPointerDragStart || !wrapperRef.current) return;
+        const dragItem: DragItem = {
+            unitId: unit.id,
+            source: 'board',
+            sourceRow: unit.row,
+            sourceCol: unit.col,
+        };
+        onPointerDragStart(e, dragItem, wrapperRef.current);
+    };
 
     return (
         <div
-            className="board-unit-wrapper"
+            ref={wrapperRef}
+            className={`board-unit-wrapper ${isDragging ? 'dragging' : ''}`}
             style={{
                 left: `${left}cqw`,
                 top: `${top}cqw`,
                 width: `${WIDTH}cqw`,
                 height: `${HEIGHT}cqw`,
+                touchAction: isDraggable ? 'none' : undefined,
             }}
+            onPointerDown={isDraggable ? handlePointerDown : undefined}
         >
             <UnitVisual unit={unit} />
         </div>

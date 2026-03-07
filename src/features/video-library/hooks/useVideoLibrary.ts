@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { videoLibraryService } from '../videoLibrary.service';
 import { VideoLibraryItem, LibraryFilter, VideoMilestone } from '../videoLibrary.types';
 import { useProSupporter } from '../../pro-supporter/hooks/useProSupporter';
+import { MONETIZATION_ENABLED } from '../../../config/monetization';
 
 export function useVideoLibrary() {
     const { isProSupporter } = useProSupporter();
@@ -28,12 +29,12 @@ export function useVideoLibrary() {
 
     // Apply pro-override in derived state so fetchLibrary doesn't re-run on pro status change
     const effectiveLibrary = useMemo(
-        () => isProSupporter ? library.map(v => ({ ...v, isUnlocked: true })) : library,
+        () => (!MONETIZATION_ENABLED || isProSupporter) ? library.map(v => ({ ...v, isUnlocked: true })) : library,
         [library, isProSupporter]
     );
 
     const unlockedCount = useMemo(
-        () => isProSupporter ? library.length : library.filter(v => v.isUnlocked).length,
+        () => (!MONETIZATION_ENABLED || isProSupporter) ? library.length : library.filter(v => v.isUnlocked).length,
         [library, isProSupporter]
     );
 

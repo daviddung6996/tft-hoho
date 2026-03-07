@@ -293,22 +293,49 @@ function createOpponentPlayerData(opp: OpponentData, index: number, champions: C
 function normalizeUnits(units: UnitData[], champions: Champion[]): UnitData[] {
     if (!units) return [];
 
+    const ROWS = 4;
+    const COLS = 7;
+    const occupied = new Set<string>();
+
+    const findNearestEmpty = (row: number, col: number): { row: number; col: number } | null => {
+        for (let radius = 1; radius <= ROWS + COLS; radius++) {
+            for (let dr = -radius; dr <= radius; dr++) {
+                for (let dc = -radius; dc <= radius; dc++) {
+                    if (Math.abs(dr) !== radius && Math.abs(dc) !== radius) continue;
+                    const r = row + dr;
+                    const c = col + dc;
+                    if (r < 0 || r >= ROWS || c < 0 || c >= COLS) continue;
+                    if (!occupied.has(`${r},${c}`)) return { row: r, col: c };
+                }
+            }
+        }
+        return null;
+    };
+
     return units
         .filter(u => u && u.row !== undefined && u.col !== undefined)
         .map(u => {
-            // [NEW] Lookup champion in admin data
             const adminChamp = champions.find(c => c.name.toLowerCase() === u.name.toLowerCase());
+            let { row, col } = u as { row: number; col: number };
+
+            if (occupied.has(`${row},${col}`)) {
+                const empty = findNearestEmpty(row, col);
+                if (!empty) return null;
+                row = empty.row;
+                col = empty.col;
+            }
+            occupied.add(`${row},${col}`);
 
             return {
                 ...u,
-                // Use admin avatar/icon from DB only
+                row,
+                col,
                 image: adminChamp?.icon || adminChamp?.avatar || u.image || '',
-                // Ensure cost is synced if missing (optional but good)
                 cost: adminChamp?.cost !== undefined ? adminChamp.cost : u.cost,
-                // Add traits for tooltip display
                 traits: adminChamp?.traits || u.traits || []
             };
-        });
+        })
+        .filter((u): u is UnitData => u !== null);
 }
 
 /**
@@ -323,13 +350,15 @@ function normalizeBench(bench: UnitData[], champions: Champion[]): UnitData[] {
             // [NEW] Lookup champion in admin data
             const adminChamp = champions.find(c => c.name.toLowerCase() === u.name.toLowerCase());
 
+            const benchIdx = u.benchIndex ?? idx;
             return {
                 ...u,
                 // Use admin avatar/icon from DB only
                 image: adminChamp?.icon || adminChamp?.avatar || u.image || '',
                 cost: adminChamp?.cost !== undefined ? adminChamp.cost : u.cost,
-                benchIndex: u.benchIndex ?? idx,
-                row: -1, // Mark as bench unit
+                benchIndex: benchIdx,
+                col: benchIdx, // BenchArea finds units by u.col === slotIndex
+                row: -1, // Mark as bench unit (row < 0 = not on board)
                 // Add traits for tooltip display
                 traits: adminChamp?.traits || u.traits || []
             };

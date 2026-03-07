@@ -1,25 +1,31 @@
 const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY as string | undefined;
 
-const CAPTION_SYSTEM_PROMPT = `Game thủ DTCL VN ngạo nghễ, dùng slang Streamer, tự cho mình "out trình" cả Pro lẫn Streamer. Tạo 1 caption cho Flex Card.
+const CAPTION_SYSTEM_PROMPT = `Viet 1 caption Flex Card cho game thu DTCL VN bang tieng Viet co dau tu nhien.
 
-LINH THÚ STREAMER (nhắc khéo, KHÔNG gọi "con X"): Hổ=trùm giáo án, Trâu=cày rank bền bỉ/hay khóc do đen, Rắn=phân tích VOD/nhả độc, Chồn=flex rank nhanh.
-VD nhắc: "Hổ Báo Cáo Chồn gì thấy IQ này cũng nể", "Rắn rết bọ ngựa..."
+Phong cach:
+- Ngong, toxic tich cuc, tu tin "out trinh" pro va streamer.
+- Dung slang tu nhien, khong giai thich, khong markdown, khong xung may/tao.
 
-QUY TẮC:
-1. Tối đa 2 dòng, ngắn gọn, sát thương cao.
-2. Slang ngẫu nhiên: "vàng bạc đá quý"(chê rank thấp), "out trình", "bú meta", "dạy scouting", "giáo án", "chấp cả lobby", "phân tích VOD", "pro player còn phải học", "khóc ác".
-3. Giọng: Toxic tích cực, ảo tưởng sức mạnh, IQ mình là "chuẩn mực", Cao thủ/Streamer chỉ "ăn may"/"cày nhiều".
-4. Câu 1: Khoe IQ/rank, so sánh thượng đẳng hơn Pro/Streamer. Câu 2: Khiêu khích/thách thức ae Cao thủ hoặc chê Group.
-5. Hashtag trên DÒNG MỚI, KHÔNG trộn vào câu văn. BẮT BUỘC: #dtcl #tftvn #tftiseasy. Thêm 1-2 từ: #toilatrumchonloi #chonloinhupro #outtrinh #giaosutft
+Noi dung bat buoc:
+- Than doan 1: flex IQ/rank/top server, nghe nhu minh la chuan muc de pro phai hoc.
+- Than doan 2: khieu khich nhe group/cao thu/streamer.
+- Co it nhat 1 cum tu trong nhom nay: out trinh, giao an, day scouting, phan tich VOD, vang bac da quy, chap ca lobby, khoc ac.
+- Co the nhac toi da 1-2 linh thu streamer: Ho=trum giao an, Trau=cay rank hay khoc, Ran=phan tich VOD, Chon=flex rank nhanh. Khong duoc viet "con X".
 
-RULES: Khoác lác nhưng KHÔNG Mày/Tao. Nói "Rank Sắt" KHÔNG "Hạng Sắt".`;
+Format output:
+- Chi tra duy nhat 1 caption, khong dua nhieu lua chon, khong danh so, khong them tieu de.
+- 2 doan ngan, sat thuong cao.
+- Dong cuoi chi la hashtag.
+- Hashtag bat buoc: #dtcl #tftvn #tftiseasy
+- Them 1-2 hashtag trong nhom: #toilatrumchonloi #chonloinhupro #outtrinh #giaosutft`;
 
-// Model fallback chain: premium → free → lite
 const MODEL_CHAIN = [
-    'gemini-3-flash-preview',
-    'gemini-2.0-flash',
-    'gemini-2.0-flash-lite',
+    'gemini-3.1-flash-lite-preview',
+    'gemini-flash-lite-latest',
 ];
+
+const CAPTION_REQUEST_TIMEOUT_MS = 3500;
+const CAPTION_CACHE = new Map<string, Promise<string | null>>();
 
 function buildApiUrl(model: string): string {
     return `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_API_KEY}`;
@@ -31,36 +37,69 @@ export async function generateFlexCaption(
     topPercentVN: number,
 ): Promise<string | null> {
     if (!GEMINI_API_KEY) {
-        console.warn('VITE_GEMINI_API_KEY not set — caption generation skipped');
+        console.warn('VITE_GEMINI_API_KEY not set - caption generation skipped');
         return null;
     }
 
+    const cacheKey = `${iqScore}|${iqRank}|${topPercentVN}`;
+    const cachedCaption = CAPTION_CACHE.get(cacheKey);
+    if (cachedCaption) {
+        return cachedCaption;
+    }
+
+    const captionPromise = generateFlexCaptionUncached(iqScore, iqRank, topPercentVN);
+    CAPTION_CACHE.set(cacheKey, captionPromise);
+    const caption = await captionPromise;
+
+    if (!caption) {
+        CAPTION_CACHE.delete(cacheKey);
+    }
+
+    return caption;
+}
+
+async function generateFlexCaptionUncached(
+    iqScore: number,
+    iqRank: string,
+    topPercentVN: number,
+): Promise<string | null> {
     const userPrompt = [
-        `Điểm IQ Cờ Lõi: ${iqScore}`,
-        `Hạng hiện tại: ${iqRank}`,
-        `Top Server: ${topPercentVN}%`,
+        'Du lieu flex card:',
+        `IQ: ${iqScore}`,
+        `Rank: ${iqRank}`,
+        `Top server: ${topPercentVN}%`,
+        'Hay viet caption nghe nhu nguoi choi nay dang out trinh ca lobby.',
     ].join('\n');
 
     const requestBody = JSON.stringify({
         system_instruction: { parts: [{ text: CAPTION_SYSTEM_PROMPT }] },
-        contents: [{ parts: [{ text: userPrompt }] }],
+        contents: [{ role: 'user', parts: [{ text: userPrompt }] }],
         generationConfig: {
-            temperature: 1.0,
-            topP: 0.9,
+            temperature: 0.85,
+            topP: 0.8,
             maxOutputTokens: 4096,
+            responseMimeType: 'text/plain',
+            thinkingConfig: {
+                thinkingBudget: 0,
+            },
         },
     });
 
     for (const model of MODEL_CHAIN) {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), CAPTION_REQUEST_TIMEOUT_MS);
+
         try {
             console.log(`[FlexCaption] Trying model: ${model}`);
             const res = await fetch(buildApiUrl(model), {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: requestBody,
+                signal: controller.signal,
             });
 
-            // 429 = rate limit, 403 = quota exceeded → try next model
+            clearTimeout(timeoutId);
+
             if (res.status === 429 || res.status === 403) {
                 console.warn(`[FlexCaption] ${model} quota/rate limited (${res.status}), falling back...`);
                 continue;
@@ -73,16 +112,23 @@ export async function generateFlexCaption(
 
             const json = await res.json();
             const finishReason = json.candidates?.[0]?.finishReason;
-            const rawText = json.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
-            console.log(`[FlexCaption] ✅ ${model} raw:`, rawText, '| finishReason:', finishReason);
-            const caption = rawText.trim();
+            const rawText = extractCaptionText(json);
+            console.log(`[FlexCaption] ${model} raw:`, rawText, '| finishReason:', finishReason);
 
-            if (!caption) continue;
+            if (!rawText) {
+                continue;
+            }
 
-            return postProcessCaption(caption);
+            return postProcessCaption(rawText);
         } catch (err) {
+            clearTimeout(timeoutId);
+
+            if (err instanceof DOMException && err.name === 'AbortError') {
+                console.warn(`[FlexCaption] ${model} timed out after ${CAPTION_REQUEST_TIMEOUT_MS}ms`);
+                continue;
+            }
+
             console.error(`[FlexCaption] ${model} failed:`, err);
-            continue;
         }
     }
 
@@ -90,16 +136,24 @@ export async function generateFlexCaption(
     return null;
 }
 
+function extractCaptionText(json: any): string {
+    const parts = json.candidates?.[0]?.content?.parts;
+    if (!Array.isArray(parts)) {
+        return '';
+    }
+
+    return parts
+        .map((part) => (typeof part?.text === 'string' ? part.text : ''))
+        .join('')
+        .trim();
+}
+
 function postProcessCaption(caption: string): string {
-    // Extract ALL hashtags, strip from body, re-append on last line
     const hashtagRegex = /#\w+/g;
     const foundTags = caption.match(hashtagRegex) || [];
-    // Remove hashtags from body text
     let body = caption.replace(hashtagRegex, '').replace(/\n{2,}/g, '\n').trim();
-    // Remove trailing punctuation from stripped text
     body = body.replace(/[\s,]+$/, '').trim();
 
-    // Build unique hashtag line
     const requiredTags = ['#dtcl', '#tftvn', '#tftiseasy'];
     const allTags = [...new Set([...requiredTags, ...foundTags])];
     const hashtagLine = allTags.join(' ');

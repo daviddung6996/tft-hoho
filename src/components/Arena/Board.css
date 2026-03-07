@@ -83,6 +83,84 @@
 /* Hover effects removed as requested */
 
 /* ==========================================================================
+   CUSTOM GAME CURSOR — TFT Gauntlet Style
+   ========================================================================== */
+
+/* Default cursor for the entire game board area */
+.game-board-container {
+    cursor: url('../../assets/cursors/tft-cursor.svg') 4 2, auto;
+}
+
+/* Draggable units use the same cursor */
+.board-unit-wrapper[draggable="true"],
+.bench-unit-wrapper[draggable="true"] {
+    cursor: url('../../assets/cursors/tft-cursor.svg') 4 2, pointer;
+}
+
+.board-unit-wrapper[draggable="true"]:active,
+.bench-unit-wrapper[draggable="true"]:active {
+    cursor: url('../../assets/cursors/tft-cursor-grab.svg') 4 2, grabbing;
+}
+
+/* ==========================================================================
+   DRAG-AND-DROP FEEDBACK
+   ========================================================================== */
+
+/* Hex cell highlight when a unit is dragged over it */
+.hex-cell.drag-over {
+    background: rgba(232, 194, 82, 0.6);
+    filter: drop-shadow(0 0 0.4cqw rgba(232, 194, 82, 0.5));
+    transition: background 0.12s ease, filter 0.12s ease;
+}
+
+/* Hex cell highlight — swap incoming (occupied target) */
+.hex-cell.drag-over--swap {
+    background: rgba(147, 51, 234, 0.55);
+    filter: drop-shadow(0 0 0.5cqw rgba(147, 51, 234, 0.7));
+    transition: background 0.1s ease, filter 0.1s ease;
+}
+
+/* Dragging state — source unit stays visible, only pointer events disabled */
+.board-unit-wrapper.dragging,
+.bench-unit-wrapper.dragging {
+    pointer-events: none;
+}
+
+/* Bench slot highlight when dragged over */
+.bench-slot.drag-over .hex-cell {
+    background: rgba(232, 194, 82, 0.6);
+    filter: drop-shadow(0 0 0.4cqw rgba(232, 194, 82, 0.5));
+    transition: background 0.12s ease, filter 0.12s ease;
+}
+
+/* Bench slot highlight — swap incoming */
+.bench-slot.drag-over--swap .hex-cell {
+    background: rgba(147, 51, 234, 0.55);
+    filter: drop-shadow(0 0 0.5cqw rgba(147, 51, 234, 0.7));
+    transition: background 0.1s ease, filter 0.1s ease;
+}
+
+/* Ghost element */
+.pointer-drag-ghost {
+    filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.7));
+    transform-origin: center center;
+}
+
+/* ==========================================================================
+   TOOLTIP SUPPRESSION DURING DRAG
+   ========================================================================== */
+
+/* Hide ALL tooltips while dragging is active (body class set by JS) */
+body.is-dragging .hextech-tooltip-portal {
+    display: none !important;
+}
+
+/* Also prevent tooltip trigger while dragging */
+body.is-dragging .hextech-tooltip-wrapper {
+    pointer-events: none;
+}
+
+/* ==========================================================================
    UNIT STYLING
    ========================================================================== */
 

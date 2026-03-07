@@ -1,13 +1,6 @@
 ---
 name: spec-driven-dev
-description: >
-  Spec-driven development pipeline that enforces DISCUSS → PLAN → EXECUTE → VERIFY
-  before any code is written. Use when building features, creating new projects,
-  refactoring, or any complex multi-step work. Triggers on: /spec, /build, /check,
-  /quick, "plan this", "spec this", "let's plan", "tạo spec", "lên plan".
-  This skill ensures the AI always asks questions first, creates a thorough plan,
-  gets user approval, and only then executes. Inspired by get-shit-done but simpler
-  (3 commands vs 15+).
+description: Spec-driven development pipeline that enforces DISCUSS → PLAN → EXECUTE → VERIFY before any code is written. Use when building features, creating new projects, refactoring, or any complex multi-step work. Triggers on: /spec, /build, /check, /quick, "plan this", "spec this", "let's plan", "tạo spec", "lên plan". This skill ensures the AI always asks questions first, creates a thorough plan, gets user approval, and only then executes. Inspired by get-shit-done but simpler (3 commands vs 15+).
 ---
 
 # Spec-Driven Development

@@ -55,7 +55,7 @@ export const PlanSelector: React.FC<PlanSelectorProps> = ({
             <div className="plan-selector-container">
                 <div className="plan-selector-header">
                     {allPuzzlesCompleted && (
-                        <div className="plan-selector-replay-text">{'Bạn đang giải lại câu đố cũ'}</div>
+                        <div className="plan-selector-replay-text">{'Bạn đang giải lại tình huống cũ'}</div>
                     )}
                     <div className="plan-selector-badge">Nhận diện thế bài</div>
                     <h3 className="plan-selector-title">

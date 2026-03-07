@@ -710,7 +710,7 @@ const AdminDataModal: React.FC<AdminDataModalProps> = ({ onClose, onPuzzleSaved 
                                                             try {
                                                                 await seedCompletePuzzles();
                                                                 await loadData();
-                                                                setToast({ message: 'Đã tạo 10 câu đố mẫu thành công!', type: 'success' });
+                                                                setToast({ message: 'Đã tạo 10 tình huống mẫu thành công!', type: 'success' });
                                                             } catch (err: any) {
                                                                 setToast({ message: `Tạo mẫu thất bại: ${err.message}`, type: 'error' });
                                                             } finally {

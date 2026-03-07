@@ -94,7 +94,7 @@ export const VideoLibraryPage: React.FC<VideoLibraryPageProps> = ({ onBack }) =>
                 ) : filteredLibrary.length === 0 ? (
                     <div className="video-library-empty">
                         {filter === 'unlocked'
-                            ? 'Chưa mở khóa video nào. Giải puzzle để bắt đầu!'
+                            ? 'Chưa mở khóa video nào. Giải tình huống để bắt đầu!'
                             : filter === 'locked'
                                 ? 'Tất cả video đã được mở khóa! 🎉'
                                 : 'Chưa có video nào.'}

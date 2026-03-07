@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <defs>
+    <!-- Drop shadow for depth -->
+    <filter id="shadow" x="-20%" y="-20%" width="150%" height="150%">
+      <feDropShadow dx="1" dy="2" stdDeviation="1.5" flood-color="#000" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+
+  <!-- Group with shadow and slight offset to ensure it fits -->
+  <g filter="url(#shadow)" transform="translate(0, 0)">
+    <!-- Base Outer Polygons (Silver/Grey Bevels) -->
+    <!-- Top Face (Brightest) -->
+    <polygon points="2,2 30,15 22,16.5 10,11" fill="#E2EDF0" />
+    <!-- Right Face -->
+    <polygon points="30,15 25,29 20.5,23 22,16.5" fill="#A1AAB1" />
+    <!-- Bottom Face (Darkest) -->
+    <polygon points="25,29 10,29 13,23 20.5,23" fill="#606B70" />
+    <!-- Left Face -->
+    <polygon points="10,29 2,2 10,11 13,23" fill="#B1BCBE" />
+
+    <!-- Dark Blue Core Rim -->
+    <polygon points="10,11 22,16.5 20.5,23 13,23" fill="#010626" />
+
+    <!-- Inner Cyan Gem Faces -->
+    <!-- Top Cyan -->
+    <polygon points="11.5,12.5 20.5,17 16,18.5" fill="#80F5FF" />
+    <!-- Right Cyan -->
+    <polygon points="20.5,17 19,21.5 16,18.5" fill="#006DAE" />
+    <!-- Bottom Cyan -->
+    <polygon points="19,21.5 14,21.5 16,18.5" fill="#03356E" />
+    <!-- Left Cyan -->
+    <polygon points="14,21.5 11.5,12.5 16,18.5" fill="#03A2E8" />
+    
+    <!-- Outer Black Border (Drawn last so it sits on top) -->
+    <polygon points="2,2 30,15 25,29 10,29" fill="none" stroke="#000" stroke-width="2.5" stroke-linejoin="round" />
+  </g>
+</svg>

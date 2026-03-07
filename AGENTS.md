@@ -275,6 +275,16 @@ Get-ChildItem -Path src -Recurse -Include "*.tsx" | ForEach-Object {
 - **Cause:** ...
 - **Avoid:** ... -->
 
+### PowerShell console can misrender UTF-8 markdown in `.agent/`
+- **Symptom:** `Get-Content` shows sequences like `a†'` or broken Vietnamese text even after a clean save.
+- **Cause:** PowerShell console/code-page rendering can differ from the file's actual UTF-8 bytes, so terminal output is not always source-of-truth.
+- **Avoid:** Verify suspicious `.md` files with the IDE or `Format-Hex` before assuming the file is corrupted. Rewrite/save as UTF-8 only when the bytes are actually wrong.
+
+### Skill file parser can reject multiline `description: >` frontmatter
+- **Symptom:** VS Code/skill validator reports `Unexpected indentation` and treats a wrapped description line as an unsupported attribute in `SKILL.md`.
+- **Cause:** Some skill-file tooling appears stricter than generic YAML parsing and expects `description:` to stay on one line in frontmatter.
+- **Avoid:** Prefer single-line `description:` in `.agent/skills/*/SKILL.md` even if folded YAML would normally be valid.
+
 ### `filter` / `backdrop-filter` gây layout shift trong game container
 - **Symptom:** ScoutingPanel, ItemPanel, SynergyPanel bị trượt lên/xuống khi overlay xuất hiện hoặc biến mất.
 - **Cause:** `app-container` có `filter: contrast(1.05) saturate(1.08) brightness(1.02)` tạo stacking context. Nếu wrap game content trong div có `filter: blur()` toggle (`none` ↔ `blur(8px)`), việc tạo/huỷ stacking context sẽ làm các panel `position: absolute` bị reflow.
@@ -306,6 +316,11 @@ Get-ChildItem -Path src -Recurse -Include "*.tsx" | ForEach-Object {
 - **Avoid:** Rule hien tai: chi stage `3-2` moi vao intent step. `2-1` phai vao thang augment select, khong duoc gate theo `proPickPath`.
 
 ---
+
+### Gemini caption chain can get slower if it starts with preview or deprecated models
+- **Symptom:** Flex caption gen lau hon mong doi du task rat ngan, co luc fallback qua nhieu model.
+- **Cause:** Chain cu uu tien preview model va `gemini-2.0-flash*`; preview latency co the dao dong, con `2.0 Flash` / `2.0 Flash-Lite` da bi Gemini docs danh dau deprecated. Them nua, `2.5` models co thinking mode va task caption ngan khong can bat.
+- **Avoid:** Cho social copy/caption, uu tien `gemini-2.5-flash-lite`, fallback `gemini-2.5-flash`, dat `thinkingBudget: 0`, va prompt ngan theo checklist/output format ro rang thay vi prompt dai + lap y.
 
 ## 3. Applied Fixes
 
@@ -386,3 +401,23 @@ Get-ChildItem -Path src -Recurse -Include "*.tsx" | ForEach-Object {
 - **Problem:** When setting up a subdomain like `training.tftiseasy.com` on Cloudflare Pages, configuring Vite with `base: '/training/'` causes the React Router to fetch JS/CSS files from `training.tftiseasy.com/training/assets/...` which do not exist at that path when deployed to the root of a subdomain. Cloudflare throws a fallback SPA `index.html` file, leading to multiple "MIME type text/html is not supported" errors in the browser console.
 - **Fix:** If deployed directly to the root of a subdomain (i.e. `training.tftiseasy.com/...`), treat it as a root domain deployment. Remove the `base: '/training/'` config from `vite.config.ts` (leave empty so it defaults to `/`). Set `public/_redirects` to `/* /index.html 200` to correctly handle SPA routing for the root domain.
 
+### Deploy artifact folders are not Pages source-of-truth
+- **Symptom:** Agent inspects old `deploy/`, `test_deploy/`, or `test_deploy2/` folders and assumes production still runs from `/training/*`.
+- **Cause:** Those folders can be stale generated artifacts, partially deleted, or local experiments. Production Cloudflare Pages config lives in `public/_headers` and `public/_redirects` for the root deployment on `training.tftiseasy.com`.
+- **Avoid:** Infer production topology from `vite.config.ts`, `public/_headers`, `public/_redirects`, and live domain usage. Do NOT treat generated deploy folders as authoritative deployment config.
+
+
+### Monetization Reactivation (2026-03-07)
+- **Context:** To reduce friction and focus on user acquisition, TCoin and ProSupporter paywalls were disabled.
+- **Current State:** The app is 100% free. `isProSupporter()` always returns `true`, and missing table `pro_supporters` queries have been bypassed to fix a 406 Error.
+- **How to Reactivate:**
+  1. Open "src/config/monetization.ts"
+  2. Set "export const MONETIZATION_ENABLED = true;"
+  3. Revert `proSupporter.service.ts` and `videoLibrary.service.ts` to their previous remote Supabase query logic. DB migrations for `pro_supporters` might be needed.
+  4. Re-build the app. All paywalls and overlays will be restored.
+
+### Flex caption latency reduction (2026-03-07)
+- **Date:** 2026-03-07
+- **File:** `src/features/share/share.service.ts`, `supabase/functions/generate-caption/index.ts`
+- **Problem:** Caption gen dang dung chain preview/deprecated model va prompt dai, nen latency/chi phi khong toi uu cho task social copy ngan.
+- **Fix:** Chuyen chain sang `gemini-3.1-flash-lite-preview -> gemini-flash-lite-latest`, tat thinking voi `thinkingBudget: 0`, them timeout nhanh, va rut prompt thanh checklist + format output ro rang. Frontend service cache caption theo `iqScore/rank/top%` de tranh goi lap.

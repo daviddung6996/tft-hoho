@@ -61,7 +61,7 @@ const MetaTab: React.FC<MetaTabProps> = ({
                         </div>
                         <div className="pb-field-row">
                             <div className="pb-field-group">
-                                <label className="pb-label">Puzzle Tier</label>
+                                <label className="pb-label">Độ hiếm tình huống</label>
                                 <TierSelect
                                     value={puzzle.tier || 'free'}
                                     onChange={tier => updatePuzzle({ tier })}

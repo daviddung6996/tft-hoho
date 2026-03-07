@@ -1,3 +1,6 @@
+# Production source of truth for Cloudflare Pages root deployment.
+# training.tftiseasy.com is deployed at the domain root, not under /training/.
+
 /index.html
   Cache-Control: no-cache, no-store, must-revalidate
 

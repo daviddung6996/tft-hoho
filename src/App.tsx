@@ -38,6 +38,8 @@ import { TCoinBalance } from './features/tcoin/components/TCoinBalance';
 import { TCoinEarnAnimation } from './features/tcoin/components/TCoinEarnAnimation';
 import { PuzzleLockOverlay } from './features/tcoin/components/PuzzleLockOverlay';
 import { LandscapePrompt } from './components/common/LandscapePrompt';
+import { SupportModal } from './components/Settings/SupportModal';
+import { MONETIZATION_ENABLED } from './config/monetization';
 
 import './App.css';
 
@@ -125,6 +127,7 @@ const App: React.FC = () => {
     const [showAdminModal, setShowAdminModal] = useState(false);
     const [showProfileModal, setShowProfileModal] = useState(false);
     const [showCompletionModal, setShowCompletionModal] = useState(false);
+    const [showSupportModal, setShowSupportModal] = useState(false);
     const [scoutedPlayerId, setScoutedPlayerId] = useState<string>('1');
     const [myArenaId, setMyArenaId] = useState<string | null>(null);
     const [isTransitioning, setIsTransitioning] = useState(false);
@@ -189,8 +192,7 @@ const App: React.FC = () => {
     const arenaSkinUrl = playerArena.backgroundUrl || playerArena.iconUrl;
 
     // Preload all arena images so scouting never shows bare teal background
-    const { isArenaReady } = useArenaPreloader();
-    const arenaLoaded = isArenaReady(arenaSkinUrl);
+    useArenaPreloader();
 
     // Keyboard shortcuts: Q (scout next), R (scout prev), Space (return home)
     useEffect(() => {
@@ -247,8 +249,6 @@ const App: React.FC = () => {
             <div className="layout-wrapper" style={{ backgroundImage: `url(${arenaSkinUrl})` }}>
                 <div className="app-container" style={{
                     backgroundImage: `url(${arenaSkinUrl})`,
-                    opacity: arenaLoaded ? 1 : 0,
-                    transition: 'opacity 150ms ease-in',
                 }}>
 
                     {/* Video Library View */}
@@ -283,8 +283,12 @@ const App: React.FC = () => {
                                 items={items}
                             />
 
-                            <TCoinBalance />
-                            <TCoinEarnAnimation />
+                            {MONETIZATION_ENABLED && (
+                                <>
+                                    <TCoinBalance />
+                                    <TCoinEarnAnimation />
+                                </>
+                            )}
                             <MenuButton
                                 onArenaClick={() => setIsSettingsOpen(true)}
                                 isAuthenticated={isAuthenticated}
@@ -322,16 +326,16 @@ const App: React.FC = () => {
                                         requiresLogin={requiresLoginForUnlock}
                                         title={
                                             lockMessageVariant === 'rare_elite'
-                                                ? 'WOW, bạn gặp Puzzle hiếm thấy.'
+                                                ? 'WOW, bạn gặp tình huống hiếm.'
                                                 : lockMessageVariant === 'premium_education'
-                                                    ? 'Tin vui! Bạn gặp puzzle chất lượng cao.'
+                                                    ? 'Tin vui! Bạn gặp tình huống chất lượng cao.'
                                                     : undefined
                                         }
                                         subtitle={
                                             lockMessageVariant === 'rare_elite'
-                                                ? 'Puzzle này chứa nước đi thần thánh của tuyển thủ. Xem là lên trình!'
+                                                ? 'Tình huống này chứa nước đi thần thánh của tuyển thủ. Xem là lên trình!'
                                                 : lockMessageVariant === 'premium_education'
-                                                    ? 'Puzzle xịn + giải thích kỹ giúp bạn nâng tư duy augment thật sự.'
+                                                    ? 'Tình huống xịn + giải thích kỹ giúp bạn nâng tư duy augment thật sự.'
                                                     : undefined
                                         }
                                         onUnlock={() => {
@@ -372,15 +376,11 @@ const App: React.FC = () => {
                                                 handleUnlockCurrentPuzzle();
                                             }
                                         }}
-                                        onProSupporter={() => {
-                                            const supportBtn = document.querySelector('.menu-item--support') as HTMLButtonElement;
-                                            if (supportBtn) supportBtn.click();
-                                        }}
+                                        onProSupporter={() => setShowSupportModal(true)}
                                         onSkipToFree={hasFreePuzzlesAvailable ? handleSkipToFreePuzzle : undefined}
                                     />
                                 )
                             )}
-
                             {/* Augment Logic — Lock Overlay or AugmentModal */}
                             {!isMirrored && isAugmentOpen && puzzlePhase === 'selecting' && (
                                 isPuzzlePlayable ? (
@@ -401,16 +401,16 @@ const App: React.FC = () => {
                                         requiresLogin={requiresLoginForUnlock}
                                         title={
                                             lockMessageVariant === 'rare_elite'
-                                                ? 'WOW, bạn gặp Puzzle hiếm thấy.'
+                                                ? 'WOW, bạn gặp tình huống hiếm.'
                                                 : lockMessageVariant === 'premium_education'
-                                                    ? 'Tin vui! Bạn gặp puzzle chất lượng cao.'
+                                                    ? 'Tin vui! Bạn gặp tình huống chất lượng cao.'
                                                     : undefined
                                         }
                                         subtitle={
                                             lockMessageVariant === 'rare_elite'
-                                                ? 'Puzzle này chứa nước đi thần thánh của tuyển thủ. Xem là lên trình!'
+                                                ? 'Tình huống này chứa nước đi thần thánh của tuyển thủ. Xem là lên trình!'
                                                 : lockMessageVariant === 'premium_education'
-                                                    ? 'Puzzle xịn + giải thích kỹ giúp bạn nâng tư duy augment thật sự.'
+                                                    ? 'Tình huống xịn + giải thích kỹ giúp bạn nâng tư duy augment thật sự.'
                                                     : undefined
                                         }
                                         onUnlock={() => {
@@ -420,10 +420,7 @@ const App: React.FC = () => {
                                                 handleUnlockCurrentPuzzle();
                                             }
                                         }}
-                                        onProSupporter={() => {
-                                            const supportBtn = document.querySelector('.menu-item--support') as HTMLButtonElement;
-                                            if (supportBtn) supportBtn.click();
-                                        }}
+                                        onProSupporter={() => setShowSupportModal(true)}
                                         onSkipToFree={hasFreePuzzlesAvailable ? handleSkipToFreePuzzle : undefined}
                                     />
                                 )
@@ -465,6 +462,7 @@ const App: React.FC = () => {
                                     declaredPlan={declaredPlan || undefined}
                                     proPlan={currentPuzzle.proPlan}
                                     planReasoning={currentPuzzle.planReasoning}
+                                    onSupportClick={() => setShowSupportModal(true)}
                                 />
                             )}
 
@@ -508,6 +506,11 @@ const App: React.FC = () => {
                                     />
                                 </Suspense>
                             )}
+
+                            <SupportModal
+                                isOpen={showSupportModal}
+                                onClose={() => setShowSupportModal(false)}
+                            />
 
                             <PuzzleCompletionModal
                                 isOpen={showCompletionModal}
