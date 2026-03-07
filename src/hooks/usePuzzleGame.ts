@@ -8,12 +8,13 @@ import { PuzzleAccessResult } from '../features/tcoin/tcoin.types';
 import { useTCoin } from '../features/tcoin/hooks/useTCoin';
 import { useProSupporter } from '../features/pro-supporter/hooks/useProSupporter';
 import { MONETIZATION_ENABLED } from '../config/monetization';
+import { normalizeLookupValue } from '../utils/stringNormalization';
 
 // Enrich a single augment with Vietnamese data from DB
 function enrichAugment(aug: AugmentData | null, dbAugments: AugmentData[]): AugmentData | null {
     if (!aug) return null;
     const dbAug = dbAugments.find(db => db.id === aug.id) ||
-        dbAugments.find(db => db.title.toLowerCase() === aug.title.toLowerCase());
+        dbAugments.find(db => normalizeLookupValue(db.title) === normalizeLookupValue(aug.title));
     if (dbAug) {
         return { ...aug, title: dbAug.title, description: dbAug.description, icon: dbAug.icon || aug.icon };
     }
