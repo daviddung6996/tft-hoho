@@ -82,7 +82,7 @@ export const VideoCard = React.memo<VideoCardProps>(({ item, onClick }) => {
                 {!item.isUnlocked && (
                     <div className="video-card-lock-overlay">
                         <span className="video-card-lock-icon">🔒</span>
-                        <span className="video-card-lock-text">Giải puzzle để mở</span>
+                        <span className="video-card-lock-text">Giải tình huống để mở</span>
                     </div>
                 )}
 
@@ -95,7 +95,7 @@ export const VideoCard = React.memo<VideoCardProps>(({ item, onClick }) => {
                 {item.puzzleTier && item.puzzleTier !== 'free' && (
                     <div className={`video-card-tier tier-${item.puzzleTier}`}>
                         <TierIcon tier={item.puzzleTier} size={12} />
-                        <span>{item.puzzleTier === 'advanced' ? 'Advanced' : 'Rare'}</span>
+                        <span>{item.puzzleTier === 'advanced' ? 'Nâng cao' : 'Hiếm'}</span>
                     </div>
                 )}
             </div>

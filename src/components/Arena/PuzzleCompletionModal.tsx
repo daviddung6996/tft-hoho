@@ -33,7 +33,7 @@ export const PuzzleCompletionModal: React.FC<PuzzleCompletionModalProps> = ({
         {/* Body Section */}
         <div className="puzzle-done-body">
           <p className="puzzle-done-text">Vào game thực hành đi</p>
-          <p className="puzzle-done-muted">Quay lại sau khi có thêm puzzle mới nhé!</p>
+          <p className="puzzle-done-muted">Quay lại sau khi có thêm tình huống mới nhé!</p>
         </div>
 
         {/* CTA Section */}

@@ -39,23 +39,15 @@ export const videoLibraryService = {
 
         if (error || !data) return [];
 
-        // Fetch unlocks + pro status in parallel (both need user.id)
+        // Fetch unlocks (pro features are free now)
         let unlockedMap = new Map<string, { unlocked_at: string; user_result: string; iq_delta: number }>();
-        let isProSupporter = false;
+        let isProSupporter = true;
 
         if (user) {
-            const [unlocksResult, proResult] = await Promise.all([
-                supabase
-                    .from('user_video_unlocks')
-                    .select('puzzle_id, unlocked_at, user_result, iq_delta')
-                    .eq('user_id', user.id),
-                supabase
-                    .from('pro_supporters')
-                    .select('id')
-                    .eq('user_id', user.id)
-                    .eq('status', 'active')
-                    .single(),
-            ]);
+            const unlocksResult = await supabase
+                .from('user_video_unlocks')
+                .select('puzzle_id, unlocked_at, user_result, iq_delta')
+                .eq('user_id', user.id);
 
             if (unlocksResult.data) {
                 unlocksResult.data.forEach(u => {
@@ -66,7 +58,6 @@ export const videoLibraryService = {
                     });
                 });
             }
-            isProSupporter = !!proResult.data;
         }
 
         return data.map(puzzle => {

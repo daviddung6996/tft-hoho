@@ -4,9 +4,9 @@ import { PuzzleTier } from '../../features/tcoin/tcoin.types';
 
 /**
  * Hextech-themed SVG tier icons — aligned with hextech-core design system.
- * - Free:     Hexagon with teal-cyan fill (Hextech atmosphere tone)
- * - Advanced: Diamond gem with Hextech gold gradient (#C89B3C → #A07828)
- * - Rare:     Rune crystal with deep crimson-ruby (warm, prestigious)
+ * - Miễn phí:     Hexagon with teal-cyan fill (Hextech atmosphere tone)
+ * - Nâng cao: Diamond gem with Hextech gold gradient (#C89B3C → #A07828)
+ * - Hiếm:     Rune crystal with deep crimson-ruby (warm, prestigious)
  *
  * Rules: NO emoji, NO AI icons — inline SVG only. (hextech-core §B)
  */
@@ -161,9 +161,9 @@ const RareIcon: React.FC<{ size: number }> = ({ size }) => (
 );
 
 export const TIER_META: Record<PuzzleTier, { label: string; color: string; costLabel: string }> = {
-    free: { label: 'Free', color: '#2dd4bf', costLabel: 'Miễn phí' },
-    advanced: { label: 'Advanced', color: '#c8aa6e', costLabel: '30 T-Coin' },
-    rare: { label: 'Rare', color: '#c084fc', costLabel: '100 T-Coin' },
+    free: { label: 'Miễn phí', color: '#2dd4bf', costLabel: 'Miễn phí' },
+    advanced: { label: 'Nâng cao', color: '#c8aa6e', costLabel: '30 T-Coin' },
+    rare: { label: 'Hiếm', color: '#c084fc', costLabel: '100 T-Coin' },
 };
 
 export const TierIcon: React.FC<TierIconProps> = ({ tier, size = 16, className }) => {

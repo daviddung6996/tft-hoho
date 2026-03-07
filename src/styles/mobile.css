@@ -3,6 +3,15 @@
    Import this in index.css after all other imports
    ========================================================================== */
 
+:root {
+    --mobile-landscape-bp: 740px;
+    --min-font-xs: 8px;
+    --min-font-sm: 9px;
+    --min-font-md: 10px;
+    --min-font-lg: 12px;
+    --min-font-xl: 14px;
+}
+
 /* ==========================================================================
    1. HOVER STATE FIX — Prevent sticky hover on touch devices
    Wrap hover effects in @media (hover: hover) so they only apply
@@ -340,5 +349,415 @@
     .support-modal-overlay {
         padding-left: env(safe-area-inset-left, 0);
         padding-right: env(safe-area-inset-right, 0);
+    }
+}
+
+/* ==========================================================================
+   5. SMALL MOBILE SCALING (< 740px)
+   Enforce minimum readability sizes on phones like iPhone 7/SE
+   ========================================================================== */
+
+@media (max-width: var(--mobile-landscape-bp)) and (orientation: landscape) {
+
+    /* --- ScoutingPanel (Right Sidebar) --- */
+    .player-row {
+        height: max(5.5cqw, 36px);
+        /* Touch target */
+    }
+
+    .player-pill,
+    .player-pill-border {
+        height: max(4.5cqw, 28px);
+        min-width: max(11cqw, 75px);
+    }
+
+    .player-avatar-wrapper {
+        width: max(5.2cqw, 32px);
+        height: max(5.2cqw, 32px);
+    }
+
+    .player-avatar-img {
+        width: max(4.7cqw, 28px);
+        height: max(4.7cqw, 28px);
+        font-size: max(1.8cqw, 14px);
+        /* Avatar emoji size */
+    }
+
+    .player-name {
+        font-size: max(0.9cqw, var(--min-font-md));
+        max-width: max(6.5cqw, 50px);
+    }
+
+    .player-health {
+        font-size: max(1.1cqw, var(--min-font-sm));
+    }
+
+    .player-row.is-me .player-health {
+        font-size: max(1.4cqw, var(--min-font-lg));
+    }
+
+    .status-icon {
+        width: max(0.95cqw, 12px);
+        height: max(0.95cqw, 12px);
+        font-size: max(0.52cqw, var(--min-font-xs));
+    }
+
+    /* --- SynergyPanel & ItemPanel (Left Sidebar) --- */
+    .synergy-panel-container,
+    .item-panel-container {
+        padding-left: max(0.8cqw, 8px);
+        /* Allow scroll if the screen is too short for all synergies */
+        max-height: 90vh;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        /* Firefox */
+    }
+
+    .synergy-panel-container::-webkit-scrollbar,
+    .item-panel-container::-webkit-scrollbar {
+        display: none;
+        /* Chrome/Safari */
+    }
+
+    .synergy-item {
+        margin-bottom: max(0.5cqw, 6px);
+    }
+
+    .synergy-icon-wrapper {
+        width: max(1.8cqw, 20px);
+        height: max(2.1cqw, 24px);
+    }
+
+    .synergy-content {
+        gap: max(0.2cqw, 2px);
+    }
+
+    .synergy-name {
+        font-size: max(0.75cqw, var(--min-font-sm));
+    }
+
+    .synergy-count-text {
+        font-size: max(0.65cqw, var(--min-font-xs));
+    }
+
+    .item-panel-group {
+        margin-bottom: max(0.8cqw, 8px);
+    }
+
+    .item-panel-group-title {
+        font-size: max(0.7cqw, var(--min-font-sm));
+        margin-bottom: max(0.4cqw, 4px);
+    }
+
+    .item-list {
+        gap: max(0.4cqw, 4px);
+    }
+
+    .item-list img {
+        width: max(2cqw, 22px);
+        height: max(2cqw, 22px);
+        border-width: 1px;
+    }
+
+    /* --- AugmentModal --- */
+    .augment-cards-container {
+        gap: max(2cqw, 12px);
+    }
+
+    .augment-column {
+        width: max(20cqw, 140px);
+        gap: max(0.8cqw, 4px);
+    }
+
+    .augment-card {
+        padding: max(1.5cqw, 12px) max(1cqw, 8px);
+        min-height: max(30cqw, 200px);
+    }
+
+    .augment-icon {
+        width: max(4.5cqw, 32px);
+        height: max(4.5cqw, 32px);
+    }
+
+    .augment-name {
+        font-size: max(0.85cqw, var(--min-font-lg));
+        margin-bottom: max(0.4cqw, 4px);
+    }
+
+    .augment-desc {
+        font-size: max(0.65cqw, var(--min-font-sm));
+        line-height: 1.4;
+    }
+
+    .reroll-btn {
+        height: max(3.5cqw, 36px);
+        font-size: max(0.7cqw, var(--min-font-md));
+    }
+
+    .augment-tier-badge {
+        margin-bottom: max(0.5cqw, 4px);
+    }
+
+    .augment-tier-label {
+        font-size: max(0.9cqw, var(--min-font-lg));
+    }
+
+    /* --- DecisionReview Screen --- */
+    /* Container becomes scrollable to fit all content on short screens */
+    .decision-review-container {
+        max-height: 95vh;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        padding: max(2cqw, 16px) max(3cqw, 24px) !important;
+        /* Custom scrollbar for review screen */
+        scrollbar-width: thin;
+        scrollbar-color: rgba(200, 170, 110, 0.3) transparent;
+        display: block;
+        /* Remove flex constraints that squish content */
+    }
+
+    .review-header {
+        margin-bottom: max(1.5cqw, 12px);
+    }
+
+    .review-title {
+        font-size: max(1.8cqw, 20px);
+    }
+
+    .puzzle-info-badge {
+        font-size: max(0.65cqw, var(--min-font-sm));
+        padding: max(0.2cqw, 2px) max(0.6cqw, 6px);
+    }
+
+    .puzzle-info-badge svg {
+        width: max(0.85cqw, 12px);
+        height: max(0.85cqw, 12px);
+    }
+
+    .completion-badge {
+        font-size: max(0.7cqw, var(--min-font-sm));
+        padding: max(0.2cqw, 4px) max(0.6cqw, 8px);
+    }
+
+    .review-content {
+        flex-direction: column;
+        /* Stack on very small screens if needed, otherwise rely on scroll */
+        gap: max(2cqw, 16px);
+        margin-bottom: max(2cqw, 16px);
+        display: flex;
+    }
+
+    .review-left-column {
+        min-width: unset;
+        width: 100%;
+        max-width: 100%;
+        gap: max(1.5cqw, 12px);
+    }
+
+    .review-right-column {
+        min-width: unset;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .roll-section {
+        padding: max(0.6cqw, 8px);
+        gap: max(0.35cqw, 4px);
+    }
+
+    .roll-section-title {
+        font-size: max(0.7cqw, var(--min-font-md));
+    }
+
+    .roll-augment-card {
+        padding: max(0.35cqw, 4px);
+        gap: max(0.15cqw, 2px);
+    }
+
+    .roll-augment-card .augment-icon {
+        width: max(2.2cqw, 24px);
+        height: max(2.2cqw, 24px);
+    }
+
+    .roll-augment-card .augment-name {
+        font-size: max(0.65cqw, var(--min-font-xs));
+    }
+
+    .marker-text {
+        font-size: max(0.55cqw, var(--min-font-xs));
+    }
+
+    .vote-stats {
+        font-size: max(0.8cqw, var(--min-font-md));
+    }
+
+    .vote-count {
+        font-size: max(0.6cqw, var(--min-font-xs));
+    }
+
+    .explanation-section {
+        padding: max(0.6cqw, 10px);
+        gap: max(0.8cqw, 10px);
+    }
+
+    .explanation-title {
+        font-size: max(0.95cqw, var(--min-font-lg));
+        gap: max(0.4cqw, 6px);
+    }
+
+    .explanation-title svg {
+        width: max(1cqw, 14px);
+        height: max(1cqw, 14px);
+    }
+
+    .explanation-text {
+        font-size: max(0.8cqw, var(--min-font-md));
+        line-height: 1.5;
+    }
+
+    .explanation-video-title {
+        font-size: max(0.75cqw, var(--min-font-sm));
+    }
+
+    .explanation-video-note {
+        font-size: max(0.7cqw, var(--min-font-sm));
+    }
+
+    .review-actions {
+        gap: max(0.6cqw, 12px);
+        justify-content: center;
+        /* Center buttons on mobile */
+        margin-top: max(2cqw, 16px);
+        padding-bottom: max(2cqw, 16px);
+        /* Room to scroll past them */
+    }
+
+    .review-btn {
+        padding: max(0.6cqw, 10px) max(1.2cqw, 16px);
+        font-size: max(0.8cqw, var(--min-font-md));
+        min-height: 44px;
+        /* Touch target */
+    }
+
+    .review-btn svg {
+        width: max(1cqw, 16px);
+        height: max(1cqw, 16px);
+    }
+
+    /* --- Board & Units --- */
+    .hex-cell {
+        width: max(5.5cqw, 36px);
+        height: max(5.8cqw, 38px);
+    }
+
+    .unit-pawn-wrapper {
+        width: max(6cqw, 40px);
+        height: max(6cqw, 40px);
+    }
+
+    .unit-image-wrapper {
+        width: max(4.5cqw, 30px);
+        height: max(4.5cqw, 30px);
+    }
+
+    /* Item indicators on units */
+    .unit-items-container {
+        gap: max(0.2cqw, 2px);
+    }
+
+    .unit-item-icon {
+        width: max(1.2cqw, 10px);
+        height: max(1.2cqw, 10px);
+    }
+
+    .unit-star {
+        width: max(1cqw, 8px);
+        height: max(1cqw, 8px);
+    }
+
+    /* Target/Flex indicators */
+    .target-crosshair,
+    .flex-crosshair {
+        width: max(2cqw, 16px);
+        height: max(2cqw, 16px);
+    }
+
+    /* Augment tree icon */
+    .augment-tree-center .augment-icon {
+        width: max(2.5cqw, 20px);
+        height: max(2.5cqw, 20px);
+    }
+
+    /* Bench area spacing */
+    .bench-area {
+        height: max(9cqw, 60px);
+    }
+
+    /* --- Task 7: HUD Elements (TopStatusBar, GoldDisplay, Buttons) --- */
+    .top-status-bar {
+        padding: max(0.5cqw, 4px) max(1cqw, 8px);
+    }
+
+    .stage-indicator {
+        font-size: max(0.9cqw, var(--min-font-xl));
+        padding: max(0.3cqw, 4px) max(0.6cqw, 8px);
+    }
+
+    .status-text {
+        font-size: max(0.7cqw, var(--min-font-md));
+    }
+
+    .timer-text {
+        font-size: max(0.75cqw, var(--min-font-md));
+    }
+
+    .gold-display {
+        font-size: max(0.9cqw, var(--min-font-lg));
+        padding: max(0.4cqw, 4px) max(0.8cqw, 8px);
+    }
+
+    .gold-icon {
+        width: max(1.2cqw, 14px);
+        height: max(1.2cqw, 14px);
+    }
+
+    /* Menu button */
+    .menu-button {
+        width: max(2cqw, 24px);
+        height: max(2cqw, 24px);
+        font-size: max(1cqw, var(--min-font-md));
+    }
+
+    /* --- Task 8: Modals --- */
+    .support-modal-content,
+    .puzzle-completion-content {
+        max-width: 90vw;
+        max-height: 90vh;
+        overflow-y: auto;
+        padding: max(2cqw, 16px);
+    }
+
+    .qr-container {
+        width: max(15cqw, 120px) !important;
+        height: max(15cqw, 120px) !important;
+    }
+
+    .qr-container svg {
+        width: 100% !important;
+        height: 100% !important;
+    }
+
+    .arena-selector-grid {
+        grid-template-columns: repeat(auto-fill, minmax(max(8cqw, 100px), 1fr));
+        gap: max(1cqw, 8px);
+    }
+
+    .arena-thumb {
+        height: max(6cqw, 80px);
+    }
+
+    .arena-name {
+        font-size: max(0.7cqw, var(--min-font-sm));
     }
 }

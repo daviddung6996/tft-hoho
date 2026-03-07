@@ -87,6 +87,17 @@
     transition: background-image 100ms ease-out;
 }
 
+/* On very small mobile landscape (like iPhone 7/SE), allow the container to span 
+   the full width of the screen to give as much room as possible for cqw units */
+@media (max-width: 740px) and (orientation: landscape) {
+    .app-container {
+        max-width: 100vw;
+        height: 100vh;
+        /* Disable the strict ratio */
+        aspect-ratio: auto;
+    }
+}
+
 /* ==========================================================================
    MAIN ARENA - Takes full screen
    ========================================================================== */

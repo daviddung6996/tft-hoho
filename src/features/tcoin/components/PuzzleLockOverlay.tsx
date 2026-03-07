@@ -39,7 +39,7 @@ export function PuzzleLockOverlay({
     const config = TIER_META[tier];
     const cost = tier === 'advanced' ? TCOIN_SPEND_COSTS.unlock_advanced : TCOIN_SPEND_COSTS.unlock_rare;
 
-    const defaultTitle = 'Puzzle xịn được chọn lọc từ game đấu hay của Pro.';
+    const defaultTitle = 'Tình huống xịn được chọn lọc từ game đấu hay của Pro.';
     const defaultSubtitle = 'Có giải thích chi tiết giúp bạn nâng cấp tư duy chọn lõi.';
 
     const resolvedUnlockLabel = requiresLogin
@@ -114,7 +114,7 @@ export function PuzzleLockOverlay({
                     )}
                     {onSkipToFree && (
                         <button className="puzzle-lock-btn puzzle-lock-btn--skip" onClick={onSkipToFree}>
-                            Giải câu đố khác — FREE
+                            Đổi tình huống khác — FREE
                         </button>
                     )}
                 </div>

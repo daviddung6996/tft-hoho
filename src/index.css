@@ -14,6 +14,23 @@
 @import '@fontsource/share-tech-mono/400.css';
 @import './styles/mobile.css';
 
+/* ==========================================================================
+   GLOBAL CUSTOM CURSOR — forced everywhere, no exceptions
+   ========================================================================== */
+*,
+*::before,
+*::after {
+    cursor: url('./assets/cursors/tft-cursor.svg') 4 2, auto !important;
+}
+
+/* While dragging (pointer-event based), use grab cursor */
+body.is-dragging,
+body.is-dragging *,
+body.is-dragging *::before,
+body.is-dragging *::after {
+    cursor: url('./assets/cursors/tft-cursor-grab.svg') 4 2, grabbing !important;
+}
+
 :root {
     /* ==========================================================================
        COLORS (AGENTS.md Strict)

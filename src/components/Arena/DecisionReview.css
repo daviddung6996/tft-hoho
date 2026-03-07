@@ -320,7 +320,8 @@
 .explanation-video-wrapper {
     position: relative;
     width: 100%;
-    padding-bottom: 56.25%; /* 16:9 */
+    padding-bottom: 56.25%;
+    /* 16:9 */
     border-radius: 0.3cqw;
     overflow: hidden;
     border: 0.06cqw solid rgba(200, 170, 110, 0.25);
@@ -543,6 +544,21 @@
 .review-btn:hover {
     border-color: #d4b876;
     box-shadow: 0 0 0.8cqw rgba(200, 170, 110, 0.3);
+}
+
+/* Support button with soft pink glow */
+.support-btn {
+    color: #ffb8c6;
+    border-color: #ffb8c6;
+    box-shadow: 0 0 0.3cqw rgba(255, 184, 198, 0.15);
+    text-shadow: 0 0 0.2cqw rgba(255, 184, 198, 0.2);
+}
+
+.support-btn:hover {
+    color: #ffd6df;
+    border-color: #ffd6df;
+    box-shadow: 0 0 0.6cqw rgba(255, 184, 198, 0.4);
+    text-shadow: 0 0 0.3cqw rgba(255, 184, 198, 0.5);
 }
 
 /* Replay button — gold text to distinguish from primary Next action */

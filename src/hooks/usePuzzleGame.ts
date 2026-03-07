@@ -7,6 +7,7 @@ import { AugmentData } from '../services/augmentService';
 import { PuzzleAccessResult } from '../features/tcoin/tcoin.types';
 import { useTCoin } from '../features/tcoin/hooks/useTCoin';
 import { useProSupporter } from '../features/pro-supporter/hooks/useProSupporter';
+import { MONETIZATION_ENABLED } from '../config/monetization';
 
 // Enrich a single augment with Vietnamese data from DB
 function enrichAugment(aug: AugmentData | null, dbAugments: AugmentData[]): AugmentData | null {
@@ -46,6 +47,7 @@ export type LockMessageVariant = 'default' | 'premium_education' | 'rare_elite';
 
 export const usePuzzleGame = (isAuthenticated: boolean) => {
     const { user, isGuest } = useAuth();
+    const isTestAccount = user?.email?.toLowerCase() === 'test@tfthoho.com';
     const { augments: cachedAugments, isLoading: isGameDataLoading } = useGameData();
     const { checkAccess, unlockPuzzle, balance } = useTCoin();
     const { isProSupporter } = useProSupporter();
@@ -198,12 +200,13 @@ export const usePuzzleGame = (isAuthenticated: boolean) => {
     // Compute completion state: all puzzles completed (excluding current puzzle)
     const allPuzzlesCompleted = React.useMemo(() => {
         if (puzzles.length === 0) return false;
+        if (isTestAccount) return false;
         const currentPuzzle = puzzles[currentPuzzleIndex];
         const unplayedPuzzles = puzzles.filter(
             p => !completedPuzzleIds.includes(p.id) && p.id !== currentPuzzle?.id
         );
         return unplayedPuzzles.length === 0;
-    }, [puzzles, completedPuzzleIds, currentPuzzleIndex]);
+    }, [puzzles, completedPuzzleIds, currentPuzzleIndex, isTestAccount]);
 
     const handleMarkCompleted = async (puzzleId: string) => {
         // Always track completion in local state (guest + authenticated),
@@ -228,10 +231,13 @@ export const usePuzzleGame = (isAuthenticated: boolean) => {
             return;
         }
         const tier = currentPuzzle.tier || 'free';
-        if (tier === 'free') {
+        
+        // Monetization bypass 
+        if (!MONETIZATION_ENABLED || tier === 'free') {
             setCurrentPuzzleAccess({ canPlay: true, reason: 'free', tier });
             return;
         }
+        
         // Pro Supporter bypass — never show lock
         if (isProSupporter) {
             setCurrentPuzzleAccess({ canPlay: true, reason: 'pro_supporter', tier });
@@ -289,7 +295,7 @@ export const usePuzzleGame = (isAuthenticated: boolean) => {
     }, [currentPuzzle?.id, currentPuzzle?.tier, checkAccess]);
 
     const applyPuzzleAccessPreset = React.useCallback((targetPuzzle: any) => {
-        if (targetPuzzle.tier && targetPuzzle.tier !== 'free') {
+        if (targetPuzzle.tier && targetPuzzle.tier !== 'free' && MONETIZATION_ENABLED) {
             if (isProSupporter) {
                 setLockMessageVariant('default');
                 setCurrentPuzzleAccess({ canPlay: true, reason: 'pro_supporter', tier: targetPuzzle.tier });
@@ -305,8 +311,11 @@ export const usePuzzleGame = (isAuthenticated: boolean) => {
     }, [isProSupporter]);
 
     const getUnplayedPuzzlePool = React.useCallback((pool: any[], completedSet: Set<string>, currentPuzzleId?: string) => {
+        if (isTestAccount) {
+            return pool.filter(p => p.id !== currentPuzzleId);
+        }
         return pool.filter(p => !completedSet.has(p.id) && p.id !== currentPuzzleId);
-    }, []);
+    }, [isTestAccount]);
 
     const fetchLatestPuzzles = React.useCallback(async (): Promise<any[]> => {
         const dbPuzzles = await puzzleService.getAll();

@@ -51,7 +51,7 @@ export const TierSelect: React.FC<TierSelectProps> = ({ value, onChange, classNa
                 type="button"
                 className="tier-select__trigger"
                 onClick={() => setOpen(o => !o)}
-                aria-label={`Puzzle Tier: ${meta.label}`}
+                aria-label={`Độ hiếm tình huống: ${meta.label}`}
             >
                 <TierIcon tier={value} size={14} />
                 <span className="tier-select__label" style={{ color: meta.color }}>

@@ -9,6 +9,7 @@ import { SupportModal } from './SupportModal';
 import { useTCoin } from '../../features/tcoin/hooks/useTCoin';
 import { TCoinIcon } from '../../features/tcoin/components/TCoinIcon';
 import { useVideoLibrary } from '../../features/video-library/hooks/useVideoLibrary';
+import Toast from '../common/Toast';
 
 const getNextRankThreshold = (score: number) => {
     const sortedRanks = [...USER_IQ_RANKS].sort((a, b) => a.min - b.min);
@@ -89,10 +90,13 @@ export const MenuButton: React.FC<MenuButtonProps> = ({
     const { balance: tcoinBalance } = useTCoin();
     const { unlockedCount, totalCount } = useVideoLibrary();
 
+    const [showLogoutToast, setShowLogoutToast] = useState(false);
+
     const handleLogout = async () => {
         try {
             await signOut();
             setIsOpen(false);
+            setShowLogoutToast(true);
         } catch (error) {
             console.error('Logout error:', error);
         }
@@ -290,6 +294,14 @@ export const MenuButton: React.FC<MenuButtonProps> = ({
             </div>
 
             <SupportModal isOpen={showSupportModal} onClose={() => setShowSupportModal(false)} />
+
+            {showLogoutToast && (
+                <Toast
+                    message="Đăng xuất thành công"
+                    type="success"
+                    onClose={() => setShowLogoutToast(false)}
+                />
+            )}
         </>
     );
 };

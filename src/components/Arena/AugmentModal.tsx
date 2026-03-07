@@ -82,12 +82,12 @@ export const AugmentModal: React.FC<AugmentModalProps> = ({ currentAugments, rer
                 <div className="augment-tier-badge">
                     <TierIcon tier={puzzleTier} size={20} />
                     <span className={`augment-tier-label tier-${puzzleTier}`}>
-                        {puzzleTier === 'advanced' ? 'Advanced Puzzle' : 'Rare Puzzle'}
+                        {puzzleTier === 'advanced' ? 'Tình huống nâng cao' : 'Tình huống hiếm'}
                     </span>
                 </div>
             )}
             <h2 className="augment-header-title">
-                {allPuzzlesCompleted ? 'Bạn đang giải lại câu đố cũ' : 'Chọn một'}
+                {allPuzzlesCompleted ? 'Bạn đang giải lại tình huống cũ' : 'Chọn một'}
             </h2>
 
             <div className="augment-cards-container">

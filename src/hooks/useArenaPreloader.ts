@@ -1,14 +1,16 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { ARENA_SKINS } from '../data/arenas';
 
 /**
  * Preloads all arena background images on mount so scouting
  * never shows a bare teal background while the image downloads.
  *
- * Returns `isArenaReady(url)` — true when a specific URL is cached.
+ * All arena images are local bundled assets (webp via Vite import),
+ * so they are effectively instant. We fire preload requests to warm
+ * the browser cache but never gate rendering — this avoids the
+ * opacity 0→1 flash on first load.
  */
 export function useArenaPreloader() {
-    const [loadedUrls, setLoadedUrls] = useState<Set<string>>(new Set());
     const startedRef = useRef(false);
 
     useEffect(() => {
@@ -16,30 +18,9 @@ export function useArenaPreloader() {
         startedRef.current = true;
 
         const urls = ARENA_SKINS.map(a => a.backgroundUrl).filter(Boolean);
-
         urls.forEach(url => {
             const img = new Image();
-            img.onload = () => {
-                setLoadedUrls(prev => {
-                    const next = new Set(prev);
-                    next.add(url);
-                    return next;
-                });
-            };
-            img.onerror = () => {
-                // Still mark as "loaded" so we don't block rendering forever
-                setLoadedUrls(prev => {
-                    const next = new Set(prev);
-                    next.add(url);
-                    return next;
-                });
-            };
             img.src = url;
         });
     }, []);
-
-    const isArenaReady = (url: string) => loadedUrls.has(url);
-    const allReady = ARENA_SKINS.every(a => loadedUrls.has(a.backgroundUrl));
-
-    return { isArenaReady, allReady };
 }
