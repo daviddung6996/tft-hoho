@@ -315,7 +315,9 @@ function normalizeUnits(units: UnitData[], champions: Champion[]): UnitData[] {
     return units
         .filter(u => u && u.row !== undefined && u.col !== undefined)
         .map((u): UnitData | null => {
-            const adminChamp = champions.find(c => c.name.toLowerCase() === u.name.toLowerCase());
+            const adminChamp = u.name
+                ? champions.find(c => c.name.toLowerCase() === u.name!.toLowerCase())
+                : undefined;
             const row = u.row as number;
             let col = u.col as number;
             let finalRow = row;
@@ -351,7 +353,9 @@ function normalizeBench(bench: UnitData[], champions: Champion[]): UnitData[] {
         .filter(u => u && (u.benchIndex !== undefined || u.row === -1))
         .map((u, idx) => {
             // [NEW] Lookup champion in admin data
-            const adminChamp = champions.find(c => c.name.toLowerCase() === u.name.toLowerCase());
+            const adminChamp = u.name
+                ? champions.find(c => c.name.toLowerCase() === u.name!.toLowerCase())
+                : undefined;
 
             const benchIdx = u.benchIndex ?? idx;
             return {
