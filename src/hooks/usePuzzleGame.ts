@@ -68,8 +68,8 @@ export const usePuzzleGame = (isAuthenticated: boolean) => {
     // URL Handling: Check for puzzle ID in URL on initial load and handle async loading
     const pendingPuzzleIdRef = React.useRef(new URLSearchParams(window.location.search).get('puzzle'));
 
-    // Initialize index based on URL if possible (for static puzzles)
-    const [currentPuzzleIndex, setCurrentPuzzleIndex] = React.useState(0);
+    // Initialize index: -1 means "not yet selected" so random selection can run
+    const [currentPuzzleIndex, setCurrentPuzzleIndex] = React.useState(pendingPuzzleIdRef.current ? 0 : -1);
     const [customScenario, setCustomScenario] = React.useState<any | null>(null);
 
     // Fetch puzzles immediately (don't wait for game data)
@@ -101,13 +101,23 @@ export const usePuzzleGame = (isAuthenticated: boolean) => {
         }
     }, [isGameDataLoading, cachedAugments]);
 
+    // localStorage key for guest completed puzzles
+    const GUEST_COMPLETED_KEY = 'tft_guest_completed_puzzles';
+
     // Fetch User History
     const fetchUserHistory = React.useCallback(async () => {
         if (user?.id) {
             const ids = await puzzleService.getCompletedPuzzles(user.id);
             setCompletedPuzzleIds(ids);
         } else {
-            setCompletedPuzzleIds([]);
+            // Load guest history from localStorage
+            try {
+                const stored = localStorage.getItem(GUEST_COMPLETED_KEY);
+                if (stored) {
+                    const ids = JSON.parse(stored);
+                    if (Array.isArray(ids)) setCompletedPuzzleIds(ids);
+                }
+            } catch { /* ignore corrupt data */ }
         }
     }, [user?.id]);
 
@@ -212,7 +222,14 @@ export const usePuzzleGame = (isAuthenticated: boolean) => {
     const handleMarkCompleted = async (puzzleId: string) => {
         // Always track completion in local state (guest + authenticated),
         // so "all completed" logic works in the current session.
-        setCompletedPuzzleIds(prev => prev.includes(puzzleId) ? prev : [...prev, puzzleId]);
+        setCompletedPuzzleIds(prev => {
+            const updated = prev.includes(puzzleId) ? prev : [...prev, puzzleId];
+            // Persist to localStorage for guests
+            if (!user?.id) {
+                try { localStorage.setItem(GUEST_COMPLETED_KEY, JSON.stringify(updated)); } catch { /* quota */ }
+            }
+            return updated;
+        });
 
         // Persist completion only for authenticated users with a real user id.
         if (user?.id) {
