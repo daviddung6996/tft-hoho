@@ -36,18 +36,27 @@ export type Database = {
                     email: string;
                     display_name: string | null;
                     role: 'user' | 'mod' | 'admin';
+                    created_by: string | null;
                     created_at: string;
                     updated_at: string;
+                    iq_score: number;
+                    iq_rank: string;
+                    season: number;
+                    total_puzzles_solved: number;
+                    accuracy_weight: number;
+                    speed_weight: number;
                 };
                 Insert: {
                     id: string;
                     email: string;
                     display_name?: string | null;
-                    role?: 'user' | 'admin';
+                    role?: 'user' | 'mod' | 'admin';
+                    created_by?: string | null;
                 };
                 Update: {
                     display_name?: string | null;
-                    role?: 'user' | 'admin';
+                    role?: 'user' | 'mod' | 'admin';
+                    created_by?: string | null;
                 };
             };
             champions: {
@@ -137,12 +146,20 @@ export type Database = {
                     rank: string;
                     stage: string;
                     meta_data: any;
+                    board_state: any;
                     augments: any;
                     pro_first_roll: any;
                     pro_second_roll: any;
                     pro_final_pick: any;
                     pro_pick_round: number;
                     created_at: string;
+                    ionia_path_id: string | null;
+                    void_mod_ids: any;
+                    deleted_at: string | null;
+                    tier: 'free' | 'advanced' | 'rare';
+                    video_url: string | null;
+                    video_title: string | null;
+                    video_thumbnail_url: string | null;
                 };
                 Insert: {
                     id: string;
@@ -150,12 +167,20 @@ export type Database = {
                     rank: string;
                     stage: string;
                     meta_data: any;
+                    board_state?: any;
                     augments: any;
                     pro_first_roll: any;
                     pro_second_roll: any;
                     pro_final_pick: any;
                     pro_pick_round: number;
                     created_at?: string;
+                    ionia_path_id?: string | null;
+                    void_mod_ids?: any;
+                    deleted_at?: string | null;
+                    tier?: 'free' | 'advanced' | 'rare';
+                    video_url?: string | null;
+                    video_title?: string | null;
+                    video_thumbnail_url?: string | null;
                 };
                 Update: {
                     id?: string;
@@ -163,12 +188,20 @@ export type Database = {
                     rank?: string;
                     stage?: string;
                     meta_data?: any;
+                    board_state?: any;
                     augments?: any;
                     pro_first_roll?: any;
                     pro_second_roll?: any;
                     pro_final_pick?: any;
                     pro_pick_round?: number;
                     created_at?: string;
+                    ionia_path_id?: string | null;
+                    void_mod_ids?: any;
+                    deleted_at?: string | null;
+                    tier?: 'free' | 'advanced' | 'rare';
+                    video_url?: string | null;
+                    video_title?: string | null;
+                    video_thumbnail_url?: string | null;
                 };
             };
             user_puzzle_history: {
@@ -315,6 +348,7 @@ export type Database = {
                     expires_at: string | null;
                     payment_ref: string | null;
                     created_at: string;
+                    updated_at: string;
                 };
                 Insert: {
                     user_id: string;
@@ -322,10 +356,12 @@ export type Database = {
                     status?: string;
                     expires_at?: string | null;
                     payment_ref?: string | null;
+                    updated_at?: string;
                 };
                 Update: {
                     status?: string;
                     expires_at?: string | null;
+                    updated_at?: string;
                 };
             };
             donations: {
@@ -346,6 +382,158 @@ export type Database = {
                     payment_ref?: string | null;
                 };
                 Update: {};
+            };
+            user_iq_history: {
+                Row: {
+                    id: string;
+                    user_id: string;
+                    puzzle_id: string;
+                    change_amount: number;
+                    time_taken_ms: number;
+                    is_correct: boolean;
+                    created_at: string;
+                };
+                Insert: {
+                    user_id: string;
+                    puzzle_id: string;
+                    change_amount: number;
+                    time_taken_ms: number;
+                    is_correct: boolean;
+                    created_at?: string;
+                };
+                Update: {};
+            };
+            pro_players: {
+                Row: {
+                    id: string;
+                    name: string;
+                    region: 'AMER' | 'EMEA' | 'APAC' | 'CN' | 'VN' | 'OTHER';
+                    avatar_url: string | null;
+                    liquipedia_url: string | null;
+                    datatft_url: string | null;
+                    current_iq: number;
+                    iq_tier: 'GOAT' | 'Elite' | 'Top Pro' | 'Pro' | 'Rising';
+                    current_rank: string | null;
+                    current_lp: number | null;
+                    tournament_titles: number | null;
+                    notes: string | null;
+                    is_active: boolean;
+                    created_at: string;
+                    updated_at: string;
+                };
+                Insert: {
+                    name: string;
+                    region: 'AMER' | 'EMEA' | 'APAC' | 'CN' | 'VN' | 'OTHER';
+                    avatar_url?: string | null;
+                    liquipedia_url?: string | null;
+                    datatft_url?: string | null;
+                    current_iq?: number;
+                    iq_tier?: 'GOAT' | 'Elite' | 'Top Pro' | 'Pro' | 'Rising';
+                    current_rank?: string | null;
+                    current_lp?: number | null;
+                    tournament_titles?: number | null;
+                    notes?: string | null;
+                    is_active?: boolean;
+                    created_at?: string;
+                    updated_at?: string;
+                };
+                Update: {
+                    name?: string;
+                    region?: 'AMER' | 'EMEA' | 'APAC' | 'CN' | 'VN' | 'OTHER';
+                    avatar_url?: string | null;
+                    liquipedia_url?: string | null;
+                    datatft_url?: string | null;
+                    current_iq?: number;
+                    iq_tier?: 'GOAT' | 'Elite' | 'Top Pro' | 'Pro' | 'Rising';
+                    current_rank?: string | null;
+                    current_lp?: number | null;
+                    tournament_titles?: number | null;
+                    notes?: string | null;
+                    is_active?: boolean;
+                    updated_at?: string;
+                };
+            };
+            pro_iq_history: {
+                Row: {
+                    id: string;
+                    pro_player_id: string;
+                    iq_score: number;
+                    iq_tier: 'GOAT' | 'Elite' | 'Top Pro' | 'Pro' | 'Rising';
+                    change_amount: number;
+                    change_reason: string;
+                    source: 'manual' | 'tournament' | 'ladder';
+                    recorded_at: string;
+                };
+                Insert: {
+                    pro_player_id: string;
+                    iq_score: number;
+                    iq_tier: 'GOAT' | 'Elite' | 'Top Pro' | 'Pro' | 'Rising';
+                    change_amount: number;
+                    change_reason: string;
+                    source: 'manual' | 'tournament' | 'ladder';
+                    recorded_at?: string;
+                };
+                Update: {};
+            };
+            memes: {
+                Row: {
+                    id: string;
+                    text: string;
+                    emoji: string;
+                    image_url: string | null;
+                    category: 'correct' | 'incorrect';
+                    insight: string | null;
+                    is_active: boolean;
+                    created_by: string | null;
+                    created_at: string;
+                };
+                Insert: {
+                    text: string;
+                    emoji: string;
+                    image_url?: string | null;
+                    category: 'correct' | 'incorrect';
+                    insight?: string | null;
+                    is_active?: boolean;
+                    created_by?: string | null;
+                    created_at?: string;
+                };
+                Update: {
+                    text?: string;
+                    emoji?: string;
+                    image_url?: string | null;
+                    category?: 'correct' | 'incorrect';
+                    insight?: string | null;
+                    is_active?: boolean;
+                };
+            };
+            user_video_unlocks: {
+                Row: {
+                    id: string;
+                    user_id: string;
+                    puzzle_id: string;
+                    video_url: string;
+                    user_result: 'correct' | 'incorrect';
+                    iq_delta: number | null;
+                    unlocked_at: string;
+                    created_at: string;
+                    updated_at: string;
+                };
+                Insert: {
+                    user_id: string;
+                    puzzle_id: string;
+                    video_url: string;
+                    user_result: 'correct' | 'incorrect';
+                    iq_delta?: number | null;
+                    unlocked_at?: string;
+                    created_at?: string;
+                    updated_at?: string;
+                };
+                Update: {
+                    video_url?: string;
+                    user_result?: 'correct' | 'incorrect';
+                    iq_delta?: number | null;
+                    updated_at?: string;
+                };
             };
         };
     };

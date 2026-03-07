@@ -270,4 +270,12 @@ When user's prompt is NOT in English:
 - **Audits**: `ux_audit.py`, `mobile_audit.py`, `lighthouse_audit.py`, `seo_checker.py`
 - **Test**: `playwright_runner.py`, `test_runner.py`
 
+### TFT Project Essentials
+
+- **App**: React + Vite SPA — NO Next.js, NO Server Components
+- **DB**: Supabase — migrations in `supabase/`, types in `src/lib/supabase.ts`
+- **Structure**: `src/features/[feature-name]/` — no global `src/components/`
+- **DB deploy**: `docs/db/deploy-checklist.md` → `audit.ts` → migrate → `health-check.ts`
+- **Key rules**: `.agent/rules/folder-structure.md` + `.agent/rules/naming.md` are BINDING
+
 ---

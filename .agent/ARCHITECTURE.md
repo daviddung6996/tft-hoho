@@ -4,6 +4,26 @@
 
 ---
 
+## 🎮 TFT-hoho Project Context
+
+> **READ THIS FIRST** — Key facts every AI dev must know about this codebase.
+
+| Aspect | Value |
+|--------|-------|
+| **App type** | React + Vite SPA (NOT Next.js) — no Server Components |
+| **Database** | Supabase (PostgreSQL + RLS + realtime) |
+| **DB migrations** | `supabase/migrations/` — NEVER root-level `migrations/` |
+| **DB types** | `src/lib/supabase.ts` — update when frontend uses new tables |
+| **Feature structure** | `src/features/[feature-name]/` — NO global `src/components/` |
+| **File naming** | `kebab-case` folders, `[feature].[type].ts` backend, `PascalCase.tsx` components |
+| **Key hook** | `src/hooks/usePuzzleToPlayers.ts` — transforms puzzle data → gameplay view |
+| **Item icons** | Enriched from DB (not puzzle JSON) via `usePuzzleToPlayers.ts` |
+| **Pro Supporter badge** | Always use `<ProSupporterIcon>` component — never emoji ⭐ or plain text |
+| **DB deploy flow** | `docs/db/deploy-checklist.md` → `audit.ts` → migrate → `health-check.ts` |
+| **Agent rules** | `folder-structure.md` + `naming.md` in `.agent/rules/` are BINDING |
+
+---
+
 ## 📋 Overview
 
 Antigravity Kit is a modular system consisting of:

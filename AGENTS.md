@@ -290,10 +290,20 @@ Get-ChildItem -Path src -Recurse -Include "*.tsx" | ForEach-Object {
 - **Cause:** `app-container` có `filter: contrast(1.05) saturate(1.08) brightness(1.02)` tạo stacking context. Nếu wrap game content trong div có `filter: blur()` toggle (`none` ↔ `blur(8px)`), việc tạo/huỷ stacking context sẽ làm các panel `position: absolute` bị reflow.
 - **Avoid:** KHÔNG BAO GIỜ wrap game content trong div toggle `filter`. Overlay đã có background atmosphere đủ tối (`rgba(0,0,0,0.78)`), không cần blur content bên dưới. Xem pattern "Hextech Overlay" ở Section 1.
 
+### `supabase/config.toml` can reference Edge Functions that do not exist in repo
+- **Symptom:** Agent reads `supabase/config.toml`, expects a function like `generate-flex-card`, then wastes time searching under `supabase/functions/` and assumes files are missing locally.
+- **Cause:** Supabase function config can drift from the committed filesystem. Current repo only contains `supabase/functions/generate-caption/`, while `supabase/config.toml` still declares `functions.generate-flex-card`.
+- **Avoid:** Verify both `supabase/config.toml` and actual `supabase/functions/` contents before documenting Edge Function architecture or trying to edit/deploy a function by name.
+
 ### Production puzzle/game data can contain null-ish strings despite TypeScript types saying `string`
 - **Symptom:** App crashes with `Cannot read properties of undefined (reading 'toLowerCase')`, often only on production data first, then locally after the same bad record is loaded.
 - **Cause:** Supabase/admin data can contain missing `name`, `title`, or trait fields even though local TS interfaces mark them as required. Direct `.toLowerCase()` inside puzzle/item/augment/synergy normalization is not safe against real DB drift.
 - **Avoid:** When matching DB-driven strings, always normalize through a safe helper (e.g. `normalizeLookupValue`) instead of calling `.toLowerCase()` directly on puzzle/item/augment/unit fields.
+
+### Puzzle table resets can silently orphan history/unlock/vote rows if there is no referential guard
+- **Symptom:** `user_puzzle_history`, `user_iq_history`, `puzzle_votes`, or `user_unlocked_puzzles` keep lots of rows for puzzle IDs that no longer exist, making analytics and unlock state inconsistent.
+- **Cause:** `puzzles.id` changed over time while dependent tables stored raw puzzle IDs without a FK or trigger-based existence check, so old rows survived after puzzle replacement/deletion.
+- **Avoid:** Before tightening constraints, archive + delete orphan rows. After that, enforce puzzle references with FK or trigger checks on every table that stores `puzzle_id`.
 
 ### Supabase schema source-of-truth mismatch
 - **Symptom:** Type definitions trong `src/lib/supabase.ts` đã có bảng `user_wallets`, `tcoin_transactions`, `user_unlocked_puzzles`, `pro_supporters`, `donations`, nhưng thư mục `supabase/migrations/` chưa có SQL migration tương ứng.
@@ -420,9 +430,3 @@ Get-ChildItem -Path src -Recurse -Include "*.tsx" | ForEach-Object {
   2. Set "export const MONETIZATION_ENABLED = true;"
   3. Revert `proSupporter.service.ts` and `videoLibrary.service.ts` to their previous remote Supabase query logic. DB migrations for `pro_supporters` might be needed.
   4. Re-build the app. All paywalls and overlays will be restored.
-
-### Flex caption latency reduction (2026-03-07)
-- **Date:** 2026-03-07
-- **File:** `src/features/share/share.service.ts`, `supabase/functions/generate-caption/index.ts`
-- **Problem:** Caption gen dang dung chain preview/deprecated model va prompt dai, nen latency/chi phi khong toi uu cho task social copy ngan.
-- **Fix:** Chuyen chain sang `gemini-3.1-flash-lite-preview -> gemini-flash-lite-latest`, tat thinking voi `thinkingBudget: 0`, them timeout nhanh, va rut prompt thanh checklist + format output ro rang. Frontend service cache caption theo `iqScore/rank/top%` de tranh goi lap.
