@@ -314,22 +314,25 @@ function normalizeUnits(units: UnitData[], champions: Champion[]): UnitData[] {
 
     return units
         .filter(u => u && u.row !== undefined && u.col !== undefined)
-        .map(u => {
+        .map((u): UnitData | null => {
             const adminChamp = champions.find(c => c.name.toLowerCase() === u.name.toLowerCase());
-            let { row, col } = u as { row: number; col: number };
+            const row = u.row as number;
+            let col = u.col as number;
+            let finalRow = row;
+            let finalCol = col;
 
-            if (occupied.has(`${row},${col}`)) {
-                const empty = findNearestEmpty(row, col);
+            if (occupied.has(`${finalRow},${finalCol}`)) {
+                const empty = findNearestEmpty(finalRow, finalCol);
                 if (!empty) return null;
-                row = empty.row;
-                col = empty.col;
+                finalRow = empty.row;
+                finalCol = empty.col;
             }
-            occupied.add(`${row},${col}`);
+            occupied.add(`${finalRow},${finalCol}`);
 
             return {
                 ...u,
-                row,
-                col,
+                row: finalRow,
+                col: finalCol,
                 image: adminChamp?.icon || adminChamp?.avatar || u.image || '',
                 cost: adminChamp?.cost !== undefined ? adminChamp.cost : u.cost,
                 traits: adminChamp?.traits || u.traits || []
