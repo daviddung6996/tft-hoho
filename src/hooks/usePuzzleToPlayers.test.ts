@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { getChosenAugments } from './usePuzzleToPlayers';
+import { getChosenAugments, getPuzzleStateLevel, getPuzzleStateXp } from './usePuzzleToPlayers';
 import type { PuzzleScenario } from '../data/puzzleScenarios';
 import type { AugmentData } from '../services/augmentService';
 
@@ -152,5 +152,21 @@ describe('getChosenAugments', () => {
       const result = getChosenAugments(puzzle);
       expect(result).toEqual([]);
     });
+  });
+});
+
+describe('player state normalization', () => {
+  it('sanitizes legacy missing levels by stage', () => {
+    expect(getPuzzleStateLevel('2-1', undefined)).toBe(4);
+    expect(getPuzzleStateLevel('3-2', undefined)).toBe(6);
+    expect(getPuzzleStateLevel('4-2', undefined)).toBe(8);
+    expect(getPuzzleStateLevel('5-1', undefined)).toBe(10);
+  });
+
+  it('preserves valid levels and clamps xp to the current threshold', () => {
+    expect(getPuzzleStateLevel('3-2', { level: 7 })).toBe(7);
+    expect(getPuzzleStateXp('3-2', { level: 3, xp: 2 })).toBe(2);
+    expect(getPuzzleStateXp('3-2', { level: 3, xp: 99 })).toBe(6);
+    expect(getPuzzleStateXp('3-2', { level: 10, xp: 99 })).toBe(0);
   });
 });

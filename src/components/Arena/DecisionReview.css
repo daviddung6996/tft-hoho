@@ -2,10 +2,10 @@
 
 .decision-review-overlay {
     position: absolute;
-    top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
+    top: max(0px, calc((100% - 100vh) / 2));
+    height: min(100%, 100vh);
     background:
         radial-gradient(ellipse at 50% 30%, rgba(200, 170, 110, 0.06) 0%, transparent 50%),
         radial-gradient(ellipse at 50% 80%, rgba(21, 58, 62, 0.25) 0%, transparent 50%),
@@ -16,6 +16,424 @@
     z-index: 300;
 }
 
+@media (max-width: 768px) {
+    .decision-review-overlay {
+        position: absolute;
+        left: 0;
+        top: max(0px, calc((100% - 100vh) / 2));
+        width: 100%;
+        height: min(100%, 100vh);
+    }
+
+    .decision-review-container.decision-review-container--mobile {
+        width: 100%;
+        height: 100%;
+        max-width: 100%;
+        max-height: 100%;
+        padding: 0;
+        gap: 0;
+        border-radius: 0;
+        border-width: 0;
+        box-shadow: none;
+        background:
+            radial-gradient(ellipse at 50% 0%, rgba(200, 170, 110, 0.12) 0%, transparent 55%),
+            radial-gradient(ellipse at 50% 100%, rgba(21, 58, 62, 0.6) 0%, transparent 60%),
+            linear-gradient(180deg, #0d2e30 0%, #081e20 100%);
+        overflow: hidden;
+    }
+
+    .decision-review-mobile-shell {
+        height: 100%;
+        display: grid;
+        grid-template-rows: auto minmax(0, 1fr) auto;
+        position: relative;
+    }
+
+    .decision-review-mobile-iq-overlay {
+        position: absolute;
+        top: 24px;
+        left: 50%;
+        transform: translate(-50%, 0);
+        z-index: 100;
+        pointer-events: none;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        animation: iq-overlay-fade 3.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.5));
+    }
+
+    @keyframes iq-overlay-fade {
+        0% {
+            opacity: 0;
+            transform: translate(-50%, -10px) scale(0.9);
+        }
+
+        15% {
+            opacity: 1;
+            transform: translate(-50%, 0) scale(1.1);
+        }
+
+        30% {
+            opacity: 1;
+            transform: translate(-50%, 0) scale(1);
+        }
+
+        85% {
+            opacity: 1;
+            transform: translate(-50%, 0) scale(1);
+        }
+
+        100% {
+            opacity: 0;
+            transform: translate(-50%, -20px) scale(0.95);
+        }
+    }
+
+    .decision-review-mobile-header {
+        position: sticky;
+        top: 0;
+        z-index: 4;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        padding: 16px 16px 14px;
+        /* Seamless background: relies on the container's gorgeous gradient now */
+    }
+
+    .decision-review-mobile-title-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        align-items: center;
+        gap: 8px;
+    }
+
+    .decision-review-mobile-title-spacer,
+    .decision-review-mobile-back {
+        display: none;
+    }
+
+    .decision-review-mobile-title {
+        font-family: 'Spectral', serif;
+        font-size: 1.08rem;
+        font-weight: 700;
+        color: #F0E6D2;
+        text-align: center;
+        letter-spacing: 0.02em;
+    }
+
+    .decision-review-mobile-close,
+    .decision-review-mobile-back {
+        position: relative;
+        top: auto;
+        right: auto;
+        width: 44px;
+        height: 44px;
+        min-width: 44px;
+        min-height: 44px;
+        padding: 10px;
+        border: 1px solid rgba(200, 170, 110, 0.3);
+        border-radius: 12px;
+        background: rgba(0, 0, 0, 0.22);
+        color: rgba(200, 170, 110, 0.85);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .decision-review-mobile-metadata,
+    .decision-review-mobile-status-row,
+    .decision-review-mobile-utility-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .decision-review-mobile-meta-chip {
+        display: inline-flex;
+        align-items: center;
+        min-height: 30px;
+        padding: 0 10px;
+        border-radius: 999px;
+        font-family: 'Inter', sans-serif;
+        font-size: 0.72rem;
+        color: #94A3B8;
+        background: rgba(5, 28, 30, 0.42);
+        border: 1px solid rgba(200, 170, 110, 0.16);
+    }
+
+    .decision-review-mobile-status-row {
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .decision-review-mobile-tier {
+        padding-bottom: 0;
+    }
+
+    .decision-review-mobile-tier .review-tier-label {
+        font-size: 0.68rem;
+        letter-spacing: 0.04em;
+    }
+
+    .decision-review-mobile-utility-actions .action-btn {
+        min-height: 38px;
+        padding: 0 12px;
+        border-width: 1px;
+        border-radius: 10px;
+        font-size: 0.72rem;
+        background: rgba(0, 0, 0, 0.22);
+    }
+
+    .decision-review-mobile-utility-actions .action-btn svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    .decision-review-mobile-scroll {
+        overflow-y: auto;
+        overflow-x: hidden;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        padding: 12px 16px 112px;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .decision-review-mobile-scroll .intent-feedback,
+    .decision-review-mobile-scroll .plan-feedback,
+    .decision-review-mobile-scroll .roll-section,
+    .decision-review-mobile-scroll .explanation-section {
+        padding: 12px;
+        border-radius: 16px;
+    }
+
+    .decision-review-mobile-scroll .intent-feedback__title,
+    .decision-review-mobile-scroll .plan-feedback__title,
+    .decision-review-mobile-scroll .section-title,
+    .decision-review-mobile-scroll .explanation-title {
+        font-size: 0.92rem;
+    }
+
+    .decision-review-mobile-scroll .intent-feedback__summary,
+    .decision-review-mobile-scroll .plan-feedback__summary,
+    .decision-review-mobile-scroll .final-description,
+    .decision-review-mobile-scroll .explanation-text {
+        font-size: 0.84rem;
+        line-height: 1.55;
+    }
+
+    .decision-review-mobile-scroll .intent-feedback__reasoning-label,
+    .decision-review-mobile-scroll .plan-feedback__reasoning-label,
+    .decision-review-mobile-scroll .intent-feedback__reasoning-text,
+    .decision-review-mobile-scroll .plan-feedback__reasoning-text {
+        font-size: 0.74rem;
+    }
+
+    .decision-review-mobile-final {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .decision-review-mobile-final-header {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .decision-review-mobile-final-copy {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .decision-review-mobile-final-description {
+        margin: 0;
+    }
+
+    .decision-review-mobile-card-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .decision-review-mobile-group-label {
+        font-family: 'Inter', sans-serif;
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: rgba(200, 170, 110, 0.75);
+    }
+
+    .decision-review-mobile-grid-6 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 6px;
+    }
+
+    .decision-review-mobile-grid-6 .augment-cell {
+        height: 100%;
+    }
+
+    .review-card--mobile {
+        padding: 8px;
+        /* Slightly tighter padding for grid */
+        gap: 6px;
+        border-radius: 12px;
+        height: 100%;
+        justify-content: flex-start;
+    }
+
+    .review-card--mobile .augment-preview {
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .review-card--mobile .augment-mini-icon {
+        width: 42px;
+        height: 42px;
+        border-width: 1px;
+        border-radius: 10px;
+    }
+
+    .review-card--mobile .augment-info-col {
+        gap: 8px;
+    }
+
+    .review-card--mobile .augment-mini-title {
+        font-size: 0.9rem;
+        line-height: 1.3;
+        white-space: normal;
+        overflow: visible;
+        text-overflow: clip;
+    }
+
+    .pick-markers--mobile {
+        flex-wrap: wrap;
+        row-gap: 6px;
+        column-gap: 4px;
+        margin-top: 0;
+    }
+
+    .pick-markers--mobile .marker-text,
+    .pick-markers--mobile .marker-separator {
+        font-size: 0.72rem;
+    }
+
+    .vote-section--mobile {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+        margin-top: 0;
+    }
+
+    .vote-section--mobile .vote-stats,
+    .vote-section--mobile .vote-count {
+        font-size: 0.74rem;
+    }
+
+    .vote-section--mobile .vote-bar-container {
+        width: 100%;
+        height: 5px;
+    }
+
+    .decision-review-mobile-explanation-stack {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .decision-review-mobile-video-header {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 10px;
+    }
+
+    .decision-review-mobile-video-link {
+        align-self: flex-start;
+    }
+
+    .decision-review-mobile-video .explanation-video-wrapper {
+        border-radius: 14px;
+        border-width: 1px;
+    }
+
+    .decision-review-mobile-video .explanation-video-label,
+    .decision-review-mobile-video .explanation-video-note-text,
+    .decision-review-mobile-video .explanation-video-note-link {
+        font-size: 0.72rem;
+    }
+
+    .decision-review-mobile-footer {
+        position: sticky;
+        bottom: 0;
+        z-index: 4;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
+        /* Seamless background */
+    }
+
+    .decision-review-mobile-footer-iq {
+        display: flex;
+        justify-content: center;
+    }
+
+    .decision-review-mobile-footer .iq-score-summary {
+        width: 100%;
+        justify-content: center;
+        gap: 8px;
+        padding: 10px 12px;
+        border-radius: 14px;
+    }
+
+    .decision-review-mobile-primary-actions,
+    .decision-review-mobile-secondary-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .decision-review-mobile-primary-actions .review-btn {
+        width: 100%;
+        min-height: 48px;
+    }
+
+    .decision-review-mobile-secondary-actions .review-btn {
+        flex: 1 1 120px;
+        min-height: 44px;
+    }
+
+    .review-btn--primary {
+        background:
+            radial-gradient(ellipse at 50% 0%, rgba(200, 170, 110, 0.16) 0%, transparent 60%),
+            linear-gradient(180deg, rgba(21, 58, 62, 1) 0%, rgba(13, 46, 48, 1) 100%);
+        border-color: rgba(200, 170, 110, 0.85);
+        box-shadow:
+            inset 0 1px 0 rgba(240, 230, 210, 0.08),
+            0 0 18px rgba(200, 170, 110, 0.18);
+    }
+
+    .review-btn--secondary-gold {
+        color: #c8aa6e;
+    }
+
+    .review-btn--primary svg,
+    .decision-review-mobile-secondary-actions .review-btn svg,
+    .decision-review-mobile-action-row .review-btn svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    .decision-review-mobile-scroll .meme-feedback-wrapper {
+        margin-top: 2px;
+    }
+}
+
 .decision-review-container {
     width: 70cqw;
     max-height: 92cqh;
@@ -23,38 +441,59 @@
     border: 0.15cqw solid #c8aa6e;
     border-radius: 0.5cqw;
     box-shadow: 0 0 2cqw rgba(200, 170, 110, 0.3);
+    color: #F0F6FC;
+    overflow: hidden;
+    /* Hide scrollbar bleed over rounded corners */
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.decision-review-scroll-wrapper {
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
     padding: 1cqw 1.2cqw;
     display: flex;
     flex-direction: column;
     gap: 0.5cqw;
-    color: #F0F6FC;
-    overflow-y: auto;
-    position: relative;
     /* Smoothly animate the gap between rows when meme section expands */
     transition: gap 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.review-close-btn {
-    position: absolute;
-    top: 0.55cqw;
-    right: 0.55cqw;
-    width: 1.65cqw;
-    height: 1.65cqw;
+.decision-review-scroll-wrapper::-webkit-scrollbar {
+    width: 0.4cqw;
     background: transparent;
-    border: 0.08cqw solid #c8aa6e;
-    border-radius: 0.28cqw;
+}
+
+.decision-review-scroll-wrapper::-webkit-scrollbar-thumb {
+    background: rgba(200, 170, 110, 0.4);
+    border-radius: 0.4cqw;
+    border: 1px solid transparent;
+    /* adds transparent border to push it away from the edge */
+    background-clip: padding-box;
+}
+
+.review-back-btn {
+    width: 2.2cqw;
+    /* Larger touch target for back button */
+    height: 2.2cqw;
+    background: transparent;
+    border: 0.08cqw solid rgba(200, 170, 110, 0.3);
+    border-radius: 0.35cqw;
     color: #c8aa6e;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0.24cqw;
+    padding: 0.3cqw;
     transition: background 0.2s, color 0.2s;
     z-index: 10;
     flex-shrink: 0;
 }
 
-.review-close-btn:hover {
+.review-back-btn:hover {
     background: rgba(200, 170, 110, 0.15);
     color: #F0E6D2;
 }
@@ -67,9 +506,13 @@
     justify-content: space-between;
     align-items: center;
     padding-bottom: 0.4cqw;
-    /* Reserve space for absolute close button so it never overlaps action buttons */
-    padding-right: 2.1cqw;
     border-bottom: 0.08cqw solid rgba(200, 170, 110, 0.3);
+}
+
+.context-left {
+    display: flex;
+    align-items: center;
+    gap: 1cqw;
 }
 
 .context-row {
@@ -693,4 +1136,452 @@
 .decision-review-container.tier-rare .roll-section.final-section {
     background: rgba(192, 132, 252, 0.06);
     border-color: rgba(192, 132, 252, 0.40);
+}
+
+[data-layout-mode="phone-landscape"] .decision-review-container {
+    width: min(100%, var(--mobile-content-max-w));
+    max-width: var(--mobile-content-max-w);
+    max-height: 100%;
+    height: 100%;
+    margin: 0 auto;
+    padding: 12px;
+    border-radius: 18px;
+    gap: 10px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+[data-layout-mode="phone-landscape"] .review-close-btn {
+    top: 12px;
+    right: 12px;
+    width: 32px;
+    height: 32px;
+    padding: 6px;
+    border-width: 1px;
+    border-radius: 10px;
+}
+
+[data-layout-mode="phone-landscape"] .review-tier-badge {
+    padding-bottom: 0;
+}
+
+[data-layout-mode="phone-landscape"] .review-tier-label {
+    font-size: 0.72rem;
+}
+
+[data-layout-mode="phone-landscape"] .puzzle-context {
+    position: sticky;
+    top: -12px;
+    z-index: 3;
+    margin: 0 -12px;
+    padding: 12px 44px 10px 12px;
+    background:
+        linear-gradient(180deg, rgba(13, 46, 48, 0.98) 0%, rgba(8, 30, 32, 0.95) 100%);
+    backdrop-filter: none;
+}
+
+[data-layout-mode="phone-landscape"] .context-row,
+[data-layout-mode="phone-landscape"] .puzzle-actions,
+[data-layout-mode="phone-landscape"] .review-actions {
+    flex-wrap: wrap;
+}
+
+[data-layout-mode="phone-landscape"] .context-row {
+    gap: 8px 10px;
+}
+
+[data-layout-mode="phone-landscape"] .context-item,
+[data-layout-mode="phone-landscape"] .completion-badge,
+[data-layout-mode="phone-landscape"] .action-btn {
+    font-size: 0.66rem;
+}
+
+[data-layout-mode="phone-landscape"] .roll-section,
+[data-layout-mode="phone-landscape"] .explanation-section {
+    padding: 10px;
+    border-radius: 14px;
+}
+
+[data-layout-mode="phone-landscape"] .section-title,
+[data-layout-mode="phone-landscape"] .explanation-title {
+    font-size: 0.8rem;
+}
+
+[data-layout-mode="phone-landscape"] .final-description,
+[data-layout-mode="phone-landscape"] .explanation-text {
+    font-size: 0.72rem;
+    line-height: 1.4;
+}
+
+[data-layout-mode="phone-landscape"] .final-augment-grid-6 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+}
+
+[data-layout-mode="phone-landscape"] .roll-augment-card {
+    padding: 8px;
+    gap: 4px;
+}
+
+[data-layout-mode="phone-landscape"] .augment-mini-icon {
+    width: 28px;
+    height: 28px;
+    border-width: 1px;
+}
+
+[data-layout-mode="phone-landscape"] .augment-mini-title {
+    font-size: 0.7rem;
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+[data-layout-mode="phone-landscape"] .marker-text,
+[data-layout-mode="phone-landscape"] .vote-stats,
+[data-layout-mode="phone-landscape"] .vote-count {
+    font-size: 0.65rem;
+}
+
+[data-layout-mode="phone-landscape"] .explanation-section.has-video {
+    flex-direction: column;
+}
+
+[data-layout-mode="phone-landscape"] .explanation-video-col {
+    padding-left: 0;
+    border-left: none;
+    border-top: 1px solid rgba(200, 170, 110, 0.18);
+    padding-top: 10px;
+}
+
+[data-layout-mode="phone-landscape"] .review-bottom-bar {
+    position: sticky;
+    bottom: -12px;
+    z-index: 3;
+    margin: 0 -12px -12px;
+    padding: 10px 12px 12px;
+    min-height: auto;
+    align-items: stretch;
+    gap: 10px;
+    background:
+        linear-gradient(180deg, rgba(8, 30, 32, 0.92) 0%, rgba(5, 20, 22, 0.98) 100%);
+}
+
+[data-layout-mode="phone-landscape"] .review-actions {
+    width: 100%;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+[data-layout-mode="phone-landscape"] .review-btn {
+    min-height: 40px;
+    padding: 0 14px;
+    border-width: 1px;
+    font-size: 0.72rem;
+}
+
+[data-layout-mode="phone-landscape"] .next-btn {
+    min-width: 112px;
+}
+
+@media (max-height: 390px) {
+    [data-layout-mode="phone-landscape"] .final-augment-grid-6 {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ============================================
+   MOBILE LAYOUT - Responsive Breakpoint ≤768px
+   ============================================ */
+@media (max-width: 768px) {
+    /* Mobile-specific styles will be added in subsequent tasks */
+    /* This media query ensures desktop styles remain unaffected */
+
+    /* Task 2.1: Full-screen modal positioning for mobile */
+    .decision-review-overlay {
+        position: absolute;
+        left: 0;
+        width: 100%;
+        top: max(0px, calc((100% - 100vh) / 2));
+        height: min(100%, 100vh);
+        padding: 8px;
+        box-sizing: border-box;
+    }
+
+    .decision-review-container {
+        width: 100%;
+        height: 100%;
+        max-width: 100%;
+        max-height: 100%;
+        border-radius: 16px;
+        border: 1px solid rgba(200, 170, 110, 0.25);
+        /* Remove horizontal padding to maximize width */
+        padding: 0;
+        gap: 0;
+        /* Remove overflow-y from container - content wrapper will handle scrolling */
+        overflow: hidden;
+    }
+
+    /* Task 3.1: Mobile header component structure */
+    .puzzle-context {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        padding: 12px 16px;
+        margin: 0;
+        /* Hextech background gradient with backdrop-filter */
+        background: linear-gradient(180deg, rgba(13, 46, 48, 0.98), rgba(8, 30, 32, 0.95));
+        backdrop-filter: blur(8px);
+        /* Single-row layout: close button (right) + title (center) + metadata (left) */
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        /* Ensure header height ≤15% viewport height */
+        max-height: 15vh;
+        border-bottom: 1px solid rgba(200, 170, 110, 0.3);
+    }
+
+    /* Header title - centered */
+    .mobile-header-title {
+        font-family: 'Spectral', serif;
+        font-size: 1rem;
+        font-weight: 700;
+        color: #F0E6D2;
+        text-align: center;
+        order: 2;
+        flex: 1;
+    }
+
+    /* Metadata section - left side */
+    .mobile-header-metadata {
+        order: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2px;
+        flex: 1;
+    }
+
+    .mobile-metadata-text {
+        font-family: 'Inter', sans-serif;
+        font-size: 0.65rem;
+        color: #94a3b8;
+        white-space: nowrap;
+    }
+
+    .mobile-tier-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-family: 'Inter', sans-serif;
+        font-size: 0.65rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .mobile-tier-badge .mobile-tier-label.tier-advanced {
+        color: #8B5CF6;
+    }
+
+    .mobile-tier-badge .mobile-tier-label.tier-rare {
+        color: #c8aa6e;
+    }
+
+    /* Context row - hide on mobile, replaced by mobile-header-metadata */
+    .context-row {
+        display: none;
+    }
+
+    /* Hide puzzle actions on mobile (stream button, etc.) */
+    .puzzle-actions {
+        display: none;
+    }
+
+    /* Task 2.3: Scrollable content area */
+    .decision-review-mobile-scroll {
+        flex: 1;
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding: 0 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        /* Enable smooth scrolling on iOS */
+        -webkit-overflow-scrolling: touch;
+        /* Custom Hextech scrollbar */
+        scrollbar-width: thin;
+        scrollbar-color: rgba(200, 170, 110, 0.4) transparent;
+    }
+
+    .decision-review-mobile-scroll::-webkit-scrollbar {
+        width: 4px;
+        background: transparent;
+    }
+
+    .decision-review-mobile-scroll::-webkit-scrollbar-thumb {
+        background: rgba(200, 170, 110, 0.4);
+        border-radius: 4px;
+    }
+
+    .decision-review-mobile-scroll::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    /* Task 2.3: Sticky action bar positioning */
+    .review-bottom-bar {
+        position: sticky;
+        bottom: 0;
+        z-index: 10;
+        padding: 8px 12px;
+        margin: 0;
+        background: linear-gradient(180deg, rgba(8, 30, 32, 0.92), rgba(5, 20, 22, 0.98));
+        backdrop-filter: blur(8px);
+        border-top: 1px solid rgba(200, 170, 110, 0.3);
+    }
+
+    /* Thinner top header */
+    .decision-review-mobile-header {
+        padding: 4px 12px;
+        gap: 8px;
+    }
+
+    .decision-review-mobile-header-iq .iq-score-summary {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+    }
+
+    /* Comparison Grid for Mobile 2 cards */
+    .decision-review-mobile-comparison-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+
+    /* Horizontal scroll row for roll augments */
+    .decision-review-mobile-scroll-row {
+        display: flex;
+        overflow-x: auto;
+        gap: 8px;
+        padding-bottom: 4px;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: none;
+    }
+
+    .decision-review-mobile-scroll-row .augment-cell .roll-augment-card {
+        border-radius: 12px;
+    }
+
+    .decision-review-mobile-comparison-grid .augment-cell .review-card {
+        border-radius: 12px;
+    }
+
+    .decision-review-mobile-scroll-row::-webkit-scrollbar {
+        display: none;
+    }
+
+    .decision-review-mobile-scroll-row>* {
+        scroll-snap-align: start;
+        flex: 0 0 45%;
+        /* Show 2.something cards at a time */
+        min-width: 140px;
+    }
+
+    /* Smaller and Rounded Buttons for Mobile */
+    .decision-review-mobile-utility-actions .action-btn {
+        min-height: 32px;
+        padding: 0 10px;
+        font-size: 0.65rem;
+        border-radius: 8px;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .decision-review-mobile-utility-actions>div {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px !important;
+        width: 100%;
+    }
+
+    .decision-review-mobile-action-row {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 6px;
+        width: 100%;
+    }
+
+    .decision-review-mobile-action-row .review-btn {
+        width: 100%;
+        min-width: 0;
+        min-height: 40px;
+        font-size: 0.70rem;
+        padding: 0 8px;
+        border-radius: 8px;
+        justify-content: center;
+    }
+
+    .decision-review-mobile-action-row .next-btn,
+    .decision-review-mobile-action-row .review-btn--primary,
+    .decision-review-mobile-action-row .support-btn,
+    .decision-review-mobile-action-row .replay-btn {
+        min-width: 0;
+    }
+
+    .decision-review-mobile-back,
+    .decision-review-mobile-title-spacer {
+        display: none !important;
+    }
+}
+
+.roll-augment-group-label--desktop {
+    margin: 12px 0 8px;
+    font-size: 0.75cqw;
+    font-weight: 700;
+    color: rgba(200, 170, 110, 0.75);
+}
+
+.review-btn--support-spaced {
+    margin-right: 8px;
+}
+
+.review-btn--flex {
+    color: #c8aa6e;
+}
+
+.decision-review-mobile-card-group--spaced {
+    margin-top: 12px;
+}
+
+.decision-review-mobile-group-label--muted {
+    margin-bottom: 6px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: #94a3b8;
+}
+
+@media (max-width: 768px) {
+    .decision-review-mobile-header.decision-review-mobile-header--compact {
+        padding: 4px 12px;
+        border-bottom: none;
+    }
+
+    .decision-review-mobile-utility-actions.decision-review-mobile-utility-actions--centered {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+    }
+
+    .decision-review-mobile-action-strip {
+        display: flex;
+        gap: 8px;
+    }
 }

@@ -20,18 +20,21 @@
 
 .support-modal {
     position: relative;
-    width: 420px;
-    max-width: 90vw;
-    max-height: 85vh;
+    /* Base for mobile */
+    width: 460px;
+    max-width: 92vw;
+    max-height: 90vh;
     overflow-y: auto;
-    padding: 1.8rem 1.5rem;
+    padding: 1rem;
     background: linear-gradient(180deg, rgba(21, 58, 62, 0.97) 0%, rgba(5, 28, 30, 0.99) 100%);
-    border: 1px solid rgba(200, 170, 110, 0.25);
-    border-radius: 12px;
+    border: 1px solid rgba(200, 170, 110, 0.35);
+    border-radius: 16px;
     box-shadow:
-        0 0 30px rgba(200, 170, 110, 0.08),
-        0 20px 60px rgba(0, 0, 0, 0.5);
-    animation: support-slide-up 0.3s ease-out;
+        0 0 30px rgba(200, 170, 110, 0.12),
+        0 20px 60px rgba(0, 0, 0, 0.6);
+    animation: support-slide-up 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    flex-direction: column;
 }
 
 @keyframes support-slide-up {
@@ -74,12 +77,12 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 1.2rem;
+    gap: 0.25rem;
+    margin-bottom: 0.75rem;
 }
 
 .support-modal-emoji {
-    font-size: 2.2rem;
+    font-size: 2rem;
     line-height: 1;
 }
 
@@ -92,31 +95,36 @@
     text-align: center;
 }
 
-/* Message */
-.support-modal-message {
+/* ================= DESKTOP VIEW STYLES ================= */
+.support-modal-content-desktop {
+    display: none;
+    /* hidden by default on mobile */
+    flex-direction: column;
+}
+
+.support-modal-message-desktop {
     margin-bottom: 1.2rem;
 }
 
-.support-modal-message p {
+.support-modal-message-desktop p {
     font-family: 'Inter', sans-serif;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     color: #94A3B8;
-    line-height: 1.6;
-    margin: 0 0 0.6rem 0;
+    line-height: 1.5;
+    margin: 0 0 0.75rem 0;
     text-align: center;
 }
 
-.support-modal-message strong {
+.support-modal-message-desktop strong {
     color: #c8aa6e;
 }
 
-.support-modal-highlight {
+.support-modal-highlight-desktop {
     color: #F0E6D2 !important;
     font-weight: 500;
 }
 
-/* QR Code */
-.support-modal-qr-section {
+.support-modal-qr-section-desktop {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -124,41 +132,126 @@
     margin-bottom: 1rem;
 }
 
-.support-modal-qr-frame {
-    padding: 0.6rem;
-    background: white;
+.support-modal-qr-img-desktop {
+    width: 200px;
+    height: 200px;
+    display: block;
     border-radius: 8px;
-    box-shadow: 0 0 12px rgba(200, 170, 110, 0.1);
+}
+
+.support-modal-copy-btn-desktop {
+    background: transparent;
+    border: 1px solid rgba(200, 170, 110, 0.2);
+    border-radius: 4px;
+    padding: 0.15rem 0.3rem;
+    font-size: 0.7rem;
+    cursor: pointer;
+    color: #c8aa6e;
+    transition: all 0.15s;
+    line-height: 1;
+}
+
+.support-modal-copy-btn-desktop:hover {
+    border-color: rgba(200, 170, 110, 0.5);
+    background: rgba(200, 170, 110, 0.08);
+}
+
+.support-modal-footer {
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.68rem;
+    color: rgba(200, 170, 110, 0.4);
+}
+
+.support-modal-footer strong {
+    color: rgba(200, 170, 110, 0.6);
+}
+
+/* ================= MOBILE VIEW STYLES ================= */
+/* Wrapper for mobile horizontal layout */
+.support-modal-content-mobile {
+    display: flex;
+    /* shows on mobile */
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.support-modal-left {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    flex: 1;
+    justify-content: center;
+}
+
+.support-modal-right {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.support-modal-message {
+    text-align: center;
+    padding: 0 0.5rem;
+}
+
+.support-modal-highlight {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    color: #F0E6D2;
+    line-height: 1.4;
+    margin: 0;
+    font-weight: 500;
+}
+
+.support-modal-qr-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.support-modal-qr-frame {
+    padding: 0.5rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 0 16px rgba(200, 170, 110, 0.2);
 }
 
 .support-modal-qr-img {
-    width: 180px;
-    height: 180px;
+    width: 170px;
+    height: 170px;
     display: block;
-    border-radius: 4px;
+    border-radius: 8px;
 }
 
 .support-modal-qr-hint {
     font-family: 'Inter', sans-serif;
-    font-size: 0.68rem;
-    color: rgba(200, 170, 110, 0.5);
-    letter-spacing: 0.03em;
+    font-size: 0.65rem;
+    color: rgba(200, 170, 110, 0.6);
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
 }
 
-/* Bank Info */
+/* Base Bank Info shared */
 .support-modal-bank {
-    padding: 0.8rem;
-    background: rgba(200, 170, 110, 0.04);
-    border: 1px solid rgba(200, 170, 110, 0.12);
+    padding: 0.6rem 0.8rem;
+    background: rgba(200, 170, 110, 0.06);
+    border: 1px solid rgba(200, 170, 110, 0.15);
     border-radius: 8px;
     margin-bottom: 0.8rem;
+}
+
+.support-modal-content-mobile .support-modal-bank {
+    margin-bottom: 0;
+    /* Clear margin for mobile layout */
 }
 
 .support-modal-bank-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.35rem 0;
+    padding: 0.4rem 0;
 }
 
 .support-modal-bank-row+.support-modal-bank-row {
@@ -184,31 +277,102 @@
     gap: 0.4rem;
 }
 
-.support-modal-copy-btn {
-    background: transparent;
-    border: 1px solid rgba(200, 170, 110, 0.2);
-    border-radius: 4px;
-    padding: 0.15rem 0.3rem;
-    font-size: 0.7rem;
+/* Actions in mobile */
+.support-modal-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-top: 0.15rem;
+}
+
+.support-action-btn {
+    flex: 1;
+    background: rgba(200, 170, 110, 0.1);
+    border: 1px solid rgba(200, 170, 110, 0.3);
+    color: #F0E6D2;
+    padding: 0.6rem 0.4rem;
+    border-radius: 6px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
     cursor: pointer;
-    color: #c8aa6e;
-    transition: all 0.15s;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
     line-height: 1;
 }
 
-.support-modal-copy-btn:hover {
-    border-color: rgba(200, 170, 110, 0.5);
-    background: rgba(200, 170, 110, 0.08);
+.support-action-btn:hover {
+    background: rgba(200, 170, 110, 0.2);
+    border-color: #c8aa6e;
+    box-shadow: 0 0 12px rgba(200, 170, 110, 0.15);
+    transform: translateY(-1px);
 }
 
-/* Footer */
-.support-modal-footer {
-    text-align: center;
-    font-family: 'Inter', sans-serif;
-    font-size: 0.8rem;
-    color: rgba(200, 170, 110, 0.4);
+.support-action-btn:active {
+    transform: translateY(1px);
 }
 
-.support-modal-footer strong {
-    color: rgba(200, 170, 110, 0.6);
+/* ================= MEDIA QUERIES ================= */
+@media (min-width: 520px) {
+
+    /* For slightly larger mobile/tablets, keep mobile view but widen */
+    .support-modal {
+        width: 540px;
+        padding: 1.25rem 1.5rem;
+    }
+
+    .support-modal-header {
+        margin-bottom: 1.25rem;
+    }
+
+    .support-modal-content-mobile {
+        flex-direction: row;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    .support-modal-left {
+        justify-content: center;
+    }
+
+    .support-modal-message {
+        text-align: center;
+        margin-bottom: 0.25rem;
+    }
+
+    .support-modal-qr-img {
+        width: 190px;
+        height: 190px;
+    }
+}
+
+@media (min-width: 1024px) {
+
+    /* Desktop specifically uses the classic old layout */
+    .support-modal {
+        width: 440px;
+        /* slightly wider old desktop modal width to fit text */
+        padding: 1.8rem 1.75rem;
+    }
+
+    .support-modal-content-desktop {
+        display: flex;
+        /* show desktop classic view */
+    }
+
+    .support-modal-content-mobile {
+        display: none;
+        /* hide mobile new view */
+    }
+
+    .support-modal-header {
+        margin-bottom: 1.2rem;
+    }
+
+    .support-modal-emoji {
+        font-size: 2.2rem;
+    }
 }

@@ -14,7 +14,7 @@
 /* -- Container -- */
 .top-status-bar {
     position: absolute;
-    top: 0.9cqw;
+    top: var(--app-hud-top-inset, 12px);
     right: calc(50% - 10.585cqw);
     z-index: 150;
 

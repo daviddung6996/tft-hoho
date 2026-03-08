@@ -8,10 +8,12 @@ import AugmentSelector from './AugmentSelector';
 import GameInfoSelector from './GameInfoSelector';
 import ItemChoiceBuilder from './ItemChoiceBuilder';
 import './PlayerTeamBuilder.css';
+import { countBoardUnits } from '../../../../features/puzzle/playerLevel';
 
 interface PlayerTeamBuilderProps {
     champions: Champion[];
     units: UnitData[];
+    level: number;
     onUnitsChange: (units: UnitData[]) => void;
     augments: AugmentData[];
     onAugmentsChange: (augments: AugmentData[]) => void;
@@ -22,11 +24,13 @@ interface PlayerTeamBuilderProps {
     voidModIds?: string[];
     onIoniaPathChange?: (pathId: string) => void;
     onVoidModsChange?: (modIds: string[]) => void;
+    onLevelCapHit?: () => void;
 }
 
 const PlayerTeamBuilder: React.FC<PlayerTeamBuilderProps> = ({
     champions,
     units,
+    level,
     onUnitsChange,
     augments,
     onAugmentsChange,
@@ -36,7 +40,8 @@ const PlayerTeamBuilder: React.FC<PlayerTeamBuilderProps> = ({
     ioniaPathId,
     voidModIds,
     onIoniaPathChange,
-    onVoidModsChange
+    onVoidModsChange,
+    onLevelCapHit
 }) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [costFilter, setCostFilter] = useState<number | null>(null);
@@ -183,28 +188,32 @@ const PlayerTeamBuilder: React.FC<PlayerTeamBuilderProps> = ({
 
     // Handle champion click (add to first available slot)
     const handleChampionSelect = (champion: Champion) => {
-        // 1. Try to find empty board slot
-        for (let row = 3; row >= 0; row--) { // Fill from backline
-            for (let col = 0; col < 7; col++) {
-                const isOccupied = units.some(u => u.row === row && u.col === col);
-                if (!isOccupied) {
-                    const newUnit: UnitData = {
-                        id: crypto.randomUUID(),
-                        name: champion.name,
-                        cost: champion.cost,
-                        stars: 1,
-                        image: champion.icon,
-                        row,
-                        col,
-                        items: []
-                    };
-                    onUnitsChange([...units, newUnit]);
-                    return;
+        const boardCount = countBoardUnits(units);
+
+        if (boardCount < level) {
+            for (let row = 3; row >= 0; row--) {
+                for (let col = 0; col < 7; col++) {
+                    const isOccupied = units.some(u => u.row === row && u.col === col);
+                    if (!isOccupied) {
+                        const newUnit: UnitData = {
+                            id: crypto.randomUUID(),
+                            name: champion.name,
+                            cost: champion.cost,
+                            stars: 1,
+                            image: champion.icon,
+                            row,
+                            col,
+                            items: []
+                        };
+                        onUnitsChange([...units, newUnit]);
+                        return;
+                    }
                 }
             }
         }
 
-        // 2. Try to find empty bench slot
+        onLevelCapHit?.();
+
         for (let i = 0; i < 9; i++) {
             const isOccupied = units.some(u => u.benchIndex === i);
             if (!isOccupied) {
@@ -239,13 +248,15 @@ const PlayerTeamBuilder: React.FC<PlayerTeamBuilderProps> = ({
                 onSelect={handleChampionSelect}
             />
             <HexBoard
-                units={units}
-                onUnitsChange={onUnitsChange}
-                dragItem={dragItem}
-                onDropSuccess={handleDropSuccess}
-                onSafeDrop={handleSafeDrop}
-                synergies={synergies}
-            />
+            units={units}
+            onUnitsChange={onUnitsChange}
+            level={level}
+            dragItem={dragItem}
+            onDropSuccess={handleDropSuccess}
+            onSafeDrop={handleSafeDrop}
+            synergies={synergies}
+            onLevelCapHit={onLevelCapHit}
+        />
             <div className="ptb-augments-panel">
                 <div style={{ padding: '1cqw', borderBottom: '0.1cqw solid var(--border-subtle)', color: 'var(--text-label)', fontSize: '0.9cqw', fontWeight: 600 }}>
                     AUGMENTS

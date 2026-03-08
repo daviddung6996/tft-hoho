@@ -20,6 +20,8 @@ export interface PlayerData {
     avatar: string;
     hp: number;
     gold: number; // Gold amount for interest display (10 gold = 1 pillar coin)
+    level: number;
+    xp: number;
     status: 'active' | 'eliminated';
     isMe: boolean;
     inCombat?: boolean;
@@ -43,6 +45,8 @@ export const MOCK_PLAYERS: PlayerData[] = [
         avatar: penguImg,
         hp: 100,
         gold: 50,
+        level: 7,
+        xp: 0,
         status: 'active',
         isMe: true,
         arenaId: 'summoners_rift',
@@ -62,6 +66,8 @@ export const MOCK_PLAYERS: PlayerData[] = [
         avatar: chonccImg,
         hp: 100,
         gold: 30,
+        level: 6,
+        xp: 0,
         status: 'active',
         isMe: false,
         arenaId: 'deep_sea',
@@ -82,6 +88,8 @@ export const MOCK_PLAYERS: PlayerData[] = [
         avatar: ahriImg,
         hp: 100,
         gold: 20,
+        level: 5,
+        xp: 0,
         status: 'active',
         isMe: false,
         arenaId: 'lotus_pond',
@@ -101,6 +109,8 @@ export const MOCK_PLAYERS: PlayerData[] = [
         avatar: norraImg,
         hp: 100,
         gold: 40,
+        level: 5,
+        xp: 0,
         status: 'active',
         isMe: false,
         arenaId: 'yuumi_library',
@@ -117,6 +127,8 @@ export const MOCK_PLAYERS: PlayerData[] = [
         avatar: bunbunImg,
         hp: 100,
         gold: 10,
+        level: 7,
+        xp: 0,
         status: 'active',
         isMe: false,
         arenaId: 'monsters_attack',
@@ -136,6 +148,8 @@ export const MOCK_PLAYERS: PlayerData[] = [
         avatar: fenroarImg,
         hp: 100,
         gold: 50,
+        level: 6,
+        xp: 0,
         status: 'active',
         isMe: false,
         arenaId: 'bilgewater_depths',
@@ -153,6 +167,8 @@ export const MOCK_PLAYERS: PlayerData[] = [
         avatar: spriteImg,
         hp: 100,
         gold: 25,
+        level: 5,
+        xp: 0,
         status: 'active',
         isMe: false,
         arenaId: 'cyber_city',
@@ -172,6 +188,8 @@ export const MOCK_PLAYERS: PlayerData[] = [
         avatar: molediverImg,
         hp: 100,
         gold: 35,
+        level: 6,
+        xp: 0,
         status: 'active',
         isMe: false,
         arenaId: 'water_dragon_village',

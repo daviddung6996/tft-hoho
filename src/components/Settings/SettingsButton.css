@@ -1,11 +1,18 @@
 .menu-container {
     position: fixed;
-    top: 1.04cqw;
-    right: 1.04cqw;
-    z-index: 1000;
+    top: var(--app-hud-top-inset, 12px);
+    right: var(--app-hud-right-inset, 12px);
+    z-index: 200;
     display: flex;
     align-items: center;
     gap: 0.5cqw;
+}
+
+/* Hide menu container on mobile (≤768px) to prevent overlay on DecisionReview */
+@media (max-width: 768px) {
+    .menu-container {
+        display: none;
+    }
 }
 
 /* ================================================

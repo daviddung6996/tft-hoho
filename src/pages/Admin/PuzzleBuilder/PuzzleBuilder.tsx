@@ -9,6 +9,7 @@ import BoardTab from './tabs/BoardTab';
 import Toast from '../../../components/common/Toast';
 
 import { PuzzleScenario } from '../../../data/puzzleScenarios';
+import { sanitizePlayerLevel, sanitizePlayerXp } from '../../../features/puzzle/playerLevel';
 
 interface PuzzleBuilderProps {
     onClose: () => void;
@@ -40,13 +41,35 @@ const PuzzleBuilder: React.FC<PuzzleBuilderProps> = ({ onClose, onSaveSuccess, i
     } = usePuzzleBuilderState(onSaveSuccess, initialPuzzle);
 
     // Helpers
-    const updateState = (mode: 'player' | 'opponent', key: 'level' | 'gold' | 'hp', value: number) => {
+    const updateState = (mode: 'player' | 'opponent', key: 'level' | 'gold' | 'hp' | 'xp', value: number) => {
         if (mode === 'player') {
             const currentState = puzzle.playerState ?? { level: 3, gold: 0, hp: 100, xp: 0 };
-            updatePuzzle({ playerState: { ...currentState, [key]: value } });
+            const nextLevel = key === 'level' ? sanitizePlayerLevel(value, puzzle.stage) : currentState.level;
+            const nextXp = key === 'xp'
+                ? sanitizePlayerXp(value, currentState.level, puzzle.stage)
+                : sanitizePlayerXp(currentState.xp, nextLevel, puzzle.stage);
+            updatePuzzle({
+                playerState: {
+                    ...currentState,
+                    [key]: value,
+                    level: nextLevel,
+                    xp: nextXp
+                }
+            });
         } else {
             const currentOppState = puzzle.opponents?.[selectedOpponentIndex]?.state || { level: 3, gold: 0, hp: 100, xp: 0 };
-            updateOpponent(selectedOpponentIndex, { state: { ...currentOppState, [key]: value } });
+            const nextLevel = key === 'level' ? sanitizePlayerLevel(value, puzzle.stage) : currentOppState.level;
+            const nextXp = key === 'xp'
+                ? sanitizePlayerXp(value, currentOppState.level, puzzle.stage)
+                : sanitizePlayerXp(currentOppState.xp, nextLevel, puzzle.stage);
+            updateOpponent(selectedOpponentIndex, {
+                state: {
+                    ...currentOppState,
+                    [key]: value,
+                    level: nextLevel,
+                    xp: nextXp
+                }
+            });
         }
     };
 
@@ -99,11 +122,19 @@ const PuzzleBuilder: React.FC<PuzzleBuilderProps> = ({ onClose, onSaveSuccess, i
                         level={puzzle.playerState?.level || 3}
                         gold={puzzle.playerState?.gold || 0}
                         hp={puzzle.playerState?.hp || 100}
+                        xp={puzzle.playerState?.xp || 0}
                         champions={champions}
-                        units={puzzle.playerBoard || []}
-                        onUnitsChange={(units) => updatePuzzle({ playerBoard: units })}
+                        units={[
+                            ...(puzzle.playerBoard || []),
+                            ...(puzzle.playerBench || [])
+                        ]}
+                        onUnitsChange={(units) => updatePuzzle({
+                            playerBoard: units.filter(u => u.row !== undefined && u.row >= 0 && u.col !== undefined),
+                            playerBench: units.filter(u => u.benchIndex !== undefined)
+                        })}
                         onStateChange={(k, v) => updateState('player', k, v)}
                         onClearBoard={() => handleClearBoard('player')}
+                        onLevelCapHit={() => showToast(`Board da full theo cap ${puzzle.playerState?.level || 3}.`, 'info')}
                         augments={(puzzle.augments || []).filter(a => a !== null) as any[]}
                         onAugmentsChange={(newAugments) => updatePuzzle({ augments: newAugments })}
                         items={puzzle.startingItems || []}
@@ -121,6 +152,7 @@ const PuzzleBuilder: React.FC<PuzzleBuilderProps> = ({ onClose, onSaveSuccess, i
                         level={puzzle.opponents?.[selectedOpponentIndex]?.state?.level || 3}
                         gold={puzzle.opponents?.[selectedOpponentIndex]?.state?.gold || 0}
                         hp={puzzle.opponents?.[selectedOpponentIndex]?.state?.hp || 100}
+                        xp={puzzle.opponents?.[selectedOpponentIndex]?.state?.xp || 0}
                         champions={champions}
                         // Data (Inverted) -> Visual (Normal)
                         units={[
@@ -129,12 +161,13 @@ const PuzzleBuilder: React.FC<PuzzleBuilderProps> = ({ onClose, onSaveSuccess, i
                         ]}
                         onUnitsChange={(units) => {
                             // Visual (Normal) -> Data (Inverted)
-                            const board = units.filter(u => u.row !== undefined).map(u => transformToData(u, true));
+                            const board = units.filter(u => u.row !== undefined && u.row >= 0).map(u => transformToData(u, true));
                             const bench = units.filter(u => u.benchIndex !== undefined);
                             updateOpponent(selectedOpponentIndex, { board, bench });
                         }}
                         onStateChange={(k, v) => updateState('opponent', k, v)}
                         onClearBoard={() => handleClearBoard('opponent')}
+                        onLevelCapHit={() => showToast(`Cap ${puzzle.opponents?.[selectedOpponentIndex]?.state?.level || 3}: khong the them tuong len board.`, 'info')}
                         augments={(puzzle.opponents?.[selectedOpponentIndex]?.augments || []).filter(a => a !== null) as any[]}
                         onAugmentsChange={(newAugments) => updateOpponent(selectedOpponentIndex, { augments: newAugments })}
                         selectedOpponentIndex={selectedOpponentIndex}

@@ -6,10 +6,15 @@ export const ScoutingPanel: React.FC<{
     activePlayerId: string;
     players: PlayerData[];
     onPlayerSelect: (id: string) => void;
-}> = ({ activePlayerId, players, onPlayerSelect }) => {
+    variant?: 'sidebar' | 'sheet';
+    className?: string;
+}> = ({ activePlayerId, players, onPlayerSelect, variant = 'sidebar', className }) => {
 
     return (
-        <div className="scouting-panel-container">
+        <div
+            className={`scouting-panel-container scouting-panel-container--${variant} ${className || ''}`.trim()}
+            data-testid={`ScoutingPanel:${variant}`}
+        >
             {players.map((player) => {
                 const isScouting = activePlayerId === player.id;
 

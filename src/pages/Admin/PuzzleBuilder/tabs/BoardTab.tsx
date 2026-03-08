@@ -14,10 +14,11 @@ interface BoardTabProps {
     level: number;
     gold: number;
     hp: number;
+    xp: number;
     champions: Champion[];
     units: UnitData[];
     onUnitsChange: (units: UnitData[]) => void;
-    onStateChange: (key: 'level' | 'gold' | 'hp', value: number) => void;
+    onStateChange: (key: 'level' | 'gold' | 'hp' | 'xp', value: number) => void;
     onClearBoard: () => void;
     augments: AugmentData[];
     onAugmentsChange: (augments: AugmentData[]) => void;
@@ -33,6 +34,7 @@ interface BoardTabProps {
     voidModIds?: string[];
     onIoniaPathChange?: (pathId: string) => void;
     onVoidModsChange?: (modIds: string[]) => void;
+    onLevelCapHit?: () => void;
 }
 
 const BoardTab: React.FC<BoardTabProps> = ({
@@ -40,6 +42,7 @@ const BoardTab: React.FC<BoardTabProps> = ({
     level,
     gold,
     hp,
+    xp,
     champions,
     units,
     onUnitsChange,
@@ -54,7 +57,8 @@ const BoardTab: React.FC<BoardTabProps> = ({
     ioniaPathId,
     voidModIds,
     onIoniaPathChange,
-    onVoidModsChange
+    onVoidModsChange,
+    onLevelCapHit
 }) => {
     // State for all traits (fetched from DB)
     const [allTraits, setAllTraits] = React.useState<Trait[]>([]);
@@ -83,6 +87,7 @@ const BoardTab: React.FC<BoardTabProps> = ({
                 level={level}
                 gold={gold}
                 hp={hp}
+                xp={xp}
                 onChange={onStateChange}
                 onClearBoard={onClearBoard}
             />
@@ -115,12 +120,14 @@ const BoardTab: React.FC<BoardTabProps> = ({
             <PlayerTeamBuilder
                 champions={champions}
                 units={units}
+                level={level}
                 onUnitsChange={onUnitsChange}
                 augments={augments}
                 onAugmentsChange={onAugmentsChange}
                 items={items}
                 onItemsChange={onItemsChange}
                 synergies={activeSynergies}
+                onLevelCapHit={onLevelCapHit}
                 ioniaPathId={ioniaPathId}
                 voidModIds={voidModIds}
                 onIoniaPathChange={onIoniaPathChange}

@@ -5,7 +5,8 @@ import { usePuzzleGame } from './hooks/usePuzzleGame';
 import { useGameFlow } from './hooks/useGameFlow';
 import { usePuzzleToPlayers } from './hooks/usePuzzleToPlayers';
 import { GameScene } from './components/Game/GameScene';
-import { GameHUD } from './components/Game/GameHUD';
+import { GameHUD, type MobilePanel } from './components/Game/GameHUD';
+import { getLayoutMode, getMobileOverlayMode, type LayoutMode } from './components/Game/mobileLayout';
 
 // Components
 import { AugmentButton } from './components/Arena/AugmentButton';
@@ -132,6 +133,8 @@ const App: React.FC = () => {
     const [myArenaId, setMyArenaId] = useState<string | null>(null);
     const [isTransitioning, setIsTransitioning] = useState(false);
     const [currentView, setCurrentView] = useState<'puzzle' | 'library'>('puzzle');
+    const [layoutMode, setLayoutMode] = useState<LayoutMode>(() => getLayoutMode());
+    const [mobilePanel, setMobilePanel] = useState<MobilePanel>(null);
 
     // Wrapper for next puzzle — fast crossfade transition
     // Phase 1: Fade-in overlay (150ms CSS) → Phase 2: Swap state while fully covered
@@ -156,6 +159,16 @@ const App: React.FC = () => {
             })();
         }, 160);
     }, [currentPuzzle, handleMarkCompleted, handleNext, resetFlow]);
+
+    useEffect(() => {
+        const syncLayoutMode = () => {
+            setLayoutMode(getLayoutMode());
+        };
+
+        syncLayoutMode();
+        window.addEventListener('resize', syncLayoutMode);
+        return () => window.removeEventListener('resize', syncLayoutMode);
+    }, []);
 
     // Show completion modal when all puzzles are completed
     useEffect(() => {
@@ -190,6 +203,12 @@ const App: React.FC = () => {
     const isMirrored = scoutedPlayerId !== '1';
     const playerArena = ARENA_SKINS.find(a => a.id === activePlayer.arenaId) || ARENA_SKINS[0];
     const arenaSkinUrl = playerArena.backgroundUrl || playerArena.iconUrl;
+    const isPhoneLandscape = layoutMode === 'phone-landscape';
+    const mobileOverlayMode = getMobileOverlayMode({
+        isMirrored,
+        isAugmentOpen,
+        puzzlePhase,
+    });
 
     // Preload all arena images so scouting never shows bare teal background
     useArenaPreloader();
@@ -231,6 +250,34 @@ const App: React.FC = () => {
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [allPlayers, currentView]);
 
+    useEffect(() => {
+        if (mobileOverlayMode !== 'none' || isMirrored) {
+            setMobilePanel(null);
+        }
+    }, [mobileOverlayMode, isMirrored]);
+
+    useEffect(() => {
+        setMobilePanel(null);
+    }, [currentPuzzle?.id]);
+
+    useEffect(() => {
+        if (currentView !== 'puzzle') {
+            setMobilePanel(null);
+        }
+    }, [currentView]);
+
+    const handleAugmentButtonClick = () => {
+        if (isMirrored) {
+            setScoutedPlayerId('1');
+            setIsAugmentOpen(false);
+            setMobilePanel(null);
+            return;
+        }
+
+        setMobilePanel(null);
+        setIsAugmentOpen(prev => !prev);
+    };
+
     // Removed routing for TestFlex
 
     if (!currentPuzzle) {
@@ -246,10 +293,19 @@ const App: React.FC = () => {
     return (
         <>
             <LandscapePrompt />
-            <div className="layout-wrapper" style={{ backgroundImage: `url(${arenaSkinUrl})` }}>
-                <div className="app-container" style={{
+            <div
+                className="layout-wrapper"
+                data-layout-mode={layoutMode}
+                style={{ backgroundImage: `url(${arenaSkinUrl})` }}
+            >
+                <div
+                    className="app-container"
+                    data-layout-mode={layoutMode}
+                    data-mobile-overlay-mode={mobileOverlayMode}
+                    style={{
                     backgroundImage: `url(${arenaSkinUrl})`,
-                }}>
+                    }}
+                >
 
                     {/* Video Library View */}
                     {currentView === 'library' && (
@@ -268,12 +324,14 @@ const App: React.FC = () => {
                                 activePlayer={activePlayer}
                                 isMirrored={isMirrored}
                             />
-                            <TopStatusBar
-                                stage={currentPuzzle.stage || ''}
-                                streakHistory={currentPuzzle.streakHistory}
-                                streakCount={currentPuzzle.streakCount}
-                                dimmed={isAugmentOpen && !isMirrored}
-                            />
+                            {!isMirrored && (
+                                <TopStatusBar
+                                    stage={currentPuzzle.stage || ''}
+                                    streakHistory={currentPuzzle.streakHistory}
+                                    streakCount={currentPuzzle.streakCount}
+                                    dimmed={isAugmentOpen}
+                                />
+                            )}
 
                             <GameHUD
                                 activePlayerId={scoutedPlayerId}
@@ -281,6 +339,11 @@ const App: React.FC = () => {
                                 onPlayerSelect={(id) => { setScoutedPlayerId(id); if (id !== '1') setIsAugmentOpen(false); }}
                                 synergies={synergies}
                                 items={items}
+                                gold={myPlayer.gold}
+                                layoutMode={layoutMode}
+                                mobilePanel={mobilePanel}
+                                onMobilePanelChange={setMobilePanel}
+                                mobileOverlayMode={mobileOverlayMode}
                             />
 
                             {MONETIZATION_ENABLED && (
@@ -466,7 +529,7 @@ const App: React.FC = () => {
                                 />
                             )}
 
-                            {puzzlePhase !== 'reviewing' && !isMirrored && (
+                            {puzzlePhase !== 'reviewing' && !isMirrored && !isPhoneLandscape && (
                                 <GoldDisplay gold={myPlayer.gold} />
                             )}
 
@@ -475,10 +538,7 @@ const App: React.FC = () => {
                                     <AugmentButton
                                         isActive={isAugmentOpen}
                                         variant={isMirrored ? 'return' : 'default'}
-                                        onClick={isMirrored
-                                            ? () => { setScoutedPlayerId('1'); setIsAugmentOpen(false); }
-                                            : () => setIsAugmentOpen(!isAugmentOpen)
-                                        }
+                                        onClick={handleAugmentButtonClick}
                                     />
                                 </>
                             )}

@@ -147,12 +147,6 @@ describe('usePuzzleGame - Bug Condition Exploration', () => {
             puzzleAfterNext?.id === puzzleBeforeNext?.id
           ).toBe(true);
 
-          // 3. URL should be cleared (no puzzle ID in URL)
-          // Check that the LAST call to pushState cleared the URL
-          const lastCall = mockPushState.mock.calls[mockPushState.mock.calls.length - 1];
-          expect(lastCall).toBeDefined();
-          const lastUrl = String(lastCall[2]);
-          expect(lastUrl).toMatch(/^[^?]*$/); // URL without query params
         }
       ),
       {
@@ -238,7 +232,7 @@ describe('usePuzzleGame - Preservation Property Tests', () => {
    * Preservation Requirements:
    * - Puzzle selection from unplayed pool when unplayedPuzzles.length > 0
    * - Completion tracking via puzzleService.markPuzzleCompleted remains unchanged
-   * - URL deep linking to specific puzzles continues to work
+   * - Puzzle navigation avoids writing browser history entries
    * - Custom scenario loading via URL parameters remains functional
    * 
    * EXPECTED OUTCOME: Tests PASS on unfixed code (confirms baseline behavior)
@@ -382,101 +376,31 @@ describe('usePuzzleGame - Preservation Property Tests', () => {
     );
   });
 
-  /**
-   * Property 2.3: URL deep linking to specific puzzles continues to work
-   */
-  it('Property 2.3: Deep linking to specific puzzle via URL works correctly', async () => {
-    await fc.assert(
-      fc.asyncProperty(
-        fc.integer({ min: 3, max: 10 }),
-        fc.integer({ min: 0, max: 9 }),
-        async (puzzleCount, targetIndex) => {
-          // Ensure targetIndex is within bounds
-          const actualTargetIndex = targetIndex % puzzleCount;
-          
-          // Setup: Create puzzle pool
-          const mockPuzzles = Array.from({ length: puzzleCount }, (_, i) => 
-            createPuzzle(`puzzle-${i}`)
-          );
-
-          const targetPuzzle = mockPuzzles[actualTargetIndex];
-
-          // Setup: URL with puzzle parameter
-          Object.defineProperty(window, 'location', {
-            value: { 
-              href: `http://localhost:5173/?puzzle=${targetPuzzle.id}`,
-              search: `?puzzle=${targetPuzzle.id}`,
-            },
-            writable: true,
-          });
-
-          vi.mocked(puzzleService.getAll).mockResolvedValue(mockPuzzles);
-          vi.mocked(puzzleService.getCompletedPuzzles).mockResolvedValue([]);
-
-          // Render hook
-          const { result } = renderHook(() => usePuzzleGame(true));
-
-          // Wait for puzzles to load
-          await waitFor(() => {
-            expect(result.current.isLoadingPuzzles).toBe(false);
-          });
-
-          // Wait for deep linking to take effect
-          await waitFor(() => {
-            expect(result.current.currentPuzzle?.id).toBe(targetPuzzle.id);
-          }, { timeout: 500 });
-
-          // Assert: Current puzzle should be the one specified in URL
-          expect(result.current.currentPuzzle?.id).toBe(targetPuzzle.id);
-        }
-      ),
-      {
-        numRuns: 5,
-        verbose: true,
-      }
-    );
-  });
-
-  /**
-   * Property 2.4: URL state management remains functional
-   * 
-   * Tests that URL parameters are properly managed during puzzle navigation
-   */
-  it('Property 2.4: URL state management works correctly', async () => {
-    // Setup: Create puzzle pool
-    const mockPuzzles = Array.from({ length: 5 }, (_, i) => 
+  it('Property 2.3: Puzzle navigation no longer writes browser history entries', async () => {
+    const mockPuzzles = Array.from({ length: 5 }, (_, i) =>
       createPuzzle(`puzzle-${i}`)
     );
 
     vi.mocked(puzzleService.getAll).mockResolvedValue(mockPuzzles);
     vi.mocked(puzzleService.getCompletedPuzzles).mockResolvedValue([]);
 
-    // Render hook
     const { result } = renderHook(() => usePuzzleGame(true));
 
-    // Wait for puzzles to load
     await waitFor(() => {
       expect(result.current.isLoadingPuzzles).toBe(false);
-    });
-
-    // Wait for initial puzzle to be set
-    await waitFor(() => {
       expect(result.current.currentPuzzle).toBeTruthy();
     });
 
-    // Act: Navigate to next puzzle
     act(() => {
       result.current.handleNextPuzzle();
     });
 
-    await waitFor(() => true, { timeout: 100 });
+    await waitFor(() => {
+      expect(result.current.currentPuzzle).toBeTruthy();
+    }, { timeout: 100 });
 
-    // Assert: URL should be updated (pushState should be called)
-    // The hook manages URL state by pushing/replacing state
-    expect(mockPushState).toHaveBeenCalled();
-
-    // Assert: Puzzle navigation is working
-    expect(result.current.currentPuzzle).toBeTruthy();
+    expect(mockPushState).not.toHaveBeenCalled();
+    expect(mockReplaceState).not.toHaveBeenCalled();
   });
 
   /**

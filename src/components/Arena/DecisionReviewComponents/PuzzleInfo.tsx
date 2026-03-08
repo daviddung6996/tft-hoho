@@ -20,7 +20,7 @@ export const PuzzleInfo: React.FC<PuzzleInfoProps> = ({
     encounter,
     streamUrl,
     onViewLibrary,
-    userMatchedPro
+    userMatchedPro,
 }) => {
     const [copied, setCopied] = useState(false);
 
@@ -33,7 +33,6 @@ export const PuzzleInfo: React.FC<PuzzleInfoProps> = ({
 
     const canOpenProPick = Boolean(onViewLibrary || streamUrl);
     const handleOpenProPick = () => {
-        // Priority: VOD link first, then video library fallback
         if (streamUrl) {
             window.open(streamUrl, '_blank', 'noopener,noreferrer');
             return;
@@ -46,11 +45,13 @@ export const PuzzleInfo: React.FC<PuzzleInfoProps> = ({
 
     return (
         <div className="puzzle-context">
-            <div className="context-row">
-                {patch && <span className="context-item"><strong>PHIÊN BẢN</strong> {patch}</span>}
-                {date && <span className="context-item"><strong>NGÀY</strong> {date}</span>}
-                {server && <span className="context-item"><strong>MÁY CHỦ</strong> {server}</span>}
-                {encounter && <span className="context-item"><strong>SỰ KIỆN</strong> {encounter}</span>}
+            <div className="context-left">
+                <div className="context-row">
+                    {patch && <span className="context-item"><strong>PHIÊN BẢN</strong> {patch}</span>}
+                    {date && <span className="context-item"><strong>NGÀY</strong> {date}</span>}
+                    {server && <span className="context-item"><strong>MÁY CHỦ</strong> {server}</span>}
+                    {encounter && <span className="context-item"><strong>SỰ KIỆN</strong> {encounter}</span>}
+                </div>
             </div>
             <div className="puzzle-actions">
                 <div className={`completion-badge ${userMatchedPro ? 'matched' : 'diverged'}`}>

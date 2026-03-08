@@ -1,9 +1,11 @@
 import React, { useMemo, useState, useEffect, useCallback } from 'react';
 import { Board, GoldPillarHexes, GoldPillarHexesPlayer } from '../Arena/Board';
 import { ArenaEffects } from '../Arena/ArenaEffects';
+import { PlayerLevelDisplay } from '../Arena/PlayerLevelDisplay';
 import { PlayerData } from '../../data/mockPlayers';
 import { UnitData } from '../../data/types';
 import { getRandomIoniaPath, getRandomVoidMods } from '../../data/gameInfoData';
+import Toast from '../common/Toast';
 
 interface GameSceneProps {
     myPlayer: PlayerData;
@@ -22,11 +24,13 @@ export const GameScene: React.FC<GameSceneProps> = ({ myPlayer, activePlayer, is
     // Local state for interactive unit positioning (drag-drop)
     const [localUnits, setLocalUnits] = useState<UnitData[]>(myPlayer.units);
     const [localBench, setLocalBench] = useState<UnitData[]>(myPlayer.bench);
+    const [showLevelCapToast, setShowLevelCapToast] = useState(false);
 
     // Reset local state when puzzle changes (myPlayer reference changes)
     useEffect(() => {
         setLocalUnits(myPlayer.units);
         setLocalBench(myPlayer.bench);
+        setShowLevelCapToast(false);
     }, [myPlayer.units, myPlayer.bench]);
 
     // Handle drag-drop unit changes
@@ -35,6 +39,10 @@ export const GameScene: React.FC<GameSceneProps> = ({ myPlayer, activePlayer, is
         const benchUnits = updatedUnits.filter(u => u.benchIndex !== undefined);
         setLocalUnits(boardUnits);
         setLocalBench(benchUnits);
+    }, []);
+
+    const handleLevelCapHit = useCallback(() => {
+        setShowLevelCapToast(current => current ? current : true);
     }, []);
 
     return (
@@ -58,6 +66,8 @@ export const GameScene: React.FC<GameSceneProps> = ({ myPlayer, activePlayer, is
                     voidMods={gameInfo.voidMods}
                     streakCount={streakCount}
                     onUnitsChange={!isMirrored ? handleUnitsChange : undefined}
+                    playerLevel={!isMirrored ? myPlayer.level : undefined}
+                    onLevelCapHit={!isMirrored ? handleLevelCapHit : undefined}
                 />
             </main>
 
@@ -65,7 +75,18 @@ export const GameScene: React.FC<GameSceneProps> = ({ myPlayer, activePlayer, is
             {isMirrored ? (
                 <GoldPillarHexes goldAmount={activePlayer.gold} />
             ) : (
-                <GoldPillarHexesPlayer goldAmount={myPlayer.gold} />
+                <>
+                    <GoldPillarHexesPlayer goldAmount={myPlayer.gold} />
+                    <PlayerLevelDisplay level={myPlayer.level} xp={myPlayer.xp} />
+                    {showLevelCapToast && (
+                        <Toast
+                            message={`Board da full theo cap ${myPlayer.level}.`}
+                            type="info"
+                            duration={1600}
+                            onClose={() => setShowLevelCapToast(false)}
+                        />
+                    )}
+                </>
             )}
         </>
     );

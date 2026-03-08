@@ -4,12 +4,12 @@
    ========================================================================== */
 
 :root {
-    --mobile-landscape-bp: 740px;
-    --min-font-xs: 8px;
-    --min-font-sm: 9px;
-    --min-font-md: 10px;
-    --min-font-lg: 12px;
-    --min-font-xl: 14px;
+  --mobile-landscape-bp: 740px;
+  --min-font-xs: 8px;
+  --min-font-sm: 9px;
+  --min-font-md: 10px;
+  --min-font-lg: 12px;
+  --min-font-xl: 14px;
 }
 
 /* ==========================================================================
@@ -20,138 +20,133 @@
 
 /* --- AugmentModal --- */
 @media (hover: hover) {
-    .augment-card:hover {
-        border-color: #c8aa6e;
-        box-shadow:
-            0 0 1.2cqw rgba(200, 170, 110, 0.3),
-            0 0.6cqw 2cqw rgba(0, 0, 0, 0.5);
-    }
+  .augment-card:hover {
+    border-color: #c8aa6e;
+    box-shadow: 0 0 1.2cqw rgba(200, 170, 110, 0.3),
+      0 0.6cqw 2cqw rgba(0, 0, 0, 0.5);
+  }
 
-    .reroll-btn:not(.disabled):hover {
-        border-color: #c8aa6e;
-        box-shadow: 0 0 0.6cqw rgba(200, 170, 110, 0.25);
-    }
+  .reroll-btn:not(.disabled):hover {
+    border-color: #c8aa6e;
+    box-shadow: 0 0 0.6cqw rgba(200, 170, 110, 0.25);
+  }
 
-    .augment-modal-overlay.tier-advanced .augment-card:hover {
-        border-color: #e8c252;
-        box-shadow:
-            0 0 1.2cqw rgba(232, 194, 82, 0.35),
-            0 0.6cqw 2cqw rgba(0, 0, 0, 0.5);
-    }
+  .augment-modal-overlay.tier-advanced .augment-card:hover {
+    border-color: #e8c252;
+    box-shadow: 0 0 1.2cqw rgba(232, 194, 82, 0.35),
+      0 0.6cqw 2cqw rgba(0, 0, 0, 0.5);
+  }
 
-    .augment-modal-overlay.tier-rare .augment-card:hover {
-        border-color: #c084fc;
-        box-shadow:
-            0 0 1.5cqw rgba(192, 132, 252, 0.45),
-            0 0 3cqw rgba(168, 85, 247, 0.2),
-            0 0.6cqw 2cqw rgba(0, 0, 0, 0.5);
-    }
+  .augment-modal-overlay.tier-rare .augment-card:hover {
+    border-color: #c084fc;
+    box-shadow: 0 0 1.5cqw rgba(192, 132, 252, 0.45),
+      0 0 3cqw rgba(168, 85, 247, 0.2), 0 0.6cqw 2cqw rgba(0, 0, 0, 0.5);
+  }
 }
 
 /* --- ScoutingPanel --- */
 /* Prevent text selection and default touch highlight on mobile */
 .player-row {
-    -webkit-tap-highlight-color: transparent;
-    user-select: none;
-    -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 @media (hover: hover) {
-    .player-row:not(.scouting):not(.is-me):hover {
-        opacity: 1;
-        filter: brightness(1);
-    }
+  .player-row:not(.scouting):not(.is-me):hover {
+    opacity: 1;
+    filter: brightness(1);
+  }
 }
 
 /* --- PuzzleLockOverlay --- */
 @media (hover: hover) {
-
-    .puzzle-lock-btn--pro:hover,
-    .puzzle-lock-btn--unlock:hover,
-    .puzzle-lock-btn--skip:hover {
-        box-shadow: 0 0 0.8cqw rgba(200, 170, 110, 0.3);
-    }
+  .puzzle-lock-btn--pro:hover,
+  .puzzle-lock-btn--unlock:hover,
+  .puzzle-lock-btn--skip:hover {
+    box-shadow: 0 0 0.8cqw rgba(200, 170, 110, 0.3);
+  }
 }
 
 /* --- LoginModal --- */
 @media (hover: hover) {
-    .login-close-btn:hover {
-        border-color: #c8aa6e;
-        color: #c8aa6e;
-    }
+  .login-close-btn:hover {
+    border-color: #c8aa6e;
+    color: #c8aa6e;
+  }
 
-    .login-play-button:hover:not(:disabled) {
-        background: linear-gradient(180deg, #d4a844 0%, #b08830 100%);
-        filter: drop-shadow(0 0 1cqw rgba(200, 170, 110, 0.4));
-    }
+  .login-play-button:hover:not(:disabled) {
+    background: linear-gradient(180deg, #d4a844 0%, #b08830 100%);
+    filter: drop-shadow(0 0 1cqw rgba(200, 170, 110, 0.4));
+  }
 
-    .login-google:hover:not(:disabled),
-    .login-email-toggle:hover:not(:disabled) {
-        border-color: rgba(200, 170, 110, 0.5);
-        background: rgba(200, 170, 110, 0.08);
-    }
+  .login-google:hover:not(:disabled),
+  .login-email-toggle:hover:not(:disabled) {
+    border-color: rgba(200, 170, 110, 0.5);
+    background: rgba(200, 170, 110, 0.08);
+  }
 
-    .login-register-hint button:hover {
-        color: #F0E6D2;
-    }
+  .login-register-hint button:hover {
+    color: #f0e6d2;
+  }
 
-    .login-submit:hover:not(:disabled) {
-        filter: brightness(1.1);
-    }
+  .login-submit:hover:not(:disabled) {
+    filter: brightness(1.1);
+  }
 
-    .login-back-btn:hover,
-    .login-toggle-btn:hover {
-        color: #c8aa6e;
-    }
+  .login-back-btn:hover,
+  .login-toggle-btn:hover {
+    color: #c8aa6e;
+  }
 }
 
 /* --- SettingsButton / Menu --- */
 @media (hover: hover) {
-    .menu-button:hover {
-        border-color: #c8aa6e;
-        box-shadow: 0 0 0.6cqw rgba(200, 170, 110, 0.3);
-    }
+  .menu-button:hover {
+    border-color: #c8aa6e;
+    box-shadow: 0 0 0.6cqw rgba(200, 170, 110, 0.3);
+  }
 
-    .menu-item:hover {
-        background: rgba(200, 170, 110, 0.08);
-        border-color: rgba(200, 170, 110, 0.4);
-    }
+  .menu-item:hover {
+    background: rgba(200, 170, 110, 0.08);
+    border-color: rgba(200, 170, 110, 0.4);
+  }
 }
 
 /* --- TCoinBalance --- */
 @media (hover: hover) {
-    .tcoin-balance:hover {
-        box-shadow: 0 0 0.6cqw rgba(200, 170, 110, 0.3);
-    }
+  .tcoin-balance:hover {
+    box-shadow: 0 0 0.6cqw rgba(200, 170, 110, 0.3);
+  }
 }
 
 /* --- VideoCard --- */
 @media (hover: hover) {
-    .video-card.unlocked:hover {
-        border-color: rgba(200, 170, 110, 0.5);
-        box-shadow: 0 0 0.8cqw rgba(200, 170, 110, 0.15);
-    }
+  .video-card.unlocked:hover {
+    border-color: rgba(200, 170, 110, 0.5);
+    box-shadow: 0 0 0.8cqw rgba(200, 170, 110, 0.15);
+  }
 }
 
 /* --- Tooltip hover fix --- */
 @media (hover: hover) {
-    .hextech-tooltip-wrapper:hover {
-        z-index: 999999;
-        isolation: isolate;
-    }
+  .hextech-tooltip-wrapper:hover {
+    z-index: 999999;
+    isolation: isolate;
+  }
 }
 
 /* --- Common hex buttons --- */
 @media (hover: hover) {
-    .hex-close-btn:hover {
-        border-color: #c8aa6e;
-        color: #c8aa6e;
-    }
+  .hex-close-btn:hover {
+    border-color: #c8aa6e;
+    color: #c8aa6e;
+  }
 
-    .hex-button:hover {
-        border-color: #c8aa6e;
-        box-shadow: 0 0 0.5cqw rgba(200, 170, 110, 0.25);
-    }
+  .hex-button:hover {
+    border-color: #c8aa6e;
+    box-shadow: 0 0 0.5cqw rgba(200, 170, 110, 0.25);
+  }
 }
 
 /* ==========================================================================
@@ -161,162 +156,161 @@
    ========================================================================== */
 
 @media (max-width: 1024px) and (orientation: landscape) {
+  /* Augment cards & columns — better proportions */
+  .augment-cards-container {
+    gap: 2.5cqw;
+  }
 
-    /* Augment cards & columns — better proportions */
-    .augment-cards-container {
-        gap: 2.5cqw;
-    }
+  .augment-column {
+    width: 22cqw;
+    gap: 1cqw;
+  }
 
-    .augment-column {
-        width: 22cqw;
-        gap: 1cqw;
-    }
+  .augment-card {
+    min-height: 34cqw;
+    padding: 2cqw 1.2cqw;
+  }
 
-    .augment-card {
-        min-height: 34cqw;
-        padding: 2cqw 1.2cqw;
-    }
+  /* Reroll button — balanced scaling */
+  .reroll-btn {
+    height: 4.5cqw;
+    min-height: 36px;
+  }
 
-    /* Reroll button — balanced scaling */
-    .reroll-btn {
-        height: 4.5cqw;
-        min-height: 36px;
-    }
-
-    /* Scouting panel rows:
+  /* Scouting panel rows:
        Instead of forcing a fixed px min-height which breaks the flex spacing,
        we increase the base cqw dimensions slightly for mobile to make them more tappable,
        while preserving the original aspect ratio and layout structure. 
     */
-    .player-row {
-        height: 5.5cqw;
-        margin-bottom: 0.2cqw;
-        /* Add slight gap to prevent overlap if scaled */
-    }
+  .player-row {
+    height: 5.5cqw;
+    margin-bottom: 0.2cqw;
+    /* Add slight gap to prevent overlap if scaled */
+  }
 
-    .player-pill,
-    .player-pill-border {
-        height: 4.5cqw;
-        min-width: 11cqw;
-    }
+  .player-pill,
+  .player-pill-border {
+    height: 4.5cqw;
+    min-width: 11cqw;
+  }
 
-    /* Fix the "Me" row which has a different internal structure */
-    .player-pill-border {
-        padding: 0.15cqw;
-    }
+  /* Fix the "Me" row which has a different internal structure */
+  .player-pill-border {
+    padding: 0.15cqw;
+  }
 
-    .player-row.is-me .player-pill {
-        height: 100%;
-        margin: 0;
-        min-width: 0;
-        padding-left: 2cqw;
-    }
+  .player-row.is-me .player-pill {
+    height: 100%;
+    margin: 0;
+    min-width: 0;
+    padding-left: 2cqw;
+  }
 
-    .player-row.is-me .player-health {
-        font-size: 1.5cqw;
-    }
+  .player-row.is-me .player-health {
+    font-size: 1.5cqw;
+  }
 
-    .player-avatar-wrapper {
-        width: 5.2cqw;
-        height: 5.2cqw;
-        min-width: unset;
-        min-height: unset;
-    }
+  .player-avatar-wrapper {
+    width: 5.2cqw;
+    height: 5.2cqw;
+    min-width: unset;
+    min-height: unset;
+  }
 
-    /* Make avatar closer to the wrapper size to reduce ring gap */
-    .player-avatar-img {
-        width: 4.7cqw;
-        height: 4.7cqw;
-    }
+  /* Make avatar closer to the wrapper size to reduce ring gap */
+  .player-avatar-img {
+    width: 4.7cqw;
+    height: 4.7cqw;
+  }
 
-    .player-health {
-        font-size: 1.1cqw;
-    }
+  .player-health {
+    font-size: 1.1cqw;
+  }
 
-    .player-name {
-        font-size: 0.9cqw;
-        max-width: 6.5cqw;
-    }
+  .player-name {
+    font-size: 0.9cqw;
+    max-width: 6.5cqw;
+  }
 
-    /* Menu button — larger touch target */
-    .menu-button {
-        min-width: 44px;
-        min-height: 44px;
-    }
+  /* Menu button — larger touch target */
+  .menu-button {
+    min-width: 44px;
+    min-height: 44px;
+  }
 
-    /* Augment toggle button — bigger */
-    .augment-btn {
-        min-width: 48px;
-        min-height: 48px;
-    }
+  /* Augment toggle button — bigger */
+  .augment-btn {
+    min-width: 48px;
+    min-height: 48px;
+  }
 
-    /* Login buttons — adequate sizing */
-    .login-play-button {
-        min-height: 52px;
-    }
+  /* Login buttons — adequate sizing */
+  .login-play-button {
+    min-height: 52px;
+  }
 
-    .login-google,
-    .login-email-toggle {
-        min-height: 44px;
-    }
+  .login-google,
+  .login-email-toggle {
+    min-height: 44px;
+  }
 
-    .login-field input {
-        min-height: 44px;
-        font-size: max(0.8cqw, 16px);
-        /* Prevent iOS zoom on input focus */
-    }
+  .login-field input {
+    min-height: 44px;
+    font-size: max(0.8cqw, 16px);
+    /* Prevent iOS zoom on input focus */
+  }
 
-    .login-submit {
-        min-height: 44px;
-    }
+  .login-submit {
+    min-height: 44px;
+  }
 
-    .login-close-btn {
-        min-width: 36px;
-        min-height: 36px;
-    }
+  .login-close-btn {
+    min-width: 36px;
+    min-height: 36px;
+  }
 
-    /* PuzzleLockOverlay buttons */
-    .puzzle-lock-btn--pro,
-    .puzzle-lock-btn--unlock,
-    .puzzle-lock-btn--skip {
-        min-height: 44px;
-    }
+  /* PuzzleLockOverlay buttons */
+  .puzzle-lock-btn--pro,
+  .puzzle-lock-btn--unlock,
+  .puzzle-lock-btn--skip {
+    min-height: 44px;
+  }
 
-    /* TCoin balance: Scale contents proportionally instead of forcing a rigid min-height */
-    .tcoin-balance {
-        padding: 0.5cqw 1cqw;
-        border-radius: 2.5cqw;
-    }
+  /* TCoin balance: Scale contents proportionally instead of forcing a rigid min-height */
+  .tcoin-balance {
+    padding: 0.5cqw 1cqw;
+    border-radius: 2.5cqw;
+  }
 
-    .tcoin-balance .tcoin-icon-svg {
-        width: 2.5cqw !important;
-        height: 2.5cqw !important;
-    }
+  .tcoin-balance .tcoin-icon-svg {
+    width: 2.5cqw !important;
+    height: 2.5cqw !important;
+  }
 
-    .tcoin-amount {
-        font-size: 1.2cqw;
-    }
+  .tcoin-amount {
+    font-size: 1.2cqw;
+  }
 
-    /* Hex close buttons */
-    .hex-close-btn {
-        min-width: 36px;
-        min-height: 36px;
-    }
+  /* Hex close buttons */
+  .hex-close-btn {
+    min-width: 36px;
+    min-height: 36px;
+  }
 
-    /* Common hex button */
-    .hex-button {
-        min-height: 44px;
-    }
+  /* Common hex button */
+  .hex-button {
+    min-height: 44px;
+  }
 
-    /* Video library filter buttons */
-    .video-library-filter-btn {
-        min-height: 36px;
-    }
+  /* Video library filter buttons */
+  .video-library-filter-btn {
+    min-height: 36px;
+  }
 
-    /* Video card — adequate tap zone */
-    .video-card {
-        min-height: 80px;
-    }
+  /* Video card — adequate tap zone */
+  .video-card {
+    min-height: 80px;
+  }
 }
 
 /* ==========================================================================
@@ -326,12 +320,11 @@
    ========================================================================== */
 
 @media (max-width: 1024px) {
-
-    input,
-    select,
-    textarea {
-        font-size: max(inherit, 16px) !important;
-    }
+  input,
+  select,
+  textarea {
+    font-size: max(inherit, 16px) !important;
+  }
 }
 
 /* ==========================================================================
@@ -339,17 +332,16 @@
    ========================================================================== */
 
 @media (max-width: 1024px) and (orientation: landscape) {
-
-    /* Fixed modals — respect notch */
-    .login-overlay,
-    .um-overlay,
-    .video-player-overlay,
-    .video-library-page,
-    .share-modal-overlay,
-    .support-modal-overlay {
-        padding-left: env(safe-area-inset-left, 0);
-        padding-right: env(safe-area-inset-right, 0);
-    }
+  /* Fixed modals — respect notch */
+  .login-overlay,
+  .um-overlay,
+  .video-player-overlay,
+  .video-library-page,
+  .share-modal-overlay,
+  .support-modal-overlay {
+    padding-left: env(safe-area-inset-left, 0);
+    padding-right: env(safe-area-inset-right, 0);
+  }
 }
 
 /* ==========================================================================
@@ -358,406 +350,322 @@
    ========================================================================== */
 
 @media (max-width: var(--mobile-landscape-bp)) and (orientation: landscape) {
-
-    /* --- ScoutingPanel (Right Sidebar) --- */
-    .player-row {
-        height: max(5.5cqw, 36px);
-        /* Touch target */
-    }
-
-    .player-pill,
-    .player-pill-border {
-        height: max(4.5cqw, 28px);
-        min-width: max(11cqw, 75px);
-    }
-
-    .player-avatar-wrapper {
-        width: max(5.2cqw, 32px);
-        height: max(5.2cqw, 32px);
-    }
-
-    .player-avatar-img {
-        width: max(4.7cqw, 28px);
-        height: max(4.7cqw, 28px);
-        font-size: max(1.8cqw, 14px);
-        /* Avatar emoji size */
-    }
-
-    .player-name {
-        font-size: max(0.9cqw, var(--min-font-md));
-        max-width: max(6.5cqw, 50px);
-    }
-
-    .player-health {
-        font-size: max(1.1cqw, var(--min-font-sm));
-    }
-
-    .player-row.is-me .player-health {
-        font-size: max(1.4cqw, var(--min-font-lg));
-    }
-
-    .status-icon {
-        width: max(0.95cqw, 12px);
-        height: max(0.95cqw, 12px);
-        font-size: max(0.52cqw, var(--min-font-xs));
-    }
-
-    /* --- SynergyPanel & ItemPanel (Left Sidebar) --- */
-    .synergy-panel-container,
-    .item-panel-container {
-        padding-left: max(0.8cqw, 8px);
-        /* Allow scroll if the screen is too short for all synergies */
-        max-height: 90vh;
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
-        /* Firefox */
-    }
-
-    .synergy-panel-container::-webkit-scrollbar,
-    .item-panel-container::-webkit-scrollbar {
-        display: none;
-        /* Chrome/Safari */
-    }
-
-    .synergy-item {
-        margin-bottom: max(0.5cqw, 6px);
-    }
-
-    .synergy-icon-wrapper {
-        width: max(1.8cqw, 20px);
-        height: max(2.1cqw, 24px);
-    }
-
-    .synergy-content {
-        gap: max(0.2cqw, 2px);
-    }
-
-    .synergy-name {
-        font-size: max(0.75cqw, var(--min-font-sm));
-    }
-
-    .synergy-count-text {
-        font-size: max(0.65cqw, var(--min-font-xs));
-    }
-
-    .item-panel-group {
-        margin-bottom: max(0.8cqw, 8px);
-    }
-
-    .item-panel-group-title {
-        font-size: max(0.7cqw, var(--min-font-sm));
-        margin-bottom: max(0.4cqw, 4px);
-    }
-
-    .item-list {
-        gap: max(0.4cqw, 4px);
-    }
-
-    .item-list img {
-        width: max(2cqw, 22px);
-        height: max(2cqw, 22px);
-        border-width: 1px;
-    }
-
-    /* --- AugmentModal --- */
-    .augment-cards-container {
-        gap: max(2cqw, 12px);
-    }
-
-    .augment-column {
-        width: max(20cqw, 140px);
-        gap: max(0.8cqw, 4px);
-    }
-
-    .augment-card {
-        padding: max(1.5cqw, 12px) max(1cqw, 8px);
-        min-height: max(30cqw, 200px);
-    }
-
-    .augment-icon {
-        width: max(4.5cqw, 32px);
-        height: max(4.5cqw, 32px);
-    }
-
-    .augment-name {
-        font-size: max(0.85cqw, var(--min-font-lg));
-        margin-bottom: max(0.4cqw, 4px);
-    }
-
-    .augment-desc {
-        font-size: max(0.65cqw, var(--min-font-sm));
-        line-height: 1.4;
-    }
-
-    .reroll-btn {
-        height: max(3.5cqw, 36px);
-        font-size: max(0.7cqw, var(--min-font-md));
-    }
-
-    .augment-tier-badge {
-        margin-bottom: max(0.5cqw, 4px);
-    }
-
-    .augment-tier-label {
-        font-size: max(0.9cqw, var(--min-font-lg));
-    }
-
-    /* --- DecisionReview Screen --- */
-    /* Container becomes scrollable to fit all content on short screens */
-    .decision-review-container {
-        max-height: 95vh;
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
-        padding: max(2cqw, 16px) max(3cqw, 24px) !important;
-        /* Custom scrollbar for review screen */
-        scrollbar-width: thin;
-        scrollbar-color: rgba(200, 170, 110, 0.3) transparent;
-        display: block;
-        /* Remove flex constraints that squish content */
-    }
-
-    .review-header {
-        margin-bottom: max(1.5cqw, 12px);
-    }
-
-    .review-title {
-        font-size: max(1.8cqw, 20px);
-    }
-
-    .puzzle-info-badge {
-        font-size: max(0.65cqw, var(--min-font-sm));
-        padding: max(0.2cqw, 2px) max(0.6cqw, 6px);
-    }
-
-    .puzzle-info-badge svg {
-        width: max(0.85cqw, 12px);
-        height: max(0.85cqw, 12px);
-    }
-
-    .completion-badge {
-        font-size: max(0.7cqw, var(--min-font-sm));
-        padding: max(0.2cqw, 4px) max(0.6cqw, 8px);
-    }
-
-    .review-content {
-        flex-direction: column;
-        /* Stack on very small screens if needed, otherwise rely on scroll */
-        gap: max(2cqw, 16px);
-        margin-bottom: max(2cqw, 16px);
-        display: flex;
-    }
-
-    .review-left-column {
-        min-width: unset;
-        width: 100%;
-        max-width: 100%;
-        gap: max(1.5cqw, 12px);
-    }
-
-    .review-right-column {
-        min-width: unset;
-        width: 100%;
-        max-width: 100%;
-    }
-
-    .roll-section {
-        padding: max(0.6cqw, 8px);
-        gap: max(0.35cqw, 4px);
-    }
-
-    .roll-section-title {
-        font-size: max(0.7cqw, var(--min-font-md));
-    }
-
-    .roll-augment-card {
-        padding: max(0.35cqw, 4px);
-        gap: max(0.15cqw, 2px);
-    }
-
-    .roll-augment-card .augment-icon {
-        width: max(2.2cqw, 24px);
-        height: max(2.2cqw, 24px);
-    }
-
-    .roll-augment-card .augment-name {
-        font-size: max(0.65cqw, var(--min-font-xs));
-    }
-
-    .marker-text {
-        font-size: max(0.55cqw, var(--min-font-xs));
-    }
-
-    .vote-stats {
-        font-size: max(0.8cqw, var(--min-font-md));
-    }
-
-    .vote-count {
-        font-size: max(0.6cqw, var(--min-font-xs));
-    }
-
-    .explanation-section {
-        padding: max(0.6cqw, 10px);
-        gap: max(0.8cqw, 10px);
-    }
-
-    .explanation-title {
-        font-size: max(0.95cqw, var(--min-font-lg));
-        gap: max(0.4cqw, 6px);
-    }
-
-    .explanation-title svg {
-        width: max(1cqw, 14px);
-        height: max(1cqw, 14px);
-    }
-
-    .explanation-text {
-        font-size: max(0.8cqw, var(--min-font-md));
-        line-height: 1.5;
-    }
-
-    .explanation-video-title {
-        font-size: max(0.75cqw, var(--min-font-sm));
-    }
-
-    .explanation-video-note {
-        font-size: max(0.7cqw, var(--min-font-sm));
-    }
-
-    .review-actions {
-        gap: max(0.6cqw, 12px);
-        justify-content: center;
-        /* Center buttons on mobile */
-        margin-top: max(2cqw, 16px);
-        padding-bottom: max(2cqw, 16px);
-        /* Room to scroll past them */
-    }
-
-    .review-btn {
-        padding: max(0.6cqw, 10px) max(1.2cqw, 16px);
-        font-size: max(0.8cqw, var(--min-font-md));
-        min-height: 44px;
-        /* Touch target */
-    }
-
-    .review-btn svg {
-        width: max(1cqw, 16px);
-        height: max(1cqw, 16px);
-    }
-
-    /* --- Board & Units --- */
-    .hex-cell {
-        width: max(5.5cqw, 36px);
-        height: max(5.8cqw, 38px);
-    }
-
-    .unit-pawn-wrapper {
-        width: max(6cqw, 40px);
-        height: max(6cqw, 40px);
-    }
-
-    .unit-image-wrapper {
-        width: max(4.5cqw, 30px);
-        height: max(4.5cqw, 30px);
-    }
-
-    /* Item indicators on units */
-    .unit-items-container {
-        gap: max(0.2cqw, 2px);
-    }
-
-    .unit-item-icon {
-        width: max(1.2cqw, 10px);
-        height: max(1.2cqw, 10px);
-    }
-
-    .unit-star {
-        width: max(1cqw, 8px);
-        height: max(1cqw, 8px);
-    }
-
-    /* Target/Flex indicators */
-    .target-crosshair,
-    .flex-crosshair {
-        width: max(2cqw, 16px);
-        height: max(2cqw, 16px);
-    }
-
-    /* Augment tree icon */
-    .augment-tree-center .augment-icon {
-        width: max(2.5cqw, 20px);
-        height: max(2.5cqw, 20px);
-    }
-
-    /* Bench area spacing */
-    .bench-area {
-        height: max(9cqw, 60px);
-    }
-
-    /* --- Task 7: HUD Elements (TopStatusBar, GoldDisplay, Buttons) --- */
-    .top-status-bar {
-        padding: max(0.5cqw, 4px) max(1cqw, 8px);
-    }
-
-    .stage-indicator {
-        font-size: max(0.9cqw, var(--min-font-xl));
-        padding: max(0.3cqw, 4px) max(0.6cqw, 8px);
-    }
-
-    .status-text {
-        font-size: max(0.7cqw, var(--min-font-md));
-    }
-
-    .timer-text {
-        font-size: max(0.75cqw, var(--min-font-md));
-    }
-
-    .gold-display {
-        font-size: max(0.9cqw, var(--min-font-lg));
-        padding: max(0.4cqw, 4px) max(0.8cqw, 8px);
-    }
-
-    .gold-icon {
-        width: max(1.2cqw, 14px);
-        height: max(1.2cqw, 14px);
-    }
-
-    /* Menu button */
-    .menu-button {
-        width: max(2cqw, 24px);
-        height: max(2cqw, 24px);
-        font-size: max(1cqw, var(--min-font-md));
-    }
-
-    /* --- Task 8: Modals --- */
-    .support-modal-content,
-    .puzzle-completion-content {
-        max-width: 90vw;
-        max-height: 90vh;
-        overflow-y: auto;
-        padding: max(2cqw, 16px);
-    }
-
-    .qr-container {
-        width: max(15cqw, 120px) !important;
-        height: max(15cqw, 120px) !important;
-    }
-
-    .qr-container svg {
-        width: 100% !important;
-        height: 100% !important;
-    }
-
-    .arena-selector-grid {
-        grid-template-columns: repeat(auto-fill, minmax(max(8cqw, 100px), 1fr));
-        gap: max(1cqw, 8px);
-    }
-
-    .arena-thumb {
-        height: max(6cqw, 80px);
-    }
-
-    .arena-name {
-        font-size: max(0.7cqw, var(--min-font-sm));
-    }
+  /* --- ScoutingPanel (Right Sidebar) --- */
+  .player-row {
+    height: max(5.5cqw, 36px);
+    /* Touch target */
+  }
+
+  .player-pill,
+  .player-pill-border {
+    height: max(4.5cqw, 28px);
+    min-width: max(11cqw, 75px);
+  }
+
+  .player-avatar-wrapper {
+    width: max(5.2cqw, 32px);
+    height: max(5.2cqw, 32px);
+  }
+
+  .player-avatar-img {
+    width: max(4.7cqw, 28px);
+    height: max(4.7cqw, 28px);
+    font-size: max(1.8cqw, 14px);
+    /* Avatar emoji size */
+  }
+
+  .player-name {
+    font-size: max(0.9cqw, var(--min-font-md));
+    max-width: max(6.5cqw, 50px);
+  }
+
+  .player-health {
+    font-size: max(1.1cqw, var(--min-font-sm));
+  }
+
+  .player-row.is-me .player-health {
+    font-size: max(1.4cqw, var(--min-font-lg));
+  }
+
+  .status-icon {
+    width: max(0.95cqw, 12px);
+    height: max(0.95cqw, 12px);
+    font-size: max(0.52cqw, var(--min-font-xs));
+  }
+
+  /* --- SynergyPanel & ItemPanel (Left Sidebar) --- */
+  .synergy-panel-container,
+  .item-panel-container {
+    padding-left: max(0.8cqw, 8px);
+    /* Allow scroll if the screen is too short for all synergies */
+    max-height: 90vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    /* Firefox */
+  }
+
+  .synergy-panel-container::-webkit-scrollbar,
+  .item-panel-container::-webkit-scrollbar {
+    display: none;
+    /* Chrome/Safari */
+  }
+
+  .synergy-item {
+    margin-bottom: max(0.5cqw, 6px);
+  }
+
+  .synergy-icon-wrapper {
+    width: max(1.8cqw, 20px);
+    height: max(2.1cqw, 24px);
+  }
+
+  .synergy-content {
+    gap: max(0.2cqw, 2px);
+  }
+
+  .synergy-name {
+    font-size: max(0.75cqw, var(--min-font-sm));
+  }
+
+  .synergy-count-text {
+    font-size: max(0.65cqw, var(--min-font-xs));
+  }
+
+  .item-panel-group {
+    margin-bottom: max(0.8cqw, 8px);
+  }
+
+  .item-panel-group-title {
+    font-size: max(0.7cqw, var(--min-font-sm));
+    margin-bottom: max(0.4cqw, 4px);
+  }
+
+  .item-list {
+    gap: max(0.4cqw, 4px);
+  }
+
+  .item-list img {
+    width: max(2cqw, 22px);
+    height: max(2cqw, 22px);
+    border-width: 1px;
+  }
+
+  /* --- AugmentModal --- */
+  .augment-cards-container {
+    gap: max(2cqw, 12px);
+  }
+
+  .augment-column {
+    width: max(20cqw, 140px);
+    gap: max(0.8cqw, 4px);
+  }
+
+  .augment-card {
+    padding: max(1.5cqw, 12px) max(1cqw, 8px);
+    min-height: max(30cqw, 200px);
+  }
+
+  .augment-icon {
+    width: max(4.5cqw, 32px);
+    height: max(4.5cqw, 32px);
+  }
+
+  .augment-name {
+    font-size: max(0.85cqw, var(--min-font-lg));
+    margin-bottom: max(0.4cqw, 4px);
+  }
+
+  .augment-desc {
+    font-size: max(0.65cqw, var(--min-font-sm));
+    line-height: 1.4;
+  }
+
+  .reroll-btn {
+    height: max(3.5cqw, 36px);
+    font-size: max(0.7cqw, var(--min-font-md));
+  }
+
+  .augment-tier-badge {
+    margin-bottom: max(0.5cqw, 4px);
+  }
+
+  .augment-tier-label {
+    font-size: max(0.9cqw, var(--min-font-lg));
+  }
+
+  /* DecisionReview mobile UI lives in src/components/Arena/DecisionReview.css */
+
+  /* --- Board & Units --- */
+  .hex-cell {
+    width: max(5.5cqw, 36px);
+    height: max(5.8cqw, 38px);
+  }
+
+  .unit-pawn-wrapper {
+    width: max(6cqw, 40px);
+    height: max(6cqw, 40px);
+  }
+
+  .unit-image-wrapper {
+    width: max(4.5cqw, 30px);
+    height: max(4.5cqw, 30px);
+  }
+
+  /* Item indicators on units */
+  .unit-items-container {
+    gap: max(0.2cqw, 2px);
+  }
+
+  .unit-item-icon {
+    width: max(1.2cqw, 10px);
+    height: max(1.2cqw, 10px);
+  }
+
+  .unit-star {
+    width: max(1cqw, 8px);
+    height: max(1cqw, 8px);
+  }
+
+  /* Target/Flex indicators */
+  .target-crosshair,
+  .flex-crosshair {
+    width: max(2cqw, 16px);
+    height: max(2cqw, 16px);
+  }
+
+  /* Augment tree icon */
+  .augment-tree-center .augment-icon {
+    width: max(2.5cqw, 20px);
+    height: max(2.5cqw, 20px);
+  }
+
+  /* Bench area spacing */
+  .bench-area {
+    height: max(9cqw, 60px);
+  }
+
+  /* --- Task 7: HUD Elements (TopStatusBar, GoldDisplay, Buttons) --- */
+  .top-status-bar {
+    padding: max(0.5cqw, 4px) max(1cqw, 8px);
+  }
+
+  .stage-indicator {
+    font-size: max(0.9cqw, var(--min-font-xl));
+    padding: max(0.3cqw, 4px) max(0.6cqw, 8px);
+  }
+
+  .status-text {
+    font-size: max(0.7cqw, var(--min-font-md));
+  }
+
+  .timer-text {
+    font-size: max(0.75cqw, var(--min-font-md));
+  }
+
+  .gold-display {
+    font-size: max(0.9cqw, var(--min-font-lg));
+    padding: max(0.4cqw, 4px) max(0.8cqw, 8px);
+  }
+
+  .gold-icon {
+    width: max(1.2cqw, 14px);
+    height: max(1.2cqw, 14px);
+  }
+
+  /* Menu button */
+  .menu-button {
+    width: max(2cqw, 24px);
+    height: max(2cqw, 24px);
+    font-size: max(1cqw, var(--min-font-md));
+  }
+
+  /* --- Task 8: Modals --- */
+  .support-modal-content,
+  .puzzle-completion-content {
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: max(2cqw, 16px);
+  }
+
+  .qr-container {
+    width: max(15cqw, 120px) !important;
+    height: max(15cqw, 120px) !important;
+  }
+
+  .qr-container svg {
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  .arena-selector-grid {
+    grid-template-columns: repeat(auto-fill, minmax(max(8cqw, 100px), 1fr));
+    gap: max(1cqw, 8px);
+  }
+
+  .arena-thumb {
+    height: max(6cqw, 80px);
+  }
+
+  .arena-name {
+    font-size: max(0.7cqw, var(--min-font-sm));
+  }
+}
+
+/* ==========================================================================
+   6. PHONE LANDSCAPE GAMEPLAY CONTRACT
+   Unified safe-area and overlay spacing for gameplay-only mobile layout
+   ========================================================================== */
+
+[data-layout-mode="phone-landscape"] .path-selector-overlay,
+[data-layout-mode="phone-landscape"] .plan-selector-overlay,
+[data-layout-mode="phone-landscape"] .augment-modal-overlay {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding-top: var(--mobile-overlay-safe-top);
+  padding-bottom: var(--mobile-overlay-safe-bottom);
+  padding-left: 12px;
+  padding-right: 12px;
+  align-items: stretch;
+  justify-content: center;
+}
+
+[data-layout-mode="phone-landscape"] .path-selector-overlay,
+[data-layout-mode="phone-landscape"] .plan-selector-overlay,
+[data-layout-mode="phone-landscape"] .augment-modal-overlay {
+  display: flex;
+}
+
+.selector-mobile-shell {
+  display: contents;
+}
+
+[data-layout-mode="phone-landscape"][data-mobile-overlay-mode="selector"]
+  .path-selector-overlay,
+[data-layout-mode="phone-landscape"][data-mobile-overlay-mode="selector"]
+  .plan-selector-overlay {
+  padding-top: var(--mobile-selector-safe-top);
+  padding-bottom: var(--mobile-selector-safe-bottom);
+  overflow: hidden;
+}
+
+[data-layout-mode="phone-landscape"][data-mobile-overlay-mode="selector"]
+  .selector-mobile-shell {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: clamp(10px, 2.8dvh, 16px);
+  width: min(100%, var(--mobile-selector-max-w));
+  max-width: var(--mobile-selector-max-w);
+  max-height: var(--mobile-selector-max-h);
+  margin: auto;
+}
+
+[data-layout-mode="phone-landscape"][data-mobile-overlay-mode="selector"]
+  .selector-mobile-shell
+  > * {
+  width: 100%;
 }

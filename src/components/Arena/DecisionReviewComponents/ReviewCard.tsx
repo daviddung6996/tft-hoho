@@ -9,6 +9,7 @@ interface ReviewMarker {
 
 interface ReviewCardProps {
     augment: AugmentData;
+    variant?: 'desktop' | 'mobile';
     isUserPick?: boolean;
     isProPick?: boolean;
     proPlayerName?: string;
@@ -20,6 +21,7 @@ interface ReviewCardProps {
 
 export const ReviewCard: React.FC<ReviewCardProps> = ({
     augment,
+    variant = 'desktop',
     isUserPick,
     isProPick,
     showVotes,
@@ -29,6 +31,7 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({
 }) => {
     const cardClasses = [
         'roll-augment-card',
+        `review-card--${variant}`,
         isUserPick && 'user-pick',
         isProPick && 'pro-pick',
     ].filter(Boolean).join(' ');
@@ -45,7 +48,7 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({
                     <span className="augment-mini-title">{augment.title}</span>
 
                     {markers.length > 0 && (
-                        <div className="pick-markers">
+                        <div className={`pick-markers pick-markers--${variant}`}>
                             {markers.map((marker, idx) => (
                                 <React.Fragment key={idx}>
                                     {idx > 0 && <span className="marker-separator"> • </span>}
@@ -58,7 +61,7 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({
                     )}
 
                     {showVotes && voteCount > 0 && (
-                        <div className="vote-section">
+                        <div className={`vote-section vote-section--${variant}`}>
                             <span className="vote-stats">
                                 {votePercent}% <span className="vote-count">{voteCount} votes</span>
                             </span>

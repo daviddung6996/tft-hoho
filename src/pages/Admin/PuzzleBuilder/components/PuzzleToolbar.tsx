@@ -1,11 +1,13 @@
 import React from 'react';
 import './PuzzleToolbar.css';
+import { sanitizePlayerLevel, sanitizePlayerXp } from '../../../../features/puzzle/playerLevel';
 
 interface PuzzleToolbarProps {
     level: number;
     gold: number;
     hp: number;
-    onChange: (key: 'level' | 'gold' | 'hp', value: number) => void;
+    xp: number;
+    onChange: (key: 'level' | 'gold' | 'hp' | 'xp', value: number) => void;
     onClearBoard: () => void;
 }
 
@@ -13,50 +15,57 @@ const PuzzleToolbar: React.FC<PuzzleToolbarProps> = ({
     level,
     gold,
     hp,
+    xp,
     onChange,
     onClearBoard
 }) => {
     return (
         <div className="puzzle-toolbar">
-            {/* Left Actions Group */}
             <div className="pt-group left">
                 <button className="pt-btn" onClick={onClearBoard}>
-                    <span className="pt-icon">×</span>
-                    Xoá bàn cờ
+                    <span className="pt-icon">x</span>
+                    Xoa ban co
                 </button>
-                {/* Placeholder for future actions to match the 'busy' look of the inspiration */}
-                <button className="pt-btn disabled" disabled>Nhập mã</button>
-                <button className="pt-btn disabled" disabled>Xuất mã</button>
+                <button className="pt-btn disabled" disabled>Nhap ma</button>
+                <button className="pt-btn disabled" disabled>Xuat ma</button>
             </div>
 
-            {/* Right Inputs Group */}
             <div className="pt-group right">
                 <div className="pt-input-wrapper">
-                    <label>Cấp</label>
+                    <label>Cap</label>
                     <input
                         type="number"
                         value={level}
-                        onChange={(e) => onChange('level', parseInt(e.target.value) || 1)}
+                        onChange={(e) => onChange('level', sanitizePlayerLevel(parseInt(e.target.value, 10) || 1))}
                         min={1}
-                        max={11}
+                        max={10}
                     />
                 </div>
                 <div className="pt-input-wrapper">
-                    <label>Vàng</label>
+                    <label>Vang</label>
                     <input
                         type="number"
                         value={gold}
-                        onChange={(e) => onChange('gold', parseInt(e.target.value) || 0)}
+                        onChange={(e) => onChange('gold', parseInt(e.target.value, 10) || 0)}
                         min={0}
                         max={999}
                     />
                 </div>
                 <div className="pt-input-wrapper">
-                    <label>Máu</label>
+                    <label>XP</label>
+                    <input
+                        type="number"
+                        value={xp}
+                        onChange={(e) => onChange('xp', sanitizePlayerXp(parseInt(e.target.value, 10) || 0, level))}
+                        min={0}
+                    />
+                </div>
+                <div className="pt-input-wrapper">
+                    <label>Mau</label>
                     <input
                         type="number"
                         value={hp}
-                        onChange={(e) => onChange('hp', parseInt(e.target.value) || 1)}
+                        onChange={(e) => onChange('hp', parseInt(e.target.value, 10) || 1)}
                         min={1}
                         max={100}
                     />
