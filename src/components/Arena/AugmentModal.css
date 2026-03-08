@@ -5,10 +5,10 @@
 
 .augment-modal-overlay {
     position: absolute;
-    top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
+    top: max(0px, calc((100% - 100vh) / 2));
+    height: min(100%, 100vh);
     background:
         radial-gradient(ellipse at 50% 30%, rgba(200, 170, 110, 0.06) 0%, transparent 50%),
         radial-gradient(ellipse at 50% 80%, rgba(21, 58, 62, 0.25) 0%, transparent 50%),
@@ -126,7 +126,10 @@
     width: 100%;
     height: 100%;
     object-fit: contain;
-    filter: drop-shadow(0 0.3cqw 0.6cqw rgba(0, 0, 0, 0.5));
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.2));
+    /* Hide alt text if image is broken to prevent layout shift */
+    color: transparent;
+    font-size: 0;
 }
 
 .augment-title {
@@ -363,4 +366,105 @@
         0 0 1.5cqw rgba(192, 132, 252, 0.45),
         0 0 3cqw rgba(168, 85, 247, 0.2),
         0 0.6cqw 2cqw rgba(0, 0, 0, 0.5);
+}
+
+[data-layout-mode="phone-landscape"] .augment-modal-overlay {
+    display: flex;
+    flex-direction: column;
+    padding: 6px 10px 50px !important;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 4px;
+}
+
+[data-layout-mode="phone-landscape"] .augment-tier-badge {
+    margin-bottom: 0;
+    margin-top: -4px;
+    /* Move slightly up */
+}
+
+[data-layout-mode="phone-landscape"] .augment-tier-label {
+    font-size: 0.55rem;
+    letter-spacing: 0.1em;
+}
+
+[data-layout-mode="phone-landscape"] .augment-header-title {
+    margin: 0 0 2px 0;
+    font-size: clamp(0.65rem, 2vw, 0.8rem);
+    opacity: 0.7;
+}
+
+[data-layout-mode="phone-landscape"] .augment-cards-container {
+    width: min(100%, 480px);
+    max-height: 290px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+    align-items: stretch;
+    margin: 0 auto;
+    /* Ensure horizontal centering */
+}
+
+[data-layout-mode="phone-landscape"] .augment-column {
+    width: 100%;
+    min-width: 0;
+    gap: 4px;
+}
+
+[data-layout-mode="phone-landscape"] .augment-card {
+    min-height: 0;
+    padding: 6px 4px 4px;
+    aspect-ratio: 5 / 6.5;
+    height: auto;
+    overflow: hidden;
+}
+
+[data-layout-mode="phone-landscape"] .augment-content {
+    justify-content: flex-start;
+    gap: 4px;
+}
+
+[data-layout-mode="phone-landscape"] .augment-icon-container {
+    width: clamp(24px, 5vw, 32px);
+    height: clamp(24px, 5vw, 32px);
+    margin: 0;
+}
+
+[data-layout-mode="phone-landscape"] .augment-title {
+    margin-bottom: 2px;
+    font-size: clamp(0.6rem, 1.5vw, 0.75rem);
+    /* Make title a bit smaller */
+    line-height: 1.15;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    /* Allow up to 3 lines if needed */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+[data-layout-mode="phone-landscape"] .augment-description {
+    padding: 0;
+    font-size: 0.6rem;
+    line-height: 1.2;
+    color: #94A3B8;
+    display: -webkit-box;
+    -webkit-line-clamp: 7;
+    /* Allow almost full description to show, but clamp if extreme */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+[data-layout-mode="phone-landscape"] .reroll-container {
+    margin-top: 0;
+}
+
+[data-layout-mode="phone-landscape"] .reroll-btn {
+    height: 28px;
+    border-radius: 999px;
+}
+
+[data-layout-mode="phone-landscape"] .reroll-btn svg {
+    width: 14px;
+    height: 14px;
 }

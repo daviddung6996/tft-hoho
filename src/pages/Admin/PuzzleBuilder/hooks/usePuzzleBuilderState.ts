@@ -5,6 +5,7 @@ import { puzzleService } from '../../../../services/puzzleService';
 import { championService } from '../../../../services/championService';
 import { AugmentData, augmentService } from '../../../../services/augmentService';
 import { Item, itemService } from '../../../../services/itemService';
+import { sanitizePuzzlePlayerState, sanitizePuzzleStateLevels } from '../../../../features/puzzle/playerState';
 
 export interface ToastState {
     message: string;
@@ -37,7 +38,6 @@ const INITIAL_PUZZLE: PuzzleScenario = {
     startingItems: []
 };
 
-
 /** Enrich snapshot augments with fresh DB data (Vietnamese names, updated icons) */
 function enrichAugments(
     snapshotAugs: (AugmentData | null)[] | undefined,
@@ -58,7 +58,7 @@ function enrichAugments(
 export const usePuzzleBuilderState = (onSaveSuccess: (puzzleId: string, shareUrl: string) => void, initialPuzzle?: PuzzleScenario) => {
     const [puzzle, setPuzzle] = useState<PuzzleScenario>(() => {
         if (initialPuzzle) {
-            return {
+            return sanitizePuzzleStateLevels({
                 ...INITIAL_PUZZLE,
                 ...initialPuzzle,
                 // Ensure arrays are initialized if missing in old data
@@ -70,9 +70,9 @@ export const usePuzzleBuilderState = (onSaveSuccess: (puzzleId: string, shareUrl
                 proRerollIndices: initialPuzzle.proRerollIndices || [],
                 proSecondRerollIndices: initialPuzzle.proSecondRerollIndices || [],
                 proPickIndex: initialPuzzle.proPickIndex ?? -1
-            };
+            });
         }
-        return INITIAL_PUZZLE;
+        return sanitizePuzzleStateLevels(INITIAL_PUZZLE);
     });
     const [champions, setChampions] = useState<Champion[]>([]);
     const [dbAugments, setDbAugments] = useState<AugmentData[]>([]);
@@ -84,7 +84,7 @@ export const usePuzzleBuilderState = (onSaveSuccess: (puzzleId: string, shareUrl
     // If initialPuzzle changes (e.g. modal closed/reopened with diff puzzle), reset state
     useEffect(() => {
         if (initialPuzzle) {
-            setPuzzle({
+            setPuzzle(sanitizePuzzleStateLevels({
                 ...INITIAL_PUZZLE,
                 ...initialPuzzle,
                 opponents: initialPuzzle.opponents || [],
@@ -95,7 +95,7 @@ export const usePuzzleBuilderState = (onSaveSuccess: (puzzleId: string, shareUrl
                 proRerollIndices: initialPuzzle.proRerollIndices || [],
                 proSecondRerollIndices: initialPuzzle.proSecondRerollIndices || [],
                 proPickIndex: initialPuzzle.proPickIndex ?? -1
-            });
+            }));
         }
     }, [initialPuzzle, dbAugments]);
 
@@ -120,7 +120,7 @@ export const usePuzzleBuilderState = (onSaveSuccess: (puzzleId: string, shareUrl
     }, []);
 
     const updatePuzzle = (updates: Partial<PuzzleScenario>) => {
-        setPuzzle(prev => ({ ...prev, ...updates }));
+        setPuzzle(prev => sanitizePuzzleStateLevels({ ...prev, ...updates }));
     };
 
     const overwritePuzzle = (newPuzzle: PuzzleScenario) => {
@@ -137,7 +137,7 @@ export const usePuzzleBuilderState = (onSaveSuccess: (puzzleId: string, shareUrl
         if (sanitized.id && !UUID_RE.test(sanitized.id as string)) {
             sanitized.id = '';
         }
-        setPuzzle(sanitized as unknown as PuzzleScenario);
+        setPuzzle(sanitizePuzzleStateLevels(sanitized as unknown as PuzzleScenario));
     };
 
     const showToast = (message: string, type: 'success' | 'error' | 'info' = 'info') => {
@@ -153,17 +153,21 @@ export const usePuzzleBuilderState = (onSaveSuccess: (puzzleId: string, shareUrl
                 name: OPPONENT_NAMES[newOpponents.length] || `Đối thủ ${newOpponents.length + 1}`,
                 board: [],
                 bench: [],
-                state: { gold: 0, level: 3, hp: 100, xp: 0 }
+                state: sanitizePuzzlePlayerState(puzzle.stage, { gold: 0, level: 3, hp: 100, xp: 0 })
             });
         }
 
-        newOpponents[index] = { ...newOpponents[index], ...updates };
+        newOpponents[index] = {
+            ...newOpponents[index],
+            ...updates,
+            state: sanitizePuzzlePlayerState(puzzle.stage, updates.state || newOpponents[index].state)
+        };
         updatePuzzle({ opponents: newOpponents });
     };
 
     const handleSave = async () => {
         try {
-            const puzzleToSave = { ...puzzle };
+            const puzzleToSave = sanitizePuzzleStateLevels({ ...puzzle });
             if (!puzzleToSave.id) {
                 puzzleToSave.id = crypto.randomUUID();
             }

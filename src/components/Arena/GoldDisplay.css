@@ -1,48 +1,45 @@
 /* ==========================================================================
-   GOLD DISPLAY - Player gold indicator above AugmentButton
-   Positioned between AugmentButton (bottom: 4cqw) and Bench (bottom: 12.5cqw)
-   z-index matched with GameInfoIcons (50)
+   GOLD DISPLAY - Floating desktop chip + mobile dock chip
    ========================================================================== */
 
 .gold-display {
+    display: flex;
+    align-items: center;
+    gap: 0.4cqw;
+}
+
+.gold-display--floating {
     position: absolute;
     bottom: 7.8cqw;
     left: 50%;
     transform: translateX(-50%);
-
-    /* Layout */
-    display: flex;
-    align-items: center;
-    gap: 0.4cqw;
-
-    /* Hextech teal panel — game client look, NOT dark website */
     background:
         radial-gradient(ellipse at 50% 30%, rgba(200, 170, 110, 0.06) 0%, transparent 70%),
         linear-gradient(180deg, rgba(21, 58, 62, 0.92) 0%, rgba(13, 46, 48, 0.95) 100%);
     border: 0.06cqw solid rgba(200, 170, 110, 0.45);
     border-radius: 0.6cqw;
     padding: 0.25cqw 0.8cqw 0.25cqw 0.5cqw;
-
-    /* Match GameInfoIcons z-index */
     z-index: 50;
     pointer-events: none;
-
-    /* Subtle gold ambient glow — slightly prominent */
     box-shadow:
         0 0 0.5cqw rgba(0, 0, 0, 0.4),
         0 0 0.6cqw rgba(200, 170, 110, 0.15),
         inset 0 0 0.4cqw rgba(200, 170, 110, 0.05);
 }
 
-/* Coin icon sizing */
-.gold-display svg {
+.gold-display-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.gold-display-icon svg {
     width: 1.6cqw;
     height: 1.6cqw;
     flex-shrink: 0;
     filter: drop-shadow(0 0 0.15cqw rgba(232, 194, 82, 0.4));
 }
 
-/* Gold amount text — luxurious gold highlight per Hextech typography */
 .gold-display-amount {
     font-family: 'Inter', sans-serif;
     font-size: 1.2cqw;
@@ -53,4 +50,33 @@
         0 0.05cqw 0.15cqw rgba(0, 0, 0, 0.8);
     line-height: 1;
     letter-spacing: 0.03cqw;
+}
+
+.gold-display--mobile-chip {
+    position: static;
+    width: 100%;
+    min-width: 0;
+    height: 100%;
+    padding: 0 12px;
+    gap: 8px;
+    border-radius: 14px;
+    background:
+        radial-gradient(ellipse at 50% 0%, rgba(200, 170, 110, 0.12) 0%, transparent 70%),
+        linear-gradient(180deg, rgba(21, 58, 62, 0.96) 0%, rgba(8, 30, 32, 0.98) 100%);
+    border: 1px solid rgba(200, 170, 110, 0.32);
+    box-shadow:
+        inset 0 1px 0 rgba(240, 230, 210, 0.06),
+        0 10px 20px rgba(0, 0, 0, 0.24);
+    pointer-events: none;
+}
+
+.gold-display--mobile-chip .gold-display-icon svg {
+    width: 20px;
+    height: 20px;
+}
+
+.gold-display--mobile-chip .gold-display-amount {
+    font-size: 14px;
+    letter-spacing: 0.02em;
+    text-shadow: 0 0 8px rgba(232, 194, 82, 0.35);
 }

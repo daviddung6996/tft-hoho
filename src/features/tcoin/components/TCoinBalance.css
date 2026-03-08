@@ -1,7 +1,7 @@
 .tcoin-balance {
     position: absolute;
-    top: 1.04cqw;
-    left: 1.04cqw;
+    top: var(--app-hud-top-inset, 12px);
+    left: var(--app-hud-left-inset, 12px);
     z-index: 310;
     display: inline-flex;
     align-items: center;

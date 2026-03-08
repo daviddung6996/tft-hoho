@@ -1,5 +1,6 @@
 import { supabase } from '../lib/supabase';
 import { PuzzleScenario } from '../data/puzzleScenarios';
+import { sanitizePuzzleStateLevels } from '../features/puzzle/playerState';
 
 // Helper to check if current user has admin access
 const checkAdminAccess = async (): Promise<boolean> => {
@@ -157,75 +158,78 @@ export const puzzleService = {
             throw new Error('Unauthorized: Only admins can save puzzles');
         }
 
+        const sanitizedPuzzle = sanitizePuzzleStateLevels(puzzle);
+        const legacyName = puzzle.name;
+
         const row = {
-            id: puzzle.id, // If empty/new id logic handles it, but usually upsert needs ID
-            pro_player: puzzle.proPlayer,
-            rank: puzzle.rank,
-            stage: puzzle.stage,
+            id: sanitizedPuzzle.id, // If empty/new id logic handles it, but usually upsert needs ID
+            pro_player: sanitizedPuzzle.proPlayer,
+            rank: sanitizedPuzzle.rank,
+            stage: sanitizedPuzzle.stage,
             // Pack metadata
             meta_data: {
-                title: puzzle.title || puzzle.name,
-                streamUrl: puzzle.streamUrl,
-                vodTimestamp: puzzle.vodTimestamp,
-                vodSource: puzzle.vodSource,
-                date: puzzle.date,
-                server: puzzle.server,
-                encounter: puzzle.encounter,
-                patch: puzzle.patch,
-                proLpRank: puzzle.proLpRank,
-                tournamentName: puzzle.tournamentName,
-                proSocialLink: puzzle.proSocialLink,
-                lobbyHealth: puzzle.lobbyHealth,
-                explanation: puzzle.explanation,
+                title: sanitizedPuzzle.title || legacyName,
+                streamUrl: sanitizedPuzzle.streamUrl,
+                vodTimestamp: sanitizedPuzzle.vodTimestamp,
+                vodSource: sanitizedPuzzle.vodSource,
+                date: sanitizedPuzzle.date,
+                server: sanitizedPuzzle.server,
+                encounter: sanitizedPuzzle.encounter,
+                patch: sanitizedPuzzle.patch,
+                proLpRank: sanitizedPuzzle.proLpRank,
+                tournamentName: sanitizedPuzzle.tournamentName,
+                proSocialLink: sanitizedPuzzle.proSocialLink,
+                lobbyHealth: sanitizedPuzzle.lobbyHealth,
+                explanation: sanitizedPuzzle.explanation,
                 // Reroll augment data
-                rerollAugments: puzzle.rerollAugments,
-                secondRerollAugments: puzzle.secondRerollAugments,
-                hasExtraReroll: puzzle.hasExtraReroll,
-                proRerollIndices: puzzle.proRerollIndices,
-                proSecondRerollIndices: puzzle.proSecondRerollIndices,
-                proPickIndex: puzzle.proPickIndex,
+                rerollAugments: sanitizedPuzzle.rerollAugments,
+                secondRerollAugments: sanitizedPuzzle.secondRerollAugments,
+                hasExtraReroll: sanitizedPuzzle.hasExtraReroll,
+                proRerollIndices: sanitizedPuzzle.proRerollIndices,
+                proSecondRerollIndices: sanitizedPuzzle.proSecondRerollIndices,
+                proPickIndex: sanitizedPuzzle.proPickIndex,
                 // V2: Augment Trainer 3-2 fields
-                streakHistory: puzzle.streakHistory,
-                streakCount: puzzle.streakCount,
-                augment21: puzzle.augment21,
-                proPickPath: puzzle.proPickPath,
-                augmentPaths: puzzle.augmentPaths,
-                proReasoningIntent: puzzle.proReasoningIntent,
-                difficulty: puzzle.difficulty,
+                streakHistory: sanitizedPuzzle.streakHistory,
+                streakCount: sanitizedPuzzle.streakCount,
+                augment21: sanitizedPuzzle.augment21,
+                proPickPath: sanitizedPuzzle.proPickPath,
+                augmentPaths: sanitizedPuzzle.augmentPaths,
+                proReasoningIntent: sanitizedPuzzle.proReasoningIntent,
+                difficulty: sanitizedPuzzle.difficulty,
                 // V3: Augment Trainer 4-2 fields
-                boardStrength: puzzle.boardStrength,
-                hpPressure: puzzle.hpPressure,
-                rollState: puzzle.rollState,
-                proPlan: puzzle.proPlan,
-                planReasoning: puzzle.planReasoning,
-                augmentPlans: puzzle.augmentPlans,
-                previousAugments: puzzle.previousAugments
+                boardStrength: sanitizedPuzzle.boardStrength,
+                hpPressure: sanitizedPuzzle.hpPressure,
+                rollState: sanitizedPuzzle.rollState,
+                proPlan: sanitizedPuzzle.proPlan,
+                planReasoning: sanitizedPuzzle.planReasoning,
+                augmentPlans: sanitizedPuzzle.augmentPlans,
+                previousAugments: sanitizedPuzzle.previousAugments
             },
             // Pack board state
             board_state: {
-                playerBoard: puzzle.playerBoard,
-                opponentBoard: puzzle.opponentBoard,
-                playerBench: puzzle.playerBench,
-                opponentBench: puzzle.opponentBench,
-                playerState: puzzle.playerState,
-                opponentState: puzzle.opponentState,
+                playerBoard: sanitizedPuzzle.playerBoard,
+                opponentBoard: sanitizedPuzzle.opponentBoard,
+                playerBench: sanitizedPuzzle.playerBench,
+                opponentBench: sanitizedPuzzle.opponentBench,
+                playerState: sanitizedPuzzle.playerState,
+                opponentState: sanitizedPuzzle.opponentState,
                 // [NEW] Persist opponents array
-                opponents: puzzle.opponents,
+                opponents: sanitizedPuzzle.opponents,
                 // Starting items/components
-                startingItems: puzzle.startingItems
+                startingItems: sanitizedPuzzle.startingItems
             },
-            augments: puzzle.augments,
-            pro_first_roll: puzzle.proFirstRoll,
-            pro_second_roll: puzzle.proSecondRoll,
-            pro_final_pick: puzzle.proFinalPick,
-            pro_pick_round: puzzle.proPickRound,
+            augments: sanitizedPuzzle.augments,
+            pro_first_roll: sanitizedPuzzle.proFirstRoll,
+            pro_second_roll: sanitizedPuzzle.proSecondRoll,
+            pro_final_pick: sanitizedPuzzle.proFinalPick,
+            pro_pick_round: sanitizedPuzzle.proPickRound,
             // Game Info fields
-            ionia_path_id: puzzle.ioniaPathId || null,
-            void_mod_ids: puzzle.voidModIds || [],
-            tier: puzzle.tier || 'free',
+            ionia_path_id: sanitizedPuzzle.ioniaPathId || null,
+            void_mod_ids: sanitizedPuzzle.voidModIds || [],
+            tier: sanitizedPuzzle.tier || 'free',
             // Video explanation
-            video_url: puzzle.explanationVideoUrl || null,
-            video_title: puzzle.explanationVideoTitle || null
+            video_url: sanitizedPuzzle.explanationVideoUrl || null,
+            video_title: sanitizedPuzzle.explanationVideoTitle || null
         };
 
         // If ID is random/generated on client, we pass it. If DB generates it, we might need separate insert.
@@ -278,7 +282,9 @@ export const puzzleService = {
             throw new Error('Unauthorized: Only admins can bulk import puzzles');
         }
 
-        const rows = puzzles.map(p => ({
+        const rows = puzzles.map(rawPuzzle => {
+            const p = sanitizePuzzleStateLevels(rawPuzzle);
+            return ({
             id: p.id,
             pro_player: p.proPlayer,
             rank: p.rank,
@@ -319,7 +325,8 @@ export const puzzleService = {
             pro_second_roll: p.proSecondRoll,
             pro_final_pick: p.proFinalPick,
             pro_pick_round: p.proPickRound
-        }));
+            });
+        });
 
         const { data, error } = await supabase
             .from('puzzles')

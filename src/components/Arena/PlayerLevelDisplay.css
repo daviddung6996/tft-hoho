@@ -1,0 +1,85 @@
+.player-level-display {
+    position: absolute;
+    left: 1.5cqw;
+    top: calc(50% + 17.95cqw);
+    width: 4.2cqw;
+    padding: 0.55cqw 0.45cqw 0.5cqw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.18cqw;
+    z-index: 60;
+    pointer-events: none;
+    border-radius: 0.45cqw;
+    border: 0.1cqw solid rgba(200, 170, 110, 0.82);
+    background:
+        radial-gradient(ellipse at 50% 0%, rgba(200, 170, 110, 0.14) 0%, transparent 60%),
+        linear-gradient(180deg, rgba(21, 58, 62, 0.98) 0%, rgba(5, 28, 30, 0.99) 100%);
+    box-shadow:
+        0 0 1.2cqw rgba(200, 170, 110, 0.16),
+        0 0.6cqw 1.5cqw rgba(0, 0, 0, 0.38),
+        inset 0 0 0.45cqw rgba(200, 170, 110, 0.06);
+}
+
+.player-level-display__topline {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 0.28cqw;
+    width: 100%;
+    font-family: 'Spectral', serif;
+}
+
+.player-level-display__label {
+    color: rgba(200, 170, 110, 0.88);
+    font-size: 0.66cqw;
+    font-weight: 700;
+    letter-spacing: 0.06cqw;
+    text-transform: uppercase;
+}
+
+.player-level-display__value {
+    color: #f6f1df;
+    font-size: 1.18cqw;
+    font-weight: 700;
+    line-height: 1;
+    text-shadow: 0 0 0.45cqw rgba(200, 170, 110, 0.2);
+}
+
+.player-level-display__xp-value {
+    color: #f8fbfb;
+    font-family: 'Inter', sans-serif;
+    font-size: 1.02cqw;
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: 0.01cqw;
+}
+
+.player-level-display__xp-label {
+    color: rgba(200, 170, 110, 0.72);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.56cqw;
+    font-weight: 700;
+    letter-spacing: 0.14cqw;
+    text-transform: uppercase;
+}
+
+.player-level-display__bar {
+    width: 100%;
+    height: 0.34cqw;
+    overflow: hidden;
+    border-radius: 999px;
+    background: rgba(6, 24, 26, 0.92);
+    border: 0.04cqw solid rgba(200, 170, 110, 0.22);
+    box-shadow: inset 0 0 0.28cqw rgba(0, 0, 0, 0.55);
+}
+
+.player-level-display__bar-fill {
+    height: 100%;
+    border-radius: inherit;
+    background:
+        linear-gradient(90deg, rgba(74, 201, 190, 0.82) 0%, rgba(200, 170, 110, 0.92) 100%);
+    box-shadow:
+        0 0 0.45cqw rgba(74, 201, 190, 0.18),
+        0 0 0.55cqw rgba(200, 170, 110, 0.22);
+}

@@ -65,11 +65,11 @@ export const usePuzzleGame = (isAuthenticated: boolean) => {
     const [isResolvingNextPuzzle, setIsResolvingNextPuzzle] = React.useState(false);
     const [lockMessageVariant, setLockMessageVariant] = React.useState<LockMessageVariant>('default');
 
-    // URL Handling: Check for puzzle ID in URL on initial load and handle async loading
-    const pendingPuzzleIdRef = React.useRef(new URLSearchParams(window.location.search).get('puzzle'));
+    // Keep this null so old ?puzzle history states are ignored on mobile/browser swipe.
+    const pendingPuzzleIdRef = React.useRef<string | null>(null);
 
     // Initialize index: -1 means "not yet selected" so random selection can run
-    const [currentPuzzleIndex, setCurrentPuzzleIndex] = React.useState(pendingPuzzleIdRef.current ? 0 : -1);
+    const [currentPuzzleIndex, setCurrentPuzzleIndex] = React.useState(-1);
     const [customScenario, setCustomScenario] = React.useState<any | null>(null);
 
     // Fetch puzzles immediately (don't wait for game data)
@@ -196,17 +196,9 @@ export const usePuzzleGame = (isAuthenticated: boolean) => {
 
     // Effect: Sync URL with Current Puzzle State
     React.useEffect(() => {
-        if (pendingPuzzleIdRef.current || isLoadingPuzzles || puzzles.length === 0) return;
-
-        const current = puzzles[currentPuzzleIndex];
-        if (current) {
-            const url = new URL(window.location.href);
-            if (url.searchParams.get('puzzle') !== current.id) {
-                url.searchParams.set('puzzle', current.id);
-                window.history.pushState({}, '', url);
-            }
-        }
-    }, [currentPuzzleIndex, puzzles, isLoadingPuzzles]);
+        // Puzzle URL syncing was removed to stop mobile browser swipe/back
+        // from traversing old puzzle states.
+    }, []);
 
     // Compute completion state: all puzzles completed (excluding current puzzle)
     const allPuzzlesCompleted = React.useMemo(() => {
@@ -362,9 +354,6 @@ export const usePuzzleGame = (isAuthenticated: boolean) => {
         };
 
         if (pickAndApply(puzzles)) {
-            const url = new URL(window.location.href);
-            url.searchParams.delete('puzzle');
-            window.history.pushState({}, '', url);
             return true;
         }
 
@@ -375,15 +364,9 @@ export const usePuzzleGame = (isAuthenticated: boolean) => {
 
             const foundAfterRefresh = pickAndApply(latestPuzzles);
             if (foundAfterRefresh) {
-                const url = new URL(window.location.href);
-                url.searchParams.delete('puzzle');
-                window.history.pushState({}, '', url);
                 return true;
             }
 
-            const url = new URL(window.location.href);
-            url.searchParams.delete('puzzle');
-            window.history.pushState({}, '', url);
             return false;
         } catch (err) {
             console.error("Failed to resolve next puzzle:", err);
@@ -418,10 +401,6 @@ export const usePuzzleGame = (isAuthenticated: boolean) => {
             setCurrentPuzzleIndex(index);
             setLockMessageVariant('default');
             setCurrentPuzzleAccess({ canPlay: true, reason: 'free', tier: 'free' });
-
-            const url = new URL(window.location.href);
-            url.searchParams.delete('puzzle');
-            window.history.pushState({}, '', url);
         }
         // If no free puzzles, do nothing — button should be hidden via hasFreePuzzlesAvailable
     }, [puzzles, currentPuzzleIndex, completedPuzzleIds]);

@@ -5,15 +5,19 @@ import './ItemPanel.css';
 
 interface ItemPanelProps {
     items?: (Item | null)[];
+    variant?: 'sidebar' | 'sheet';
 }
 
-export const ItemPanel: React.FC<ItemPanelProps> = ({ items = [] }) => {
+export const ItemPanel: React.FC<ItemPanelProps> = ({ items = [], variant = 'sidebar' }) => {
     // Filter out null items and calculate empty slots
     const validItems = items.filter((item): item is Item => item !== null);
     const emptySlots = Math.max(0, 10 - validItems.length);
 
     return (
-        <div className="item-panel-container">
+        <div
+            className={`item-panel-container item-panel-container--${variant}`}
+            data-testid={`ItemPanel:${variant}`}
+        >
             {/* Display puzzle items */}
             {validItems.map((item, index) => (
                 <ItemTooltip

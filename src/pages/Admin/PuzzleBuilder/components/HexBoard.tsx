@@ -3,6 +3,7 @@ import { UnitData, Champion, Synergy } from '../../../../data/types';
 import { AssetImage } from '../../../../hooks/useAssetUrl';
 import { SynergyPanel } from '../../../../components/Sidebar/SynergyPanel';
 import { calculateHexPosition, getGridDimensions, swapOrMoveToBoard, swapOrMoveToBench, type HexConfig } from '../../../../utils/hexGrid';
+import { countBoardUnits, shouldBlockBoardPlacementAtLevelCap } from '../../../../features/puzzle/playerLevel';
 
 // Board configuration
 const BOARD_ROWS = 4;
@@ -26,19 +27,23 @@ export interface DragItem {
 interface HexBoardProps {
     units: UnitData[];
     onUnitsChange: (units: UnitData[]) => void;
+    level: number;
     dragItem: DragItem | null;
     onDropSuccess: () => void;
     onSafeDrop: () => void;
     synergies: Synergy[];
+    onLevelCapHit?: () => void;
 }
 
 const HexBoard: React.FC<HexBoardProps> = ({
     units,
     onUnitsChange,
+    level,
     dragItem,
     onDropSuccess,
     onSafeDrop,
     synergies,
+    onLevelCapHit,
 }) => {
     const [hoverTarget, setHoverTarget] = useState<{ type: 'board' | 'bench'; row?: number; col?: number; index?: number } | null>(null);
 
@@ -52,6 +57,18 @@ const HexBoard: React.FC<HexBoardProps> = ({
         if (!dragItem) return;
 
         const isOccupied = boardUnits.some(u => u.row === row && u.col === col);
+        const shouldBlock = shouldBlockBoardPlacementAtLevelCap({
+            source: dragItem.source,
+            boardCount: countBoardUnits(units),
+            level,
+            targetOccupied: isOccupied,
+        });
+
+        if (shouldBlock) {
+            onLevelCapHit?.();
+            setHoverTarget(null);
+            return;
+        }
 
         if (dragItem.source === 'pool') {
             // Adding from champion pool — only allowed on empty cells

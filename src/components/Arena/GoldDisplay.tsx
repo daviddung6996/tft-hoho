@@ -3,6 +3,7 @@ import './GoldDisplay.css';
 
 interface GoldDisplayProps {
     gold: number;
+    variant?: 'floating' | 'mobile-chip';
 }
 
 const GoldCoinIcon: React.FC = () => (
@@ -20,10 +21,15 @@ const GoldCoinIcon: React.FC = () => (
     </svg>
 );
 
-export const GoldDisplay: React.FC<GoldDisplayProps> = ({ gold }) => {
+export const GoldDisplay: React.FC<GoldDisplayProps> = ({ gold, variant = 'floating' }) => {
     return (
-        <div className="gold-display">
-            <GoldCoinIcon />
+        <div
+            className={`gold-display gold-display--${variant}`}
+            data-testid={`GoldDisplay:${variant}`}
+        >
+            <span className="gold-display-icon" aria-hidden="true">
+                <GoldCoinIcon />
+            </span>
             <span className="gold-display-amount">{gold}</span>
         </div>
     );

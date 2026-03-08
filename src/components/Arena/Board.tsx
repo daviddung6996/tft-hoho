@@ -12,6 +12,7 @@ import { AugmentTooltip } from '../common/HextechTooltip';
 import { GameInfoIcons } from './GameInfoIcons';
 import { swapOrMoveToBoard, swapOrMoveToBench, type DragItem } from '../../utils/hexGrid';
 import { calculateHexPosition } from '../../utils/hexGrid';
+import { MAX_PLAYER_LEVEL, countBoardUnits, shouldBlockBoardPlacementAtLevelCap } from '../../features/puzzle/playerLevel';
 
 
 interface BoardProps {
@@ -28,6 +29,8 @@ interface BoardProps {
     voidMods?: VoidMod[];
     streakCount?: number;
     onUnitsChange?: (units: UnitData[]) => void;
+    playerLevel?: number;
+    onLevelCapHit?: () => void;
 }
 
 /**
@@ -49,6 +52,8 @@ export const Board: React.FC<BoardProps> = ({
     voidMods = [],
     streakCount,
     onUnitsChange,
+    playerLevel = MAX_PLAYER_LEVEL,
+    onLevelCapHit,
 }) => {
     const boardContainerRef = useRef<HTMLDivElement>(null);
     const [draggingUnitId, setDraggingUnitId] = useState<string | null>(null);
@@ -105,7 +110,22 @@ export const Board: React.FC<BoardProps> = ({
         // Board hex — search through all elements at point to find hex-cell under unit
         const hex = els.map(e => e.closest('.hex-cell[data-row]')).find(Boolean) as HTMLElement | null;
         if (hex) {
-            const result = swapOrMoveToBoard(units, unitId, +hex.dataset.row!, +hex.dataset.col!, source);
+            const targetRow = +hex.dataset.row!;
+            const targetCol = +hex.dataset.col!;
+            const targetOccupied = units.some(u => u.row === targetRow && u.col === targetCol && u.id !== unitId);
+            const shouldBlock = shouldBlockBoardPlacementAtLevelCap({
+                source: drag.source,
+                boardCount: countBoardUnits(units),
+                level: playerLevel,
+                targetOccupied,
+            });
+
+            if (shouldBlock) {
+                onLevelCapHit?.();
+                return;
+            }
+
+            const result = swapOrMoveToBoard(units, unitId, targetRow, targetCol, source);
             onChange([
                 ...result.filter(u => u.row !== undefined && u.row >= 0 && u.col !== undefined),
                 ...result.filter(u => u.benchIndex !== undefined),
@@ -128,7 +148,7 @@ export const Board: React.FC<BoardProps> = ({
                 }
             }
         }
-    }, []);
+    }, [onLevelCapHit, playerLevel]);
 
     const sourceElRef = useRef<HTMLElement | null>(null);
 

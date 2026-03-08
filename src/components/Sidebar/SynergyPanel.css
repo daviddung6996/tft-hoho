@@ -175,3 +175,80 @@
     color: #eee;
     font-weight: 700;
 }
+
+.synergy-floating-container--sheet {
+    position: static;
+    left: auto;
+    top: auto;
+    transform: none;
+    width: 100%;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+}
+
+.synergy-floating-container--sheet .synergy-floating-row {
+    width: 100%;
+}
+
+.synergy-floating-container--sheet .synergy-label-bar {
+    min-width: 0;
+    flex: 1;
+    height: 40px;
+    padding: 0 14px 0 20px;
+    border-radius: 0 12px 12px 0;
+}
+
+.synergy-floating-container--sheet .synergy-hex-wrapper {
+    width: 34px;
+    height: 38px;
+}
+
+.synergy-floating-container--sheet .trait-name {
+    font-size: 12px;
+}
+
+.synergy-floating-container--sheet .trait-numbers {
+    font-size: 10px;
+}
+
+/* ── Trait Overflow Button ───────────────────────────────────────── */
+.trait-overflow-button {
+    all: unset;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 3.5cqw;
+    min-width: 10.4cqw;
+    /* same total width as hex + label bar */
+    background: rgba(255, 255, 255, 0.06);
+    border: 0.05cqw solid rgba(200, 170, 110, 0.25);
+    border-radius: 0.3cqw;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9cqw;
+    font-weight: 700;
+    color: #c8aa6e;
+    letter-spacing: 0.05cqw;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.trait-overflow-button:hover {
+    background: rgba(200, 170, 110, 0.12);
+    border-color: rgba(200, 170, 110, 0.55);
+    color: #f0e6d2;
+}
+
+.trait-overflow-button--back {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(200, 170, 110, 0.15);
+    color: rgba(200, 170, 110, 0.55);
+    font-size: 1.1cqw;
+}
+
+.trait-overflow-button--back:hover {
+    background: rgba(200, 170, 110, 0.08);
+    border-color: rgba(200, 170, 110, 0.35);
+    color: #c8aa6e;
+}

@@ -10,6 +10,7 @@ import { AugmentData, augmentService } from '../services/augmentService';
 import { calculateSynergies } from '../utils/synergyCalculator';
 import { ARENA_SKINS } from '../data/arenas';
 import { normalizeCompactLookupValue, normalizeLookupValue } from '../utils/stringNormalization';
+import { sanitizePuzzlePlayerState } from '../features/puzzle/playerState';
 
 // Tactician Images
 import penguImg from '../assets/tacticians/pengu.webp';
@@ -52,6 +53,14 @@ const DEFAULT_PLAYER_STATE = {
     hp: 100,
     xp: 0
 };
+
+export function getPuzzleStateLevel(stage: string, state?: { level?: number } | null): number {
+    return sanitizePuzzlePlayerState(stage, state).level;
+}
+
+export function getPuzzleStateXp(stage: string, state?: { level?: number; xp?: number } | null): number {
+    return sanitizePuzzlePlayerState(stage, state).xp;
+}
 
 export interface PuzzlePlayersResult {
     myPlayer: PlayerData;
@@ -142,6 +151,8 @@ export function usePuzzleToPlayers(puzzle: PuzzleScenario | null): PuzzlePlayers
 
         // Transform player
         const playerState = puzzle.playerState || DEFAULT_PLAYER_STATE;
+        const playerLevel = getPuzzleStateLevel(puzzle.stage, playerState);
+        const playerXp = getPuzzleStateXp(puzzle.stage, playerState);
         const myPlayer = createPlayerData({
             id: '1',
             name: 'You',
@@ -151,6 +162,8 @@ export function usePuzzleToPlayers(puzzle: PuzzleScenario | null): PuzzlePlayers
             bench: normalizeBench(puzzle.playerBench || [], champions),
             gold: playerState.gold,
             hp: playerState.hp,
+            level: playerLevel,
+            xp: playerXp,
             augments: enrichAugments(getChosenAugments(puzzle)),
             arenaId: arenaIds[0],
             items: myItems
@@ -163,7 +176,7 @@ export function usePuzzleToPlayers(puzzle: PuzzleScenario | null): PuzzlePlayers
                     createOpponentPlayerData({
                         ...opp,
                         startingItems: enrichItems(opp.startingItems || [])
-                    } as OpponentData, index + 2, champions, arenaIds[index + 1] || arenaIds[(index + 1) % arenaIds.length])
+                    } as OpponentData, index + 2, champions, arenaIds[index + 1] || arenaIds[(index + 1) % arenaIds.length], puzzle.stage)
                 );
             }
             // Legacy support
@@ -177,7 +190,7 @@ export function usePuzzleToPlayers(puzzle: PuzzleScenario | null): PuzzlePlayers
                     augments: [],
                     startingItems: []
                 };
-                return [createOpponentPlayerData(legacyOpponent, 2, champions, arenaIds[1])];
+                return [createOpponentPlayerData(legacyOpponent, 2, champions, arenaIds[1], puzzle.stage)];
             }
             return [];
         };
@@ -243,6 +256,8 @@ function createPlayerData(config: {
     bench: UnitData[];
     gold: number;
     hp: number;
+    level: number;
+    xp: number;
     augments: any[];
 
     arenaId: string;
@@ -254,6 +269,8 @@ function createPlayerData(config: {
         avatar: config.avatar,
         hp: config.hp,
         gold: config.gold,
+        level: config.level,
+        xp: config.xp,
         status: config.hp > 0 ? 'active' : 'eliminated',
         isMe: config.isMe,
         units: config.units,
@@ -270,13 +287,17 @@ const OPPONENT_NAMES = ['Choncc', 'Ahri', 'Irelia', 'BunBun', 'Chihuahua', 'Fuwa
 /**
  * Create PlayerData from OpponentData
  */
-function createOpponentPlayerData(opp: OpponentData, index: number, champions: Champion[], arenaId: string): PlayerData {
+function createOpponentPlayerData(opp: OpponentData, index: number, champions: Champion[], arenaId: string, stage: string): PlayerData {
+    const level = getPuzzleStateLevel(stage, opp.state);
+    const xp = getPuzzleStateXp(stage, opp.state);
     return {
         id: String(index),
         name: OPPONENT_NAMES[(index - 2) % OPPONENT_NAMES.length],
         avatar: OPPONENT_AVATARS[(index - 2) % OPPONENT_AVATARS.length],
         hp: opp.state?.hp || 100,
         gold: opp.state?.gold || 0,
+        level,
+        xp,
         status: (opp.state?.hp || 100) > 0 ? 'active' : 'eliminated',
         isMe: false,
         units: normalizeUnits(opp.board || [], champions),
@@ -385,6 +406,8 @@ function getDefaultResult(isLoading: boolean): PuzzlePlayersResult {
         avatar: penguImg,
         hp: 100,
         gold: 0,
+        level: 1,
+        xp: 0,
         status: 'active',
         isMe: true,
         units: [],

@@ -290,10 +290,20 @@ Get-ChildItem -Path src -Recurse -Include "*.tsx" | ForEach-Object {
 - **Cause:** `app-container` có `filter: contrast(1.05) saturate(1.08) brightness(1.02)` tạo stacking context. Nếu wrap game content trong div có `filter: blur()` toggle (`none` ↔ `blur(8px)`), việc tạo/huỷ stacking context sẽ làm các panel `position: absolute` bị reflow.
 - **Avoid:** KHÔNG BAO GIỜ wrap game content trong div toggle `filter`. Overlay đã có background atmosphere đủ tối (`rgba(0,0,0,0.78)`), không cần blur content bên dưới. Xem pattern "Hextech Overlay" ở Section 1.
 
+### `position: fixed` bên trong `.app-container` đang có `filter` sẽ bám theo canvas bị crop, không bám viewport thật
+- **Symptom:** `TopStatusBar`, menu hamburger, nút fullscreen, T-Coin badge nhìn như bị browser che ở mép trên/phải khi cửa sổ không đúng tỷ lệ 16:9.
+- **Cause:** `.app-container` dùng `filter`, nên descendant `position: fixed` lấy chính `.app-container` làm containing block. Trong default layout, canvas 16:9 kiểu `cover` có thể bị crop trên/dưới hoặc trái/phải, nên HUD bám mép canvas sẽ bị trôi vào vùng bị cắt.
+- **Avoid:** Với HUD neo mép màn hình, cộng thêm crop offset (`--app-visible-top-offset`, `--app-visible-side-offset`) vào `top/left/right`, hoặc render HUD ở layer viewport riêng nằm ngoài node có `filter`.
+
 ### `supabase/config.toml` can reference Edge Functions that do not exist in repo
 - **Symptom:** Agent reads `supabase/config.toml`, expects a function like `generate-flex-card`, then wastes time searching under `supabase/functions/` and assumes files are missing locally.
 - **Cause:** Supabase function config can drift from the committed filesystem. Current repo only contains `supabase/functions/generate-caption/`, while `supabase/config.toml` still declares `functions.generate-flex-card`.
 - **Avoid:** Verify both `supabase/config.toml` and actual `supabase/functions/` contents before documenting Edge Function architecture or trying to edit/deploy a function by name.
+
+### Mobile browser swipe can come from puzzle URL history, not a custom touch handler
+- **Symptom:** On phone, swipe back/forward appears to move between old puzzles, so agent starts hunting for `touchstart`/`swipe` gesture code in gameplay UI.
+- **Cause:** Puzzle navigation previously wrote `?puzzle=...` entries into browser history. Mobile edge-swipe/back gestures can replay those history states even if there is no dedicated swipe handler in React.
+- **Avoid:** Before deleting touch code, inspect `usePuzzleGame` for puzzle URL/history writes (`pushState`, `replaceState`, `?puzzle=`) and treat browser history as the likely root cause.
 
 ### Production puzzle/game data can contain null-ish strings despite TypeScript types saying `string`
 - **Symptom:** App crashes with `Cannot read properties of undefined (reading 'toLowerCase')`, often only on production data first, then locally after the same bad record is loaded.
@@ -330,12 +340,27 @@ Get-ChildItem -Path src -Recurse -Include "*.tsx" | ForEach-Object {
 - **Cause:** `useGameFlow` dung dieu kien `!!currentPuzzle.proPickPath` de bat `puzzlePhase = 'declaring_intent'`. Neu puzzle `2-1` thieu `proPickPath` metadata, step intent bi skip.
 - **Avoid:** Rule hien tai: chi stage `3-2` moi vao intent step. `2-1` phai vao thang augment select, khong duoc gate theo `proPickPath`.
 
+### Puzzle `playerState.level` is a hard board cap, not decorative metadata
+- **Symptom:** Builder/gameplay cho phep dat them tuong len board du da full slot theo cap, hoac puzzle cu bi load voi level sai / missing.
+- **Cause:** `playerState.level` da ton tai trong schema JSON puzzle tu truoc, nhung runtime khong enforce va admin co luc cho input > `10`.
+- **Avoid:** Luon sanitize `level` theo fallback stage `2-1 -> 4`, `3-2 -> 6`, `4-2 -> 8`, con lai `10`, clamp `1..10`, va sanitize `xp` theo level hien tai. Swap tren o dang co tuong o muc cap la hop le vi board count khong tang.
+
 ---
 
 ### Gemini caption chain can get slower if it starts with preview or deprecated models
 - **Symptom:** Flex caption gen lau hon mong doi du task rat ngan, co luc fallback qua nhieu model.
 - **Cause:** Chain cu uu tien preview model va `gemini-2.0-flash*`; preview latency co the dao dong, con `2.0 Flash` / `2.0 Flash-Lite` da bi Gemini docs danh dau deprecated. Them nua, `2.5` models co thinking mode va task caption ngan khong can bat.
 - **Avoid:** Cho social copy/caption, uu tien `gemini-2.5-flash-lite`, fallback `gemini-2.5-flash`, dat `thinkingBudget: 0`, va prompt ngan theo checklist/output format ro rang thay vi prompt dai + lap y.
+
+### `GameHUD` mobile CSS can be ahead of `GameHUD.tsx` rendering
+- **Symptom:** Agent sees mobile dock/sheet selectors in gameplay styles and assumes mobile HUD is already migrated, but runtime still renders desktop sidebars only.
+- **Cause:** `src/components/Game/GameHUD.css` (or equivalent mobile HUD styles) can exist before `src/components/Game/GameHUD.tsx` is updated to actually render `mobile-hud-dock` / `mobile-hud-sheet`, leaving gameplay in a half-migrated state.
+- **Avoid:** Verify both the CSS and the `GameHUD.tsx` render tree before documenting or extending mobile HUD behavior.
+
+### `DecisionReview` mobile UI can drift if styles are split between component CSS and `src/styles/mobile.css`
+- **Symptom:** Review screen behaves inconsistently on mobile: one stylesheet expects full-screen fixed modal/header DOM, while component markup or another stylesheet expects an in-game scroll shell.
+- **Cause:** `DecisionReview` historically had mobile overrides in both `src/components/Arena/DecisionReview.css` and `src/styles/mobile.css`, so old rules could keep forcing stale layout assumptions like `position: fixed`.
+- **Avoid:** Treat `src/components/Arena/DecisionReview.css` as the source of truth for DecisionReview mobile styling and remove/neutralize duplicate overrides from `src/styles/mobile.css`.
 
 ## 3. Applied Fixes
 
