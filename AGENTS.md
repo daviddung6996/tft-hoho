@@ -377,6 +377,11 @@ Get-ChildItem -Path src -Recurse -Include "*.tsx" | ForEach-Object {
 - **Cause:** `DecisionReview` historically had mobile overrides in both `src/components/Arena/DecisionReview.css` and `src/styles/mobile.css`, so old rules could keep forcing stale layout assumptions like `position: fixed`.
 - **Avoid:** Treat `src/components/Arena/DecisionReview.css` as the source of truth for DecisionReview mobile styling and remove/neutralize duplicate overrides from `src/styles/mobile.css`.
 
+### Teemo extra reroll is per augment slot, not a shared global pool
+- **Symptom:** After using two rerolls on one augment during Teemo encounter, other augments lose their `2` badge, look clickable but do nothing, or get disabled incorrectly.
+- **Cause:** Runtime modeled `hasExtraReroll` as two global charges shared by the whole screen instead of `2 rerolls per slot`.
+- **Avoid:** Derive reroll availability and badge count per augment slot from `rerollOrder[index]` + `secondRerollOrder[index]`. Do not gate all rerolls behind one shared `rollChargesRemaining` pool.
+
 ## 3. Applied Fixes
 
 ### Modal Form

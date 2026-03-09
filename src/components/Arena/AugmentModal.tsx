@@ -16,9 +16,10 @@ interface AugmentCardProps extends AugmentData {
     isRerolled: boolean;
     onSelect: () => void;
     puzzleTier?: PuzzleTier;
+    rerollCharges?: number;
 }
 
-const AugmentCard: React.FC<AugmentCardProps> = ({ title, description, icon, tier, onReroll, isRerolled, onSelect, puzzleTier = 'free' }) => {
+const AugmentCard: React.FC<AugmentCardProps> = ({ title, description, icon, tier, onReroll, isRerolled, onSelect, puzzleTier = 'free', rerollCharges }) => {
     // Compute phase-aligned animationDelay once at mount.
     // Uses performance.now() so every card — including re-rendered ones after roll —
     // joins the SAME global animation timeline instead of restarting from 0.
@@ -51,11 +52,16 @@ const AugmentCard: React.FC<AugmentCardProps> = ({ title, description, icon, tie
                     onClick={onReroll}
                     disabled={isRerolled}
                 >
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                        <path d="M23 4v6h-6"></path>
-                        <path d="M1 20v-6h6"></path>
-                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
-                    </svg>
+                    <span className="reroll-icon-stack">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                            <path d="M23 4v6h-6"></path>
+                            <path d="M1 20v-6h6"></path>
+                            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                        </svg>
+                        {rerollCharges !== undefined && rerollCharges > 0 && !isRerolled && (
+                            <span className="reroll-charges-badge">{rerollCharges}</span>
+                        )}
+                    </span>
                 </button>
             </div>
         </div>
@@ -67,6 +73,7 @@ interface AugmentModalProps {
     currentAugments: AugmentData[];
     rerollOrder: number[];
     secondRerollOrder?: number[];
+    hasExtraReroll?: boolean;
     rollChargesRemaining?: number;
     onReroll: (index: number) => void;
     onSelect: (augment: AugmentData) => void;
@@ -74,9 +81,10 @@ interface AugmentModalProps {
     puzzleTier?: PuzzleTier;
 }
 
-export const AugmentModal: React.FC<AugmentModalProps> = ({ currentAugments, rerollOrder, secondRerollOrder = [0, 0, 0], rollChargesRemaining, onReroll, onSelect, allPuzzlesCompleted, puzzleTier = 'free' }) => {
+export const AugmentModal: React.FC<AugmentModalProps> = ({ currentAugments, rerollOrder, secondRerollOrder = [0, 0, 0], hasExtraReroll = false, onReroll, onSelect, allPuzzlesCompleted, puzzleTier = 'free' }) => {
     // Filter nulls and limit to exactly 3 augments
     const validAugments = currentAugments.filter((a): a is AugmentData => a !== null).slice(0, 3);
+    const maxRerollsPerSlot = hasExtraReroll ? 2 : 1;
 
     return (
         <div className={`augment-modal-overlay tier-${puzzleTier}`}>
@@ -94,9 +102,10 @@ export const AugmentModal: React.FC<AugmentModalProps> = ({ currentAugments, rer
 
             <div className="augment-cards-container">
                 {validAugments.map((augment, index) => {
-                    // Slot is fully rerolled when second reroll used, OR first rerolled with no charges left
-                    const isRerolled = (secondRerollOrder[index] ?? 0) > 0
-                        || ((rerollOrder[index] ?? 0) > 0 && (rollChargesRemaining ?? 1) === 0);
+                    const slotRerollsUsed = ((rerollOrder[index] ?? 0) > 0 ? 1 : 0)
+                        + ((secondRerollOrder[index] ?? 0) > 0 ? 1 : 0);
+                    const slotRerollChargesRemaining = Math.max(0, maxRerollsPerSlot - slotRerollsUsed);
+                    const isRerolled = slotRerollChargesRemaining === 0;
                     return (
                         <AugmentCard
                             key={`slot-${index}-${augment.id}`}
@@ -109,6 +118,7 @@ export const AugmentModal: React.FC<AugmentModalProps> = ({ currentAugments, rer
                             onReroll={() => onReroll(index)}
                             isRerolled={isRerolled}
                             onSelect={() => onSelect(augment)}
+                            rerollCharges={slotRerollChargesRemaining}
                         />
                     );
                 })}
