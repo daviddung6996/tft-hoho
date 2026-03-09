@@ -196,16 +196,6 @@ export const usePuzzleGame = (isAuthenticated: boolean) => {
         }
     }, [puzzles, isLoadingPuzzles, completedPuzzleIds, currentPuzzleIndex]);
 
-    // Effect: Sync URL with Current Puzzle State
-    // Use replaceState (not pushState) to avoid creating history entries,
-    // so mobile browser swipe/back won't traverse old puzzle states.
-    React.useEffect(() => {
-        if (!currentPuzzle?.id) return;
-        const url = new URL(window.location.href);
-        url.searchParams.set('puzzle', currentPuzzle.id);
-        window.history.replaceState(null, '', url.toString());
-    }, [currentPuzzle?.id]);
-
     // Compute completion state: all puzzles completed (excluding current puzzle)
     const allPuzzlesCompleted = React.useMemo(() => {
         if (puzzles.length === 0) return false;
@@ -241,6 +231,15 @@ export const usePuzzleGame = (isAuthenticated: boolean) => {
 
     // Access check: runs when currentPuzzle changes
     const currentPuzzle = puzzles[currentPuzzleIndex];
+
+    // Sync URL with current puzzle — replaceState avoids creating history entries
+    // (placed after currentPuzzle declaration so dependency resolves correctly)
+    React.useEffect(() => {
+        if (!currentPuzzle?.id) return;
+        const url = new URL(window.location.href);
+        url.searchParams.set('puzzle', currentPuzzle.id);
+        window.history.replaceState(null, '', url.toString());
+    }, [currentPuzzle?.id]);
     React.useEffect(() => {
         if (!currentPuzzle) {
             setCurrentPuzzleAccess(null);
