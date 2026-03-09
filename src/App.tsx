@@ -109,6 +109,9 @@ const App: React.FC = () => {
         iqChangeResult,
         currentAugments,
         rerollOrder,
+        secondRerollOrder,
+        rollChargesRemaining,
+        hasExtraReroll,
         handleAugmentReroll,
         handleAugmentSelect,
         handleReplay,
@@ -364,6 +367,7 @@ const App: React.FC = () => {
                                     variant={isMirrored ? 'return' : 'default'}
                                     needsScouting={isScoutRequired}
                                     onClick={handleAugmentButtonClick}
+                                    rollChargesRemaining={hasExtraReroll ? rollChargesRemaining : undefined}
                                 />
                             )}
                         </>
@@ -516,6 +520,8 @@ const App: React.FC = () => {
                                     <AugmentModal
                                         currentAugments={currentAugments}
                                         rerollOrder={rerollOrder}
+                                        secondRerollOrder={secondRerollOrder}
+                                        rollChargesRemaining={hasExtraReroll ? rollChargesRemaining : undefined}
                                         onReroll={handleAugmentReroll}
                                         onSelect={handleAugmentSelect}
                                         allPuzzlesCompleted={allPuzzlesCompleted}
@@ -608,6 +614,7 @@ const App: React.FC = () => {
                                         variant={isMirrored ? 'return' : 'default'}
                                         needsScouting={isScoutRequired}
                                         onClick={handleAugmentButtonClick}
+                                        rollChargesRemaining={hasExtraReroll ? rollChargesRemaining : undefined}
                                     />
                                 </>
                             )}

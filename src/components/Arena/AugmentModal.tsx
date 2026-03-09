@@ -66,13 +66,15 @@ const AugmentCard: React.FC<AugmentCardProps> = ({ title, description, icon, tie
 interface AugmentModalProps {
     currentAugments: AugmentData[];
     rerollOrder: number[];
+    secondRerollOrder?: number[];
+    rollChargesRemaining?: number;
     onReroll: (index: number) => void;
     onSelect: (augment: AugmentData) => void;
     allPuzzlesCompleted?: boolean;
     puzzleTier?: PuzzleTier;
 }
 
-export const AugmentModal: React.FC<AugmentModalProps> = ({ currentAugments, rerollOrder, onReroll, onSelect, allPuzzlesCompleted, puzzleTier = 'free' }) => {
+export const AugmentModal: React.FC<AugmentModalProps> = ({ currentAugments, rerollOrder, secondRerollOrder = [0, 0, 0], rollChargesRemaining, onReroll, onSelect, allPuzzlesCompleted, puzzleTier = 'free' }) => {
     // Filter nulls and limit to exactly 3 augments
     const validAugments = currentAugments.filter((a): a is AugmentData => a !== null).slice(0, 3);
 
@@ -91,20 +93,25 @@ export const AugmentModal: React.FC<AugmentModalProps> = ({ currentAugments, rer
             </h2>
 
             <div className="augment-cards-container">
-                {validAugments.map((augment, index) => (
-                    <AugmentCard
-                        key={`slot-${index}-${augment.id}`}
-                        id={augment.id}
-                        tier={augment.tier}
-                        title={augment.title}
-                        description={augment.description}
-                        icon={augment.icon}
-                        puzzleTier={puzzleTier}
-                        onReroll={() => onReroll(index)}
-                        isRerolled={(rerollOrder[index] ?? 0) > 0}
-                        onSelect={() => onSelect(augment)}
-                    />
-                ))}
+                {validAugments.map((augment, index) => {
+                    // Slot is fully rerolled when second reroll used, OR first rerolled with no charges left
+                    const isRerolled = (secondRerollOrder[index] ?? 0) > 0
+                        || ((rerollOrder[index] ?? 0) > 0 && (rollChargesRemaining ?? 1) === 0);
+                    return (
+                        <AugmentCard
+                            key={`slot-${index}-${augment.id}`}
+                            id={augment.id}
+                            tier={augment.tier}
+                            title={augment.title}
+                            description={augment.description}
+                            icon={augment.icon}
+                            puzzleTier={puzzleTier}
+                            onReroll={() => onReroll(index)}
+                            isRerolled={isRerolled}
+                            onSelect={() => onSelect(augment)}
+                        />
+                    );
+                })}
             </div>
         </div>
     );

@@ -39,6 +39,8 @@ export const useGameFlow = (currentPuzzle: any, userId?: string, options?: { can
     const [currentAugments, setCurrentAugments] = React.useState<AugmentData[]>([]);
     // Track the ORDER of rerolls: [0, 0, 0] -> if index 1 is rolled first -> [0, 1, 0]
     const [rerollOrder, setRerollOrder] = React.useState<number[]>([0, 0, 0]);
+    // Track second rerolls per slot (for Teemo encounter / hasExtraReroll)
+    const [secondRerollOrder, setSecondRerollOrder] = React.useState<number[]>([0, 0, 0]);
     const [rollSequence, setRollSequence] = React.useState<number>(1);
 
     // Timing tracking for analytics
@@ -120,14 +122,29 @@ export const useGameFlow = (currentPuzzle: any, userId?: string, options?: { can
         setPuzzlePhase('selecting');
     };
 
+    // Teemo encounter: hasExtraReroll gives 2 total roll charges (vs 1 normally)
+    const hasExtraReroll = currentPuzzle?.hasExtraReroll ?? false;
+    const maxRollCharges = hasExtraReroll ? 2 : 1;
+    const chargesUsed = rerollOrder.filter(r => r > 0).length + secondRerollOrder.filter(r => r > 0).length;
+    const rollChargesRemaining = Math.max(0, maxRollCharges - chargesUsed);
+
     const handleAugmentReroll = (indexToReplace: number) => {
         if (options?.canPlayPuzzle === false) return; // Puzzle is locked
-        if (rerollOrder[indexToReplace] > 0) return; // Already rerolled
         if (!currentPuzzle) return;
+        if (rollChargesRemaining <= 0) return; // No charges left
+        if (secondRerollOrder[indexToReplace] > 0) return; // Slot already rolled twice
 
-        // Use predefined rerollAugments from puzzle (deterministic, not random)
-        const rerollAugments = currentPuzzle.rerollAugments || [];
-        const newAugment = rerollAugments[indexToReplace];
+        let newAugment: AugmentData | null = null;
+
+        if (rerollOrder[indexToReplace] === 0) {
+            // First reroll of this slot
+            const rerollAugments = currentPuzzle.rerollAugments || [];
+            newAugment = rerollAugments[indexToReplace];
+        } else if (hasExtraReroll) {
+            // Second reroll of this slot (Teemo encounter)
+            const secondRerollAugments = currentPuzzle.secondRerollAugments || [];
+            newAugment = secondRerollAugments[indexToReplace];
+        }
 
         if (!newAugment) {
             console.warn(`No reroll augment defined for index ${indexToReplace}`);
@@ -138,10 +155,17 @@ export const useGameFlow = (currentPuzzle: any, userId?: string, options?: { can
         newAugmentsList[indexToReplace] = newAugment;
         setCurrentAugments(newAugmentsList);
 
-        // Update reroll order
-        const newOrder = [...rerollOrder];
-        newOrder[indexToReplace] = rollSequence; // Mark this slot with the current sequence number (1, 2, or 3)
-        setRerollOrder(newOrder);
+        if (rerollOrder[indexToReplace] === 0) {
+            // Update first reroll order
+            const newOrder = [...rerollOrder];
+            newOrder[indexToReplace] = rollSequence;
+            setRerollOrder(newOrder);
+        } else {
+            // Update second reroll order
+            const newOrder = [...secondRerollOrder];
+            newOrder[indexToReplace] = rollSequence;
+            setSecondRerollOrder(newOrder);
+        }
         setRollSequence(prev => prev + 1);
 
         // Track as second roll (user rerolled)
@@ -149,7 +173,6 @@ export const useGameFlow = (currentPuzzle: any, userId?: string, options?: { can
             setUserSecondRoll([...newAugmentsList]);
             setHasRerolled(true);
         } else {
-            // Update second roll with latest augments
             setUserSecondRoll([...newAugmentsList]);
         }
     };
@@ -275,6 +298,7 @@ export const useGameFlow = (currentPuzzle: any, userId?: string, options?: { can
         setHasRerolled(false);
         setUserPickRound(0);
         setRerollOrder([0, 0, 0]);
+        setSecondRerollOrder([0, 0, 0]);
         setRollSequence(1);
 
         // V2: Reset intent state
@@ -307,6 +331,9 @@ export const useGameFlow = (currentPuzzle: any, userId?: string, options?: { can
         userPickRound,
         currentAugments,
         rerollOrder,
+        secondRerollOrder,
+        rollChargesRemaining,
+        hasExtraReroll,
         handleAugmentReroll,
         handleAugmentSelect,
         handleReplay,
