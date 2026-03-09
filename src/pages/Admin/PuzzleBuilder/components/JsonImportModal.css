@@ -136,3 +136,35 @@
     opacity: 0.5;
     cursor: not-allowed;
 }
+
+/* Unresolved augments confirmation panel */
+.json-import-unresolved-panel {
+    padding: 1.5rem;
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.08), rgba(5, 28, 30, 0.8));
+    border-top: 1px solid rgba(239, 68, 68, 0.35);
+}
+
+.json-import-unresolved-title {
+    color: #ef4444;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin: 0 0 0.75rem 0;
+}
+
+.json-import-unresolved-list {
+    color: #F0F6FC;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.8rem;
+    margin: 0 0 0.75rem 0;
+    padding-left: 1.2rem;
+    line-height: 1.7;
+}
+
+.json-import-unresolved-hint {
+    color: #94A3B8;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.82rem;
+    margin: 0 0 1rem 0;
+    line-height: 1.5;
+}

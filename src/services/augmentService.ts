@@ -18,6 +18,7 @@ const checkAdminAccess = async (): Promise<boolean> => {
 export interface AugmentData {
     id: string;
     title: string;
+    name_en?: string;        // raw English name from DB `name` column — used for bilingual matching
     description: string;
     description_vi?: string;
     icon: string;
@@ -43,6 +44,7 @@ export const augmentService = {
         return (data as any[]).map(augment => ({
             id: augment.id,
             title: augment.name_vi || augment.name,
+            name_en: augment.name,
             description: augment.description_vi || augment.description || '',
             description_vi: augment.description_vi || '',
             icon: augment.icon || '',
@@ -157,7 +159,37 @@ export const augmentService = {
             .eq('id', id);
 
         if (error) throw error;
-    }
+    },
+
+    /**
+     * Insert minimal stub records for augment names that don't exist in the DB yet.
+     * Only inserts new rows — ignores IDs that already exist (ignoreDuplicates).
+     * Supabase RLS enforces that only admins can write to the augments table.
+     */
+    async upsertStubs(englishNames: string[]): Promise<void> {
+        if (!englishNames.length) return;
+
+        const slugify = (s: string) =>
+            s.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
+
+        const rows = englishNames.map(name => ({
+            id: `manual_${slugify(name)}`,
+            name,
+            name_vi: null,
+            description: '',
+            description_vi: null,
+            tier: 1,
+            tier_name: 'Silver',
+            icon: '',
+            deleted_at: null,
+        }));
+
+        const { error } = await supabase
+            .from('augments')
+            .upsert(rows, { onConflict: 'id', ignoreDuplicates: true });
+
+        if (error) throw error;
+    },
 };
 
 // Standalone export for convenience

@@ -50,7 +50,7 @@ export const BoardHalf: React.FC<BoardHalfProps> = ({ isOpponent, units = [], hi
             <div className="board-grid">
                 {!hideHexes && renderGridCells()}
                 {units
-                    .filter(u => u.row !== undefined && u.col !== undefined)
+                    .filter(u => u.row !== undefined && u.row >= 0 && u.col !== undefined)
                     .sort((a, b) => (a.row! - b.row!) || (a.col! - b.col!))
                     .map(u => {
                         // [TRANSFORMATION] Removed inversion to match Builder view (Top-Left stays Top-Left)

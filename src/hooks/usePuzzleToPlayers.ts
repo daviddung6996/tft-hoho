@@ -158,7 +158,7 @@ export function usePuzzleToPlayers(puzzle: PuzzleScenario | null): PuzzlePlayers
             name: 'You',
             avatar: penguImg,
             isMe: true,
-            units: normalizeUnits(puzzle.playerBoard || [], champions),
+            units: normalizeUnits(puzzle.playerBoard || [], champions, playerLevel),
             bench: normalizeBench(puzzle.playerBench || [], champions),
             gold: playerState.gold,
             hp: playerState.hp,
@@ -300,7 +300,7 @@ function createOpponentPlayerData(opp: OpponentData, index: number, champions: C
         xp,
         status: (opp.state?.hp || 100) > 0 ? 'active' : 'eliminated',
         isMe: false,
-        units: normalizeUnits(opp.board || [], champions),
+        units: normalizeUnits(opp.board || [], champions, level),
         bench: normalizeBench(opp.bench || [], champions),
         augments: (opp.augments || []).filter((a: any): a is NonNullable<typeof a> => Boolean(a)),
         arenaId,
@@ -310,9 +310,10 @@ function createOpponentPlayerData(opp: OpponentData, index: number, champions: C
 }
 
 /**
- * Normalize board units - ensure image URLs are set from Admin data if available
+ * Normalize board units - ensure image URLs are set from Admin data if available.
+ * If levelCap is provided, at most levelCap units will be returned (TFT rule: max board = level).
  */
-function normalizeUnits(units: UnitData[], champions: Champion[]): UnitData[] {
+function normalizeUnits(units: UnitData[], champions: Champion[], levelCap?: number): UnitData[] {
     if (!units) return [];
 
     const ROWS = 4;
@@ -334,36 +335,37 @@ function normalizeUnits(units: UnitData[], champions: Champion[]): UnitData[] {
         return null;
     };
 
-    return units
-        .filter(u => u && u.row !== undefined && u.col !== undefined)
-        .map((u): UnitData | null => {
-            const normalizedUnitName = normalizeLookupValue(u.name);
-            const adminChamp = u.name
-                ? champions.find(c => normalizeLookupValue(c.name) === normalizedUnitName)
-                : undefined;
-            const row = u.row as number;
-            let col = u.col as number;
-            let finalRow = row;
-            let finalCol = col;
+    const result: UnitData[] = [];
 
-            if (occupied.has(`${finalRow},${finalCol}`)) {
-                const empty = findNearestEmpty(finalRow, finalCol);
-                if (!empty) return null;
-                finalRow = empty.row;
-                finalCol = empty.col;
-            }
-            occupied.add(`${finalRow},${finalCol}`);
+    for (const u of units.filter(u => u && u.row !== undefined && u.col !== undefined)) {
+        if (levelCap !== undefined && result.length >= levelCap) break;
 
-            return {
-                ...u,
-                row: finalRow,
-                col: finalCol,
-                image: adminChamp?.icon || adminChamp?.avatar || u.image || '',
-                cost: adminChamp?.cost !== undefined ? adminChamp.cost : u.cost,
-                traits: adminChamp?.traits || u.traits || []
-            };
-        })
-        .filter((u): u is UnitData => u !== null);
+        const normalizedUnitName = normalizeLookupValue(u.name);
+        const adminChamp = u.name
+            ? champions.find(c => normalizeLookupValue(c.name) === normalizedUnitName)
+            : undefined;
+        let finalRow = u.row as number;
+        let finalCol = u.col as number;
+
+        if (occupied.has(`${finalRow},${finalCol}`)) {
+            const empty = findNearestEmpty(finalRow, finalCol);
+            if (!empty) continue;
+            finalRow = empty.row;
+            finalCol = empty.col;
+        }
+        occupied.add(`${finalRow},${finalCol}`);
+
+        result.push({
+            ...u,
+            row: finalRow,
+            col: finalCol,
+            image: adminChamp?.icon || adminChamp?.avatar || u.image || '',
+            cost: adminChamp?.cost !== undefined ? adminChamp.cost : u.cost,
+            traits: adminChamp?.traits || u.traits || []
+        });
+    }
+
+    return result;
 }
 
 /**

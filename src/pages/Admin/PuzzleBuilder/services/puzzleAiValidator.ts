@@ -18,12 +18,12 @@ const SYSTEM_PROMPT = `You are a TFT (Teamfight Tactics) data validator. Your jo
 You will receive:
 1. The raw imported JSON (a puzzle scenario)
 2. A catalog of valid champions (with id, name, avatar/icon)
-3. A catalog of valid augments (with id, title, icon, tier)
+3. A catalog of valid augments (with id, title [Vietnamese], name_en [English], icon, tier)
 4. A catalog of valid items (with id, name, icon)
 
 Your task:
 - For each champion in playerBoard, opponentBoard, playerBench, opponentBench, and opponents[].board/bench: match the "name" and "id" against the champion catalog. If the name is close but not exact, correct it. Set the correct "image" field from the champion's avatar/icon. Preserve row, col, benchIndex, cost, stars, and items.
-- For each augment in augments, rerollAugments, secondRerollAugments, proFirstRoll, proSecondRoll, proFinalPick, opponents[].augments, augment21, previousAugments: match against the augment catalog by title/id. Correct title, icon, tier, and id to exact DB values. Keep description if present.
+- For each augment in augments, rerollAugments, secondRerollAugments, proFirstRoll, proSecondRoll, proFinalPick, opponents[].augments, augment21, previousAugments: match against the augment catalog by title (Vietnamese), name_en (English), or id. The input may use English names — match against name_en first if title does not match. Correct title, icon, tier, and id to exact DB values. Keep description if present.
 - IMPORTANT: If proFirstRoll, proSecondRoll, or similar augment fields contain PLAIN STRINGS instead of objects (e.g. ["Thẻ Ước Bảo Hộ", "Gói Bảo Hộ"]), you MUST convert each string into a full augment object by matching the string against augment titles in the catalog. The result should be {id, title, icon, tier, description} from the catalog. If proFinalPick is a plain string, convert it to an augment object the same way.
 - For each item in startingItems and opponents[].startingItems: match against the item catalog by name/id. Correct name, icon, and id.
 - For unit items (the "items" array inside each unit on the board): these are item name strings. Match them against the item catalog names.
@@ -42,7 +42,7 @@ function buildCompactCatalog(catalogs: DbCatalogs): string {
         id: c.id, name: c.name, avatar: c.avatar || c.icon, cost: c.cost
     }));
     const augList = catalogs.augments.map(a => ({
-        id: a.id, title: a.title, icon: a.icon, tier: a.tier
+        id: a.id, title: a.title, name_en: a.name_en || '', icon: a.icon, tier: a.tier
     }));
     const itemList = catalogs.items.map(i => ({
         id: i.id, name: i.name, icon: i.icon
@@ -58,9 +58,11 @@ function buildCompactCatalog(catalogs: DbCatalogs): string {
  */
 function resolveStringToAugment(value: unknown, dbAugments: AugmentData[]): unknown {
     if (typeof value === 'string') {
-        // Plain string → try to match against DB augment titles
+        // Plain string → try Vietnamese title, then English name
         const normalized = value.toLowerCase().trim();
-        const match = dbAugments.find(a => a.title.toLowerCase().trim() === normalized);
+        const match =
+            dbAugments.find(a => a.title.toLowerCase().trim() === normalized) ||
+            dbAugments.find(a => (a.name_en || '').toLowerCase().trim() === normalized);
         if (match) {
             return { id: match.id, title: match.title, description: match.description || '', icon: match.icon, tier: match.tier };
         }
@@ -74,8 +76,10 @@ function resolveStringToAugment(value: unknown, dbAugments: AugmentData[]): unkn
         const title = (aug.title as string) || (aug.name as string) || '';
         if (!title) return value;
         const normalized = title.toLowerCase().trim();
-        const match = dbAugments.find(a => a.title.toLowerCase().trim() === normalized)
-            || dbAugments.find(a => a.id === aug.id);
+        const match =
+            dbAugments.find(a => a.title.toLowerCase().trim() === normalized) ||
+            dbAugments.find(a => (a.name_en || '').toLowerCase().trim() === normalized) ||
+            dbAugments.find(a => a.id === aug.id);
         if (match) {
             return { ...aug, id: match.id, title: match.title, description: match.description || '', icon: match.icon, tier: match.tier };
         }
@@ -191,4 +195,33 @@ export async function validatePuzzleWithAI(
 
     console.error('[PuzzleAI] All models exhausted — using raw JSON');
     return rawJson;
+}
+
+/**
+ * After local + AI resolution, collect any augment values that are still plain strings.
+ * These need to be either added to the DB or skipped before import.
+ */
+export function collectUnresolvedAugmentStrings(
+    json: Record<string, unknown>
+): string[] {
+    const unresolved = new Set<string>();
+
+    const checkValue = (v: unknown) => {
+        if (typeof v === 'string' && v.trim()) unresolved.add(v.trim());
+    };
+
+    const arrayFields = ['augments', 'rerollAugments', 'secondRerollAugments', 'proFirstRoll', 'proSecondRoll', 'previousAugments'];
+    for (const field of arrayFields) {
+        if (Array.isArray(json[field])) (json[field] as unknown[]).forEach(checkValue);
+    }
+
+    ['proFinalPick', 'augment21'].forEach(f => checkValue(json[f]));
+
+    if (Array.isArray(json.opponents)) {
+        (json.opponents as Record<string, unknown>[]).forEach(opp => {
+            if (Array.isArray(opp?.augments)) (opp.augments as unknown[]).forEach(checkValue);
+        });
+    }
+
+    return Array.from(unresolved);
 }
