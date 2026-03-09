@@ -168,6 +168,7 @@
 }
 
 .reroll-btn {
+    position: relative;
     width: 100%;
     height: 3.5cqw;
     background: linear-gradient(180deg, rgba(60, 52, 38, 0.9) 0%, rgba(35, 30, 20, 0.95) 100%);
@@ -193,6 +194,53 @@
 .reroll-btn svg {
     width: 1.8cqw;
     height: 1.8cqw;
+}
+
+.reroll-icon-stack {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Teemo encounter: roll charges badge inside reroll button */
+.reroll-charges-badge {
+    position: absolute;
+    left: calc(100% - 0.08cqw);
+    top: 100%;
+    transform: translate(-28%, -52%);
+    min-width: 1.38cqw;
+    height: 1.38cqw;
+    border-radius: 50%;
+    padding: 0 0.14cqw;
+    background:
+        radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.08) 0%, transparent 55%),
+        linear-gradient(180deg, rgba(18, 18, 18, 0.92) 0%, rgba(5, 5, 5, 0.96) 100%);
+    border: 0.08cqw solid rgba(200, 170, 110, 0.9);
+    color: #c8aa6e;
+    font-size: 0.7cqw;
+    font-weight: 700;
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    box-shadow:
+        0 0 0.45cqw rgba(200, 170, 110, 0.28),
+        0 0.12cqw 0.28cqw rgba(0, 0, 0, 0.45);
+    text-shadow: 0 0 0.25cqw rgba(200, 170, 110, 0.35);
+    line-height: 1;
+}
+
+[data-layout-mode="phone-landscape"] .reroll-charges-badge {
+    min-width: 16px;
+    height: 16px;
+    left: calc(100% - 1px);
+    top: 100%;
+    transform: translate(-20%, -58%);
+    padding: 0 2px;
+    font-size: 9px;
+    border-width: 1px;
 }
 
 /* Disabled/Used State */

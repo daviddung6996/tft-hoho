@@ -71,6 +71,7 @@ export const useGameFlow = (currentPuzzle: any, userId?: string, options?: { can
         setHasRerolled(false);
         setUserPickRound(0); // 0 = First Roll, 1 = Second Roll
         setRerollOrder([0, 0, 0]);
+        setSecondRerollOrder([0, 0, 0]);
         setRollSequence(1);
 
         // Determine initial phase based on stage type
@@ -122,16 +123,15 @@ export const useGameFlow = (currentPuzzle: any, userId?: string, options?: { can
         setPuzzlePhase('selecting');
     };
 
-    // Teemo encounter: hasExtraReroll gives 2 total roll charges (vs 1 normally)
+    // Teemo encounter: each augment slot can be rerolled twice, not the whole screen sharing 2 global charges
     const hasExtraReroll = currentPuzzle?.hasExtraReroll ?? false;
     const maxRollCharges = hasExtraReroll ? 2 : 1;
     const chargesUsed = rerollOrder.filter(r => r > 0).length + secondRerollOrder.filter(r => r > 0).length;
-    const rollChargesRemaining = Math.max(0, maxRollCharges - chargesUsed);
+    const rollChargesRemaining = Math.max(0, (maxRollCharges * 3) - chargesUsed);
 
     const handleAugmentReroll = (indexToReplace: number) => {
         if (options?.canPlayPuzzle === false) return; // Puzzle is locked
         if (!currentPuzzle) return;
-        if (rollChargesRemaining <= 0) return; // No charges left
         if (secondRerollOrder[indexToReplace] > 0) return; // Slot already rolled twice
 
         let newAugment: AugmentData | null = null;

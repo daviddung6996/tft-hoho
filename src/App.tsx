@@ -521,6 +521,7 @@ const App: React.FC = () => {
                                         currentAugments={currentAugments}
                                         rerollOrder={rerollOrder}
                                         secondRerollOrder={secondRerollOrder}
+                                        hasExtraReroll={hasExtraReroll}
                                         rollChargesRemaining={hasExtraReroll ? rollChargesRemaining : undefined}
                                         onReroll={handleAugmentReroll}
                                         onSelect={handleAugmentSelect}
@@ -572,9 +573,11 @@ const App: React.FC = () => {
                                     proSecondRoll={currentPuzzle.proSecondRoll}
                                     proFirstRoll={currentPuzzle.proFirstRoll}
                                     proRerollIndices={currentPuzzle.proRerollIndices || currentPuzzle.meta_data?.proRerollIndices || []}
-                                    // Removed unused props: proSecondRerollIndices, proPickIndex
                                     initialAugments={currentPuzzle.augments?.filter((a: any) => a !== null) || []}
                                     rerollAugments={currentPuzzle.rerollAugments?.filter((a: any) => a !== null) || []}
+                                    secondRerollAugments={currentPuzzle.secondRerollAugments?.filter((a: any) => a !== null) || []}
+                                    proSecondRerollIndices={currentPuzzle.proSecondRerollIndices || []}
+                                    secondRerollOrder={secondRerollOrder}
                                     proFinalPickData={currentPuzzle.proFinalPick}
                                     correctAugmentId={currentPuzzle.proFinalPick?.id || ''}
                                     communityVotes={communityVotes}

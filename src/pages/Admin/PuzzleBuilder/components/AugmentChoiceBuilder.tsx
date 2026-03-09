@@ -187,7 +187,7 @@ const AugmentChoiceBuilder: React.FC<AugmentChoiceBuilderProps> = ({
                                     title="Đánh dấu Pro đã Roll"
                                 >
                                     R
-                                    {isRerolled && <span className="acb-badge">{rerollOrder + 1}</span>}
+                                    {isRerolled && <span className="acb-badge">{type === 'reroll' ? proRerollIndices.length + rerollOrder + 1 : rerollOrder + 1}</span>}
                                 </button>
                             )}
                             <button

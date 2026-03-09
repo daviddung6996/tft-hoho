@@ -29,6 +29,9 @@ export interface DecisionReviewProps {
     initialAugments?: AugmentData[];
     rerollAugments?: AugmentData[];
     proRerollIndices?: number[];
+    secondRerollAugments?: AugmentData[];
+    proSecondRerollIndices?: number[];
+    secondRerollOrder?: number[];
     onNextPuzzle: () => void;
     onReplay: () => void;
     puzzleId: string;
@@ -68,6 +71,7 @@ const UNKNOWN_AUGMENT: AugmentData = {
 
 const INITIAL_OFFER_LABEL = 'Offer ban đầu';
 const REROLL_RESULTS_LABEL = 'Kết quả sau roll';
+const TEEMO_REROLL_LABEL = 'Teemo Roll lại';
 
 function pushMarker(markers: ReviewMarker[], condition: boolean, text: string, type: ReviewMarker['type']) {
     if (condition) {
@@ -84,6 +88,9 @@ export const DecisionReview: React.FC<DecisionReviewProps> = ({
     initialAugments = [],
     rerollAugments = [],
     proRerollIndices = [],
+    secondRerollAugments = [],
+    proSecondRerollIndices = [],
+    secondRerollOrder = [],
     onNextPuzzle,
     onReplay,
     puzzleId,
@@ -270,6 +277,28 @@ export const DecisionReview: React.FC<DecisionReviewProps> = ({
     const createRerollMarkers = (augment: AugmentData, index: number): ReviewMarker[] => {
         const userUnlocked = (userRerollOrder[index] || 0) > 0;
         const proUnlocked = proRolledSlots.includes(index);
+        const proSecondRolled = proSecondRerollIndices.includes(index);
+        const userSecondRolled = (secondRerollOrder[index] || 0) > 0;
+        const isUserPick = userUnlocked && !userSecondRolled && userChoice.title === augment.title;
+        const isProPick = proUnlocked && !proSecondRolled && proFinalPick.title === augment.title;
+        const markers: ReviewMarker[] = [];
+
+        if (userSecondRolled) {
+            pushMarker(markers, true, `Bạn đã Roll #${secondRerollOrder[index]}`, 'user');
+        }
+        pushMarker(markers, isUserPick, 'Bạn chọn', 'user');
+        if (proSecondRolled) {
+            const proRerollNum = proRolledSlots.length + proSecondRerollIndices.indexOf(index) + 1;
+            pushMarker(markers, true, `${proPlayerName} đã Roll #${proRerollNum}`, 'pro');
+        }
+        pushMarker(markers, isProPick, `${proPlayerName} chọn`, 'pro');
+
+        return markers;
+    };
+
+    const createSecondRerollMarkers = (augment: AugmentData, index: number): ReviewMarker[] => {
+        const userUnlocked = (secondRerollOrder[index] || 0) > 0;
+        const proUnlocked = proSecondRerollIndices.includes(index);
         const isUserPick = userUnlocked && userChoice.title === augment.title;
         const isProPick = proUnlocked && proFinalPick.title === augment.title;
         const markers: ReviewMarker[] = [];
@@ -314,13 +343,17 @@ export const DecisionReview: React.FC<DecisionReviewProps> = ({
 
         const userUnlocked = (userRerollOrder[index] || 0) > 0;
         const proUnlocked = proRolledSlots.includes(index);
-        const isUserPick = userUnlocked && userChoice.title === augment.title;
-        const isProPick = proUnlocked && proFinalPick.title === augment.title;
+        const userSecondRolled = (secondRerollOrder[index] || 0) > 0;
+        const proSecondRolled = proSecondRerollIndices.includes(index);
+        const isRolledAway = userSecondRolled || proSecondRolled;
+        const isUnlocked = userUnlocked || proUnlocked;
+        const isUserPick = userUnlocked && !userSecondRolled && userChoice.title === augment.title;
+        const isProPick = proUnlocked && !proSecondRolled && proFinalPick.title === augment.title;
 
         return (
             <div
                 key={`reroll-${index}`}
-                className={`augment-cell slot-cell ${userUnlocked || proUnlocked ? 'rolled-result' : 'locked-slot'}`}
+                className={`augment-cell slot-cell ${isUnlocked ? (isRolledAway && !isUserPick && !isProPick ? 'rolled-away' : 'rolled-result') : 'locked-slot'}`}
             >
                 <ReviewCard
                     augment={augment}
@@ -332,6 +365,34 @@ export const DecisionReview: React.FC<DecisionReviewProps> = ({
                     votePercent={getVotePercent(augment.title)}
                     voteCount={getVoteCount(augment.title)}
                     markers={createRerollMarkers(augment, index)}
+                />
+            </div>
+        );
+    });
+
+    const renderSecondRerollAugmentCards = (variant: ReviewVariant) => secondRerollAugments.slice(0, 3).map((augment, index) => {
+        if (!augment) return null;
+
+        const userUnlocked = (secondRerollOrder[index] || 0) > 0;
+        const proUnlocked = proSecondRerollIndices.includes(index);
+        const isUserPick = userUnlocked && userChoice.title === augment.title;
+        const isProPick = proUnlocked && proFinalPick.title === augment.title;
+
+        return (
+            <div
+                key={`teemo-reroll-${index}`}
+                className={`augment-cell slot-cell ${(userUnlocked || proUnlocked) ? (!isUserPick && !isProPick ? 'rolled-away' : 'rolled-result') : 'locked-slot'}`}
+            >
+                <ReviewCard
+                    augment={augment}
+                    variant={variant}
+                    isUserPick={isUserPick}
+                    isProPick={isProPick}
+                    proPlayerName={proPlayerName}
+                    showVotes={true}
+                    votePercent={getVotePercent(augment.title)}
+                    voteCount={getVoteCount(augment.title)}
+                    markers={createSecondRerollMarkers(augment, index)}
                 />
             </div>
         );
@@ -363,6 +424,14 @@ export const DecisionReview: React.FC<DecisionReviewProps> = ({
                             </div>
                         </div>
                     )}
+                    {secondRerollAugments.length > 0 && (
+                        <div className="roll-augment-list">
+                            <div className="roll-augment-group-label roll-augment-group-label--desktop">{TEEMO_REROLL_LABEL}</div>
+                            <div className="final-augment-grid-6">
+                                {renderSecondRerollAugmentCards('desktop')}
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
@@ -391,6 +460,14 @@ export const DecisionReview: React.FC<DecisionReviewProps> = ({
                     <div className="decision-review-mobile-group-label decision-review-mobile-group-label--muted">{REROLL_RESULTS_LABEL}</div>
                     <div className="decision-review-mobile-card-list decision-review-mobile-grid-6">
                         {renderRerollAugmentCards('mobile')}
+                    </div>
+                </div>
+            )}
+            {secondRerollAugments.length > 0 && (
+                <div className="decision-review-mobile-card-group decision-review-mobile-card-group--spaced">
+                    <div className="decision-review-mobile-group-label decision-review-mobile-group-label--muted">{TEEMO_REROLL_LABEL}</div>
+                    <div className="decision-review-mobile-card-list decision-review-mobile-grid-6">
+                        {renderSecondRerollAugmentCards('mobile')}
                     </div>
                 </div>
             )}

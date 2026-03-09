@@ -40,8 +40,7 @@ const AugmentPrismIcon = () => (
     </svg>
 );
 
-export const AugmentButton: React.FC<AugmentButtonProps> = ({ isActive, onClick, variant = 'default', needsScouting = false, rollChargesRemaining }) => {
-    const showRollBadge = rollChargesRemaining !== undefined && rollChargesRemaining > 0;
+export const AugmentButton: React.FC<AugmentButtonProps> = ({ isActive, onClick, variant = 'default', needsScouting = false }) => {
     return (
         <div className="augment-button-container">
             {needsScouting && (
@@ -66,9 +65,6 @@ export const AugmentButton: React.FC<AugmentButtonProps> = ({ isActive, onClick,
                         </svg>
                     )}
                 </div>
-                {showRollBadge && (
-                    <span className="augment-button-roll-badge">{rollChargesRemaining}</span>
-                )}
             </button>
         </div>
     );
