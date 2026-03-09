@@ -1,0 +1,94 @@
+/* Scout Overlay - Hextech Standard */
+.scout-overlay-container {
+    position: absolute;
+    inset: 0;
+    z-index: 210; /* Above AugmentModal (200), below AugmentButton (300) */
+    background: radial-gradient(circle at center, rgba(16, 25, 35, 0.95) 0%, rgba(6, 12, 17, 0.98) 100%);
+    backdrop-filter: blur(6px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    text-align: center;
+    pointer-events: auto; /* Block clicks to components underneath */
+}
+
+/* Mobile specific layout */
+.scout-overlay-container[data-layout-mode="phone-landscape"] {
+    justify-content: flex-start;
+    padding-top: 15%;
+}
+
+.scout-overlay-content {
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    animation: scout-overlay-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+    padding: 2cqw;
+    border: 0.15cqw solid #c8aa6e;
+    background: linear-gradient(180deg, rgba(21, 58, 62, 0.9) 0%, rgba(5, 28, 30, 0.95) 100%);
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8), inset 0 0 10px rgba(200, 170, 110, 0.2);
+}
+
+.scout-overlay-icon {
+    font-size: 48px;
+    line-height: 1;
+    filter: drop-shadow(0 0 10px rgba(200, 170, 110, 0.5));
+}
+
+.scout-overlay-title {
+    color: #F0E6D2;
+    font-family: "Spectral", serif;
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    text-shadow: 0 0 10px rgba(200, 170, 110, 0.4);
+}
+
+.scout-overlay-text {
+    color: #a09b8c;
+    font-family: "Inter", sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    margin: 0;
+}
+
+@keyframes scout-overlay-in {
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Landscape adjustments */
+.scout-overlay-container[data-layout-mode="phone-landscape"] .scout-overlay-content {
+    flex-direction: row;
+    padding: 1rem;
+    gap: 12px;
+    border-width: 1px;
+    border-radius: 4px;
+    max-width: 80%;
+}
+
+.scout-overlay-container[data-layout-mode="phone-landscape"] .scout-overlay-icon {
+    font-size: 24px;
+}
+
+.scout-overlay-container[data-layout-mode="phone-landscape"] .scout-overlay-title {
+    font-size: 14px;
+}
+
+.scout-overlay-container[data-layout-mode="phone-landscape"] .scout-overlay-text {
+    font-size: 10px;
+    text-align: left;
+}

@@ -23,6 +23,13 @@
   /* Chrome positioning variables */
   --chrome-top-h: 0px;
   --chrome-bottom-h: 0px;
+  --app-visible-top-offset: max(0px, calc((100vw * 9 / 16 - 100vh) / 2));
+  --app-visible-side-offset: max(0px, calc((100vh * 16 / 9 - 100vw) / 2));
+  --app-hud-top-inset: calc(var(--app-visible-top-offset) + 12px);
+  --app-hud-left-inset: calc(var(--app-visible-side-offset) + 12px);
+  --app-hud-right-inset: calc(var(--app-visible-side-offset) + 12px);
+  --mobile-utility-dock-bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
+  --mobile-augment-cta-size: 54px;
 }
 
 /* Blurred arena background fills the black bars on ultrawide screens */
@@ -47,13 +54,11 @@
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: linear-gradient(
-      to right,
+  background: linear-gradient(to right,
       rgba(8, 30, 32, 0.95) 0%,
       transparent 25%,
       transparent 75%,
-      rgba(8, 30, 32, 0.95) 100%
-    ),
+      rgba(8, 30, 32, 0.95) 100%),
     rgba(13, 46, 48, 0.65);
   pointer-events: none;
 }
@@ -102,25 +107,16 @@
   --mobile-utility-dock-h: 52px;
   --mobile-utility-dock-bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
   --mobile-augment-cta-size: 54px;
-  --mobile-augment-cta-safe-h: calc(
-    var(--mobile-augment-cta-size) + env(safe-area-inset-bottom, 0px) + 18px
-  );
-  --mobile-overlay-safe-top: calc(
-    env(safe-area-inset-top, 0px) + var(--mobile-topbar-h) + 12px
-  );
+  --mobile-augment-cta-safe-h: calc(var(--mobile-augment-cta-size) + env(safe-area-inset-bottom, 0px) + 18px);
+  --mobile-overlay-safe-top: calc(env(safe-area-inset-top, 0px) + var(--mobile-topbar-h) + 12px);
   --mobile-overlay-safe-bottom: calc(var(--mobile-augment-cta-safe-h) + 12px);
   --mobile-content-max-w: min(100% - 24px, 880px);
   --mobile-sheet-max-w: min(100% - 24px, 420px);
-  --mobile-sheet-max-h: calc(
-    100% - var(--mobile-overlay-safe-top) - var(--mobile-utility-dock-h) -
-      var(--mobile-overlay-safe-bottom) - 18px
-  );
+  --mobile-sheet-max-h: calc(100% - var(--mobile-overlay-safe-top) - var(--mobile-utility-dock-h) - var(--mobile-overlay-safe-bottom) - 18px);
   --mobile-selector-safe-top: calc(env(safe-area-inset-top, 0px) + 8px);
   --mobile-selector-safe-bottom: calc(var(--mobile-augment-cta-safe-h) + 8px);
   --mobile-selector-max-w: min(calc(100% - 20px), 320px);
-  --mobile-selector-max-h: calc(
-    100% - var(--mobile-selector-safe-top) - var(--mobile-selector-safe-bottom)
-  );
+  --mobile-selector-max-h: calc(100% - var(--mobile-selector-safe-top) - var(--mobile-selector-safe-bottom));
   --mobile-selector-card-w: clamp(108px, 15vw, 138px);
   --mobile-selector-card-h: clamp(84px, 15.5dvh, 112px);
   --mobile-selector-grid-gap: clamp(4px, 0.9vw, 6px);
@@ -215,21 +211,41 @@
   z-index: 1000;
 }
 
+.viewport-hud-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  pointer-events: none;
+}
+
+/* When reviewing on mobile, hide HUD buttons so they don't overlay DecisionReview */
+.viewport-hud-layer[data-layout-mode="phone-landscape"][data-puzzle-phase="reviewing"] .menu-container {
+  display: none;
+}
+
+.viewport-hud-layer .menu-container,
+.viewport-hud-layer .augment-button-container {
+  pointer-events: auto;
+}
+
 /* phone-landscape: layout-wrapper stretches to fill, overlay uses vertical gradient */
 .layout-wrapper[data-layout-mode="phone-landscape"] {
   padding: 0;
   align-items: stretch;
   justify-content: stretch;
+  --app-visible-top-offset: 0px;
+  --app-visible-side-offset: 0px;
+  --app-hud-top-inset: calc(env(safe-area-inset-top, 0px) + 8px);
+  --app-hud-left-inset: calc(env(safe-area-inset-left, 0px) + 8px);
+  --app-hud-right-inset: calc(env(safe-area-inset-right, 0px) + 8px);
 }
 
 .layout-wrapper[data-layout-mode="phone-landscape"]::after {
-  background: linear-gradient(
-      180deg,
+  background: linear-gradient(180deg,
       rgba(8, 30, 32, 0.52) 0%,
       rgba(8, 30, 32, 0.18) 24%,
       rgba(8, 30, 32, 0.16) 76%,
-      rgba(8, 30, 32, 0.55) 100%
-    ),
+      rgba(8, 30, 32, 0.55) 100%),
     rgba(13, 46, 48, 0.42);
 }
 
@@ -264,13 +280,8 @@
   left: 50%;
   right: auto;
   transform: translateX(-50%);
-  width: min(
-    calc(
-      100% - 24px - env(safe-area-inset-left, 0px) -
-        env(safe-area-inset-right, 0px)
-    ),
-    30rem
-  );
+  width: min(calc(100% - 24px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)),
+      30rem);
   height: var(--mobile-topbar-h);
   padding: 0 4px;
 }
@@ -310,17 +321,23 @@
   font-size: 8px;
 }
 
-.app-container[data-layout-mode="phone-landscape"] .augment-button {
-  bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
-  width: clamp(104px, 21vw, calc(var(--mobile-augment-cta-size) * 2.5));
-  height: clamp(40px, 8.8vw, var(--mobile-augment-cta-size));
+.viewport-hud-layer[data-layout-mode="phone-landscape"] .augment-button-container {
+  position: fixed;
+  bottom: var(--mobile-utility-dock-bottom);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.viewport-hud-layer[data-layout-mode="phone-landscape"] .augment-button {
+  width: clamp(116px, 23vw, 152px);
+  height: clamp(48px, 9vw, 58px);
   border-width: 1px;
   border-radius: 16px;
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35),
     0 0 18px rgba(200, 170, 110, 0.18);
 }
 
-.app-container[data-layout-mode="phone-landscape"] .augment-button svg {
+.viewport-hud-layer[data-layout-mode="phone-landscape"] .augment-button svg {
   width: clamp(18px, 4vw, 24px);
   height: clamp(18px, 4vw, 24px);
 }
@@ -357,41 +374,40 @@
    ========================================================================== */
 
 .app-container[data-layout-mode="phone-landscape"] .mobile-scouting-rail {
-  max-height: calc(
-    100vh - var(--mobile-overlay-safe-top) - var(--mobile-utility-dock-bottom) -
-      var(--mobile-utility-dock-h) - 8px
-  );
+  max-height: calc(100vh - var(--mobile-overlay-safe-top) - var(--mobile-utility-dock-bottom) - var(--mobile-utility-dock-h) - 8px);
   overflow-y: visible;
   gap: 4px;
 }
 
 /* Tighter row height so 8 players fit comfortably in landscape viewport */
-.app-container[data-layout-mode="phone-landscape"]
-  .mobile-scouting-rail
-  .player-row {
+.app-container[data-layout-mode="phone-landscape"] .mobile-scouting-rail .player-row {
   height: clamp(24px, 5vw, 30px);
 }
 
-.app-container[data-layout-mode="phone-landscape"]
-  .mobile-scouting-rail
-  .player-pill,
-.app-container[data-layout-mode="phone-landscape"]
-  .mobile-scouting-rail
-  .player-pill-border {
+.app-container[data-layout-mode="phone-landscape"] .mobile-scouting-rail .player-pill,
+.app-container[data-layout-mode="phone-landscape"] .mobile-scouting-rail .player-pill-border {
   height: clamp(20px, 4vw, 26px);
   min-width: clamp(60px, 13vw, 82px);
 }
 
-.app-container[data-layout-mode="phone-landscape"]
-  .mobile-scouting-rail
-  .player-avatar-wrapper {
+.app-container[data-layout-mode="phone-landscape"] .mobile-scouting-rail .player-avatar-wrapper {
   width: clamp(24px, 5vw, 30px);
   height: clamp(24px, 5vw, 30px);
 }
 
-.app-container[data-layout-mode="phone-landscape"]
-  .mobile-scouting-rail
-  .player-avatar-img {
+.app-container[data-layout-mode="phone-landscape"] .mobile-scouting-rail .player-avatar-img {
   width: calc(clamp(24px, 5vw, 30px) - 4px);
   height: calc(clamp(24px, 5vw, 30px) - 4px);
+}
+
+/* ==========================================================================
+   SCOUT INTERACTION BLOCKER
+   Invisible layer to prevent clicking on augments/paths while scouting is required
+   ========================================================================== */
+.scout-interaction-blocker {
+  position: absolute;
+  inset: 0;
+  z-index: 250;
+  /* Above the panels, below the AugmentButton (which is z-index 300) */
+  cursor: not-allowed;
 }

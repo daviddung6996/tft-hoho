@@ -51,7 +51,7 @@ export const LandscapePrompt: React.FC = () => {
             <h2 className="landscape-prompt-title">Xoay ngang điện thoại</h2>
             <hr className="landscape-prompt-accent" />
             <p className="landscape-prompt-subtitle">
-                Trải nghiệm game tốt nhất ở chế độ ngang. Xoay điện thoại để bắt đầu chơi!
+                Trải nghiệm game tốt nhất ở chế độ ngang. Xoay điện thoại rồi chạm màn hình để game tự vào toàn màn hình.
             </p>
         </div>
     );

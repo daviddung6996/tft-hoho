@@ -118,9 +118,24 @@ Verify completed work against SPEC criteria.
    - Ask: "Bạn đã kiểm tra chưa? OK để mark done?"
 
 4. **Resolution:**
-   - All good → Update SPEC status to `DONE`
-   - Issues found → Create fix tasks in SPEC, status back to `BUILDING`
-   - Run `/build` again for fix tasks
+    - All good → Update SPEC status to `DONE` → **Auto-cleanup** (see below)
+    - Issues found → Create fix tasks in SPEC, status back to `BUILDING`
+    - Run `/build` again for fix tasks
+
+### Auto-Cleanup on DONE (Mandatory)
+
+When SPEC status is marked `DONE` (all verified and user confirmed):
+
+1. **Identify all files created by this pipeline:**
+   - `{task-slug}-SPEC.md` in project root
+   - Any other `.md` files created during `/spec` or `/build` (e.g., research notes, test plans)
+2. **Delete them automatically** — no user confirmation needed
+3. **Report cleanup:** "🧹 Đã xoá: `{task-slug}-SPEC.md` [+ other files if any]"
+
+**Rules:**
+- Only delete files that were **created by this skill pipeline** (SPEC files, planning docs)
+- **NEVER** delete `AGENTS.md`, `ARCHITECTURE.md`, `README.md`, `SHIP-PLAN.md`, or any pre-existing project docs
+- If unsure whether a file was created by the pipeline → DON'T delete, ask user
 
 ---
 
@@ -194,6 +209,6 @@ PLANNING  → SPEC being created
 APPROVED  → User approved, ready for /build
 BUILDING  → Tasks being executed
 VERIFYING → Build done, checking results
-DONE      → All verified and complete
+DONE      → All verified and complete → Auto-delete SPEC + pipeline .md files
 BLOCKED   → Waiting for user input mid-build
 ```

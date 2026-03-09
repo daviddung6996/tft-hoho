@@ -295,6 +295,21 @@ Get-ChildItem -Path src -Recurse -Include "*.tsx" | ForEach-Object {
 - **Cause:** `.app-container` dùng `filter`, nên descendant `position: fixed` lấy chính `.app-container` làm containing block. Trong default layout, canvas 16:9 kiểu `cover` có thể bị crop trên/dưới hoặc trái/phải, nên HUD bám mép canvas sẽ bị trôi vào vùng bị cắt.
 - **Avoid:** Với HUD neo mép màn hình, cộng thêm crop offset (`--app-visible-top-offset`, `--app-visible-side-offset`) vào `top/left/right`, hoặc render HUD ở layer viewport riêng nằm ngoài node có `filter`.
 
+### Viewport HUD sibling sẽ đè mọi fixed modal nằm trong `.app-container` nếu không có visibility contract
+- **Symptom:** Nút `Fullscreen` / `Menu` vẫn nổi trên Admin modal, Arena selector, review screen hoặc các màn "làm việc" khác dù modal tự đặt `z-index` rất cao.
+- **Cause:** `.viewport-hud-layer` là sibling ở root stacking context, còn hầu hết modal gameplay/admin render bên trong `.app-container` đang có `filter`, nên `z-index` nội bộ của modal không thể thắng layer HUD ở root.
+- **Avoid:** Đừng cố tăng `z-index` modal vô hạn. Phải gate render/visibility của HUD từ `App.tsx` bằng state rõ ràng (`currentView`, modal open state, reviewing/mobile overlay state, transition state).
+
+### Viewport HUD controls must not be blanket-hidden through `.menu-container` on mobile
+- **Symptom:** Trên `phone-landscape`, cả hamburger lẫn fullscreen cùng biến mất trước cả khi vào fullscreen hoặc mở review.
+- **Cause:** `SettingsButton.css` từng `display: none` toàn bộ `.menu-container` ở mobile, trong khi chính container này chứa cả menu lẫn fullscreen. Đồng thời các nút neo mép viewport mà đặt trong `.app-container` có `filter` sẽ còn bị drift/crop như gotcha phía trên.
+- **Avoid:** Với utility controls neo mép viewport (`menu`, `fullscreen`, mobile augment CTA), render chúng trong `.viewport-hud-layer` là sibling của `.app-container`. Nếu cần ẩn một control trên mobile, scope rule vào đúng button hoặc state cụ thể, KHÔNG hide blanket `.menu-container`.
+
+### Mobile auto-fullscreen cannot rely on `useEffect` alone; it needs a trusted user gesture
+- **Symptom:** Agent wires `requestFullscreen()` inside mount/rotate effect, nhưng trên mobile browser fullscreen không vào và có thể reject promise.
+- **Cause:** Fullscreen API thường yêu cầu `user activation` thật (`pointerdown`, `touchend`, click...). Rotate/orientation change và `useEffect` thuần không được tính là trusted gesture.
+- **Avoid:** Với mobile auto-fullscreen, chỉ "arm" logic trong effect rồi request fullscreen ở gesture đầu tiên của user. Luôn `try/catch` hoặc helper safe để swallow reject, và đừng biến nó thành console noise.
+
 ### `supabase/config.toml` can reference Edge Functions that do not exist in repo
 - **Symptom:** Agent reads `supabase/config.toml`, expects a function like `generate-flex-card`, then wastes time searching under `supabase/functions/` and assumes files are missing locally.
 - **Cause:** Supabase function config can drift from the committed filesystem. Current repo only contains `supabase/functions/generate-caption/`, while `supabase/config.toml` still declares `functions.generate-flex-card`.
