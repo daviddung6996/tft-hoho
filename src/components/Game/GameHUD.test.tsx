@@ -147,6 +147,8 @@ describe('GameHUD', () => {
 
         expect(screen.queryByTestId('mobile-hud-controls')).not.toBeInTheDocument();
         expect(screen.queryByTestId('SynergyPanel:sheet')).not.toBeInTheDocument();
+        expect(screen.getByTestId('SynergyPanel:sidebar')).toBeInTheDocument();
+        expect(screen.getByTestId('ScoutingPanel:sidebar')).toBeInTheDocument();
 
         rerender(
             <GameHUD
@@ -165,6 +167,8 @@ describe('GameHUD', () => {
 
         expect(screen.queryByTestId('mobile-hud-controls')).not.toBeInTheDocument();
         expect(screen.queryByTestId('ItemPanel:sheet')).not.toBeInTheDocument();
+        expect(screen.getByTestId('SynergyPanel:sidebar')).toBeInTheDocument();
+        expect(screen.getByTestId('ScoutingPanel:sidebar')).toBeInTheDocument();
     });
 
     it('keeps desktop sidebars on non-phone layouts', () => {

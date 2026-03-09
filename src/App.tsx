@@ -4,6 +4,7 @@ import { useArenaPreloader } from './hooks/useArenaPreloader';
 import { usePuzzleGame } from './hooks/usePuzzleGame';
 import { useGameFlow } from './hooks/useGameFlow';
 import { usePuzzleToPlayers } from './hooks/usePuzzleToPlayers';
+import { useMobileAutoFullscreen } from './hooks/useMobileAutoFullscreen';
 import { GameScene } from './components/Game/GameScene';
 import { GameHUD, type MobilePanel } from './components/Game/GameHUD';
 import { getLayoutMode, getMobileOverlayMode, type LayoutMode } from './components/Game/mobileLayout';
@@ -135,6 +136,7 @@ const App: React.FC = () => {
     const [currentView, setCurrentView] = useState<'puzzle' | 'library'>('puzzle');
     const [layoutMode, setLayoutMode] = useState<LayoutMode>(() => getLayoutMode());
     const [mobilePanel, setMobilePanel] = useState<MobilePanel>(null);
+    const [hasScouted, setHasScouted] = useState(false);
 
     // Wrapper for next puzzle — fast crossfade transition
     // Phase 1: Fade-in overlay (150ms CSS) → Phase 2: Swap state while fully covered
@@ -210,8 +212,37 @@ const App: React.FC = () => {
         puzzlePhase,
     });
 
+    const isScoutRequired = !isMirrored && isAugmentOpen && !hasScouted && (puzzlePhase === 'selecting' || puzzlePhase === 'declaring_intent' || puzzlePhase === 'declaring_plan');
+    const shouldEnableMobileAutoFullscreen = isPhoneLandscape
+        && currentView === 'puzzle'
+        && !showLoginModal
+        && !isSettingsOpen
+        && !showAdminModal
+        && !showProfileModal
+        && !showCompletionModal
+        && !showSupportModal;
+    const hasBlockingWorkspaceModal = showLoginModal
+        || isSettingsOpen
+        || showAdminModal
+        || showProfileModal
+        || showCompletionModal
+        || showSupportModal;
+    // viewport-hud-layer sits above app-container in the root stacking context,
+    // so fixed modals rendered inside app-container must explicitly hide this chrome.
+    const shouldRenderViewportMenu = currentView === 'puzzle'
+        && !hasBlockingWorkspaceModal
+        && !isTransitioning
+        && puzzlePhase !== 'reviewing'
+        && (!isPhoneLandscape || mobileOverlayMode === 'none');
+    const shouldRenderMobileAugmentButton = currentView === 'puzzle'
+        && isPhoneLandscape
+        && puzzlePhase !== 'reviewing'
+        && !hasBlockingWorkspaceModal
+        && !isTransitioning;
+
     // Preload all arena images so scouting never shows bare teal background
     useArenaPreloader();
+    const requestMobileAutoFullscreen = useMobileAutoFullscreen({ enabled: shouldEnableMobileAutoFullscreen });
 
     // Keyboard shortcuts: Q (scout next), R (scout prev), Space (return home)
     useEffect(() => {
@@ -225,6 +256,7 @@ const App: React.FC = () => {
 
             if (e.key === 'q' || e.key === 'Q') {
                 e.preventDefault();
+                setHasScouted(true);
                 setScoutedPlayerId(prev => {
                     const currentIdx = opponents.findIndex(p => p.id === prev);
                     if (currentIdx === -1) return opponents[0].id;
@@ -233,6 +265,7 @@ const App: React.FC = () => {
                 });
             } else if (e.key === 'r' || e.key === 'R') {
                 e.preventDefault();
+                setHasScouted(true);
                 setScoutedPlayerId(prev => {
                     const currentIdx = opponents.findIndex(p => p.id === prev);
                     if (currentIdx === -1) return opponents[opponents.length - 1].id;
@@ -241,6 +274,7 @@ const App: React.FC = () => {
                 });
             } else if (e.key === ' ') {
                 e.preventDefault();
+                setHasScouted(true);
                 setScoutedPlayerId('1');
                 setIsAugmentOpen(false);
             }
@@ -258,6 +292,7 @@ const App: React.FC = () => {
 
     useEffect(() => {
         setMobilePanel(null);
+        setHasScouted(false); // Reset scout requirement
     }, [currentPuzzle?.id]);
 
     useEffect(() => {
@@ -267,15 +302,19 @@ const App: React.FC = () => {
     }, [currentView]);
 
     const handleAugmentButtonClick = () => {
+        requestMobileAutoFullscreen();
+
         if (isMirrored) {
             setScoutedPlayerId('1');
             setIsAugmentOpen(false);
             setMobilePanel(null);
+            setHasScouted(true);
             return;
         }
 
         setMobilePanel(null);
         setIsAugmentOpen(prev => !prev);
+        setHasScouted(true);
     };
 
     // Removed routing for TestFlex
@@ -299,11 +338,43 @@ const App: React.FC = () => {
                 style={{ backgroundImage: `url(${arenaSkinUrl})` }}
             >
                 <div
+                    className="viewport-hud-layer"
+                    data-layout-mode={layoutMode}
+                    data-mobile-overlay-mode={mobileOverlayMode}
+                    data-menu-visible={shouldRenderViewportMenu ? 'true' : 'false'}
+                    data-puzzle-phase={puzzlePhase}
+                >
+                    {currentView === 'puzzle' && (
+                        <>
+                            {shouldRenderViewportMenu && (
+                                <MenuButton
+                                    onArenaClick={() => setIsSettingsOpen(true)}
+                                    isAuthenticated={isAuthenticated}
+                                    displayName={user?.display_name || user?.email}
+                                    onAdminClick={isAdmin ? () => setShowAdminModal(true) : undefined}
+                                    onProfileClick={() => setShowProfileModal(true)}
+                                    onLoginClick={() => setShowLoginModal(true)}
+                                    onLibraryClick={() => setCurrentView('library')}
+                                    isAdmin={isAdmin}
+                                />
+                            )}
+                            {shouldRenderMobileAugmentButton && (
+                                <AugmentButton
+                                    isActive={isAugmentOpen}
+                                    variant={isMirrored ? 'return' : 'default'}
+                                    needsScouting={isScoutRequired}
+                                    onClick={handleAugmentButtonClick}
+                                />
+                            )}
+                        </>
+                    )}
+                </div>
+                <div
                     className="app-container"
                     data-layout-mode={layoutMode}
                     data-mobile-overlay-mode={mobileOverlayMode}
                     style={{
-                    backgroundImage: `url(${arenaSkinUrl})`,
+                        backgroundImage: `url(${arenaSkinUrl})`,
                     }}
                 >
 
@@ -336,7 +407,12 @@ const App: React.FC = () => {
                             <GameHUD
                                 activePlayerId={scoutedPlayerId}
                                 players={scoutingPlayers}
-                                onPlayerSelect={(id) => { setScoutedPlayerId(id); if (id !== '1') setIsAugmentOpen(false); }}
+                                onPlayerSelect={(id) => {
+                                    requestMobileAutoFullscreen();
+                                    setScoutedPlayerId(id);
+                                    setHasScouted(true);
+                                    if (id !== '1') setIsAugmentOpen(false);
+                                }}
                                 synergies={synergies}
                                 items={items}
                                 gold={myPlayer.gold}
@@ -352,16 +428,6 @@ const App: React.FC = () => {
                                     <TCoinEarnAnimation />
                                 </>
                             )}
-                            <MenuButton
-                                onArenaClick={() => setIsSettingsOpen(true)}
-                                isAuthenticated={isAuthenticated}
-                                displayName={user?.display_name || user?.email}
-                                onAdminClick={isAdmin ? () => setShowAdminModal(true) : undefined}
-                                onProfileClick={() => setShowProfileModal(true)}
-                                onLoginClick={() => setShowLoginModal(true)}
-                                onLibraryClick={() => setCurrentView('library')}
-                                isAdmin={isAdmin}
-                            />
 
                             {isSettingsOpen && (
                                 <ArenaSelectorModal
@@ -489,6 +555,8 @@ const App: React.FC = () => {
                                 )
                             )}
 
+                            {isScoutRequired && <div className="scout-interaction-blocker" />}
+
                             {!isMirrored && isAugmentOpen && puzzlePhase === 'reviewing' && selectedAugment && (
                                 <DecisionReview
                                     userRerollOrder={rerollOrder}
@@ -533,11 +601,12 @@ const App: React.FC = () => {
                                 <GoldDisplay gold={myPlayer.gold} />
                             )}
 
-                            {puzzlePhase !== 'reviewing' && (
+                            {puzzlePhase !== 'reviewing' && !isPhoneLandscape && (
                                 <>
                                     <AugmentButton
                                         isActive={isAugmentOpen}
                                         variant={isMirrored ? 'return' : 'default'}
+                                        needsScouting={isScoutRequired}
                                         onClick={handleAugmentButtonClick}
                                     />
                                 </>
@@ -572,16 +641,17 @@ const App: React.FC = () => {
                                 onClose={() => setShowSupportModal(false)}
                             />
 
-                            <PuzzleCompletionModal
-                                isOpen={showCompletionModal}
-                                onClose={() => setShowCompletionModal(false)}
-                            />
                         </>
                     </div>
 
                     <div className={`puzzle-transition-overlay${isTransitioning ? ' active' : ''}`} />
                 </div>
             </div>
+
+            <PuzzleCompletionModal
+                isOpen={showCompletionModal}
+                onClose={() => setShowCompletionModal(false)}
+            />
         </>
     );
 };
