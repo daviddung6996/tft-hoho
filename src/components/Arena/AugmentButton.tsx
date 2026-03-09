@@ -6,6 +6,7 @@ interface AugmentButtonProps {
     onClick: () => void;
     variant?: 'default' | 'return';
     needsScouting?: boolean;
+    rollChargesRemaining?: number;
 }
 
 const AugmentPrismIcon = () => (
@@ -39,7 +40,8 @@ const AugmentPrismIcon = () => (
     </svg>
 );
 
-export const AugmentButton: React.FC<AugmentButtonProps> = ({ isActive, onClick, variant = 'default', needsScouting = false }) => {
+export const AugmentButton: React.FC<AugmentButtonProps> = ({ isActive, onClick, variant = 'default', needsScouting = false, rollChargesRemaining }) => {
+    const showRollBadge = rollChargesRemaining !== undefined && rollChargesRemaining > 0;
     return (
         <div className="augment-button-container">
             {needsScouting && (
@@ -64,6 +66,9 @@ export const AugmentButton: React.FC<AugmentButtonProps> = ({ isActive, onClick,
                         </svg>
                     )}
                 </div>
+                {showRollBadge && (
+                    <span className="augment-button-roll-badge">{rollChargesRemaining}</span>
+                )}
             </button>
         </div>
     );

@@ -76,6 +76,37 @@ body.mobile-menu-open .viewport-hud-layer[data-layout-mode="phone-landscape"] .a
     filter: drop-shadow(0 0.15cqw 0.25cqw rgba(0, 0, 0, 0.5));
 }
 
+/* Roll charges badge (Teemo encounter) */
+.augment-button-roll-badge {
+    position: absolute;
+    top: -0.5cqw;
+    right: -0.5cqw;
+    min-width: 1.4cqw;
+    height: 1.4cqw;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #c89b3c 0%, #8a6914 100%);
+    border: 0.1cqw solid #f0c255;
+    color: #F0E6D2;
+    font-size: 0.75cqw;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    box-shadow: 0 0 0.4cqw rgba(200, 155, 60, 0.7);
+}
+
+@media (max-width: 768px) {
+    .augment-button-roll-badge {
+        min-width: 18px;
+        height: 18px;
+        top: -6px;
+        right: -6px;
+        font-size: 10px;
+        border-width: 1px;
+    }
+}
+
 /* ==========================================================================
    SCOUTING GUIDE (Awwwards Quick Tour Style)
    ========================================================================== */
