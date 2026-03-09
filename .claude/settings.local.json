@@ -30,7 +30,10 @@
       "Bash(where npx)",
       "Bash(where node)",
       "Bash(ls /d/TFT-hoho/node_modules/.bin/vite*)",
-      "Bash(npx skills find \"svg icon 2d game ui\")"
+      "Bash(npx skills find \"svg icon 2d game ui\")",
+      "Bash(grep -l \"CREATE TABLE.*augments\\\\|CREATE TABLE IF NOT EXISTS.*augments\" /d/TFT-hoho/supabase/migrations/*.sql)",
+      "Bash(grep -r \"augments\" /d/TFT-hoho/supabase/migrations/*.sql)",
+      "Bash(grep -A 50 \"CREATE TABLE.*puzzles\" /d/TFT-hoho/supabase/migrations/*.sql)"
     ]
   },
   "enableAllProjectMcpServers": true,

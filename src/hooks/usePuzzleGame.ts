@@ -65,8 +65,10 @@ export const usePuzzleGame = (isAuthenticated: boolean) => {
     const [isResolvingNextPuzzle, setIsResolvingNextPuzzle] = React.useState(false);
     const [lockMessageVariant, setLockMessageVariant] = React.useState<LockMessageVariant>('default');
 
-    // Keep this null so old ?puzzle history states are ignored on mobile/browser swipe.
-    const pendingPuzzleIdRef = React.useRef<string | null>(null);
+    // Read ?puzzle=<id> from URL on init for deep linking / share links
+    const pendingPuzzleIdRef = React.useRef<string | null>(
+        new URLSearchParams(window.location.search).get('puzzle')
+    );
 
     // Initialize index: -1 means "not yet selected" so random selection can run
     const [currentPuzzleIndex, setCurrentPuzzleIndex] = React.useState(-1);
@@ -195,10 +197,14 @@ export const usePuzzleGame = (isAuthenticated: boolean) => {
     }, [puzzles, isLoadingPuzzles, completedPuzzleIds, currentPuzzleIndex]);
 
     // Effect: Sync URL with Current Puzzle State
+    // Use replaceState (not pushState) to avoid creating history entries,
+    // so mobile browser swipe/back won't traverse old puzzle states.
     React.useEffect(() => {
-        // Puzzle URL syncing was removed to stop mobile browser swipe/back
-        // from traversing old puzzle states.
-    }, []);
+        if (!currentPuzzle?.id) return;
+        const url = new URL(window.location.href);
+        url.searchParams.set('puzzle', currentPuzzle.id);
+        window.history.replaceState(null, '', url.toString());
+    }, [currentPuzzle?.id]);
 
     // Compute completion state: all puzzles completed (excluding current puzzle)
     const allPuzzlesCompleted = React.useMemo(() => {
