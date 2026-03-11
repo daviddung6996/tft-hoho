@@ -58,7 +58,7 @@ const AugmentCard: React.FC<AugmentCardProps> = ({ title, description, icon, tie
                             <path d="M1 20v-6h6"></path>
                             <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
                         </svg>
-                        {rerollCharges !== undefined && rerollCharges > 0 && !isRerolled && (
+                        {rerollCharges !== undefined && rerollCharges > 1 && !isRerolled && (
                             <span className="reroll-charges-badge">{rerollCharges}</span>
                         )}
                     </span>
