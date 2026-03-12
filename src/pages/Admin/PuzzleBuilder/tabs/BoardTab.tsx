@@ -81,6 +81,12 @@ const BoardTab: React.FC<BoardTabProps> = ({
         return calculateSynergies(units, champions, allTraits);
     }, [units, champions, allTraits]);
 
+    const brokenUnits = units.filter(u => !u.name);
+
+    const handleClearBrokenUnits = () => {
+        onUnitsChange(units.filter(u => !!u.name));
+    };
+
     return (
         <div className="pb-builder-view admin-content-transition" key={mode}>
             <PuzzleToolbar
@@ -90,6 +96,8 @@ const BoardTab: React.FC<BoardTabProps> = ({
                 xp={xp}
                 onChange={onStateChange}
                 onClearBoard={onClearBoard}
+                onClearBrokenUnits={brokenUnits.length > 0 ? handleClearBrokenUnits : undefined}
+                brokenUnitCount={brokenUnits.length}
             />
 
             {/* Opponent Selector */}

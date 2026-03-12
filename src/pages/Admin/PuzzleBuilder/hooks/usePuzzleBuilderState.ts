@@ -153,7 +153,7 @@ export const usePuzzleBuilderState = (onSaveSuccess: (puzzleId: string, shareUrl
                 name: OPPONENT_NAMES[newOpponents.length] || `Đối thủ ${newOpponents.length + 1}`,
                 board: [],
                 bench: [],
-                state: sanitizePuzzlePlayerState(puzzle.stage, { gold: 0, level: 3, hp: 100, xp: 0 })
+                state: sanitizePuzzlePlayerState(puzzle.stage, { gold: 0, level: 1, hp: 100, xp: 0 })
             });
         }
 

@@ -24,9 +24,19 @@ export function sanitizePuzzleStateLevels(puzzle: PuzzleScenario): PuzzleScenari
         ...puzzle,
         playerState: sanitizePuzzlePlayerState(puzzle.stage, puzzle.playerState),
         opponentState: sanitizePuzzlePlayerState(puzzle.stage, puzzle.opponentState),
-        opponents: (puzzle.opponents || []).map((opponent: OpponentData) => ({
-            ...opponent,
-            state: sanitizePuzzlePlayerState(puzzle.stage, opponent.state),
-        })),
+        opponents: (puzzle.opponents || []).map((opponent: OpponentData) => {
+            // If state.level is missing, infer from board unit count (number of units on board = level)
+            const hasExplicitLevel = opponent.state?.level != null && Number.isFinite(opponent.state.level);
+            const inferredLevel = hasExplicitLevel
+                ? opponent.state.level
+                : Math.max(1, (opponent.board || []).length);
+            return {
+                ...opponent,
+                state: sanitizePuzzlePlayerState(puzzle.stage, {
+                    ...opponent.state,
+                    level: inferredLevel,
+                }),
+            };
+        }),
     };
 }
