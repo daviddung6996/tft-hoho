@@ -9,6 +9,8 @@ interface PuzzleToolbarProps {
     xp: number;
     onChange: (key: 'level' | 'gold' | 'hp' | 'xp', value: number) => void;
     onClearBoard: () => void;
+    onClearBrokenUnits?: () => void;
+    brokenUnitCount?: number;
 }
 
 const PuzzleToolbar: React.FC<PuzzleToolbarProps> = ({
@@ -17,7 +19,9 @@ const PuzzleToolbar: React.FC<PuzzleToolbarProps> = ({
     hp,
     xp,
     onChange,
-    onClearBoard
+    onClearBoard,
+    onClearBrokenUnits,
+    brokenUnitCount = 0,
 }) => {
     return (
         <div className="puzzle-toolbar">
@@ -26,6 +30,16 @@ const PuzzleToolbar: React.FC<PuzzleToolbarProps> = ({
                     <span className="pt-icon">x</span>
                     Xoa ban co
                 </button>
+                {onClearBrokenUnits && brokenUnitCount > 0 && (
+                    <button
+                        className="pt-btn"
+                        onClick={onClearBrokenUnits}
+                        style={{ color: '#ff6b6b', borderColor: '#ff6b6b' }}
+                        title="Xóa các unit bị lỗi do import JSON"
+                    >
+                        Xóa {brokenUnitCount} unit lỗi
+                    </button>
+                )}
                 <button className="pt-btn disabled" disabled>Nhap ma</button>
                 <button className="pt-btn disabled" disabled>Xuat ma</button>
             </div>

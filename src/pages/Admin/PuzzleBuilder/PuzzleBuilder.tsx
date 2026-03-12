@@ -57,7 +57,7 @@ const PuzzleBuilder: React.FC<PuzzleBuilderProps> = ({ onClose, onSaveSuccess, i
                 }
             });
         } else {
-            const currentOppState = puzzle.opponents?.[selectedOpponentIndex]?.state || { level: 3, gold: 0, hp: 100, xp: 0 };
+            const currentOppState = puzzle.opponents?.[selectedOpponentIndex]?.state || { level: 1, gold: 0, hp: 100, xp: 0 };
             const nextLevel = key === 'level' ? sanitizePlayerLevel(value, puzzle.stage) : currentOppState.level;
             const nextXp = key === 'xp'
                 ? sanitizePlayerXp(value, currentOppState.level, puzzle.stage)
@@ -149,7 +149,7 @@ const PuzzleBuilder: React.FC<PuzzleBuilderProps> = ({ onClose, onSaveSuccess, i
                 {viewMode === 'opponent' && (
                     <BoardTab
                         mode="opponent"
-                        level={puzzle.opponents?.[selectedOpponentIndex]?.state?.level || 3}
+                        level={puzzle.opponents?.[selectedOpponentIndex]?.state?.level || 1}
                         gold={puzzle.opponents?.[selectedOpponentIndex]?.state?.gold || 0}
                         hp={puzzle.opponents?.[selectedOpponentIndex]?.state?.hp || 100}
                         xp={puzzle.opponents?.[selectedOpponentIndex]?.state?.xp || 0}
@@ -167,7 +167,7 @@ const PuzzleBuilder: React.FC<PuzzleBuilderProps> = ({ onClose, onSaveSuccess, i
                         }}
                         onStateChange={(k, v) => updateState('opponent', k, v)}
                         onClearBoard={() => handleClearBoard('opponent')}
-                        onLevelCapHit={() => showToast(`Cap ${puzzle.opponents?.[selectedOpponentIndex]?.state?.level || 3}: khong the them tuong len board.`, 'info')}
+                        onLevelCapHit={() => showToast(`Cap ${puzzle.opponents?.[selectedOpponentIndex]?.state?.level || 1}: khong the them tuong len board.`, 'info')}
                         augments={(puzzle.opponents?.[selectedOpponentIndex]?.augments || []).filter(a => a !== null) as any[]}
                         onAugmentsChange={(newAugments) => updateOpponent(selectedOpponentIndex, { augments: newAugments })}
                         selectedOpponentIndex={selectedOpponentIndex}

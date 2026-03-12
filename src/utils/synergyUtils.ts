@@ -6,7 +6,7 @@ function findTraitDef(traitName: string, traits: Trait[]): Trait | undefined {
     const lower = traitName.toLowerCase();
     return traits.find(t =>
         t.name_en?.toLowerCase() === lower ||
-        t.name.toLowerCase() === lower
+        t.name?.toLowerCase() === lower
     );
 }
 
@@ -32,7 +32,9 @@ export const calculateSynergies = (
         // Find the champion data
         // UnitData might have 'name' or 'id' that maps to Champion
         // In this codebase, UnitData.id is unique instance ID, UnitData.name usually matches Champion.name or id lookup
-        const champ = champions.find(c => c.name === unit.name || c.id === unit.name.toLowerCase()); // Fallback matching
+        const champ = unit.name
+            ? champions.find(c => c.name === unit.name || c.id === unit.name.toLowerCase())
+            : undefined; // Fallback matching
 
         if (champ && !uniqueChampionIds.has(champ.id)) {
             uniqueChampionIds.add(champ.id);
