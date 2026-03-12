@@ -33,7 +33,12 @@
       "Bash(npx skills find \"svg icon 2d game ui\")",
       "Bash(grep -l \"CREATE TABLE.*augments\\\\|CREATE TABLE IF NOT EXISTS.*augments\" /d/TFT-hoho/supabase/migrations/*.sql)",
       "Bash(grep -r \"augments\" /d/TFT-hoho/supabase/migrations/*.sql)",
-      "Bash(grep -A 50 \"CREATE TABLE.*puzzles\" /d/TFT-hoho/supabase/migrations/*.sql)"
+      "Bash(grep -A 50 \"CREATE TABLE.*puzzles\" /d/TFT-hoho/supabase/migrations/*.sql)",
+      "Bash(notebooklm status:*)",
+      "Bash(notebooklm list:*)",
+      "Bash(notebooklm use:*)",
+      "Bash(notebooklm source:*)",
+      "Bash(notebooklm ask:*)"
     ]
   },
   "enableAllProjectMcpServers": true,
