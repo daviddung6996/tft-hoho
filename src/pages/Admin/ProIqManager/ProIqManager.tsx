@@ -190,7 +190,7 @@ export const ProIqManager: React.FC = () => {
         if (regionFilter !== 'all' && p.region !== regionFilter) return false;
         if (searchTerm) {
             const term = searchTerm.toLowerCase();
-            return p.name.toLowerCase().includes(term) || p.region.toLowerCase().includes(term);
+            return (p.name ?? '').toLowerCase().includes(term) || (p.region ?? '').toLowerCase().includes(term);
         }
         return true;
     });
