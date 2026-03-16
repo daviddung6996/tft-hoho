@@ -40,6 +40,7 @@ import { TCoinBalance } from './features/tcoin/components/TCoinBalance';
 import { TCoinEarnAnimation } from './features/tcoin/components/TCoinEarnAnimation';
 import { PuzzleLockOverlay } from './features/tcoin/components/PuzzleLockOverlay';
 import { LandscapePrompt } from './components/common/LandscapePrompt';
+import { RightClickEffect } from './components/common/RightClickEffect';
 import { SupportModal } from './components/Settings/SupportModal';
 import { MONETIZATION_ENABLED } from './config/monetization';
 import { CoachFab } from './features/coach-select/components/CoachFab';
@@ -56,17 +57,17 @@ import type {
 import './App.css';
 
 const COACH_PATH_OPTIONS = [
-    { id: 'econ', title: 'Kinh te', subtitle: 'Vang, XP, luot roll' },
-    { id: 'item', title: 'Trang bi', subtitle: 'Manh do, do lon, do Orn' },
-    { id: 'combat', title: 'Danh nhau', subtitle: 'Loi combat, team-wide buff' },
-    { id: 'emblem', title: 'An', subtitle: 'An toc he, Xeng/Chao, Giap chess' },
+    { id: 'econ', title: 'Kinh tế', subtitle: 'Vàng, XP, lượt roll' },
+    { id: 'item', title: 'Trang bị', subtitle: 'Mảnh đồ, đồ lớn, đồ Ornn' },
+    { id: 'combat', title: 'Đánh nhau', subtitle: 'Lõi combat, team-wide buff' },
+    { id: 'emblem', title: 'Ấn', subtitle: 'Ấn tộc hệ, Xẻng/Chảo, Giáp chess' },
 ];
 
 const COACH_PLAN_OPTIONS = [
-    { id: 'stabilize', title: 'Choi top 4', subtitle: 'Manh lien ngay lap tuc' },
-    { id: 'cap', title: 'Choi top cao', subtitle: 'Lay loi huong danh ve sau' },
-    { id: 'patch', title: 'Fix item lai cho dep', subtitle: 'Lay manh do de va lai bai' },
-    { id: 'greed', title: 'Choi Loto', subtitle: 'Ra gi choi do vi chua chot bai' },
+    { id: 'stabilize', title: 'Chơi top 4', subtitle: 'Mạnh liền ngay lập tức' },
+    { id: 'cap', title: 'Chơi top cao', subtitle: 'Lấy lõi hướng đánh về sau' },
+    { id: 'patch', title: 'Fix item lại cho đẹp', subtitle: 'Lấy mảnh đồ để vá lại bài' },
+    { id: 'greed', title: 'Chơi Loto', subtitle: 'Ra gì chơi đó vì chưa chốt bài' },
 ];
 
 const App: React.FC = () => {
@@ -343,6 +344,7 @@ const App: React.FC = () => {
             if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
             if (currentView !== 'puzzle') return;
             if (showCoachOverlay || puzzlePhase === 'reviewing') return;
+            if (hasBlockingWorkspaceModal) return;
 
             const opponents = allPlayers.filter(p => !p.isMe);
             if (opponents.length === 0) return;
@@ -375,7 +377,7 @@ const App: React.FC = () => {
 
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [allPlayers, currentView, puzzlePhase, showCoachOverlay]);
+    }, [allPlayers, currentView, puzzlePhase, showCoachOverlay, hasBlockingWorkspaceModal]);
 
     useEffect(() => {
         if (mobileOverlayMode !== 'none' || isMirrored) {
@@ -576,6 +578,7 @@ const App: React.FC = () => {
                                 myPlayer={myPlayerWithArena}
                                 activePlayer={activePlayer}
                                 isMirrored={isMirrored}
+                                isInteractionLocked={hasBlockingWorkspaceModal}
                             />
                             {!isMirrored && (
                                 <TopStatusBar
@@ -855,6 +858,7 @@ const App: React.FC = () => {
                 isOpen={showCompletionModal}
                 onClose={() => setShowCompletionModal(false)}
             />
+            <RightClickEffect />
         </>
     );
 };

@@ -12,9 +12,10 @@ interface GameSceneProps {
     activePlayer: PlayerData;
     isMirrored: boolean;
     streakCount?: number;
+    isInteractionLocked?: boolean;
 }
 
-export const GameScene: React.FC<GameSceneProps> = ({ myPlayer, activePlayer, isMirrored, streakCount }) => {
+export const GameScene: React.FC<GameSceneProps> = ({ myPlayer, activePlayer, isMirrored, streakCount, isInteractionLocked = false }) => {
     // Generate random Ionia Path and Void Mods once per game session
     const gameInfo = useMemo(() => ({
         ioniaPath: getRandomIoniaPath(),
@@ -68,6 +69,7 @@ export const GameScene: React.FC<GameSceneProps> = ({ myPlayer, activePlayer, is
                     onUnitsChange={!isMirrored ? handleUnitsChange : undefined}
                     playerLevel={!isMirrored ? myPlayer.level : undefined}
                     onLevelCapHit={!isMirrored ? handleLevelCapHit : undefined}
+                    isInteractionLocked={isInteractionLocked}
                 />
             </main>
 
