@@ -49,7 +49,7 @@ describe('visian-chat prompt helpers', () => {
     expect(serialized).toContain('decision=augment');
     expect(serialized).toContain('options=Opt 1, Opt 2, Opt 3');
     expect(serialized).not.toContain('Opt 4');
-    expect(serialized).toContain('pro_choice=Opt 2');
+    expect(serialized).not.toContain('pro_choice=');
     expect(serialized).not.toContain('taken=');
     expect(serialized).not.toContain('traits=');
     expect(serialized).not.toContain('board=');
@@ -163,7 +163,7 @@ describe('visian-chat prompt helpers', () => {
       proChoiceLabel: 'component grab bag',
     });
 
-    expect(canonicalA).toBe('stage=3-2|comp=bruiser / sniper|gold=24|level=6|hp=78|decision=augment|options=hedge fund,component grab bag,jeweled lotus ii|pro_choice=component grab bag');
+    expect(canonicalA).toBe('stage=3-2|comp=bruiser / sniper|gold=24|level=6|hp=78|decision=augment|options=hedge fund,component grab bag,jeweled lotus ii');
     expect(canonicalB).toBe(canonicalA);
   });
 

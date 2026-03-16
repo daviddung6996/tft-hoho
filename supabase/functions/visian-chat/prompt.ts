@@ -196,7 +196,6 @@ export function serializeCompactGameContext(ctx: GameContext | null): string {
   pushNumberPart(parts, 'hp', ctx.hp);
   pushStringPart(parts, 'decision', ctx.decisionType);
   pushListPart(parts, 'options', compactDecisionOptions(ctx));
-  pushStringPart(parts, 'pro_choice', ctx.proChoiceLabel);
 
   return parts.join(' | ');
 }
@@ -239,11 +238,6 @@ export function serializeCoachCacheContext(ctx: GameContext | null): string {
 
   if (options.length > 0) {
     parts.push(`options=${options.join(',')}`);
-  }
-
-  const proChoiceLabel = cleanString(ctx.proChoiceLabel);
-  if (proChoiceLabel) {
-    parts.push(`pro_choice=${normalizeCacheToken(proChoiceLabel)}`);
   }
 
   return parts.join('|');
