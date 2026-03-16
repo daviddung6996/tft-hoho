@@ -69,17 +69,6 @@ const COACH_PLAN_OPTIONS = [
     { id: 'greed', title: 'Choi Loto', subtitle: 'Ra gi choi do vi chua chot bai' },
 ];
 
-function resolveCoachOptionTitle(
-    options: Array<{ id: string; title: string }>,
-    optionId: string | null | undefined,
-): string | undefined {
-    if (!optionId) {
-        return undefined;
-    }
-
-    return options.find(option => option.id === optionId)?.title;
-}
-
 const App: React.FC = () => {
     // --- 1. Authentication ---
     const { user, isAuthenticated, isAdmin, isLoading: isAuthLoading } = useAuth();
@@ -270,17 +259,6 @@ const App: React.FC = () => {
             icon: augment.icon,
             tier: augment.tier,
         }));
-    const coachProChoiceId = coachDecisionType === 'path'
-        ? currentPuzzle?.proPickPath
-        : coachDecisionType === 'plan'
-            ? currentPuzzle?.proPlan
-            : currentPuzzle?.proFinalPick?.id;
-    const coachProChoiceLabel = coachDecisionType === 'path'
-        ? resolveCoachOptionTitle(COACH_PATH_OPTIONS, currentPuzzle?.proPickPath)
-        : coachDecisionType === 'plan'
-            ? resolveCoachOptionTitle(COACH_PLAN_OPTIONS, currentPuzzle?.proPlan)
-            : currentPuzzle?.proFinalPick?.title;
-
     const coachGameContext: CoachGameContext | null = currentPuzzle ? {
         stage: currentPuzzle.stage,
         comp: deriveCoachCompLabel(
@@ -296,8 +274,6 @@ const App: React.FC = () => {
             : coachDecisionType === 'plan'
                 ? 'Ke hoach'
                 : 'Augment',
-        proChoiceId: coachProChoiceId,
-        proChoiceLabel: coachProChoiceLabel,
         currentDecisionOptions: coachDecisionType === 'path'
             ? COACH_PATH_OPTIONS
             : coachDecisionType === 'plan'

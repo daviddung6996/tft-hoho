@@ -748,10 +748,7 @@ Deno.serve(async (req) => {
       return sseResponse(stream, requestId);
     }
 
-    const shouldExplainAuthoritativeChoice = isCoachSelectMode && Boolean(typedGameContext?.proChoiceLabel?.trim());
-    const query = shouldExplainAuthoritativeChoice
-      ? buildCoachExplainQuery(resolvedCoachId, question, typedGameContext)
-      : buildCoachSelectQuery(resolvedCoachId, question, typedGameContext);
+    const query = buildCoachSelectQuery(resolvedCoachId, question, typedGameContext);
     const requestMode = isCoachSelectMode ? 'coach_select' : 'default';
     const cacheContext = isCoachSelectMode
       ? serializeCoachCacheContext(typedGameContext)

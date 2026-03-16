@@ -38,7 +38,13 @@
       "Bash(notebooklm list:*)",
       "Bash(notebooklm use:*)",
       "Bash(notebooklm source:*)",
-      "Bash(notebooklm ask:*)"
+      "Bash(notebooklm ask:*)",
+      "Bash(find /d/TFT-hoho/src -type f \\\\\\( -name \"*Modal*\" -o -name \"*Overlay*\" -o -name \"*Tooltip*\" -o -name \"*Feedback*\" \\\\\\) | grep -E \"\\\\.\\(tsx|ts\\)$\")",
+      "Bash(find /d/TFT-hoho/src -type f -name \"*.css\" | xargs grep -l \"chat\\\\|message\\\\|notification\" | head -5)",
+      "Bash(find /d/TFT-hoho/src/services -type f -name \"*.ts\" | xargs grep -l \"fetch\\\\|http\\\\|api\" | head -5)",
+      "Bash(cd D:/TFT-hoho && npm run build 2>&1 | tail -30)",
+      "mcp__plugin_context-mode_context-mode__ctx_batch_execute",
+      "mcp__plugin_context-mode_context-mode__ctx_execute"
     ]
   },
   "enableAllProjectMcpServers": true,
