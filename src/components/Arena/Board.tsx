@@ -31,6 +31,7 @@ interface BoardProps {
     onUnitsChange?: (units: UnitData[]) => void;
     playerLevel?: number;
     onLevelCapHit?: () => void;
+    isInteractionLocked?: boolean;
 }
 
 /**
@@ -54,6 +55,7 @@ export const Board: React.FC<BoardProps> = ({
     onUnitsChange,
     playerLevel = MAX_PLAYER_LEVEL,
     onLevelCapHit,
+    isInteractionLocked = false,
 }) => {
     const boardContainerRef = useRef<HTMLDivElement>(null);
     const [draggingUnitId, setDraggingUnitId] = useState<string | null>(null);
@@ -63,7 +65,7 @@ export const Board: React.FC<BoardProps> = ({
         return [...units, ...bench];
     }, [units, benchUnits]);
 
-    const isInteractive = !isMirrored && !!onUnitsChange;
+    const isInteractive = !isMirrored && !!onUnitsChange && !isInteractionLocked;
 
     // Refs for latest values — avoids stale closures in pointer listeners
     const allUnitsRef = useRef(allPlayerUnits);
@@ -270,6 +272,12 @@ export const Board: React.FC<BoardProps> = ({
         document.addEventListener('pointermove', onMove);
         document.addEventListener('pointerup', onUp);
     }, [isInteractive, clearHighlight, applyDrop, cleanup]);
+
+    useEffect(() => {
+        if (!isInteractionLocked) return;
+        if (!dragRef.current && !isDragActive.current) return;
+        cleanup();
+    }, [isInteractionLocked, cleanup]);
 
     // Cleanup on unmount
     useEffect(() => cleanup, [cleanup]);
