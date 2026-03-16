@@ -28,6 +28,9 @@
   --app-hud-top-inset: calc(var(--app-visible-top-offset) + 12px);
   --app-hud-left-inset: calc(var(--app-visible-side-offset) + 12px);
   --app-hud-right-inset: calc(var(--app-visible-side-offset) + 12px);
+  --viewport-hud-side-gap: calc(var(--app-visible-side-offset) + max(12px, 2.2vw));
+  --viewport-hud-left-gap: var(--viewport-hud-side-gap);
+  --viewport-hud-right-gap: var(--viewport-hud-side-gap);
   --mobile-utility-dock-bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
   --mobile-augment-cta-size: 54px;
 }
@@ -238,6 +241,8 @@
   --app-hud-top-inset: calc(env(safe-area-inset-top, 0px) + 8px);
   --app-hud-left-inset: calc(env(safe-area-inset-left, 0px) + 8px);
   --app-hud-right-inset: calc(env(safe-area-inset-right, 0px) + 8px);
+  --viewport-hud-left-gap: max(calc(env(safe-area-inset-left, 0px) + 6px), 6px);
+  --viewport-hud-right-gap: max(calc(env(safe-area-inset-right, 0px) + 6px), 6px);
 }
 
 .layout-wrapper[data-layout-mode="phone-landscape"]::after {

@@ -372,6 +372,56 @@ Get-ChildItem -Path src -Recurse -Include "*.tsx" | ForEach-Object {
 - **Cause:** `src/components/Game/GameHUD.css` (or equivalent mobile HUD styles) can exist before `src/components/Game/GameHUD.tsx` is updated to actually render `mobile-hud-dock` / `mobile-hud-sheet`, leaving gameplay in a half-migrated state.
 - **Avoid:** Verify both the CSS and the `GameHUD.tsx` render tree before documenting or extending mobile HUD behavior.
 
+### `coachGameContext.currentAugments` text-only is not enough for augment icon UI
+- **Symptom:** Coach/overlay context bar can only show generic placeholders or numeric badges for current puzzle augments, even though the puzzle already has correct augment icons in runtime.
+- **Cause:** `App.tsx` historically mapped `currentAugments` to `string[]` titles only before passing them into `CoachGameContext`, so downstream UI had no access to `augment.icon`.
+- **Avoid:** Keep `currentAugments` text for prompt/backward compatibility if needed, but pass a separate rich field like `currentAugmentOptions[]` with `id/title/icon/tier` whenever the UI must render real augment visuals.
+
+### Coach Select must not fabricate augment analysis when `visian-chat` / NotebookLM backend fails
+- **Symptom:** User still sees a full `Pick / Why / When not / Backup` block even though the backend request actually failed, so NotebookLM/proxy outages look like valid coaching output.
+- **Cause:** `coachSelectService` once generated a local heuristic fallback answer whenever `supabase.functions.invoke('visian-chat')` errored or returned an empty payload, masking the real backend failure.
+- **Avoid:** Coach Select must only show analysis returned by `visian-chat`. If invoke fails or the answer is empty, switch to an explicit unavailable state/message (for example `Coach dang ban train...`) and keep raw error details in logs/network so backend issues stay debuggable.
+
+### Supabase Edge Function runtime 500 can look like a fake CORS bug in browser console
+- **Symptom:** Browser says `blocked by CORS policy` / `preflight request doesn't pass access control check`, but direct requests to the same function can still show `OPTIONS 200` and `POST 500`.
+- **Cause:** For `functions/v1/*`, the browser often surfaces any non-2xx preflight/follow-up path as a CORS-looking error. In this project, `visian-chat` was actually failing inside the function with `{"error":"Visian proxy not configured"}` because secrets like `VISIAN_PROXY_URL` / `VISIAN_API_KEY` were missing on the remote project.
+- **Avoid:** Do not debug frontend CORS first. Reproduce with a direct `OPTIONS` + `POST` request to the Edge Function and inspect the JSON body. Treat missing function secrets/config as the primary suspect when `OPTIONS` is 200 but `POST` is 500.
+
+### NotebookLM coach integration should use a hosted CLI bridge, not a temporary local tunnel
+- **Symptom:** `visian-chat` works only on one dev machine, then remote requests fail with `500`, `404`, or fake-CORS noise once the local proxy/tunnel dies.
+- **Cause:** A temporary bridge based on local proxy scripts plus tunnel URLs makes Supabase depend on a fragile workstation process instead of a stable service. It also hides the real NotebookLM CLI contract (`--storage`, fixed notebook, mounted auth state).
+- **Avoid:** Keep `visian-chat` as a thin adapter that calls a hosted bridge service. The bridge must shell out to `notebooklm` CLI with a mounted `storage_state.json`, a fixed `NOTEBOOKLM_NOTEBOOK_ID`, sanitized Python env, and an explicit shared API key.
+
+### NotebookLM can keep forcing `[1]`, `[2]`, `[1-3]` citations even when the prompt asks for plain prose
+- **Symptom:** Coach/chat answers doc rat tu nhien nhung van dinh citation inline, lam UX nhin nhu raw RAG output.
+- **Cause:** Citation formatting den tu NotebookLM generation/runtime; prompt-only instructions khong on dinh enough de suppress hoan toan.
+- **Avoid:** Strip citation tokens bang regex nhe ngay sau khi nhan raw answer. Dat o bridge (`services/notebooklm_bridge/bridge.py`) va/hoac Edge Function (`supabase/functions/visian-chat/answer.ts`) de khong can them model pass hay retry, latency gan nhu khong doi.
+
+### NotebookLM CLI can target source shards with `-s`, but it does not expose a dedicated stream flag
+- **Symptom:** Agent assumes every NotebookLM ask must read the whole notebook, hoac ky vong `--json` se co token stream san.
+- **Cause:** Local CLI help cho thay `notebooklm ask` ho tro `-s/--source` de gioi han theo source ID, nhung khong co flag stream rieng cho answer.
+- **Avoid:** Toi uu latency retrieval bang source sharding + `-s` truoc. Neu can stream that su, phai dung text-mode subprocess stdout/SSE bridge thay vi tiep tuc `--json` va cho full blob.
+
+### Coach cache must follow the live decision context, not just `puzzleId + coachId`
+- **Symptom:** User hoi coach o phase `path`, sau do vao phase `augment` that su nhung app van mo lai / reuse answer cu nhu the chua nhin 3 augment hien tai.
+- **Cause:** Cache key neu chi gom `puzzleId + coachId` se khong phan biet `path`, `plan`, va `augment` contexts trong cung 1 puzzle; them nua response cu co the ve muon sau khi context da doi.
+- **Avoid:** Cache key phai include context signature hien tai (`decisionType`, option titles/ids, stage...); dong thoi bo qua response in-flight neu coach context da doi truoc khi request hoan tat. Xem `src/features/coach-select/hooks/useCoachSelect.ts`.
+
+### Coach stream error after early `pick/status` can bypass JSON fallback if hook only retries on transport throw
+- **Symptom:** UI hien `Coach dang ban train...` ngay ca khi SSE da bat dau bang `pick`/`status`, du JSON `coach_select` path van co the tra loi duoc.
+- **Cause:** `visian-chat` stream mode gui `pick` som truoc khi goi bridge. Neu bridge fail sau do, frontend nhan `error` event thay vi thrown transport error; fallback logic chi retry khi stream promise reject truoc event dau tien se bo lo truong hop nay.
+- **Avoid:** Trong `useCoachSelect`, neu stream ket thuc voi `error` ma chua co reasoning meaningful, phai tu dong thu `coachSelectService.askCoach(...)` truoc khi chot unavailable state.
+
+### Remote `coach_select_stream` can still return `200 application/json` while frontend expects SSE
+- **Symptom:** Direct POST den `functions/v1/visian-chat` voi `mode=coach_select_stream` van tra `answer` JSON that, nhung UI lai hien unavailable nhu the stream fail.
+- **Cause:** Frontend reader parse response nhu SSE bat ke `Content-Type`. Neu backend deploy chua cap nhat sang `text/event-stream`, no se tra `application/json`; client parse khong ra block/event nao, roi ket luan khong co answer.
+- **Avoid:** `coachSelectService.streamCoachExplanation` phai detect `Content-Type`. Neu khong phai `text/event-stream`, parse JSON body compat va emit `complete` event thay vi coi la stream loi.
+
+### Coach Select da chuyen sang full NotebookLM answer; dung dung lai flow `Pick -> Tai sao`
+- **Symptom:** UI coach hien nhac bi tach roi: loading show `Pick` som, sau do moi co `Tai sao`, nhin nhu giat nhiep va khong dong bo voi answer that tu NotebookLM.
+- **Cause:** Flow cu toi uu perceived speed bang optimistic pick/stream chunk, nhung notebook backend cold path rat cham va production stream contract khong on dinh. Ket qua la UX xau hon va code nhanh le branch.
+- **Avoid:** Coach Select frontend phai dung JSON one-shot `coach_select` lam duong chinh, loading chi show state cho, va response card chi render mot block `Phan tich` tu full answer. Neu can compat stream cu, de o service layer thoi, khong dua lai vao hook/UI contract.
+
 ### `DecisionReview` mobile UI can drift if styles are split between component CSS and `src/styles/mobile.css`
 - **Symptom:** Review screen behaves inconsistently on mobile: one stylesheet expects full-screen fixed modal/header DOM, while component markup or another stylesheet expects an in-game scroll shell.
 - **Cause:** `DecisionReview` historically had mobile overrides in both `src/components/Arena/DecisionReview.css` and `src/styles/mobile.css`, so old rules could keep forcing stale layout assumptions like `position: fixed`.
@@ -381,6 +431,21 @@ Get-ChildItem -Path src -Recurse -Include "*.tsx" | ForEach-Object {
 - **Symptom:** After using two rerolls on one augment during Teemo encounter, other augments lose their `2` badge, look clickable but do nothing, or get disabled incorrectly.
 - **Cause:** Runtime modeled `hasExtraReroll` as two global charges shared by the whole screen instead of `2 rerolls per slot`.
 - **Avoid:** Derive reroll availability and badge count per augment slot from `rerollOrder[index]` + `secondRerollOrder[index]`. Do not gate all rerolls behind one shared `rollChargesRemaining` pool.
+
+### Coach Select swap lag can come from width-based stat bars plus full-carousel rerenders
+- **Symptom:** Clicking another coach feels sticky even though the UI only changes portrait/stats.
+- **Cause:** Coach swap used to rebuild the whole overlay subtree, including every carousel card image, while stat bars animated through a fill implementation that still forced heavier paint/layout work than necessary.
+- **Avoid:** Keep coach-select callbacks stable, memoize carousel items/portrait components, and animate stat progress through `transform: scaleX(...)` with `contain`/`will-change` instead of width-driven fill work.
+
+### Coach pose hero assets must be separated from carousel thumbnails
+- **Symptom:** A transparent pro-pose PNG looks broken in the coach overlay or the carousel thumbnail becomes awkwardly cropped after swapping assets.
+- **Cause:** Reusing the same `imageSrc` for both the large hero presentation and the small carousel thumbnail mixes two incompatible compositions: bottom-anchored transparent pose art versus square cover art.
+- **Avoid:** Keep thumbnail art on `imageSrc` / `fallbackImageSrc`, and route hero-only pose assets through `heroImageSrc` / `heroFallbackImageSrc` plus `heroPresentation`.
+
+### Coach asset filenames can drift from `coachSelect.data.ts` after manual export/cleanup
+- **Symptom:** A specific coach portrait never appears even though the PNG exists in `public/coach-assets/` or `public/coach-assets/pose/`, and the UI silently falls back to the champion square art.
+- **Cause:** Local asset names were normalized to `*-thumb.png` / `pose/*-clean.png`, but `coachSelect.data.ts` can still point at older names like `.webp`.
+- **Avoid:** Whenever adding or replacing coach art, verify both the actual files under `public/coach-assets/` and the exact `imageSrc` / `heroImageSrc` values in `src/features/coach-select/coachSelect.data.ts`.
 
 ## 3. Applied Fixes
 
@@ -475,3 +540,137 @@ Get-ChildItem -Path src -Recurse -Include "*.tsx" | ForEach-Object {
   2. Set "export const MONETIZATION_ENABLED = true;"
   3. Revert `proSupporter.service.ts` and `videoLibrary.service.ts` to their previous remote Supabase query logic. DB migrations for `pro_supporters` might be needed.
   4. Re-build the app. All paywalls and overlays will be restored.
+
+### Coach Select swap performance optimization (2026-03-12)
+- **Date:** 2026-03-12
+- **File:** `src/features/coach-select/hooks/useCoachSelect.ts`, `src/features/coach-select/components/CoachCarousel.tsx`, `src/features/coach-select/components/CoachPortraitImage.tsx`, `src/features/coach-select/components/CoachStatBars.tsx`, `src/features/coach-select/components/CoachSelectOverlay.tsx`, `src/features/coach-select/components/CoachSelectOverlay.css`
+- **Problem:** Clicking swap coach felt laggy because the interaction re-rendered the full carousel and progress bars were not isolated for compositor-friendly animation.
+- **Fix:** Stabilized `selectCoach` with `startTransition` + refs, memoized coach carousel/image/stat subtrees, preloaded coach portraits, and moved stat fill animation to `transform: scaleX(...)` with paint containment and `will-change`.
+
+### Pro pose profile hero rebuild (2026-03-12)
+- **Date:** 2026-03-12
+- **File:** `src/features/coach-select/coachSelect.types.ts`, `src/features/coach-select/coachSelect.data.ts`, `src/features/coach-select/components/CoachHeroPortrait.tsx`, `src/features/coach-select/components/CoachSelectOverlay.tsx`, `src/features/coach-select/components/CoachSelectOverlay.css`, `src/features/coach-select/components/CoachSelectOverlay.test.tsx`, `public/coach-assets/pose/visian-clean.png`, `public/coach-assets/visian-thumb.png`, `scripts/prepare_visian_pose_assets.py`
+- **Problem:** The coach hero still behaved like a framed poster, so transparent pro-pose assets floated above the panel floor, showed canvas/checkerboard artifacts, and broke the carousel when reused as thumbnails.
+- **Fix:** Split hero-vs-thumbnail asset fields, introduced `CoachHeroPortrait` with `pose` / `art` / `art-fallback` resolution, anchored pose PNGs to the bottom edge of the hero panel with dedicated CSS, generated a clean `Visian` pose asset plus separate thumb, and added tests for pose mode plus fallback mode.
+
+### Coach Select no-fallback NotebookLM contract (2026-03-12)
+- **Date:** 2026-03-12
+- **File:** `src/features/coach-select/coachSelect.service.ts`, `src/features/coach-select/hooks/useCoachSelect.ts`, `src/features/coach-select/components/CoachResponseCard.tsx`, `src/features/coach-select/coachSelect.service.test.ts`, `src/features/coach-select/hooks/useCoachSelect.test.tsx`, `src/features/coach-select/components/CoachSelectOverlay.test.tsx`
+- **Problem:** Client used to fabricate local coach analysis when `visian-chat` failed or returned empty text, hiding backend / NotebookLM CLI issues and making outages look like real picks.
+- **Fix:** Removed local fallback generation entirely, throw an unavailable error on invoke failure or empty answer, log parsed Edge Function error details for debugging, and render a themed busy/sleeping coach message instead of fake analysis.
+
+### `visian-chat` missing-secret diagnostics improvement (2026-03-12)
+- **Date:** 2026-03-12
+- **File:** `supabase/functions/visian-chat/index.ts`, `src/features/coach-select/coachSelect.service.ts`
+- **Problem:** Remote `visian-chat` returned a generic `Visian proxy not configured`, while browser console wrapped the failing request as a misleading CORS/preflight issue. That made it hard to see which secret was actually missing.
+- **Fix:** Edge Function now returns explicit `detail` + `missingEnv[]` when required secrets are absent, and the client-side error parser now includes those fields in diagnostic logs.
+
+### Hosted NotebookLM CLI bridge for `visian-chat` (2026-03-12)
+- **Date:** 2026-03-12
+- **File:** `supabase/functions/visian-chat/index.ts`, `services/notebooklm_bridge/*`
+- **Problem:** The temporary local proxy+tunnel approach made `visian-chat` depend on a dev machine and produced unstable `500` / fake-CORS failures instead of a real backend contract.
+- **Fix:** Replaced the temporary transport with a hosted NotebookLM CLI bridge design. `visian-chat` now expects `NOTEBOOKLM_BRIDGE_URL` and `NOTEBOOKLM_BRIDGE_API_KEY`, while the new Python bridge shells out to `notebooklm --storage <storage_state.json> ask --new -n <NOTEBOOK_ID> --json ...`, verifies notebook visibility on `/health`, sanitizes Python-related env vars, and returns structured errors.
+
+### Coach avatar filename remap fix (2026-03-13)
+- **Date:** 2026-03-13
+- **File:** `src/features/coach-select/coachSelect.data.ts`, `src/features/coach-select/components/CoachSelectOverlay.test.tsx`
+- **Problem:** Coach data drifted from the uploaded asset names. `dit_sap`, `one_by_one`, `buffalow`, and `tftiseasy` still referenced old avatar filenames, so the carousel or hero panel silently fell back to champion square art even though the correct `*-thumb.png` / `pose/*-clean.png` files existed under `public/coach-assets/`. `Dit Sap` was especially fragile because the upload now uses hyphenated names (`dit-sap-thumb.png`, `pose/dit-sap-clean.png`) instead of the earlier no-hyphen variant.
+- **Fix:** Repointed every coach to the actual uploaded filenames (`dit-sap-thumb.png`, `1by1-thumb.png`, `buffalow-thumb.png`, `tftiseasy-thumb.png`, and `pose/dit-sap-clean.png`) and added a regression test that loops through all 5 coaches to verify both hero and thumbnail stay on `coach-assets` instead of falling back to `tft-assets`.
+
+### NotebookLM coach latency hot-path optimization (2026-03-13)
+- **Date:** 2026-03-13
+- **File:** `services/notebooklm_bridge/app.py`, `services/notebooklm_bridge/bridge.py`, `services/notebooklm_bridge/tests/test_bridge.py`, `services/notebooklm_bridge/tests/test_app.py`, `supabase/functions/visian-chat/index.ts`, `supabase/functions/visian-chat/prompt.ts`, `supabase/functions/visian-chat/prompt.test.ts`
+- **Problem:** Mỗi lần `Coach Select` hỏi NotebookLM, bridge từng gọi `notebooklm list --json` để verify notebook rồi mới gọi `ask --new`, khiến hot path tốn 2 subprocess + prompt backend còn dài dòng không cần thiết.
+- **Fix:** Cắt notebook visibility check khỏi `/ask` (chỉ giữ ở `/health`), cache `NotebookLMBridge` theo process, thêm timing logs nội bộ, rút prompt coach xuống dạng compact 3-line persona + strict 4-line output contract, và serialize game context thành một dòng có truncation cố định để giảm latency.
+
+### Coach Select should reuse cached answer for the same puzzle after "An phan tich" (2026-03-13)
+- **Date:** 2026-03-13
+- **File:** `src/features/coach-select/hooks/useCoachSelect.ts`, `src/features/coach-select/hooks/useCoachSelect.test.tsx`, `src/App.tsx`
+- **Problem:** User could hide the analysis card and immediately ask the same coach on the same puzzle again, which re-hit NotebookLM even though the exact answer had already been returned once.
+- **Fix:** Cache successful coach answers by `puzzleId + coachId` inside `useCoachSelect`; if the same coach is asked again on the same puzzle, restore the cached answer instantly instead of calling the backend. Clear that cache when puzzle ID changes.
+
+### Coach FAB must live in viewport HUD and stay available for path/plan phases (2026-03-13)
+- **Date:** 2026-03-13
+- **File:** `src/App.tsx`, `src/features/coach-select/components/CoachFab.css`, `src/App.mobile-overlay.test.tsx`
+- **Problem:** `CoachFab` rendered inside `.app-container` got cropped/drifted near the viewport edge on mobile/desktop non-fullscreen, and the entry point only appeared for augment picking so users could not ask coach during `declaring_intent` / `declaring_plan`.
+- **Fix:** Treat `CoachFab` as a viewport utility control: render it inside `.viewport-hud-layer`, anchor it with viewport/safe-area offsets, and gate it by all three gameplay phases (`selecting`, `declaring_intent`, `declaring_plan`). Add mobile-overlay regression tests to ensure the button stays in HUD layer and remains visible during plan declaration.
+
+### Coach Select must follow path/plan phase instead of leaking hidden augment options (2026-03-13)
+- **Date:** 2026-03-13
+- **File:** `src/App.tsx`, `src/features/coach-select/*`, `supabase/functions/visian-chat/prompt.ts`
+- **Problem:** Trong `declaring_intent` / `declaring_plan`, app vẫn build coach context từ 3 augment options runtime dù UI chưa reveal augment, nên Coach phân tích sai loại quyết định mà user đang nhìn.
+- **Fix:** Build `coachGameContext` theo phase: `path` cho `declaring_intent`, `plan` cho `declaring_plan`, chỉ gửi augment options khi thật sự vào phase chọn augment. Coach question, prompt serialization, và context bar UI cũng phải đọc `decisionType/currentDecisionOptions` thay vì mặc định `currentAugments`.
+
+### Coach Select should route each coach to a different NotebookLM notebook, not fake multi-voice one notebook
+- **Symptom:** Agent assumes persona text alone is enough to simulate 5 coaches while the backend actually points every request to one fixed `NOTEBOOKLM_NOTEBOOK_ID`.
+- **Cause:** A single shared notebook can change tone a bit, but it does not preserve separate coach-specific source/RAG spaces. In this project the user already maintains distinct notebooks per coach.
+- **Avoid:** Use per-request `notebook_id` on the bridge and map `coachId` to the real notebook IDs:
+  - `visian -> Wasianiverson`
+  - `dit_sap -> Dishsoap`
+  - `one_by_one -> YBY1`
+  - `buffalow -> Trâu TV`
+  - `tftiseasy -> TFTISEASY set 16`
+
+### Docker Compose bootstrap for NotebookLM bridge on EC2 (2026-03-12)
+- **Date:** 2026-03-12
+- **File:** `services/notebooklm_bridge/docker-compose.yml`, `services/notebooklm_bridge/.env.example`, `services/notebooklm_bridge/README.md`
+- **Problem:** Manual `docker run` instructions with placeholder `image: <YOUR_IMAGE>` and `curl`-based healthchecks are brittle, easy to misconfigure, and fail on minimal Python images that do not include `curl`.
+- **Fix:** Added a ready-to-run Compose setup that builds the bridge image locally, mounts `./secrets/storage_state.json` to `/app/secrets/storage_state.json`, binds only `127.0.0.1:8080`, restarts with `unless-stopped`, and uses a Python-based healthcheck that works with the existing image.
+
+### EC2 bridge deployment should ship helper scripts, not rely on copy-pasted chat steps
+- **Symptom:** User gets stuck halfway through EC2 setup because chat instructions use placeholders, omit upload steps, or assume the service folder is already perfectly arranged on the server.
+- **Cause:** NotebookLM bridge deploy has a few non-obvious moving parts: sync files to EC2, create `.env`, place `storage_state.json`, start Compose, then wire Nginx.
+- **Avoid:** Keep deploy helpers in-repo under `services/notebooklm_bridge/deploy/ec2/`:
+  - `sync-to-ec2.ps1` to upload the bridge bundle from Windows
+  - `bootstrap.sh` to start the service on EC2
+  - `nginx/notebooklm-bridge.conf` as the reverse-proxy template
+
+### NotebookLM citation stripping on bridge + edge function (2026-03-13)
+- **Date:** 2026-03-13
+- **File:** `services/notebooklm_bridge/bridge.py`, `services/notebooklm_bridge/tests/test_bridge.py`, `supabase/functions/visian-chat/answer.ts`, `supabase/functions/visian-chat/answer.test.ts`, `supabase/functions/visian-chat/index.ts`
+- **Problem:** NotebookLM / CLI van co xu huong chen citation `[1]`, `[2]`, `[1-3]` vao coach/chat response, prompt khong suppress on dinh nen output nhin rat "tool".
+- **Fix:** Them helper strip citation bang regex nhe o bridge va Edge Function. Sanitize ngay sau khi nhan raw answer, giu dau cau + xuong dong, khong them them request/model pass nen speed thuc te khong doi dang ke.
+
+### Docker/container healthcheck must use `/live`, not deep `/health`, for NotebookLM bridge
+- **Symptom:** Bridge P95 xau di du traffic that rat thap, va EC2 co request CLI nen khong ro nguon tu user hay background.
+- **Cause:** `GET /health` cua bridge goi `notebooklm list --json` de verify notebook visibility. Neu Docker Compose/Nginx/system monitor ping `/health` dinh ky, no se spawn CLI subprocess nen va canh tranh tai nguyen voi hot path `/ask`.
+- **Avoid:** Dung `GET /live` cho container liveness. Giu `GET /health` cho deep canary theo chu ky dai hon (vd 5 phut) bang timer/cron rieng.
+
+### NotebookLM bridge observability should correlate via `x-request-id` end-to-end
+- **Symptom:** Co log `subprocess_ms` o EC2 va log loi o Supabase nhung kho biet cung mot request hay khong, nhat la luc timeout / dedupe / retry.
+- **Cause:** Hot path `frontend -> visian-chat -> bridge` co 2 hop mang va truoc day khong co correlation id chung.
+- **Avoid:** `visian-chat` phai tao `request_id`, gui xuong bridge bang header `x-request-id`, bridge echo lai header do, va ca 2 ben log cung `request_id` + `notebook_id` + timing.
+
+### NotebookLM bridge backend dedupe/cache is per Gunicorn worker, not global across all workers/hosts
+- **Symptom:** Agent them in-memory cache + in-flight dedupe o bridge roi ky vong moi request duplicate tren toan cluster deu hop nhat thanh 1 subprocess.
+- **Cause:** Runtime hien tai dung process-local memory trong Flask/Gunicorn worker. Cache/dedupe khong shared giua workers khac nhau hay giua nhieu EC2 hosts.
+- **Avoid:** Xem day la optimization cho single-host low-concurrency. Neu can cross-worker hoac cross-instance dedupe that su, phai them shared store/lock nhu Redis.
+
+### NotebookLM bridge latency + resiliency hardening rollout (2026-03-13)
+- **Date:** 2026-03-13
+- **File:** `services/notebooklm_bridge/app.py`, `services/notebooklm_bridge/bridge.py`, `services/notebooklm_bridge/tests/test_bridge.py`, `services/notebooklm_bridge/tests/test_app.py`, `services/notebooklm_bridge/Dockerfile`, `services/notebooklm_bridge/docker-compose.yml`, `services/notebooklm_bridge/.env.example`, `services/notebooklm_bridge/README.md`, `services/notebooklm_bridge/deploy/ec2/*`, `supabase/functions/visian-chat/index.ts`
+- **Problem:** Hot path van thieu correlation logging, bridge healthcheck dinh ky van co the goi CLI, Gunicorn runtime chua explicit worker config, timeout giua bridge va Edge Function dang ngang nhau, va duplicate request giong het van spawn nhieu subprocess khong can thiet.
+- **Fix:** Them `x-request-id` correlation va timing logs o Edge + bridge, tach `GET /live` khoi deep `GET /health`, explicit Gunicorn worker/timeout/max-request defaults, align timeout theo thu tu bridge < gunicorn < nginx, them per-worker in-flight dedupe + TTL cache 45s cho exact identical query, va ship them deep-health EC2 helper + systemd timer sample.
+
+### Coach Select minimize-to-board session must not be gated by `isAugmentOpen` (2026-03-13)
+- **Date:** 2026-03-13
+- **File:** `src/App.tsx`, `src/features/coach-select/hooks/useCoachSelect.ts`, `src/features/coach-select/components/*`, `src/App.mobile-overlay.test.tsx`
+- **Problem:** Khi user an coach de ra ngoai xem board, viec dong selector/path/plan bang `setIsAugmentOpen(false)` tung vo tinh kill luon coach session, mat loading/response dang cho va khong co duong quay lai doc phan tich.
+- **Fix:** Tach session coach khoi visibility cua overlay. `useCoachSelect` nay giu nguyen loading/response khi minimize, `App.tsx` chi an options de user quan sat board, hien return FAB mo ngay o state dim, va khi phan tich xong thi bat toast + promote FAB de mo lai overlay da duoc preserve.
+
+### Coach Select SSE transport cannot use `supabase.functions.invoke`
+- **Symptom:** Agent tries to stream Coach Select through `supabase.functions.invoke('visian-chat')`, but the client only gets a buffered JSON-style completion and never receives incremental SSE events.
+- **Cause:** `supabase.functions.invoke` is fine for one-shot Edge Function responses, but it is the wrong transport for this repo's `POST` + large `gameContext` + `text/event-stream` flow. Coach Select streaming needs direct access to the raw `fetch` body reader.
+- **Avoid:** For Coach Select stream mode, call `${VITE_SUPABASE_URL}/functions/v1/visian-chat` via `fetch` with `Accept: text/event-stream`, plus `apikey` and `Authorization: Bearer <anon key>`. Keep `askCoach()` on `supabase.functions.invoke` only as the non-stream fallback path.
+
+### Coach Select SSE explain-only rollout (2026-03-13)
+- **Date:** 2026-03-13
+- **File:** `src/App.tsx`, `src/features/coach-select/coachSelect.types.ts`, `src/features/coach-select/coachSelect.service.ts`, `src/features/coach-select/hooks/useCoachSelect.ts`, `src/features/coach-select/components/CoachResponseCard.tsx`, `src/features/coach-select/components/CoachSelectOverlay.tsx`, `supabase/functions/visian-chat/index.ts`, `supabase/functions/visian-chat/prompt.ts`
+- **Problem:** Coach Select cu phai doi NotebookLM tra full blob text moi hien duoc pick, tao cam giac do. Hon nua, prompt cu van de model tu chon option thay vi chi giai thich pick cua Pro.
+- **Fix:** Dua `proChoiceId/proChoiceLabel` vao `CoachGameContext`, stream `pick` ngay tu puzzle metadata bang SSE `fetch`, chi dung NotebookLM de tra loi explain-only `Tai sao: ...`, fake-typing tren frontend bang chunked reasoning, va giu JSON path cu lam fallback neu thieu pro choice hoac stream fail truoc khi mo duoc SSE.
+
+### Coach response card layout regression fix (2026-03-13)
+- **Date:** 2026-03-13
+- **File:** `src/features/coach-select/components/CoachResponseCard.tsx`, `src/features/coach-select/components/CoachSelectOverlay.css`
+- **Problem:** Loading state cua `CoachResponseCard` tung khong co layout rieng, lam dots/status/CTA "Ra ngoai xem lai board" bi troi lech trong card. Dong thoi component bi rot mat structure `Pick / Tai sao / Trang thai` du CSS va test da xem day la contract.
+- **Fix:** Khoi phuc render theo section `Pick`, `Tai sao`, `Trang thai`; them loading composition rieng cho khu "Coach dang doc the tran" va canh lai CTA observe-board de card can doi hon, dung visual language cua overlay, va pass lai test component.

@@ -42,8 +42,43 @@ import { PuzzleLockOverlay } from './features/tcoin/components/PuzzleLockOverlay
 import { LandscapePrompt } from './components/common/LandscapePrompt';
 import { SupportModal } from './components/Settings/SupportModal';
 import { MONETIZATION_ENABLED } from './config/monetization';
+import { CoachFab } from './features/coach-select/components/CoachFab';
+import { CoachSelectOverlay } from './features/coach-select/components/CoachSelectOverlay';
+import { playCoachCompletionChime } from './features/coach-select/coachCompletionChime';
+import { useCoachSelect } from './features/coach-select/hooks/useCoachSelect';
+import { deriveCoachCompLabel } from './features/coach-select/coachSelect.utils';
+import type {
+    CoachContextAugmentOption,
+    CoachDecisionType,
+    CoachGameContext,
+} from './features/coach-select/coachSelect.types';
 
 import './App.css';
+
+const COACH_PATH_OPTIONS = [
+    { id: 'econ', title: 'Kinh te', subtitle: 'Vang, XP, luot roll' },
+    { id: 'item', title: 'Trang bi', subtitle: 'Manh do, do lon, do Orn' },
+    { id: 'combat', title: 'Danh nhau', subtitle: 'Loi combat, team-wide buff' },
+    { id: 'emblem', title: 'An', subtitle: 'An toc he, Xeng/Chao, Giap chess' },
+];
+
+const COACH_PLAN_OPTIONS = [
+    { id: 'stabilize', title: 'Choi top 4', subtitle: 'Manh lien ngay lap tuc' },
+    { id: 'cap', title: 'Choi top cao', subtitle: 'Lay loi huong danh ve sau' },
+    { id: 'patch', title: 'Fix item lai cho dep', subtitle: 'Lay manh do de va lai bai' },
+    { id: 'greed', title: 'Choi Loto', subtitle: 'Ra gi choi do vi chua chot bai' },
+];
+
+function resolveCoachOptionTitle(
+    options: Array<{ id: string; title: string }>,
+    optionId: string | null | undefined,
+): string | undefined {
+    if (!optionId) {
+        return undefined;
+    }
+
+    return options.find(option => option.id === optionId)?.title;
+}
 
 const App: React.FC = () => {
     // --- 1. Authentication ---
@@ -214,8 +249,84 @@ const App: React.FC = () => {
         isAugmentOpen,
         puzzlePhase,
     });
+    const isCoachAvailablePhase = puzzlePhase === 'selecting'
+        || puzzlePhase === 'declaring_intent'
+        || puzzlePhase === 'declaring_plan';
 
-    const isScoutRequired = !isMirrored && isAugmentOpen && !hasScouted && (puzzlePhase === 'selecting' || puzzlePhase === 'declaring_intent' || puzzlePhase === 'declaring_plan');
+    const isScoutRequired = !isMirrored && isAugmentOpen && !hasScouted && isCoachAvailablePhase;
+
+    const coachDecisionType: CoachDecisionType = puzzlePhase === 'declaring_intent'
+        ? 'path'
+        : puzzlePhase === 'declaring_plan'
+            ? 'plan'
+            : 'augment';
+    const currentAugmentTitles: string[] = currentAugments.map((a: any) => a?.title).filter(Boolean);
+    const currentAugmentOptions: CoachContextAugmentOption[] = currentAugments
+        .filter((augment: any) => Boolean(augment))
+        .slice(0, 3)
+        .map((augment: any) => ({
+            id: augment.id,
+            title: augment.title,
+            icon: augment.icon,
+            tier: augment.tier,
+        }));
+    const coachProChoiceId = coachDecisionType === 'path'
+        ? currentPuzzle?.proPickPath
+        : coachDecisionType === 'plan'
+            ? currentPuzzle?.proPlan
+            : currentPuzzle?.proFinalPick?.id;
+    const coachProChoiceLabel = coachDecisionType === 'path'
+        ? resolveCoachOptionTitle(COACH_PATH_OPTIONS, currentPuzzle?.proPickPath)
+        : coachDecisionType === 'plan'
+            ? resolveCoachOptionTitle(COACH_PLAN_OPTIONS, currentPuzzle?.proPlan)
+            : currentPuzzle?.proFinalPick?.title;
+
+    const coachGameContext: CoachGameContext | null = currentPuzzle ? {
+        stage: currentPuzzle.stage,
+        comp: deriveCoachCompLabel(
+            synergies,
+            myPlayer.units.map((unit: any) => unit?.name).filter(Boolean),
+        ),
+        gold: myPlayer.gold,
+        level: myPlayer.level,
+        hp: myPlayer.hp,
+        decisionType: coachDecisionType,
+        decisionLabel: coachDecisionType === 'path'
+            ? 'Huong augment'
+            : coachDecisionType === 'plan'
+                ? 'Ke hoach'
+                : 'Augment',
+        proChoiceId: coachProChoiceId,
+        proChoiceLabel: coachProChoiceLabel,
+        currentDecisionOptions: coachDecisionType === 'path'
+            ? COACH_PATH_OPTIONS
+            : coachDecisionType === 'plan'
+                ? COACH_PLAN_OPTIONS
+                : currentAugmentOptions,
+        currentAugments: coachDecisionType === 'augment' ? currentAugmentTitles : [],
+        currentAugmentOptions: coachDecisionType === 'augment' ? currentAugmentOptions : [],
+        chosenAugments: (myPlayer.augments || []).map((a: any) => a?.title).filter(Boolean),
+        synergies: synergies.map((s: any) => s.name),
+        boardChampions: myPlayer.units.map((c: any) => c.name),
+        items: items.map((i: any) => i?.name).filter(Boolean),
+    } : null;
+    const {
+        uiState: coachUiState,
+        selectedCoach,
+        answer: coachAnswer,
+        error: coachError,
+        completionNoticeToken,
+        showCoachOverlay,
+        showReturnFab,
+        returnFabMode,
+        openSelect: openCoachSelect,
+        minimizeToBoard,
+        reopenOverlay,
+        dismissSession,
+        selectCoach,
+        backToSelect: handleBackToCoachSelect,
+        askCoach,
+    } = useCoachSelect(coachGameContext, currentPuzzle?.id ?? null);
     const shouldEnableMobileAutoFullscreen = isPhoneLandscape
         && currentView === 'puzzle'
         && !showLoginModal
@@ -223,13 +334,15 @@ const App: React.FC = () => {
         && !showAdminModal
         && !showProfileModal
         && !showCompletionModal
-        && !showSupportModal;
+        && !showSupportModal
+        && !showCoachOverlay;
     const hasBlockingWorkspaceModal = showLoginModal
         || isSettingsOpen
         || showAdminModal
         || showProfileModal
         || showCompletionModal
-        || showSupportModal;
+        || showSupportModal
+        || showCoachOverlay;
     // viewport-hud-layer sits above app-container in the root stacking context,
     // so fixed modals rendered inside app-container must explicitly hide this chrome.
     const shouldRenderViewportMenu = currentView === 'puzzle'
@@ -253,6 +366,7 @@ const App: React.FC = () => {
             // Ignore if user is typing in an input or if library is shown
             if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
             if (currentView !== 'puzzle') return;
+            if (showCoachOverlay || puzzlePhase === 'reviewing') return;
 
             const opponents = allPlayers.filter(p => !p.isMe);
             if (opponents.length === 0) return;
@@ -285,7 +399,7 @@ const App: React.FC = () => {
 
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [allPlayers, currentView]);
+    }, [allPlayers, currentView, puzzlePhase, showCoachOverlay]);
 
     useEffect(() => {
         if (mobileOverlayMode !== 'none' || isMirrored) {
@@ -298,11 +412,51 @@ const App: React.FC = () => {
         setHasScouted(false); // Reset scout requirement
     }, [currentPuzzle?.id]);
 
+    const consumedCoachCompletionToken = React.useRef(0);
+
+    useEffect(() => {
+        consumedCoachCompletionToken.current = 0;
+    }, [currentPuzzle?.id]);
+
     useEffect(() => {
         if (currentView !== 'puzzle') {
             setMobilePanel(null);
         }
     }, [currentView]);
+
+    useEffect(() => {
+        if (
+            currentView !== 'puzzle'
+            || !isCoachAvailablePhase
+            || !isPuzzlePlayable
+        ) {
+            dismissSession();
+        }
+    }, [currentPuzzle?.id, currentView, dismissSession, isCoachAvailablePhase, isPuzzlePlayable]);
+
+    useEffect(() => {
+        if (showCoachOverlay) {
+            setMobilePanel(null);
+        }
+    }, [showCoachOverlay]);
+
+    useEffect(() => {
+        if (!showReturnFab) {
+            return;
+        }
+    }, [showReturnFab]);
+
+    useEffect(() => {
+        if (
+            completionNoticeToken <= 0
+            || completionNoticeToken === consumedCoachCompletionToken.current
+        ) {
+            return;
+        }
+
+        consumedCoachCompletionToken.current = completionNoticeToken;
+        void playCoachCompletionChime();
+    }, [completionNoticeToken]);
 
     const handleAugmentButtonClick = () => {
         requestMobileAutoFullscreen();
@@ -319,6 +473,39 @@ const App: React.FC = () => {
         setIsAugmentOpen(prev => !prev);
         setHasScouted(true);
     };
+
+    const handleOpenCoachSelect = () => {
+        requestMobileAutoFullscreen();
+        openCoachSelect();
+    };
+
+    const handleCoachObserveBoard = () => {
+        setIsAugmentOpen(false);
+        setMobilePanel(null);
+        setHasScouted(true);
+        minimizeToBoard();
+    };
+
+    const handleReopenCoachOverlay = () => {
+        requestMobileAutoFullscreen();
+        reopenOverlay();
+    };
+
+    const shouldRenderCoachEntryFab = currentView === 'puzzle'
+        && isCoachAvailablePhase
+        && isAugmentOpen
+        && !isMirrored
+        && isPuzzlePlayable
+        && !hasBlockingWorkspaceModal
+        && !showReturnFab
+        && !isTransitioning;
+    const shouldRenderCoachReturnFab = currentView === 'puzzle'
+        && isCoachAvailablePhase
+        && isPuzzlePlayable
+        && !hasBlockingWorkspaceModal
+        && showReturnFab
+        && !isTransitioning;
+    const loadingCoachFabLabel = `Coach ${selectedCoach.displayName} đang nhìn nhận thế trận`;
 
     // Removed routing for TestFlex
 
@@ -368,6 +555,21 @@ const App: React.FC = () => {
                                     needsScouting={isScoutRequired}
                                     onClick={handleAugmentButtonClick}
                                     rollChargesRemaining={hasExtraReroll ? rollChargesRemaining : undefined}
+                                />
+                            )}
+                            {shouldRenderCoachEntryFab && (
+                                <CoachFab
+                                    onClick={handleOpenCoachSelect}
+                                />
+                            )}
+                            {shouldRenderCoachReturnFab && (
+                                <CoachFab
+                                    onClick={handleReopenCoachOverlay}
+                                    variant={returnFabMode === 'ready' ? 'return-ready' : 'return-loading'}
+                                    eyebrow={returnFabMode === 'ready' ? 'Đã xong' : 'Coach'}
+                                    label={returnFabMode === 'ready' ? 'Xem phân tích' : loadingCoachFabLabel}
+                                    isDimmed={returnFabMode !== 'ready'}
+                                    isPulsing={returnFabMode === 'ready'}
                                 />
                             )}
                         </>
@@ -650,6 +852,21 @@ const App: React.FC = () => {
                                 isOpen={showSupportModal}
                                 onClose={() => setShowSupportModal(false)}
                             />
+                            {currentView === 'puzzle' && showCoachOverlay && (
+                                <CoachSelectOverlay
+                                    coach={selectedCoach}
+                                    currentAugments={currentAugments.filter((augment: any) => Boolean(augment))}
+                                    gameContext={coachGameContext}
+                                    uiState={coachUiState}
+                                    answer={coachAnswer}
+                                    error={coachError}
+                                    onClose={dismissSession}
+                                    onSelectCoach={selectCoach}
+                                    onAskCoach={askCoach}
+                                    onBackToSelect={handleBackToCoachSelect}
+                                    onObserveBoard={handleCoachObserveBoard}
+                                />
+                            )}
 
                         </>
                     </div>

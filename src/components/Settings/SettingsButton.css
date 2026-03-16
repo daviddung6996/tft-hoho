@@ -1,7 +1,7 @@
 .menu-container {
     position: fixed;
     top: var(--app-hud-top-inset, 12px);
-    right: calc(var(--app-visible-side-offset, 0px) + max(12px, 2.2vw));
+    right: var(--viewport-hud-right-gap, calc(var(--app-visible-side-offset, 0px) + max(12px, 2.2vw)));
     z-index: 200;
     display: flex;
     align-items: center;
@@ -421,8 +421,8 @@
 
 .viewport-hud-layer[data-layout-mode="phone-landscape"] .menu-container {
     top: calc(env(safe-area-inset-top, 0px) + 8px);
-    right: max(calc(env(safe-area-inset-right, 0px) + 6px), 6px);
-    left: max(calc(env(safe-area-inset-left, 0px) + 6px), 6px);
+    right: var(--viewport-hud-right-gap, max(calc(env(safe-area-inset-right, 0px) + 6px), 6px));
+    left: var(--viewport-hud-left-gap, max(calc(env(safe-area-inset-left, 0px) + 6px), 6px));
     gap: 8px;
     pointer-events: none;
     --menu-control-size: clamp(42px, 7vw, 50px);

@@ -10,3 +10,7 @@ enabled = true
 verify_jwt = true
 import_map = "./functions/generate-caption/deno.json"
 entrypoint = "./functions/generate-caption/index.ts"
+
+[functions.visian-chat]
+enabled = true
+verify_jwt = false
