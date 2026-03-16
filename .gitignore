@@ -30,3 +30,6 @@ agentic-logs/
 .flaskenv*
 !.env.project
 !.env.vault
+!.env.example
+!services/notebooklm_bridge/.env.example
+services/notebooklm_bridge/secrets/

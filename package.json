@@ -4,12 +4,14 @@
     "version": "1.0.0",
     "type": "module",
     "scripts": {
-        "dev": "vite",
+        "dev": "tsx scripts/dev_local_stack.ts",
+        "dev:vite": "vite",
         "build": "tsc && vite build",
         "preview": "vite preview",
         "test": "vitest --run",
         "test:watch": "vitest",
-        "download-assets": "tsx scripts/download_tft_assets.ts"
+        "download-assets": "tsx scripts/download_tft_assets.ts",
+        "visian-chat:local": "tsx scripts/local_visian_chat_server.ts"
     },
     "dependencies": {
         "@fontsource/inter": "^5.2.8",

@@ -1,0 +1,9 @@
+[Unit]
+Description=NotebookLM bridge deep health check
+After=docker.service network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+Environment=NOTEBOOKLM_BRIDGE_HEALTH_URL=http://127.0.0.1:8080/health
+ExecStart=%h/notebooklm-bridge/deploy/ec2/notebooklm-bridge-deep-health.sh

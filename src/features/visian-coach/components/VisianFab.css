@@ -1,0 +1,68 @@
+.visian-fab {
+    position: absolute;
+    bottom: 2cqw;
+    right: 2cqw;
+    z-index: 350;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6cqw;
+    padding: 0.8cqw 1.4cqw;
+    background: linear-gradient(135deg, rgba(21, 58, 62, 0.95) 0%, rgba(13, 46, 48, 0.98) 100%);
+    border: 0.1cqw solid rgba(200, 170, 110, 0.5);
+    border-radius: 3cqw;
+    color: #c8aa6e;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+    animation: visian-fab-pulse 3s ease-in-out infinite;
+}
+
+.visian-fab:hover {
+    border-color: rgba(200, 170, 110, 0.8);
+    box-shadow: 0 0 1.2cqw rgba(200, 170, 110, 0.25);
+    transform: scale(1.04);
+}
+
+.visian-fab--active {
+    animation: none;
+    background: linear-gradient(135deg, rgba(200, 170, 110, 0.2) 0%, rgba(21, 58, 62, 0.95) 100%);
+    border-color: rgba(200, 170, 110, 0.7);
+}
+
+.visian-fab__icon {
+    width: 2cqw;
+    height: 2cqw;
+    flex-shrink: 0;
+}
+
+.visian-fab__label {
+    font-size: 1cqw;
+    font-weight: 600;
+    white-space: nowrap;
+    letter-spacing: 0.02em;
+}
+
+@keyframes visian-fab-pulse {
+    0%, 100% {
+        box-shadow: 0 0 0.4cqw rgba(200, 170, 110, 0.15);
+    }
+    50% {
+        box-shadow: 0 0 1cqw rgba(200, 170, 110, 0.3);
+    }
+}
+
+/* Phone landscape */
+[data-layout-mode="phone-landscape"] .visian-fab {
+    bottom: 1.5cqw;
+    right: 1.5cqw;
+    padding: 0.6cqw 1cqw;
+}
+
+[data-layout-mode="phone-landscape"] .visian-fab__icon {
+    width: 2.5cqw;
+    height: 2.5cqw;
+}
+
+[data-layout-mode="phone-landscape"] .visian-fab__label {
+    font-size: 1.3cqw;
+}

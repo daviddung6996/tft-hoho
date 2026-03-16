@@ -1,0 +1,79 @@
+.visian-msg {
+    display: flex;
+    margin-bottom: 0.8cqw;
+    padding: 0 1cqw;
+}
+
+.visian-msg--user {
+    justify-content: flex-end;
+}
+
+.visian-msg--visian {
+    justify-content: flex-start;
+}
+
+.visian-msg__bubble {
+    max-width: 85%;
+    padding: 0.8cqw 1cqw;
+    border-radius: 1cqw;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9cqw;
+    line-height: 1.45;
+    word-break: break-word;
+}
+
+.visian-msg--user .visian-msg__bubble {
+    background: rgba(200, 170, 110, 0.15);
+    border: 0.06cqw solid rgba(200, 170, 110, 0.3);
+    color: #e8dfc8;
+}
+
+.visian-msg--visian .visian-msg__bubble {
+    background: linear-gradient(180deg, rgba(21, 58, 62, 0.9) 0%, rgba(13, 46, 48, 0.95) 100%);
+    border: 0.06cqw solid rgba(200, 170, 110, 0.35);
+    color: #d4cbb8;
+}
+
+.visian-msg__content {
+    white-space: pre-wrap;
+}
+
+.visian-msg__context-toggle {
+    display: inline-block;
+    margin-top: 0.4cqw;
+    padding: 0;
+    background: none;
+    border: none;
+    color: rgba(200, 170, 110, 0.6);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7cqw;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.visian-msg__context-toggle:hover {
+    color: #c8aa6e;
+}
+
+.visian-msg__context {
+    margin-top: 0.4cqw;
+    padding: 0.5cqw;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 0.5cqw;
+    font-size: 0.7cqw;
+    color: rgba(200, 170, 110, 0.7);
+    line-height: 1.5;
+}
+
+/* Phone landscape */
+[data-layout-mode="phone-landscape"] .visian-msg__bubble {
+    font-size: 1.2cqw;
+}
+
+[data-layout-mode="phone-landscape"] .visian-msg__context-toggle {
+    font-size: 1cqw;
+}
+
+[data-layout-mode="phone-landscape"] .visian-msg__context {
+    font-size: 1cqw;
+}
