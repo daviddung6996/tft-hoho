@@ -3,6 +3,7 @@ import { PuzzleTier, TCOIN_SPEND_COSTS } from '../tcoin.types';
 import { TierIcon, TIER_META } from '../../../components/common/TierIcon';
 import { TCoinIcon } from './TCoinIcon';
 import { ProSupporterIcon } from '../../../components/common/ProSupporterIcon';
+import type { MonetizationMode } from '../../monetization/monetization.types';
 import './PuzzleLockOverlay.css';
 
 interface PuzzleLockOverlayProps {
@@ -11,12 +12,13 @@ interface PuzzleLockOverlayProps {
     canAfford: boolean;
     onUnlock: () => void;
     onProSupporter: () => void;
-    onSkipToFree?: () => void; // NEW: Skip to free puzzle
+    onSkipToFree?: () => void;
     title?: string;
     subtitle?: string;
     isLoading?: boolean;
     requiresLogin?: boolean;
     unlockLabel?: string;
+    monetizationMode?: MonetizationMode;
 }
 
 
@@ -33,14 +35,19 @@ export function PuzzleLockOverlay({
     isLoading,
     requiresLogin,
     unlockLabel,
+    monetizationMode,
 }: PuzzleLockOverlayProps) {
     if (tier === 'free') return null;
 
     const config = TIER_META[tier];
     const cost = tier === 'advanced' ? TCOIN_SPEND_COSTS.unlock_advanced : TCOIN_SPEND_COSTS.unlock_rare;
 
-    const defaultTitle = 'Tình huống xịn được chọn lọc từ game đấu hay của Pro.';
-    const defaultSubtitle = 'Có giải thích chi tiết giúp bạn nâng cấp tư duy chọn lõi.';
+    const defaultTitle = monetizationMode === 'beta'
+        ? 'Beta — Tình huống này tạm thời miễn phí trong giai đoạn beta.'
+        : 'Tình huống xịn được chọn lọc từ game đấu hay của Pro.';
+    const defaultSubtitle = monetizationMode === 'beta'
+        ? 'Sau beta, tình huống Hard và Pro sẽ yêu cầu Pro subscription.'
+        : 'Có giải thích chi tiết giúp bạn nâng cấp tư duy chọn lõi.';
 
     const resolvedUnlockLabel = requiresLogin
         ? 'Đăng nhập để mở khóa'

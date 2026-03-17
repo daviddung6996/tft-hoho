@@ -525,6 +525,9 @@ const App: React.FC = () => {
                                     onLoginClick={() => setShowLoginModal(true)}
                                     onLibraryClick={() => setCurrentView('library')}
                                     isAdmin={isAdmin}
+                                    monetizationMode={MONETIZATION_MODE}
+                                    isProEntitled={currentPuzzleAccess?.reason === 'pro_supporter'}
+                                    onUpgradeClick={() => setShowSupportModal(true)}
                                 />
                             )}
                             {shouldRenderMobileAugmentButton && (
@@ -645,6 +648,7 @@ const App: React.FC = () => {
                                         canAfford={walletBalance >= (currentPuzzleAccess.cost ?? 0)}
                                         isLoading={isUnlocking}
                                         requiresLogin={requiresLoginForUnlock}
+                                        monetizationMode={MONETIZATION_MODE}
                                         title={
                                             lockMessageVariant === 'rare_elite'
                                                 ? 'WOW, bạn gặp tình huống hiếm.'
@@ -690,6 +694,7 @@ const App: React.FC = () => {
                                         canAfford={walletBalance >= (currentPuzzleAccess.cost ?? 0)}
                                         isLoading={isUnlocking}
                                         requiresLogin={requiresLoginForUnlock}
+                                        monetizationMode={MONETIZATION_MODE}
                                         onUnlock={() => {
                                             if (requiresLoginForUnlock) {
                                                 setShowLoginModal(true);
@@ -723,6 +728,7 @@ const App: React.FC = () => {
                                         canAfford={walletBalance >= (currentPuzzleAccess.cost ?? 0)}
                                         isLoading={isUnlocking}
                                         requiresLogin={requiresLoginForUnlock}
+                                        monetizationMode={MONETIZATION_MODE}
                                         title={
                                             lockMessageVariant === 'rare_elite'
                                                 ? 'WOW, bạn gặp tình huống hiếm.'
@@ -791,6 +797,9 @@ const App: React.FC = () => {
                                     proPlan={currentPuzzle.proPlan}
                                     planReasoning={currentPuzzle.planReasoning}
                                     onSupportClick={() => setShowSupportModal(true)}
+                                    monetizationMode={MONETIZATION_MODE}
+                                    showPremiumLaneCta={MONETIZATION_MODE === 'free-pro' && currentPuzzleAccess.reason !== 'pro_supporter'}
+                                    onUpgradeClick={() => setShowSupportModal(true)}
                                 />
                             )}
 
