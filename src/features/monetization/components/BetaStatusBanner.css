@@ -1,7 +1,7 @@
 .beta-chip {
     position: fixed;
     top: var(--app-hud-top-inset, 12px);
-    left: var(--viewport-hud-right-gap, calc(var(--app-visible-side-offset, 0px) + max(12px, 2.2vw)));
+    left: var(--viewport-hud-side-gap, var(--app-hud-left-inset, 12px));
     z-index: 200;
 
     display: inline-flex;
@@ -39,33 +39,10 @@
     text-transform: uppercase;
 }
 
-.beta-chip-sep {
-    width: 1px;
-    height: 14px;
-    background: rgba(200, 170, 110, 0.2);
-    flex-shrink: 0;
-}
-
-.beta-chip-detail {
-    font-size: clamp(10px, 0.9vw, 12px);
-    font-weight: 400;
-    color: rgba(200, 170, 110, 0.55);
-    white-space: nowrap;
-}
-
-/* Post-beta variant */
-.beta-chip--ended {
-    border-color: rgba(200, 170, 110, 0.15);
-}
-
-.beta-chip--ended .beta-chip-label {
-    color: rgba(200, 170, 110, 0.7);
-}
-
-/* Phone landscape — tuck tighter */
+/* Phone landscape — match menu-container's phone-landscape insets */
 .viewport-hud-layer[data-layout-mode="phone-landscape"] .beta-chip {
-    top: 6px;
-    left: 6px;
+    top: calc(env(safe-area-inset-top, 0px) + 8px);
+    left: var(--viewport-hud-left-gap, max(calc(env(safe-area-inset-left, 0px) + 6px), 6px));
     height: 28px;
     padding: 0 8px;
     border-radius: 8px;
