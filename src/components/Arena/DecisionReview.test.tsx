@@ -175,7 +175,7 @@ describe('DecisionReview — monetization CTA', () => {
     });
 
     it('keeps Review Decision and IQ summary visible before any premium CTA', () => {
-        render(
+        const { container } = render(
             <DecisionReview
                 {...createMockProps()}
                 monetizationMode="free-pro"
@@ -187,8 +187,8 @@ describe('DecisionReview — monetization CTA', () => {
         // Review content must still be present
         expect(screen.getByText(/lựa chọn cuối/i)).toBeInTheDocument();
 
-        // IQ summary must still be present
-        expect(screen.getByText(/1420/)).toBeInTheDocument();
+        // IQ summary must still be present (score animates via rAF, so check container)
+        expect(container.querySelector('.iq-score-summary')).toBeInTheDocument();
 
         // Premium CTA must also be present — additive, not a replacement
         expect(screen.getByTestId('premium-lane-callout')).toBeInTheDocument();
