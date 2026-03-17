@@ -17,6 +17,7 @@ import {
     isFullscreenActive,
     requestDocumentFullscreenSafe
 } from '../../utils/fullscreen';
+import type { MonetizationMode } from '../../features/monetization/monetization.types';
 
 const getNextRankThreshold = (score: number) => {
     const sortedRanks = [...USER_IQ_RANKS].sort((a, b) => a.min - b.min);
@@ -66,6 +67,9 @@ interface MenuButtonProps {
     onLoginClick?: () => void;
     onLibraryClick?: () => void;
     isAdmin?: boolean;
+    monetizationMode?: MonetizationMode;
+    isProEntitled?: boolean;
+    onUpgradeClick?: () => void;
 }
 
 export const MenuButton: React.FC<MenuButtonProps> = ({
@@ -76,7 +80,10 @@ export const MenuButton: React.FC<MenuButtonProps> = ({
     onProfileClick,
     onLoginClick,
     onLibraryClick,
-    isAdmin
+    isAdmin,
+    monetizationMode,
+    isProEntitled,
+    onUpgradeClick,
 }) => {
     const { signOut, isGuest, user } = useAuth();
     const [isOpen, setIsOpen] = useState(false);
@@ -433,6 +440,18 @@ export const MenuButton: React.FC<MenuButtonProps> = ({
                                 </button>
 
 
+
+                                {/* Monetization packaging */}
+                                {monetizationMode === 'beta' && (
+                                    <div className="menu-item menu-item--info">
+                                        <span className="menu-icon">⏳</span> Beta — Free &amp; Pro coming
+                                    </div>
+                                )}
+                                {monetizationMode === 'free-pro' && !isProEntitled && onUpgradeClick && (
+                                    <button className="menu-item menu-item--upgrade" onClick={() => { onUpgradeClick(); setIsOpen(false); }}>
+                                        <span className="menu-icon">⭐</span> Upgrade to Pro
+                                    </button>
+                                )}
 
                                 {/* Support / Donate */}
                                 <button className="menu-item menu-item--support" onClick={() => { setShowSupportModal(true); setIsOpen(false); }}>
