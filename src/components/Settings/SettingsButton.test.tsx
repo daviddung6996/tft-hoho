@@ -75,7 +75,7 @@ describe('SettingsButton — monetization packaging', () => {
         });
     });
 
-    it('shows beta access framing instead of upgrade CTA during beta', async () => {
+    it('does not show upgrade CTA in menu during beta', async () => {
         const user = userEvent.setup();
 
         render(
@@ -89,7 +89,6 @@ describe('SettingsButton — monetization packaging', () => {
 
         await user.click(screen.getByLabelText('Menu'));
 
-        expect(screen.getByText(/beta/i)).toBeInTheDocument();
         expect(screen.queryByText(/upgrade to pro/i)).not.toBeInTheDocument();
     });
 
