@@ -13,6 +13,10 @@ import {
   type GameContext,
 } from '../supabase/functions/visian-chat/prompt.ts';
 import { stripNotebookLmCitations } from '../supabase/functions/visian-chat/answer.ts';
+import {
+  logLocalVisianChatRequestReceived,
+  logLocalVisianChatResponseReady,
+} from './local_visian_chat_logging.ts';
 
 loadEnv({ path: resolve(process.cwd(), '.env'), quiet: true });
 loadEnv({ path: resolve(process.cwd(), 'services/notebooklm_bridge/.env'), quiet: true });
@@ -626,6 +630,13 @@ async function handleRequest(req: IncomingMessage, res: ServerResponse) {
     const typedGameContext = (body.gameContext || null) as GameContext | null;
     const sourceGroups = buildCoachSourceGroups(resolvedCoachId, typedGameContext);
 
+    logLocalVisianChatRequestReceived({
+      requestId,
+      coachId: resolvedCoachId,
+      decisionType: typedGameContext?.decisionType,
+      mode,
+    });
+
     if (isCoachSelectStreamMode) {
       const proChoiceLabel = typedGameContext?.proChoiceLabel?.trim();
       if (!proChoiceLabel) {
@@ -684,11 +695,13 @@ async function handleRequest(req: IncomingMessage, res: ServerResponse) {
 
         writeSseEvent(res, 'complete', { reasoning: fullReasoning });
         endSse(res);
-        console.info('local visian-chat stream request completed', {
-          request_id: requestId,
-          coach_id: resolvedCoachId,
-          notebook_id: notebookId,
-          total_ms: Math.round((performance.now() - requestStartedAt) * 100) / 100,
+        logLocalVisianChatResponseReady({
+          requestId,
+          coachId: resolvedCoachId,
+          decisionType: typedGameContext?.decisionType,
+          mode,
+          notebookId,
+          totalMs: Math.round((performance.now() - requestStartedAt) * 100) / 100,
           status: 200,
         });
         return;
@@ -725,12 +738,14 @@ async function handleRequest(req: IncomingMessage, res: ServerResponse) {
       sourceGroups,
     });
 
-    console.info('local visian-chat request completed', {
-      request_id: requestId,
-      coach_id: resolvedCoachId,
-      notebook_id: notebookId,
-      bridge_fetch_ms: bridgeResult.bridgeFetchMs,
-      total_ms: Math.round((performance.now() - requestStartedAt) * 100) / 100,
+    logLocalVisianChatResponseReady({
+      requestId,
+      coachId: resolvedCoachId,
+      decisionType: typedGameContext?.decisionType,
+      mode,
+      notebookId,
+      bridgeFetchMs: bridgeResult.bridgeFetchMs,
+      totalMs: Math.round((performance.now() - requestStartedAt) * 100) / 100,
       status: 200,
     });
 

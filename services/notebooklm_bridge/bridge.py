@@ -143,16 +143,21 @@ def build_notebooklm_ask_command(
     *,
     json_output: bool = True,
     source_ids: list[str] | tuple[str, ...] | None = None,
+    conversation_id: str | None = None,
 ) -> list[str]:
     command = [
         config.command,
         '--storage',
         str(config.storage_state_path),
         'ask',
-        '--new',
-        '-n',
-        notebook_id,
     ]
+
+    if conversation_id:
+        command.extend(('-c', conversation_id))
+    else:
+        command.append('--new')
+
+    command.extend(('-n', notebook_id))
 
     for source_id in normalize_source_ids(source_ids):
         command.extend(('-s', source_id))
@@ -271,6 +276,7 @@ class NotebookLMBridge:
         self._cache_lock = Lock()
         self._answer_cache: OrderedDict[str, CachedAnswer] = OrderedDict()
         self._inflight_requests: dict[str, Future[AskResult]] = {}
+        self._conversation_ids: dict[str, str] = {}
 
     def authenticate(self, api_key: str) -> None:
         if not isinstance(api_key, str) or not compare_digest(api_key, self.config.api_key):
@@ -550,18 +556,42 @@ class NotebookLMBridge:
                 ) from exc
 
         try:
-            payload = self._run_json_command(
-                build_notebooklm_ask_command(
-                    self.config,
-                    resolved_notebook_id,
-                    normalized_query,
-                    source_ids=resolved_source_ids,
-                ),
-                request_id=request_id,
-                coach_id=coach_id,
-                notebook_id=resolved_notebook_id,
-                status_code_on_success=200,
-            )
+            stored_conv_id = self._conversation_ids.get(resolved_notebook_id)
+            try:
+                payload = self._run_json_command(
+                    build_notebooklm_ask_command(
+                        self.config,
+                        resolved_notebook_id,
+                        normalized_query,
+                        source_ids=resolved_source_ids,
+                        conversation_id=stored_conv_id,
+                    ),
+                    request_id=request_id,
+                    coach_id=coach_id,
+                    notebook_id=resolved_notebook_id,
+                    status_code_on_success=200,
+                )
+            except BridgeError:
+                if stored_conv_id is None:
+                    raise
+                self._conversation_ids.pop(resolved_notebook_id, None)
+                payload = self._run_json_command(
+                    build_notebooklm_ask_command(
+                        self.config,
+                        resolved_notebook_id,
+                        normalized_query,
+                        source_ids=resolved_source_ids,
+                    ),
+                    request_id=request_id,
+                    coach_id=coach_id,
+                    notebook_id=resolved_notebook_id,
+                    status_code_on_success=200,
+                )
+
+            new_conv_id = payload.get('conversation_id')
+            if isinstance(new_conv_id, str) and new_conv_id.strip():
+                self._conversation_ids[resolved_notebook_id] = new_conv_id.strip()
+
             answer = parse_notebooklm_answer(payload)
             total_ms = round((time.perf_counter() - started_at) * 1000, 2)
             result = AskResult(payload={'answer': answer}, cache_status='miss', total_ms=total_ms)
