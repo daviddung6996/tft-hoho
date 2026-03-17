@@ -1,4 +1,5 @@
 import type { MonetizationMode } from '../monetization.types';
+import './BetaStatusBanner.css';
 
 interface BetaStatusBannerProps {
     mode: MonetizationMode;
@@ -15,27 +16,39 @@ function formatBetaEndsAt(betaEndsAt: string): string {
     return new Intl.DateTimeFormat('en-US', {
         month: 'short',
         day: 'numeric',
-        year: 'numeric',
         timeZone: 'UTC',
     }).format(date);
 }
+
+const HourglassIcon = () => (
+    <svg className="beta-chip-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M6 2h12v2H6V2z" fill="#c8aa6e" />
+        <path d="M6 20h12v2H6v-2z" fill="#c8aa6e" />
+        <path d="M7 4v3c0 2.5 2 4.5 4 5.5v-1C9.5 10.5 8 9 8 7V4h8v3c0 2-1.5 3.5-3 4.5v1c2-1 4-3 4-5.5V4" stroke="#c8aa6e" strokeWidth="1.2" fill="none" />
+        <path d="M7 20v-3c0-2.5 2-4.5 4-5.5v1c-1.5 1-3 2.5-3 4.5v3h8v-3c0-2 1.5-3.5 3-4.5v-1c-2 1-4 3-4 5.5v3" stroke="#c8aa6e" strokeWidth="1.2" fill="none" />
+        <circle cx="12" cy="12" r="1.5" fill="#c8aa6e" opacity="0.6" />
+    </svg>
+);
 
 export function BetaStatusBanner({ mode, betaEndsAt }: BetaStatusBannerProps) {
     const formattedBetaEndsAt = formatBetaEndsAt(betaEndsAt);
 
     if (mode === 'beta') {
         return (
-            <section aria-label="Beta access status" data-testid="beta-status-banner">
-                <p>Beta access is active</p>
-                <p>All puzzle lanes stay open during beta through {formattedBetaEndsAt}.</p>
-            </section>
+            <div className="beta-chip" aria-label="Beta access status" data-testid="beta-status-banner">
+                <HourglassIcon />
+                <span className="beta-chip-label">Beta</span>
+                <span className="beta-chip-sep" />
+                <span className="beta-chip-detail">Free &amp; Pro coming {formattedBetaEndsAt}</span>
+            </div>
         );
     }
 
     return (
-        <section aria-label="Free and Pro status" data-testid="beta-status-banner">
-            <p>Beta has ended</p>
-            <p>Free remains available while Hard and Pro move into Pro after {formattedBetaEndsAt}.</p>
-        </section>
+        <div className="beta-chip beta-chip--ended" aria-label="Free and Pro status" data-testid="beta-status-banner">
+            <span className="beta-chip-label">Free &amp; Pro</span>
+            <span className="beta-chip-sep" />
+            <span className="beta-chip-detail">Beta ended {formattedBetaEndsAt}</span>
+        </div>
     );
 }
