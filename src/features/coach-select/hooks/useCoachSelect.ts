@@ -10,10 +10,16 @@ import { COACHES_BY_ID, DEFAULT_COACH_ID, getCoachQuestionForDecisionType } from
 import { coachSelectService } from '../coachSelect.service';
 import type {
     CoachAnswerState,
+    CoachAskResponse,
     CoachGameContext,
     CoachId,
     CoachUiState,
 } from '../coachSelect.types';
+import {
+    buildCoachAnswerCacheKey,
+    buildCoachContextSignature,
+    normalizeCoachAnswerText,
+} from '../coachSelect.utils';
 
 const DEFAULT_COACH_UNAVAILABLE_MESSAGE = 'Coach đang bận train, thử lại sau nha.';
 
@@ -23,73 +29,6 @@ function createEmptyAnswerState(): CoachAnswerState {
         isLoading: false,
         isComplete: false,
     };
-}
-
-function normalizeCachePart(value: unknown): string {
-    return typeof value === 'string' ? value.trim() : '';
-}
-
-function normalizeCoachAnswerText(answer: string): string {
-    const trimmedAnswer = answer.trim();
-    if (!trimmedAnswer) {
-        return '';
-    }
-
-    const pickMatch = trimmedAnswer.match(/(?:^|\n)\s*Pick:\s*(.+)$/im);
-    const reasoningMatch = trimmedAnswer.match(/(?:^|\n)\s*(?:Giai thich|Giải thích|Tai sao):\s*([\s\S]+)$/im);
-    const pick = pickMatch?.[1]?.trim() ?? '';
-    const reasoning = reasoningMatch?.[1]?.trim()
-        ?? trimmedAnswer
-            .replace(/(?:^|\n)\s*Pick:\s*.+$/im, '')
-            .replace(/(?:^|\n)\s*(?:Giai thich|Giải thích|Tai sao):\s*/im, '')
-            .trim();
-
-    if (pick && reasoning) {
-        return `${pick}. ${reasoning}`.replace(/\s+/g, ' ').trim();
-    }
-
-    return trimmedAnswer
-        .replace(/(?:^|\n)\s*Pick:\s*/im, '')
-        .replace(/(?:^|\n)\s*(?:Giai thich|Giải thích|Tai sao):\s*/im, '')
-        .replace(/\s*\n+\s*/g, ' ')
-        .replace(/\s+/g, ' ')
-        .trim();
-}
-
-function buildCoachContextSignature(gameContext: CoachGameContext | null): string {
-    if (!gameContext) {
-        return 'no-context';
-    }
-
-    const decisionType = gameContext.decisionType ?? 'augment';
-    const optionParts = decisionType === 'augment'
-        ? (gameContext.currentAugmentOptions?.length
-            ? gameContext.currentAugmentOptions.map(option => normalizeCachePart(option.id) || normalizeCachePart(option.title))
-            : gameContext.currentAugments)
-        : (gameContext.currentDecisionOptions ?? []).map(option => normalizeCachePart(option.id) || normalizeCachePart(option.title));
-
-    return [
-        `stage=${normalizeCachePart(gameContext.stage)}`,
-        `decision=${decisionType}`,
-        `gold=${gameContext.gold}`,
-        `level=${gameContext.level}`,
-        `hp=${gameContext.hp}`,
-        `comp=${normalizeCachePart(gameContext.comp)}`,
-        `options=${optionParts.map(normalizeCachePart).filter(Boolean).join('|')}`,
-        `chosen=${gameContext.chosenAugments.map(normalizeCachePart).filter(Boolean).join('|')}`,
-    ].join('::');
-}
-
-function buildCoachAnswerCacheKey(
-    puzzleId: string | null,
-    coachId: CoachId,
-    contextSignature: string,
-): string | null {
-    if (!puzzleId) {
-        return null;
-    }
-
-    return `${puzzleId}:${coachId}:${contextSignature}`;
 }
 
 export function useCoachSelect(gameContext: CoachGameContext | null, puzzleId: string | null) {
@@ -108,6 +47,11 @@ export function useCoachSelect(gameContext: CoachGameContext | null, puzzleId: s
     const cachedAnswersRef = useRef(new Map<string, CoachAnswerState>());
     const interactionVersionRef = useRef(0);
     const abortControllerRef = useRef<AbortController | null>(null);
+    const prefetchAbortRef = useRef<AbortController | null>(null);
+    const prefetchTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const prefetchCoachIdRef = useRef<CoachId | null>(null);
+    const prefetchPromiseRef = useRef<Promise<CoachAskResponse | null> | null>(null);
+    const prefetchSignatureRef = useRef<string | null>(null);
     const contextSignature = useMemo(() => buildCoachContextSignature(gameContext), [gameContext]);
     const contextSignatureRef = useRef(contextSignature);
 
@@ -122,6 +66,76 @@ export function useCoachSelect(gameContext: CoachGameContext | null, puzzleId: s
             abortControllerRef.current = null;
         }
     }, []);
+
+    const abortPrefetch = useCallback(() => {
+        if (prefetchTimerRef.current) {
+            clearTimeout(prefetchTimerRef.current);
+            prefetchTimerRef.current = null;
+        }
+        if (prefetchAbortRef.current) {
+            prefetchAbortRef.current.abort();
+            prefetchAbortRef.current = null;
+        }
+        prefetchCoachIdRef.current = null;
+        prefetchPromiseRef.current = null;
+        prefetchSignatureRef.current = null;
+    }, []);
+
+    const triggerPrefetch = useCallback((coachId: CoachId) => {
+        if (prefetchTimerRef.current) {
+            clearTimeout(prefetchTimerRef.current);
+        }
+
+        prefetchTimerRef.current = setTimeout(() => {
+            prefetchTimerRef.current = null;
+
+            if (prefetchAbortRef.current) {
+                prefetchAbortRef.current.abort();
+            }
+
+            const signature = contextSignatureRef.current;
+            const controller = new AbortController();
+
+            prefetchAbortRef.current = controller;
+            prefetchCoachIdRef.current = coachId;
+            prefetchSignatureRef.current = signature;
+
+            const promise = coachSelectService.askCoach(
+                coachId,
+                getCoachQuestionForDecisionType(gameContext?.decisionType),
+                gameContext,
+                controller.signal,
+            ).then(response => {
+                const normalizedAnswer = normalizeCoachAnswerText(response.answer);
+                const cacheKey = buildCoachAnswerCacheKey(puzzleId, coachId, signature);
+                if (cacheKey && !controller.signal.aborted) {
+                    cachedAnswersRef.current.set(cacheKey, {
+                        answer: normalizedAnswer,
+                        isLoading: false,
+                        isComplete: true,
+                    });
+                }
+                return response;
+            }).catch(() => {
+                return null;
+            }).finally(() => {
+                if (prefetchAbortRef.current === controller) {
+                    prefetchAbortRef.current = null;
+                }
+                if (prefetchPromiseRef.current === promise) {
+                    prefetchPromiseRef.current = null;
+                }
+                if (prefetchCoachIdRef.current === coachId) {
+                    prefetchCoachIdRef.current = null;
+                }
+                if (prefetchSignatureRef.current === signature) {
+                    prefetchSignatureRef.current = null;
+                }
+            });
+
+            prefetchPromiseRef.current = promise;
+        }, 500);
+    }, [gameContext, puzzleId]);
 
     const resetAnswerState = useCallback(() => {
         setAnswerState(createEmptyAnswerState());
@@ -163,6 +177,7 @@ export function useCoachSelect(gameContext: CoachGameContext | null, puzzleId: s
 
     const dismissSession = useCallback(() => {
         abortInflight();
+        abortPrefetch();
         interactionVersionRef.current += 1;
         setSelectedCoachId(DEFAULT_COACH_ID);
         resetAnswerState();
@@ -171,11 +186,14 @@ export function useCoachSelect(gameContext: CoachGameContext | null, puzzleId: s
         setIsOverlayVisible(false);
         setIsMinimizedForBoard(false);
         setHasUnreadResult(false);
-    }, [abortInflight, resetAnswerState]);
+    }, [abortInflight, abortPrefetch, resetAnswerState]);
 
     useEffect(() => {
-        return () => { abortInflight(); };
-    }, [abortInflight]);
+        return () => {
+            abortInflight();
+            abortPrefetch();
+        };
+    }, [abortInflight, abortPrefetch]);
 
     useEffect(() => {
         if (puzzleId === puzzleIdRef.current) {
@@ -195,6 +213,7 @@ export function useCoachSelect(gameContext: CoachGameContext | null, puzzleId: s
 
         contextSignatureRef.current = contextSignature;
         abortInflight();
+        abortPrefetch();
         interactionVersionRef.current += 1;
         resetAnswerState();
         setError(null);
@@ -219,7 +238,9 @@ export function useCoachSelect(gameContext: CoachGameContext | null, puzzleId: s
         setIsOverlayVisible(true);
         setIsMinimizedForBoard(false);
         setHasUnreadResult(false);
-    }, [resetAnswerState]);
+
+        triggerPrefetch(coachId);
+    }, [resetAnswerState, triggerPrefetch]);
 
     const minimizeToBoard = useCallback(() => {
         if (uiStateRef.current !== 'loading' && uiStateRef.current !== 'response') {
@@ -257,7 +278,9 @@ export function useCoachSelect(gameContext: CoachGameContext | null, puzzleId: s
                 setIsMinimizedForBoard(false);
             }
         });
-    }, [abortInflight, resetAnswerState]);
+
+        triggerPrefetch(coachId);
+    }, [abortInflight, resetAnswerState, triggerPrefetch]);
 
     const backToSelect = useCallback(() => {
         abortInflight();
@@ -303,6 +326,27 @@ export function useCoachSelect(gameContext: CoachGameContext | null, puzzleId: s
             });
             setUiState('response');
             return;
+        }
+
+        if (
+            prefetchCoachIdRef.current === requestCoachId
+            && prefetchSignatureRef.current === requestContextSignature
+            && prefetchPromiseRef.current
+        ) {
+            await prefetchPromiseRef.current;
+            if (isStaleRequest()) return;
+            const reCachedAnswer = cacheKey ? cachedAnswersRef.current.get(cacheKey) : null;
+            if (reCachedAnswer) {
+                setError(null);
+                setHasUnreadResult(false);
+                setAnswerState({
+                    ...reCachedAnswer,
+                    isLoading: false,
+                    isComplete: true,
+                });
+                setUiState('response');
+                return;
+            }
         }
 
         abortInflight();

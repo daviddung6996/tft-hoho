@@ -1,5 +1,5 @@
 import { act, renderHook } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { getCoachQuestionForDecisionType } from '../coachSelect.data';
 import type { CoachGameContext } from '../coachSelect.types';
 import { useCoachSelect } from './useCoachSelect';
@@ -45,6 +45,135 @@ describe('useCoachSelect', () => {
     beforeEach(() => {
         askCoachMock.mockReset();
     });
+
+    describe('prefetch', () => {
+        beforeEach(() => {
+            vi.useFakeTimers();
+        });
+
+        afterEach(() => {
+            vi.useRealTimers();
+        });
+
+        it('prefetches on openSelect and uses cached result on askCoach', async () => {
+            askCoachMock.mockResolvedValue({
+                answer: 'Pick: Featherweights III\nGiai thich: Prefetched answer.',
+            });
+
+            const { result } = renderHook(() => useCoachSelect(gameContext, 'puzzle-1'));
+
+            act(() => {
+                result.current.openSelect();
+            });
+
+            await act(async () => {
+                await vi.advanceTimersByTimeAsync(600);
+            });
+
+            expect(askCoachMock).toHaveBeenCalledTimes(1);
+
+            await act(async () => {
+                await result.current.askCoach();
+            });
+
+            expect(askCoachMock).toHaveBeenCalledTimes(1);
+            expect(result.current.answer).toBe('Featherweights III. Prefetched answer.');
+            expect(result.current.uiState).toBe('response');
+        });
+
+        it('aborts prefetch when overlay is dismissed', async () => {
+            let resolveAsk: ((value: { answer: string }) => void) | null = null;
+            askCoachMock.mockImplementation(() => new Promise(resolve => {
+                resolveAsk = resolve;
+            }));
+
+            const { result } = renderHook(() => useCoachSelect(gameContext, 'puzzle-1'));
+
+            act(() => {
+                result.current.openSelect();
+            });
+
+            await act(async () => {
+                await vi.advanceTimersByTimeAsync(600);
+            });
+
+            act(() => {
+                result.current.dismissSession();
+            });
+
+            await act(async () => {
+                resolveAsk?.({ answer: 'Should be ignored.' });
+            });
+
+            expect(result.current.uiState).toBe('closed');
+            expect(result.current.answer).toBe('');
+        });
+
+        it('debounces rapid coach switches and only prefetches the last one', async () => {
+            askCoachMock.mockResolvedValue({ answer: 'Pick: answer\nOK' });
+
+            const { result } = renderHook(() => useCoachSelect(gameContext, 'puzzle-1'));
+
+            act(() => {
+                result.current.openSelect();
+            });
+
+            act(() => {
+                result.current.selectCoach('dit_sap');
+            });
+            await act(async () => {
+                await vi.advanceTimersByTimeAsync(200);
+            });
+            act(() => {
+                result.current.selectCoach('buffalow');
+            });
+            await act(async () => {
+                await vi.advanceTimersByTimeAsync(200);
+            });
+            act(() => {
+                result.current.selectCoach('tftiseasy');
+            });
+
+            await act(async () => {
+                await vi.advanceTimersByTimeAsync(600);
+            });
+
+            expect(askCoachMock).toHaveBeenCalledTimes(1);
+            expect(askCoachMock.mock.calls[0][0]).toBe('tftiseasy');
+        });
+
+        it('does not abort prefetch when minimizing to board', async () => {
+            askCoachMock.mockResolvedValue({
+                answer: 'Pick: Featherweights III\nGiai thich: Still valid.',
+            });
+
+            const { result } = renderHook(() => useCoachSelect(gameContext, 'puzzle-1'));
+
+            act(() => {
+                result.current.openSelect();
+            });
+
+            await act(async () => {
+                await vi.advanceTimersByTimeAsync(600);
+            });
+
+            act(() => {
+                result.current.minimizeToBoard();
+            });
+
+            act(() => {
+                result.current.reopenOverlay();
+            });
+
+            await act(async () => {
+                await result.current.askCoach();
+            });
+
+            expect(askCoachMock).toHaveBeenCalledTimes(1);
+            expect(result.current.answer).toBe('Featherweights III. Still valid.');
+        });
+    });
+
 
     it('returns a single full answer from NotebookLM', async () => {
         askCoachMock.mockResolvedValue({
