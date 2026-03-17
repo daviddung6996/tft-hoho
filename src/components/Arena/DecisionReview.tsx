@@ -15,6 +15,8 @@ import { videoLibraryService } from '../../features/video-library/videoLibrary.s
 import { IntentFeedback } from '../../features/augment-trainer/components/IntentFeedback';
 import { PlanFeedback } from '../../features/augment-trainer/components/PlanFeedback';
 import { buildYouTubeEmbedUrl } from '../../utils/youtube';
+import type { MonetizationMode } from '../../features/monetization/monetization.types';
+import { PremiumLaneCallout } from '../../features/monetization/components/PremiumLaneCallout';
 
 const ShareModal = React.lazy(() =>
     import('../../features/share/components/ShareModal').then(m => ({ default: m.ShareModal }))
@@ -56,6 +58,9 @@ export interface DecisionReviewProps {
     proPlan?: StabilizationPlan;
     planReasoning?: string;
     onSupportClick?: () => void;
+    monetizationMode?: MonetizationMode;
+    showPremiumLaneCta?: boolean;
+    onUpgradeClick?: () => void;
 }
 
 type ReviewVariant = 'desktop' | 'mobile';
@@ -115,6 +120,9 @@ export const DecisionReview: React.FC<DecisionReviewProps> = ({
     proPlan,
     planReasoning,
     onSupportClick,
+    monetizationMode,
+    showPremiumLaneCta,
+    onUpgradeClick,
 }) => {
     const [showShareModal, setShowShareModal] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
@@ -652,6 +660,14 @@ export const DecisionReview: React.FC<DecisionReviewProps> = ({
                     <ReviewActions onReplay={onReplay} onNextPuzzle={onNextPuzzle} />
                 </div>
             </div>
+
+            {showPremiumLaneCta && monetizationMode && onUpgradeClick && (
+                <PremiumLaneCallout
+                    mode={monetizationMode}
+                    isProEntitled={!showPremiumLaneCta}
+                    onUpgradeClick={onUpgradeClick}
+                />
+            )}
         </div>
     );
 
@@ -719,6 +735,14 @@ export const DecisionReview: React.FC<DecisionReviewProps> = ({
 
                 {renderMobileFinalSection()}
                 {renderMobileExplanation()}
+
+                {showPremiumLaneCta && monetizationMode && onUpgradeClick && (
+                    <PremiumLaneCallout
+                        mode={monetizationMode}
+                        isProEntitled={!showPremiumLaneCta}
+                        onUpgradeClick={onUpgradeClick}
+                    />
+                )}
             </div>
 
             <div className="decision-review-mobile-footer">
