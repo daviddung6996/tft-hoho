@@ -12,10 +12,10 @@ describe('BetaStatusBanner', () => {
         );
 
         const banner = screen.getByTestId('beta-status-banner');
-        expect(banner).toHaveTextContent(/beta access is active/i);
-        expect(banner).toHaveTextContent(/all puzzle lanes stay open during beta/i);
-        expect(banner).toHaveTextContent(/apr 16, 2026/i);
-        expect(screen.queryByText(/beta has ended/i)).not.toBeInTheDocument();
+        expect(banner).toHaveTextContent(/beta/i);
+        expect(banner).toHaveTextContent(/free & pro coming/i);
+        expect(banner).toHaveTextContent(/apr 16/i);
+        expect(screen.queryByText(/beta ended/i)).not.toBeInTheDocument();
     });
 
     it('renders free pro transition framing after beta ends', () => {
@@ -27,10 +27,9 @@ describe('BetaStatusBanner', () => {
         );
 
         const banner = screen.getByTestId('beta-status-banner');
-        expect(banner).toHaveTextContent(/beta has ended/i);
-        expect(banner).toHaveTextContent(/free remains available/i);
-        expect(banner).toHaveTextContent(/hard and pro move into pro/i);
-        expect(screen.queryByText(/beta access is active/i)).not.toBeInTheDocument();
+        expect(banner).toHaveTextContent(/free & pro/i);
+        expect(banner).toHaveTextContent(/beta ended/i);
+        expect(banner).toHaveTextContent(/apr 16/i);
     });
 
     it('falls back to the raw beta end string when the date is invalid', () => {

@@ -1,0 +1,72 @@
+.beta-chip {
+    position: fixed;
+    top: var(--app-hud-top-inset, 12px);
+    left: var(--viewport-hud-right-gap, calc(var(--app-visible-side-offset, 0px) + max(12px, 2.2vw)));
+    z-index: 200;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    height: clamp(32px, 2.6vw, 38px);
+    padding: 0 12px;
+    border-radius: 10px;
+
+    background: linear-gradient(
+        135deg,
+        rgba(30, 35, 40, 0.92) 0%,
+        rgba(20, 24, 28, 0.95) 100%
+    );
+    border: 1px solid rgba(200, 170, 110, 0.25);
+    box-shadow:
+        0 0 8px rgba(200, 170, 110, 0.08),
+        inset 0 1px 0 rgba(200, 170, 110, 0.06);
+
+    pointer-events: none;
+    user-select: none;
+}
+
+.beta-chip-icon {
+    flex-shrink: 0;
+    opacity: 0.85;
+}
+
+.beta-chip-label {
+    font-size: clamp(11px, 1vw, 13px);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: #c8aa6e;
+    text-transform: uppercase;
+}
+
+.beta-chip-sep {
+    width: 1px;
+    height: 14px;
+    background: rgba(200, 170, 110, 0.2);
+    flex-shrink: 0;
+}
+
+.beta-chip-detail {
+    font-size: clamp(10px, 0.9vw, 12px);
+    font-weight: 400;
+    color: rgba(200, 170, 110, 0.55);
+    white-space: nowrap;
+}
+
+/* Post-beta variant */
+.beta-chip--ended {
+    border-color: rgba(200, 170, 110, 0.15);
+}
+
+.beta-chip--ended .beta-chip-label {
+    color: rgba(200, 170, 110, 0.7);
+}
+
+/* Phone landscape — tuck tighter */
+.viewport-hud-layer[data-layout-mode="phone-landscape"] .beta-chip {
+    top: 6px;
+    left: 6px;
+    height: 28px;
+    padding: 0 8px;
+    border-radius: 8px;
+}
