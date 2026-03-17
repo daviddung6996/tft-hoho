@@ -1,0 +1,35 @@
+<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="iron-body" x1="32" y1="4" x2="32" y2="60" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#6B7280"/>
+      <stop offset="50%" stop-color="#4B5563"/>
+      <stop offset="100%" stop-color="#374151"/>
+    </linearGradient>
+    <linearGradient id="iron-inner" x1="32" y1="14" x2="32" y2="50" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#6B7280" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#374151" stop-opacity="0.8"/>
+    </linearGradient>
+    <linearGradient id="iron-edge" x1="32" y1="4" x2="32" y2="60" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#9CA3AF"/>
+      <stop offset="50%" stop-color="#6B7280"/>
+      <stop offset="100%" stop-color="#4B5563"/>
+    </linearGradient>
+  </defs>
+  <!-- Outer hex shell -->
+  <polygon points="32,4 56,18 56,46 32,60 8,46 8,18" fill="url(#iron-body)" stroke="url(#iron-edge)" stroke-width="2" stroke-linejoin="round"/>
+  <!-- Inner hex frame -->
+  <polygon points="32,12 49,21 49,43 32,52 15,43 15,21" fill="url(#iron-inner)" stroke="#6B7280" stroke-width="1.2" stroke-linejoin="round"/>
+  <!-- Cross-guard lines — forged metal -->
+  <line x1="22" y1="18" x2="42" y2="18" stroke="#9CA3AF" stroke-width="0.8" opacity="0.5"/>
+  <line x1="22" y1="46" x2="42" y2="46" stroke="#9CA3AF" stroke-width="0.8" opacity="0.5"/>
+  <line x1="32" y1="12" x2="32" y2="52" stroke="#9CA3AF" stroke-width="0.6" opacity="0.3"/>
+  <!-- Central shield emblem -->
+  <path d="M32 22L40 27V37L32 42L24 37V27Z" fill="#374151" stroke="#9CA3AF" stroke-width="1" stroke-linejoin="round"/>
+  <!-- Rivet details -->
+  <circle cx="32" cy="25" r="1.5" fill="#9CA3AF" opacity="0.6"/>
+  <circle cx="32" cy="39" r="1.5" fill="#9CA3AF" opacity="0.6"/>
+  <circle cx="26" cy="32" r="1.2" fill="#9CA3AF" opacity="0.4"/>
+  <circle cx="38" cy="32" r="1.2" fill="#9CA3AF" opacity="0.4"/>
+  <!-- Center forged iron symbol -->
+  <path d="M29 30L32 27L35 30L35 34L32 37L29 34Z" fill="#6B7280" stroke="#9CA3AF" stroke-width="0.8"/>
+</svg>

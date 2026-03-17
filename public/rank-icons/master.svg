@@ -1,0 +1,29 @@
+<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="master-body" x1="32" y1="4" x2="32" y2="60" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#C4B5FD"/>
+      <stop offset="50%" stop-color="#8B5CF6"/>
+      <stop offset="100%" stop-color="#6D28D9"/>
+    </linearGradient>
+    <linearGradient id="master-edge" x1="32" y1="4" x2="32" y2="60" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#DDD6FE"/>
+      <stop offset="100%" stop-color="#8B5CF6"/>
+    </linearGradient>
+    <radialGradient id="master-aura" cx="32" cy="28" r="16" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#DDD6FE" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#6D28D9" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <polygon points="32,4 56,18 56,46 32,60 8,46 8,18" fill="url(#master-body)" stroke="url(#master-edge)" stroke-width="2" stroke-linejoin="round"/>
+  <polygon points="32,12 49,21 49,43 32,52 15,43 15,21" fill="none" stroke="#DDD6FE" stroke-width="0.8" stroke-linejoin="round" opacity="0.3"/>
+  <!-- Aura -->
+  <circle cx="32" cy="30" r="14" fill="url(#master-aura)"/>
+  <!-- Triple chevrons — ascending mastery -->
+  <path d="M20 36L26 26L32 32L38 26L44 36" stroke="#DDD6FE" stroke-width="2.2" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+  <path d="M22 42L27 34L32 38L37 34L42 42" stroke="#C4B5FD" stroke-width="1.6" fill="none" stroke-linejoin="round" stroke-linecap="round" opacity="0.7"/>
+  <path d="M18 30L25 18L32 26L39 18L46 30" stroke="#DDD6FE" stroke-width="1.8" fill="none" stroke-linejoin="round" stroke-linecap="round" opacity="0.85"/>
+  <!-- Center orb -->
+  <circle cx="32" cy="30" r="3.5" fill="#6D28D9" stroke="#DDD6FE" stroke-width="1"/>
+  <circle cx="32" cy="30" r="1.5" fill="#C4B5FD"/>
+  <circle cx="31.2" cy="29.2" r="0.6" fill="#DDD6FE" opacity="0.8"/>
+</svg>

@@ -44,7 +44,17 @@
       "Bash(find /d/TFT-hoho/src/services -type f -name \"*.ts\" | xargs grep -l \"fetch\\\\|http\\\\|api\" | head -5)",
       "Bash(cd D:/TFT-hoho && npm run build 2>&1 | tail -30)",
       "mcp__plugin_context-mode_context-mode__ctx_batch_execute",
-      "mcp__plugin_context-mode_context-mode__ctx_execute"
+      "mcp__plugin_context-mode_context-mode__ctx_execute",
+      "Bash(find D:TFT-hoho -type f -name *visianChat*)",
+      "Bash(git checkout:*)",
+      "Bash(npx vitest:*)",
+      "Skill(superpowers-chrome:browsing)",
+      "mcp__plugin_superpowers-chrome_chrome__use_browser",
+      "mcp__plugin_context-mode_context-mode__ctx_search",
+      "Bash(git worktree:*)",
+      "Bash(xargs -I{} git worktree remove --force \"{}\")",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

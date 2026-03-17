@@ -1,0 +1,34 @@
+<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bronze-body" x1="32" y1="4" x2="32" y2="60" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#D97706"/>
+      <stop offset="50%" stop-color="#B45309"/>
+      <stop offset="100%" stop-color="#92400E"/>
+    </linearGradient>
+    <linearGradient id="bronze-inner" x1="32" y1="14" x2="32" y2="50" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#D97706" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#78350F" stop-opacity="0.7"/>
+    </linearGradient>
+    <linearGradient id="bronze-edge" x1="32" y1="4" x2="32" y2="60" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FBBF24"/>
+      <stop offset="50%" stop-color="#D97706"/>
+      <stop offset="100%" stop-color="#92400E"/>
+    </linearGradient>
+  </defs>
+  <polygon points="32,4 56,18 56,46 32,60 8,46 8,18" fill="url(#bronze-body)" stroke="url(#bronze-edge)" stroke-width="2" stroke-linejoin="round"/>
+  <polygon points="32,12 49,21 49,43 32,52 15,43 15,21" fill="url(#bronze-inner)" stroke="#D97706" stroke-width="1.2" stroke-linejoin="round"/>
+  <!-- Accent lines -->
+  <line x1="20" y1="17" x2="44" y2="17" stroke="#FBBF24" stroke-width="0.6" opacity="0.35"/>
+  <line x1="20" y1="47" x2="44" y2="47" stroke="#FBBF24" stroke-width="0.6" opacity="0.35"/>
+  <!-- Shield hex -->
+  <path d="M32 20L42 26V38L32 44L22 38V26Z" fill="#92400E" stroke="#FBBF24" stroke-width="0.8" stroke-linejoin="round" opacity="0.8"/>
+  <!-- Concentric medal -->
+  <circle cx="32" cy="32" r="8" fill="#78350F" stroke="#D97706" stroke-width="1"/>
+  <circle cx="32" cy="32" r="6" fill="#B45309" stroke="#FBBF24" stroke-width="0.8"/>
+  <circle cx="32" cy="32" r="3.5" fill="#D97706"/>
+  <!-- Center gleam -->
+  <circle cx="32" cy="32" r="1.5" fill="#FBBF24" opacity="0.9"/>
+  <!-- Corner rivets -->
+  <circle cx="32" cy="20" r="1.2" fill="#FBBF24" opacity="0.5"/>
+  <circle cx="32" cy="44" r="1.2" fill="#FBBF24" opacity="0.5"/>
+</svg>

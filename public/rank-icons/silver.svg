@@ -1,0 +1,32 @@
+<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="silver-body" x1="32" y1="4" x2="32" y2="60" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#CBD5E1"/>
+      <stop offset="50%" stop-color="#94A3B8"/>
+      <stop offset="100%" stop-color="#64748B"/>
+    </linearGradient>
+    <linearGradient id="silver-edge" x1="32" y1="4" x2="32" y2="60" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#E2E8F0"/>
+      <stop offset="100%" stop-color="#94A3B8"/>
+    </linearGradient>
+    <linearGradient id="silver-sheen" x1="20" y1="20" x2="44" y2="44" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#E2E8F0" stop-opacity="0.4"/>
+      <stop offset="50%" stop-color="#CBD5E1" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#E2E8F0" stop-opacity="0.3"/>
+    </linearGradient>
+  </defs>
+  <polygon points="32,4 56,18 56,46 32,60 8,46 8,18" fill="url(#silver-body)" stroke="url(#silver-edge)" stroke-width="2" stroke-linejoin="round"/>
+  <!-- Inner frame -->
+  <polygon points="32,12 49,21 49,43 32,52 15,43 15,21" fill="none" stroke="#E2E8F0" stroke-width="1" stroke-linejoin="round" opacity="0.5"/>
+  <!-- Mid hex -->
+  <polygon points="32,18 44,25 44,39 32,46 20,39 20,25" fill="#64748B" stroke="#CBD5E1" stroke-width="1" stroke-linejoin="round"/>
+  <!-- Sheen overlay -->
+  <polygon points="32,18 44,25 44,39 32,46 20,39 20,25" fill="url(#silver-sheen)"/>
+  <!-- Inner hex -->
+  <polygon points="32,24 38,28 38,36 32,40 26,36 26,28" fill="#94A3B8" stroke="#E2E8F0" stroke-width="0.8" stroke-linejoin="round"/>
+  <!-- Cross axes -->
+  <line x1="32" y1="18" x2="32" y2="46" stroke="#E2E8F0" stroke-width="0.6" opacity="0.3"/>
+  <line x1="20" y1="32" x2="44" y2="32" stroke="#E2E8F0" stroke-width="0.6" opacity="0.3"/>
+  <!-- Center mark -->
+  <circle cx="32" cy="32" r="2" fill="#CBD5E1" stroke="#E2E8F0" stroke-width="0.6"/>
+</svg>
