@@ -98,8 +98,8 @@
 
   box-shadow: none;
 
-  /* Minimal transition to prevent flicker - just enough to smooth the switch */
-  transition: background-image 100ms ease-out;
+  /* background-image swaps happen often while scouting; avoid extra transition work */
+  transition: none;
 
   --mobile-topbar-h: 56px;
   --app-visible-top-offset: max(0px, calc((100vw * 9 / 16 - 100vh) / 2));
@@ -137,6 +137,33 @@
   align-items: center;
   justify-content: center;
   position: relative;
+}
+
+.app-loading-shell {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background:
+    radial-gradient(circle at 50% 38%, rgba(200, 170, 110, 0.12), transparent 32%),
+    linear-gradient(180deg, rgba(8, 30, 32, 0.58), rgba(5, 28, 30, 0.82));
+  z-index: 40;
+}
+
+.app-loading-screen {
+  min-width: min(440px, calc(100% - 32px));
+  padding: 18px 24px;
+  border: 1px solid rgba(200, 170, 110, 0.38);
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(21, 58, 62, 0.88), rgba(5, 28, 30, 0.94));
+  box-shadow: 0 0 24px rgba(0, 0, 0, 0.28);
+  color: #f0f6fc;
+  font-family: "Inter", sans-serif;
+  font-size: clamp(0.95rem, 1.4vw, 1.05rem);
+  letter-spacing: 0.02em;
+  text-align: center;
 }
 
 /* ==========================================================================

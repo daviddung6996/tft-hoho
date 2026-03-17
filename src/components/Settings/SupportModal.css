@@ -6,6 +6,7 @@
 .support-modal-overlay {
     position: fixed;
     inset: 0;
+    pointer-events: auto;
     background:
         radial-gradient(ellipse at 50% 30%, rgba(200, 170, 110, 0.06) 0%, transparent 50%),
         radial-gradient(ellipse at 50% 80%, rgba(21, 58, 62, 0.25) 0%, transparent 50%),

@@ -1,0 +1,63 @@
+.right-click-effect-layer {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 99999;
+}
+
+.lol-click-ripple {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
+}
+
+/* Expanding ring — LOL move-click style */
+.lol-click-ring {
+    position: absolute;
+    inset: 0;
+    border: 2px solid rgba(0, 209, 193, 0.9);
+    border-radius: 50%;
+    animation: lol-ring-expand 0.55s cubic-bezier(0.2, 0.6, 0.35, 1) forwards;
+    box-shadow: 0 0 6px rgba(0, 209, 193, 0.5);
+}
+
+/* Down-pointing arrow/chevron in center */
+.lol-click-arrow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 7px solid rgba(0, 209, 193, 0.95);
+    transform: translate(-50%, -50%);
+    animation: lol-arrow-fade 0.45s ease-out forwards;
+    filter: drop-shadow(0 0 3px rgba(0, 209, 193, 0.6));
+}
+
+@keyframes lol-ring-expand {
+    0% {
+        transform: scale(0.3);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1.6);
+        opacity: 0;
+    }
+}
+
+@keyframes lol-arrow-fade {
+    0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+    60% {
+        opacity: 0.8;
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -30%) scale(0.6);
+    }
+}

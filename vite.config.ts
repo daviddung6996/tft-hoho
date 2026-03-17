@@ -2,14 +2,14 @@ import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
 
-function assertProductionVisianChatUrl(mode: string, env: Record<string, string>) {
+function getProductionSafeVisianChatUrl(mode: string, env: Record<string, string>) {
     if (mode !== 'production') {
-        return
+        return undefined
     }
 
     const rawUrl = env.VITE_VISIAN_CHAT_URL?.trim()
     if (!rawUrl) {
-        return
+        return undefined
     }
 
     const normalized = rawUrl.toLowerCase()
@@ -18,15 +18,15 @@ function assertProductionVisianChatUrl(mode: string, env: Record<string, string>
         || normalized.includes('://0.0.0.0')
 
     if (isLocalHost) {
-        throw new Error(
-            'Production build blocked: VITE_VISIAN_CHAT_URL points to localhost. Move this setting to .env.local or unset it before building.',
-        )
+        return ''
     }
+
+    return rawUrl
 }
 
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, process.cwd(), '')
-    assertProductionVisianChatUrl(mode, env)
+    const productionSafeVisianChatUrl = getProductionSafeVisianChatUrl(mode, env)
 
     return {
         plugins: [react()],
@@ -35,6 +35,11 @@ export default defineConfig(({ mode }) => {
                 '@': path.resolve(__dirname, './src'),
             },
         },
+        define: productionSafeVisianChatUrl !== undefined
+            ? {
+                'import.meta.env.VITE_VISIAN_CHAT_URL': JSON.stringify(productionSafeVisianChatUrl),
+            }
+            : undefined,
         esbuild: {
             drop: ['console', 'debugger'],
         },
@@ -47,14 +52,7 @@ export default defineConfig(({ mode }) => {
                 output: {
                     manualChunks: {
                         'vendor-react': ['react', 'react-dom'],
-                        'vendor-remotion': ['remotion', '@remotion/core', '@remotion/player'],
-                        'vendor-recharts': ['recharts'],
                         'vendor-supabase': ['@supabase/supabase-js'],
-                        'vendor-fonts': [
-                            '@fontsource/inter',
-                            '@fontsource/spectral',
-                            '@fontsource/share-tech-mono'
-                        ],
                     },
                 },
             },

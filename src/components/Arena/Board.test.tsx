@@ -77,8 +77,8 @@ describe('Board interaction lock regressions', () => {
     vi.unstubAllGlobals();
   });
 
-  const renderBoard = (options: { isInteractionLocked: boolean; onUnitsChange?: ReturnType<typeof vi.fn> }) => {
-    const onUnitsChange = options.onUnitsChange ?? vi.fn();
+  const renderBoard = (options: { isInteractionLocked: boolean; onUnitsChange?: (units: UnitData[]) => void }) => {
+    const onUnitsChange = options.onUnitsChange ?? vi.fn<(units: UnitData[]) => void>();
     const utils = render(
       <Board
         units={[makeUnit()]}

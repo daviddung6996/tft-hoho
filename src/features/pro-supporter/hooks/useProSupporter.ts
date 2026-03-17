@@ -3,7 +3,7 @@ import { proSupporterService } from '../proSupporter.service';
 import { ProSupporter } from '../proSupporter.types';
 import { useAuth } from '../../../contexts/AuthContext';
 
-export function useProSupporter() {
+export function useProSupporter(enabled: boolean = true) {
     const { isAuthenticated, isGuest } = useAuth();
     const [isProSupporter, setIsProSupporter] = useState(false);
     const [details, setDetails] = useState<ProSupporter | null>(null);
@@ -29,8 +29,11 @@ export function useProSupporter() {
     }, [isAuthenticated, isGuest]);
 
     useEffect(() => {
+        if (!enabled) {
+            return;
+        }
         refresh();
-    }, [refresh]);
+    }, [enabled, refresh]);
 
     return {
         isProSupporter,

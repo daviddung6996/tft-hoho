@@ -4,14 +4,14 @@
 /* Self-hosted fonts via @fontsource — NO external CDN requests */
 /* Inter: 400 (body), 500 (emphasis), 600 (bold labels), 700 (headings) */
 /* 300 removed — only used in admin (lazy-loaded) */
-@import '@fontsource/inter/400.css';
-@import '@fontsource/inter/500.css';
-@import '@fontsource/inter/600.css';
-@import '@fontsource/inter/700.css';
+@import '@fontsource/inter/latin-400.css';
+@import '@fontsource/inter/vietnamese-400.css';
+@import '@fontsource/inter/latin-600.css';
+@import '@fontsource/inter/vietnamese-600.css';
 /* Spectral: 600 (main heading weight per design system) */
 /* 400/700 removed — headings always use 600, saves 2 woff2 files */
-@import '@fontsource/spectral/600.css';
-@import '@fontsource/share-tech-mono/400.css';
+@import '@fontsource/spectral/latin-600.css';
+@import '@fontsource/spectral/vietnamese-600.css';
 @import './styles/mobile.css';
 
 /* ==========================================================================
@@ -94,7 +94,7 @@ body.is-dragging *::after {
        ========================================================================== */
     --font-heading: 'Spectral', serif;
     /* Fantasy/RPG feel (AGENTS.md) */
-    --font-tech: 'Share Tech Mono', monospace;
+    --font-tech: ui-monospace, 'SFMono-Regular', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace;
     /* FUI Numbers */
     --font-body: 'Inter', sans-serif;
     /* UI Text */

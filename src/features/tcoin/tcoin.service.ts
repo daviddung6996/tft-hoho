@@ -16,50 +16,90 @@ import { proSupporterService } from '../pro-supporter/proSupporter.service';
 const UTC_PLUS_7_MS = 7 * 60 * 60 * 1000;
 const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 
+type SessionUser = NonNullable<Awaited<ReturnType<typeof supabase.auth.getSession>>['data']['session']>['user'];
+
+let cachedWallet: { userId: string; wallet: UserWallet | null } | null = null;
+let walletRequestPromise: Promise<UserWallet | null> | null = null;
+
+async function getSessionUser(): Promise<SessionUser | null> {
+    const { data: { session } } = await supabase.auth.getSession();
+    return session?.user ?? null;
+}
+
+function setCachedWallet(userId: string, wallet: UserWallet | null): void {
+    cachedWallet = { userId, wallet };
+}
+
+function clearCachedWallet(): void {
+    cachedWallet = null;
+    walletRequestPromise = null;
+}
+
 export const tcoinService = {
     /**
      * Get or create wallet for the current user.
      * New users start with 30 T-Coin (welcome bonus).
      */
-    async getWallet(): Promise<UserWallet | null> {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) return null;
-
-        // Try to fetch existing wallet
-        const { data, error } = await supabase
-            .from('user_wallets')
-            .select('*')
-            .eq('user_id', user.id)
-            .single();
-
-        if (data) {
-            return mapWallet(data);
+    async getWallet(options?: { forceRefresh?: boolean }): Promise<UserWallet | null> {
+        const user = await getSessionUser();
+        if (!user) {
+            clearCachedWallet();
+            return null;
         }
 
-        // Create wallet if it doesn't exist
-        if (error?.code === 'PGRST116') {
-            const { data: newWallet, error: insertError } = await supabase
+        const forceRefresh = options?.forceRefresh === true;
+        if (!forceRefresh && cachedWallet?.userId === user.id) {
+            return cachedWallet.wallet;
+        }
+
+        if (!forceRefresh && walletRequestPromise) {
+            return walletRequestPromise;
+        }
+
+        walletRequestPromise = (async () => {
+            const { data, error } = await supabase
                 .from('user_wallets')
-                .insert({ user_id: user.id, balance: 30, total_earned: 30, total_spent: 0 })
-                .select()
+                .select('*')
+                .eq('user_id', user.id)
                 .single();
 
-            if (insertError) {
-                console.error('Error creating wallet:', insertError);
-                return null;
+            if (data) {
+                const wallet = mapWallet(data);
+                setCachedWallet(user.id, wallet);
+                return wallet;
             }
-            return mapWallet(newWallet);
-        }
 
-        console.error('Error fetching wallet:', error);
-        return null;
+            if (error?.code === 'PGRST116') {
+                const { data: newWallet, error: insertError } = await supabase
+                    .from('user_wallets')
+                    .insert({ user_id: user.id, balance: 30, total_earned: 30, total_spent: 0 })
+                    .select()
+                    .single();
+
+                if (insertError) {
+                    console.error('Error creating wallet:', insertError);
+                    return null;
+                }
+
+                const wallet = mapWallet(newWallet);
+                setCachedWallet(user.id, wallet);
+                return wallet;
+            }
+
+            console.error('Error fetching wallet:', error);
+            return null;
+        })().finally(() => {
+            walletRequestPromise = null;
+        });
+
+        return walletRequestPromise;
     },
 
     /**
      * Earn T-Coins. Atomically updates balance and logs transaction.
      */
     async earnCoins(reason: EarnReason, referenceId?: string): Promise<{ newBalance: number; earned: number } | null> {
-        const { data: { user } } = await supabase.auth.getUser();
+        const user = await getSessionUser();
         if (!user) return null;
 
         let amount = TCOIN_EARN_RATES[reason];
@@ -103,6 +143,13 @@ export const tcoinService = {
             reference_id: referenceId || null,
         });
 
+        setCachedWallet(user.id, {
+            ...wallet,
+            balance: newBalance,
+            totalEarned: wallet.totalEarned + amount,
+            updatedAt: new Date().toISOString(),
+        });
+
         return { newBalance, earned: amount };
     },
 
@@ -110,7 +157,7 @@ export const tcoinService = {
      * Spend T-Coins. Checks balance first. Returns null if insufficient.
      */
     async spendCoins(reason: SpendReason, referenceId?: string): Promise<{ newBalance: number; spent: number } | null> {
-        const { data: { user } } = await supabase.auth.getUser();
+        const user = await getSessionUser();
         if (!user) return null;
 
         const amount = TCOIN_SPEND_COSTS[reason];
@@ -144,6 +191,13 @@ export const tcoinService = {
             reference_id: referenceId || null,
         });
 
+        setCachedWallet(user.id, {
+            ...wallet,
+            balance: newBalance,
+            totalSpent: wallet.totalSpent + amount,
+            updatedAt: new Date().toISOString(),
+        });
+
         return { newBalance, spent: amount };
     },
 
@@ -171,7 +225,7 @@ export const tcoinService = {
         }
 
         // Check if puzzle is already unlocked
-        const { data: { user } } = await supabase.auth.getUser();
+        const user = await getSessionUser();
         if (!user) {
             const cost = tier === 'advanced' ? TCOIN_SPEND_COSTS.unlock_advanced : TCOIN_SPEND_COSTS.unlock_rare;
             return { canPlay: false, reason: 'locked', cost, tier };
@@ -196,7 +250,7 @@ export const tcoinService = {
      * Unlock a puzzle by spending T-Coins.
      */
     async unlockPuzzle(puzzleId: string, tier: PuzzleTier): Promise<boolean> {
-        const { data: { user } } = await supabase.auth.getUser();
+        const user = await getSessionUser();
         if (!user) return false;
 
         const reason: SpendReason = tier === 'advanced' ? 'unlock_advanced' : 'unlock_rare';
@@ -222,7 +276,7 @@ export const tcoinService = {
      * Get recent transaction history.
      */
     async getTransactionHistory(limit = 20): Promise<TCoinTransaction[]> {
-        const { data: { user } } = await supabase.auth.getUser();
+        const user = await getSessionUser();
         if (!user) return [];
 
         const { data, error } = await supabase
@@ -240,7 +294,7 @@ export const tcoinService = {
      * Get all unlocked puzzle IDs for the current user.
      */
     async getUnlockedPuzzleIds(): Promise<Set<string>> {
-        const { data: { user } } = await supabase.auth.getUser();
+        const user = await getSessionUser();
         if (!user) return new Set();
 
         const { data, error } = await supabase

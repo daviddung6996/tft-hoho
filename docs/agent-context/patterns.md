@@ -1,5 +1,22 @@
 # Patterns
 
+First-load performance verification commands:
+
+- `npm run build`
+- `npx vitest run --exclude ".worktrees/**" --exclude ".claude/worktrees/**" src/components/Arena/Board.test.tsx src/hooks/usePuzzleToPlayers.test.ts`
+- serve `dist/` with any static server, then measure cold-load with a headless browser or DevTools while distinguishing `OPTIONS` preflight from real `GET` requests.
+
+Useful first-load facts:
+
+- `src/App.tsx` should not block the whole app with `if (!currentPuzzle) return ...`; keep the shell mounted and show an in-canvas loading shell instead.
+- When `src/App.tsx` is showing the in-canvas loading shell, gameplay-only HUD chrome must stay hidden too; do not let coach FABs, scout/augment CTAs, or preserved gameplay sessions leak through that shell.
+- `src/components/Settings/SettingsButton.tsx` is on the first screen, so menu-only data (`video library`, wallet copy inside the menu, IQ summary in the menu) should not fetch until the menu is actually opened.
+- Local arena thumbnails live under `src/assets/arenas/thumbs/`; regenerate them from full backgrounds if a new arena is added.
+- For bootstrap network audits against Supabase, count `GET` calls separately from CORS preflight `OPTIONS` or you'll misdiagnose healthy fetches as duplicates.
+- If localhost dev still logs duplicate bootstrap requests, check `src/main.tsx` for `React.StrictMode` before treating it as a production bug; use shared in-flight loaders/caches to reduce the cost instead of removing StrictMode.
+- The browser console line `Unchecked runtime.lastError: Could not establish connection. Receiving end does not exist.` is extension noise, not an app network regression.
+- For scouting smoothness, preserve the original arena background composition in `src/App.tsx`; fix switching by preloading the target arena before commit and only prefetching likely next scout targets, not by rebuilding the whole scene stack.
+
 NotebookLM bridge commands:
 
 - `notebooklm ask --help`

@@ -5,11 +5,9 @@
 
 /* --- OVERLAY --- */
 .login-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100cqw;
-    height: 100cqh;
+    position: fixed;
+    inset: 0;
+    pointer-events: auto;
     background:
         radial-gradient(ellipse at 50% 30%, rgba(200, 170, 110, 0.08) 0%, transparent 60%),
         radial-gradient(ellipse at 50% 80%, rgba(21, 58, 62, 0.4) 0%, transparent 50%),

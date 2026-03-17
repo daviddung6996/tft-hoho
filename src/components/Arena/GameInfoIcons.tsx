@@ -3,11 +3,10 @@ import { createPortal } from 'react-dom';
 import './GameInfoIcons.css';
 import { IoniaPath, VoidMod } from '../../data/gameInfoData';
 import { getTraitIconUrl } from '../../utils/assetUrlBuilder';
+import { getLocalUrl } from '../../utils/localAssetUrl';
 
-// Ionia trait icon from CDN
-const IONIA_ICON_URL = getTraitIconUrl('Ionia');
-// Void trait icon from CDN
-const VOID_ICON_URL = getTraitIconUrl('Void');
+const IONIA_ICON_URL = getLocalUrl(getTraitIconUrl('Ionia'));
+const VOID_ICON_URL = getLocalUrl(getTraitIconUrl('Void'));
 
 interface GameInfoIconsProps {
     ioniaPath: IoniaPath;
@@ -460,5 +459,4 @@ const VoidIcon: React.FC<VoidIconProps> = ({ mods }) => {
 };
 
 export default GameInfoIcons;
-
 
