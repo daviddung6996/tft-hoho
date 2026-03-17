@@ -37,18 +37,10 @@ export function BetaStatusBanner({ mode, betaEndsAt }: BetaStatusBannerProps) {
         return (
             <div className="beta-chip" aria-label="Beta access status" data-testid="beta-status-banner">
                 <HourglassIcon />
-                <span className="beta-chip-label">Beta</span>
-                <span className="beta-chip-sep" />
-                <span className="beta-chip-detail">Free &amp; Pro coming {formattedBetaEndsAt}</span>
+                <span className="beta-chip-label">Open Beta</span>
             </div>
         );
     }
 
-    return (
-        <div className="beta-chip beta-chip--ended" aria-label="Free and Pro status" data-testid="beta-status-banner">
-            <span className="beta-chip-label">Free &amp; Pro</span>
-            <span className="beta-chip-sep" />
-            <span className="beta-chip-detail">Beta ended {formattedBetaEndsAt}</span>
-        </div>
-    );
+    return null;
 }
