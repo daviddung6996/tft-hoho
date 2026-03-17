@@ -1,16 +1,14 @@
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo } from 'react';
 import { PuzzleScenario, OpponentData } from '../data/puzzleScenarios';
 import { PlayerData } from '../data/mockPlayers';
 import { UnitData, Synergy, Champion } from '../data/types';
-import { Item, itemService } from '../services/itemService';
-import { Trait } from '../services/traitService';
-import { championService } from '../services/championService';
-import { traitService } from '../services/traitService';
-import { AugmentData, augmentService } from '../services/augmentService';
+import { Item } from '../services/itemService';
+import { AugmentData } from '../services/augmentService';
 import { calculateSynergies } from '../utils/synergyCalculator';
 import { ARENA_SKINS } from '../data/arenas';
 import { normalizeCompactLookupValue, normalizeLookupValue } from '../utils/stringNormalization';
 import { sanitizePuzzlePlayerState } from '../features/puzzle/playerState';
+import { useGameData } from '../contexts/GameDataContext';
 
 // Tactician Images
 import penguImg from '../assets/tacticians/pengu.webp';
@@ -75,34 +73,13 @@ export interface PuzzlePlayersResult {
  * Transform PuzzleScenario data into PlayerData[] for gameplay view
  */
 export function usePuzzleToPlayers(puzzle: PuzzleScenario | null): PuzzlePlayersResult {
-    const [champions, setChampions] = useState<Champion[]>([]);
-    const [traits, setTraits] = useState<Trait[]>([]);
-    const [dbItems, setDbItems] = useState<Item[]>([]);
-    const [dbAugments, setDbAugments] = useState<AugmentData[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-
-    // Load static data on mount
-    useEffect(() => {
-        const loadData = async () => {
-            try {
-                const [champData, traitData, itemData, augData] = await Promise.all([
-                    championService.getAll(),
-                    traitService.getAll(),
-                    itemService.getAll(),
-                    augmentService.getAll()
-                ]);
-                setChampions(champData || []);
-                setTraits(traitData || []);
-                setDbItems(itemData || []);
-                setDbAugments(augData || []);
-            } catch (err) {
-                console.error('Failed to load champion/trait/item data:', err);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-        loadData();
-    }, []);
+    const {
+        champions,
+        traits,
+        items: dbItems,
+        augments: dbAugments,
+        isLoading,
+    } = useGameData();
 
     return useMemo(() => {
         // Return loading/empty state if no puzzle or still loading

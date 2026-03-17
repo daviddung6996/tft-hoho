@@ -57,6 +57,7 @@ export const useGameFlow = (currentPuzzle: any, userId?: string, options?: { can
     const [planStartTime, setPlanStartTime] = React.useState<number | null>(null);
     const [timeToPlan, setTimeToPlan] = React.useState<number | null>(null);
     const is42Puzzle = shouldShowPlanDeclaration(currentPuzzle);
+    const currentPuzzleId = currentPuzzle?.id ?? null;
 
     // Initialize on puzzle change
     React.useEffect(() => {
@@ -96,14 +97,20 @@ export const useGameFlow = (currentPuzzle: any, userId?: string, options?: { can
         setDeclaredPlan(null);
         setTimeToPlan(null);
 
-        // Fetch real community votes from DB
-        voteService.getVotes(currentPuzzle.id).then(setCommunityVotes).catch(() => setCommunityVotes({}));
-
         // Start timing when puzzle loads
         setStartTime(Date.now());
         setIntentStartTime(Date.now());
         setPlanStartTime(Date.now());
     }, [currentPuzzle]);
+
+    React.useEffect(() => {
+        if (!currentPuzzleId) {
+            setCommunityVotes({});
+            return;
+        }
+
+        voteService.getVotes(currentPuzzleId).then(setCommunityVotes).catch(() => setCommunityVotes({}));
+    }, [currentPuzzleId]);
 
     // V2: Handle path declaration (intent step — 3-2)
     const handlePathDeclare = (path: AugmentPath) => {

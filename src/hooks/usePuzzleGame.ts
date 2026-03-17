@@ -46,15 +46,36 @@ function enrichPuzzleAugments(puzzle: any, dbAugments: AugmentData[]): any {
 
 export type LockMessageVariant = 'default' | 'premium_education' | 'rare_elite';
 
+let sharedInitialPuzzles: any[] | null = null;
+let sharedInitialPuzzlesPromise: Promise<any[]> | null = null;
+
+async function loadInitialPuzzlesShared(): Promise<any[]> {
+    if (sharedInitialPuzzles) {
+        return sharedInitialPuzzles;
+    }
+
+    if (!sharedInitialPuzzlesPromise) {
+        sharedInitialPuzzlesPromise = puzzleService.getAll()
+            .then(dbPuzzles => {
+                const puzzles = dbPuzzles && dbPuzzles.length > 0 ? dbPuzzles : PUZZLE_SCENARIOS;
+                sharedInitialPuzzles = puzzles;
+                return puzzles;
+            })
+            .finally(() => {
+                sharedInitialPuzzlesPromise = null;
+            });
+    }
+
+    return sharedInitialPuzzlesPromise;
+}
+
 export const usePuzzleGame = (isAuthenticated: boolean) => {
     const { user, isGuest } = useAuth();
     const isTestAccount = user?.email?.toLowerCase() === 'test@tfthoho.com';
     const { augments: cachedAugments, isLoading: isGameDataLoading } = useGameData();
-    const { checkAccess, unlockPuzzle, balance } = useTCoin();
-    const { isProSupporter } = useProSupporter();
 
     // [NEW] Dynamic Puzzles State
-    const [puzzles, setPuzzles] = React.useState<any[]>([]);
+    const [rawPuzzles, setRawPuzzles] = React.useState<any[]>([]);
     const [isLoadingPuzzles, setIsLoadingPuzzles] = React.useState(true);
     const [completedPuzzleIds, setCompletedPuzzleIds] = React.useState<string[]>([]);
 
@@ -80,28 +101,46 @@ export const usePuzzleGame = (isAuthenticated: boolean) => {
             import('../utils/seedTestPuzzles').then(m => m.seedTestPuzzles());
         }
 
+        let isActive = true;
+
         const fetchPuzzles = async () => {
             setIsLoadingPuzzles(true);
             try {
-                const dbPuzzles = await puzzleService.getAll();
-                const rawPuzzles = dbPuzzles && dbPuzzles.length > 0 ? dbPuzzles : PUZZLE_SCENARIOS;
-                setPuzzles(rawPuzzles);
+                const puzzles = await loadInitialPuzzlesShared();
+                if (!isActive) {
+                    return;
+                }
+                setRawPuzzles(puzzles);
             } catch (err) {
                 console.error("Failed to load puzzles:", err);
-                setPuzzles(PUZZLE_SCENARIOS);
+                if (isActive) {
+                    setRawPuzzles(PUZZLE_SCENARIOS);
+                }
             } finally {
-                setIsLoadingPuzzles(false);
+                if (isActive) {
+                    setIsLoadingPuzzles(false);
+                }
             }
         };
         fetchPuzzles();
+
+        return () => {
+            isActive = false;
+        };
     }, []);
 
-    // Enrich augment data reactively when augments become available
-    React.useEffect(() => {
-        if (!isGameDataLoading && cachedAugments.length > 0 && puzzles.length > 0) {
-            setPuzzles(prev => prev.map(p => enrichPuzzleAugments(p, cachedAugments)));
+    const puzzles = React.useMemo(() => {
+        if (isGameDataLoading || cachedAugments.length === 0) {
+            return rawPuzzles;
         }
-    }, [isGameDataLoading, cachedAugments]);
+
+        return rawPuzzles.map(puzzle => enrichPuzzleAugments(puzzle, cachedAugments));
+    }, [rawPuzzles, isGameDataLoading, cachedAugments]);
+
+    const walletPuzzle = puzzles[currentPuzzleIndex];
+    const shouldLoadWallet = MONETIZATION_ENABLED && Boolean(walletPuzzle && (walletPuzzle.tier || 'free') !== 'free');
+    const { checkAccess, unlockPuzzle, balance } = useTCoin(shouldLoadWallet);
+    const { isProSupporter } = useProSupporter(shouldLoadWallet);
 
     // localStorage key for guest completed puzzles
     const GUEST_COMPLETED_KEY = 'tft_guest_completed_puzzles';
@@ -147,7 +186,7 @@ export const usePuzzleGame = (isAuthenticated: boolean) => {
     // Merge logic: If we have a custom scenario, it takes precedence (prepended)
     React.useEffect(() => {
         if (customScenario) {
-            setPuzzles(prev => {
+            setRawPuzzles(prev => {
                 const filtered = prev.filter(p => p.id !== customScenario.id);
                 return [customScenario, ...filtered];
             });
@@ -334,11 +373,10 @@ export const usePuzzleGame = (isAuthenticated: boolean) => {
 
     const fetchLatestPuzzles = React.useCallback(async (): Promise<any[]> => {
         const dbPuzzles = await puzzleService.getAll();
-        const rawPuzzles = dbPuzzles && dbPuzzles.length > 0 ? dbPuzzles : PUZZLE_SCENARIOS;
-        return cachedAugments.length > 0
-            ? rawPuzzles.map(p => enrichPuzzleAugments(p, cachedAugments))
-            : rawPuzzles;
-    }, [cachedAugments]);
+        const latestPuzzles = dbPuzzles && dbPuzzles.length > 0 ? dbPuzzles : PUZZLE_SCENARIOS;
+        sharedInitialPuzzles = latestPuzzles;
+        return latestPuzzles;
+    }, []);
 
     const handleNextPuzzle = React.useCallback(async (): Promise<boolean> => {
         const cp = puzzles[currentPuzzleIndex];
@@ -365,7 +403,7 @@ export const usePuzzleGame = (isAuthenticated: boolean) => {
         setIsResolvingNextPuzzle(true);
         try {
             const latestPuzzles = await fetchLatestPuzzles();
-            setPuzzles(latestPuzzles);
+            setRawPuzzles(latestPuzzles);
 
             const foundAfterRefresh = pickAndApply(latestPuzzles);
             if (foundAfterRefresh) {
@@ -414,7 +452,7 @@ export const usePuzzleGame = (isAuthenticated: boolean) => {
         setIsLoadingPuzzles(true);
         try {
             const latestPuzzles = await fetchLatestPuzzles();
-            setPuzzles(latestPuzzles);
+            setRawPuzzles(latestPuzzles);
         } catch (err) {
             console.error("Failed to refresh puzzles:", err);
         } finally {

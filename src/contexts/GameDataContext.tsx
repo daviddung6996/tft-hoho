@@ -4,6 +4,7 @@ import { itemService, Item } from '../services/itemService';
 import { championService, Champion } from '../services/championService';
 import { augmentService, AugmentData } from '../services/augmentService';
 import { normalizeLookupValue } from '../utils/stringNormalization';
+import { readCache, writeCache } from '../utils/gameDataCache';
 
 interface GameDataContextType {
     traits: Trait[];
@@ -24,33 +25,87 @@ interface GameDataProviderProps {
     children: ReactNode;
 }
 
+interface GameDataSnapshot {
+    traits: Trait[];
+    items: Item[];
+    champions: Champion[];
+    augments: AugmentData[];
+}
+
+let sharedGameDataSnapshot: GameDataSnapshot | null = null;
+let sharedGameDataPromise: Promise<GameDataSnapshot> | null = null;
+
+async function loadSharedGameData(): Promise<GameDataSnapshot> {
+    if (sharedGameDataSnapshot) {
+        return sharedGameDataSnapshot;
+    }
+
+    if (!sharedGameDataPromise) {
+        sharedGameDataPromise = Promise.all([
+            traitService.getAll(),
+            itemService.getAll(),
+            championService.getAll(),
+            augmentService.getAll()
+        ])
+            .then(([traits, items, champions, augments]) => {
+                const snapshot = { traits, items, champions, augments };
+                sharedGameDataSnapshot = snapshot;
+                return snapshot;
+            })
+            .finally(() => {
+                sharedGameDataPromise = null;
+            });
+    }
+
+    return sharedGameDataPromise;
+}
+
 export const GameDataProvider: React.FC<GameDataProviderProps> = ({ children }) => {
-    const [traits, setTraits] = useState<Trait[]>([]);
-    const [items, setItems] = useState<Item[]>([]);
-    const [champions, setChampions] = useState<Champion[]>([]);
-    const [augments, setAugments] = useState<AugmentData[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
+    const cachedTraits = readCache<Trait>('traits');
+    const cachedItems = readCache<Item>('items');
+    const cachedChampions = readCache<Champion>('champions');
+    const cachedAugments = readCache<AugmentData>('augments');
+    const hasCachedData = !!(cachedTraits && cachedItems && cachedChampions && cachedAugments);
+
+    const [traits, setTraits] = useState<Trait[]>(cachedTraits ?? []);
+    const [items, setItems] = useState<Item[]>(cachedItems ?? []);
+    const [champions, setChampions] = useState<Champion[]>(cachedChampions ?? []);
+    const [augments, setAugments] = useState<AugmentData[]>(cachedAugments ?? []);
+    const [isLoading, setIsLoading] = useState(!hasCachedData);
 
     useEffect(() => {
+        let isActive = true;
+
         const loadData = async () => {
             try {
-                const [traitsData, itemsData, championsData, augmentsData] = await Promise.all([
-                    traitService.getAll(),
-                    itemService.getAll(),
-                    championService.getAll(),
-                    augmentService.getAll()
-                ]);
-                setTraits(traitsData);
-                setItems(itemsData);
-                setChampions(championsData);
-                setAugments(augmentsData);
+                const snapshot = await loadSharedGameData();
+                if (!isActive) {
+                    return;
+                }
+
+                setTraits(snapshot.traits);
+                setItems(snapshot.items);
+                setChampions(snapshot.champions);
+                setAugments(snapshot.augments);
+
+                // Update cache for next session
+                writeCache('traits', snapshot.traits);
+                writeCache('items', snapshot.items);
+                writeCache('champions', snapshot.champions);
+                writeCache('augments', snapshot.augments);
             } catch (error) {
                 console.error('Error loading game data:', error);
             } finally {
-                setIsLoading(false);
+                if (isActive) {
+                    setIsLoading(false);
+                }
             }
         };
         loadData();
+
+        return () => {
+            isActive = false;
+        };
     }, []);
 
     // Lookup by Vietnamese name (current display name)

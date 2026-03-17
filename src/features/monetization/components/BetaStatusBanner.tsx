@@ -35,7 +35,12 @@ export function BetaStatusBanner({ mode, betaEndsAt }: BetaStatusBannerProps) {
 
     if (mode === 'beta') {
         return (
-            <div className="beta-chip" aria-label="Beta access status" data-testid="beta-status-banner">
+            <div
+                className="beta-chip"
+                aria-label="Beta access status"
+                data-testid="beta-status-banner"
+                title={`Open beta through ${formattedBetaEndsAt}`}
+            >
                 <HourglassIcon />
                 <span className="beta-chip-label">Open Beta</span>
             </div>

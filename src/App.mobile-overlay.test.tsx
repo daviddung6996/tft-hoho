@@ -9,6 +9,20 @@ let mockHasRequestedMobileFullscreen = false;
 let mockPuzzlePhase = 'declaring_intent';
 let mockIsV2Puzzle = true;
 let mockPuzzleId = 'p1';
+let mockCurrentPuzzle: {
+    id: string;
+    stage: string;
+    streakHistory: unknown[];
+    streakCount: number;
+    tier: string;
+    proPlayer: string;
+    proFirstRoll: unknown[];
+    proFinalPick: null;
+    augments: unknown[];
+    rerollAugments: unknown[];
+    explanation: string;
+    meta_data: Record<string, unknown>;
+} | null = null;
 let mockCoachUiState: 'closed' | 'select' | 'loading' | 'response' = 'closed';
 let mockCoachAnswer: string | null = null;
 let mockCoachError: string | null = null;
@@ -31,20 +45,7 @@ vi.mock('./hooks/useArenaPreloader', () => ({
 
 vi.mock('./hooks/usePuzzleGame', () => ({
     usePuzzleGame: vi.fn(() => ({
-        currentPuzzle: {
-            id: mockPuzzleId,
-            stage: '3-2',
-            streakHistory: [],
-            streakCount: 0,
-            tier: 'free',
-            proPlayer: 'Pro',
-            proFirstRoll: [],
-            proFinalPick: null,
-            augments: [],
-            rerollAugments: [],
-            explanation: '',
-            meta_data: {},
-        },
+        currentPuzzle: mockCurrentPuzzle,
         isLoadingPuzzles: false,
         allPuzzlesCompleted: false,
         handleMarkCompleted: vi.fn(),
@@ -364,6 +365,20 @@ describe('App mobile overlay shell', () => {
         mockPuzzlePhase = 'declaring_intent';
         mockIsV2Puzzle = true;
         mockPuzzleId = 'p1';
+        mockCurrentPuzzle = {
+            id: mockPuzzleId,
+            stage: '3-2',
+            streakHistory: [],
+            streakCount: 0,
+            tier: 'free',
+            proPlayer: 'Pro',
+            proFirstRoll: [],
+            proFinalPick: null,
+            augments: [],
+            rerollAugments: [],
+            explanation: '',
+            meta_data: {},
+        };
         mockCoachUiState = 'closed';
         mockCoachAnswer = null;
         mockCoachError = null;
@@ -479,6 +494,15 @@ describe('App mobile overlay shell', () => {
         const hudLayer = container.querySelector('.viewport-hud-layer') as HTMLElement;
 
         expect(within(hudLayer).getByRole('button', { name: /Coach/i })).toBeInTheDocument();
+    });
+
+    it('hides coach entry while the in-canvas loading shell is visible', () => {
+        mockCurrentPuzzle = null;
+        const { container } = render(<App />);
+        const hudLayer = container.querySelector('.viewport-hud-layer') as HTMLElement;
+
+        expect(screen.getByText('Đang tải...')).toBeInTheDocument();
+        expect(within(hudLayer).queryByRole('button', { name: /Coach/i })).not.toBeInTheDocument();
     });
 
     it('auto-requests fullscreen when the first mobile gameplay tap hits augment toggle', async () => {

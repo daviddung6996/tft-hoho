@@ -1,6 +1,5 @@
 
 import React, { useState, useEffect, useCallback, Suspense } from 'react';
-import { useArenaPreloader } from './hooks/useArenaPreloader';
 import { usePuzzleGame } from './hooks/usePuzzleGame';
 import { useGameFlow } from './hooks/useGameFlow';
 import { usePuzzleToPlayers } from './hooks/usePuzzleToPlayers';
@@ -13,13 +12,10 @@ import { getLayoutMode, getMobileOverlayMode, type LayoutMode } from './componen
 import { AugmentButton } from './components/Arena/AugmentButton';
 import { GoldDisplay } from './components/Arena/GoldDisplay';
 import { AugmentModal } from './components/Arena/AugmentModal';
-import { DecisionReview } from './components/Arena/DecisionReview';
 import { TopStatusBar } from './components/Arena/TopStatusBar';
 import { PathSelector } from './features/augment-trainer/components/PathSelector';
 import { PlanSelector } from './features/augment-trainer/components/PlanSelector';
 import { MenuButton } from './components/Settings/SettingsButton';
-import { ArenaSelectorModal } from './components/Settings/ArenaSelectorModal';
-import { PuzzleCompletionModal } from './components/Arena/PuzzleCompletionModal';
 
 // Lazy-loaded components (heavy deps: recharts, remotion, admin panel)
 const LoginModal = React.lazy(() =>
@@ -32,6 +28,18 @@ const UserProfileModal = React.lazy(() =>
 const VideoLibraryPage = React.lazy(() =>
     import('./features/video-library/components/VideoLibraryPage').then(m => ({ default: m.VideoLibraryPage }))
 );
+const DecisionReview = React.lazy(() =>
+    import('./components/Arena/DecisionReview').then(m => ({ default: m.DecisionReview }))
+);
+const ArenaSelectorModal = React.lazy(() =>
+    import('./components/Settings/ArenaSelectorModal').then(m => ({ default: m.ArenaSelectorModal }))
+);
+const PuzzleCompletionModal = React.lazy(() =>
+    import('./components/Arena/PuzzleCompletionModal').then(m => ({ default: m.PuzzleCompletionModal }))
+);
+const SupportModal = React.lazy(() =>
+    import('./components/Settings/SupportModal').then(m => ({ default: m.SupportModal }))
+);
 
 // Data
 import { ARENA_SKINS } from './data/arenas';
@@ -41,7 +49,6 @@ import { TCoinEarnAnimation } from './features/tcoin/components/TCoinEarnAnimati
 import { PuzzleLockOverlay } from './features/tcoin/components/PuzzleLockOverlay';
 import { LandscapePrompt } from './components/common/LandscapePrompt';
 import { RightClickEffect } from './components/common/RightClickEffect';
-import { SupportModal } from './components/Settings/SupportModal';
 import { MONETIZATION_ENABLED, MONETIZATION_MODE, MONETIZATION_PACKAGING } from './config/monetization';
 import { BetaStatusBanner } from './features/monetization/components/BetaStatusBanner';
 import { CoachFab } from './features/coach-select/components/CoachFab';
@@ -70,6 +77,69 @@ const COACH_PLAN_OPTIONS = [
     { id: 'patch', title: 'Fix item lại cho đẹp', subtitle: 'Lấy mảnh đồ để vá lại bài' },
     { id: 'greed', title: 'Chơi Loto', subtitle: 'Ra gì chơi đó vì chưa chốt bài' },
 ];
+
+const loadedArenaBackgrounds = new Set<string>();
+const arenaBackgroundPreloads = new Map<string, Promise<void>>();
+
+function isArenaBackgroundReady(url?: string | null): boolean {
+    return !!url && loadedArenaBackgrounds.has(url);
+}
+
+function preloadArenaBackground(url?: string | null): Promise<void> {
+    if (!url) {
+        return Promise.resolve();
+    }
+
+    if (loadedArenaBackgrounds.has(url)) {
+        return Promise.resolve();
+    }
+
+    const existingRequest = arenaBackgroundPreloads.get(url);
+    if (existingRequest) {
+        return existingRequest;
+    }
+
+    const request = new Promise<void>((resolve) => {
+        const img = new Image();
+        let settled = false;
+
+        const finalize = () => {
+            if (settled) {
+                return;
+            }
+            settled = true;
+            loadedArenaBackgrounds.add(url);
+            arenaBackgroundPreloads.delete(url);
+            resolve();
+        };
+
+        img.onload = () => {
+            if (typeof img.decode === 'function') {
+                void img.decode().catch(() => undefined).finally(finalize);
+                return;
+            }
+
+            finalize();
+        };
+        img.onerror = () => {
+            if (settled) {
+                return;
+            }
+            settled = true;
+            arenaBackgroundPreloads.delete(url);
+            resolve();
+        };
+        img.decoding = 'async';
+        img.src = url;
+
+        if (img.complete) {
+            finalize();
+        }
+    });
+
+    arenaBackgroundPreloads.set(url, request);
+    return request;
+}
 
 const App: React.FC = () => {
     // --- 1. Authentication ---
@@ -111,7 +181,6 @@ const App: React.FC = () => {
     // --- 2. Puzzle Data & Game Flow ---
     const {
         currentPuzzle,
-        isLoadingPuzzles,
         allPuzzlesCompleted,
         handleMarkCompleted,
         handleNextPuzzle: handleNext,
@@ -161,6 +230,7 @@ const App: React.FC = () => {
     const [showSupportModal, setShowSupportModal] = useState(false);
     const [scoutedPlayerId, setScoutedPlayerId] = useState<string>('1');
     const [myArenaId, setMyArenaId] = useState<string | null>(null);
+    const [visibleArenaId, setVisibleArenaId] = useState<string>(ARENA_SKINS[0].id);
     const [isTransitioning, setIsTransitioning] = useState(false);
     const [currentView, setCurrentView] = useState<'puzzle' | 'library'>('puzzle');
     const [layoutMode, setLayoutMode] = useState<LayoutMode>(() => getLayoutMode());
@@ -233,7 +303,26 @@ const App: React.FC = () => {
     const activePlayer = allPlayersWithArena.find(p => p.id === scoutedPlayerId) || myPlayerWithArena;
     const isMirrored = scoutedPlayerId !== '1';
     const playerArena = ARENA_SKINS.find(a => a.id === activePlayer.arenaId) || ARENA_SKINS[0];
-    const arenaSkinUrl = playerArena.backgroundUrl || playerArena.iconUrl;
+    const visibleArena = ARENA_SKINS.find(a => a.id === visibleArenaId) || playerArena;
+    const layoutBackdropUrl = visibleArena.backgroundUrl || visibleArena.thumbnailUrl || visibleArena.iconUrl;
+    const visibleArenaBackgroundUrl = visibleArena.backgroundUrl || visibleArena.thumbnailUrl || visibleArena.iconUrl;
+    const opponentPlayers = scoutingPlayers.filter(p => !p.isMe);
+    const activeOpponentIndex = opponentPlayers.findIndex(p => p.id === scoutedPlayerId);
+    const likelyScoutArenaUrls = Array.from(
+        new Set(
+            [
+                activeOpponentIndex >= 0 ? opponentPlayers[(activeOpponentIndex + 1) % opponentPlayers.length] : opponentPlayers[0],
+                activeOpponentIndex >= 0 ? opponentPlayers[(activeOpponentIndex - 1 + opponentPlayers.length) % opponentPlayers.length] : opponentPlayers[1],
+            ]
+                .filter((player): player is typeof opponentPlayers[number] => Boolean(player))
+                .map(player => ARENA_SKINS.find(arena => arena.id === player.arenaId)?.backgroundUrl)
+                .filter((url): url is string => Boolean(url))
+        )
+    );
+    const likelyScoutArenaPreloadKey = `${currentPuzzle?.id ?? 'none'}:${playerArena.id}:${likelyScoutArenaUrls.join('|')}`;
+    const isPuzzleReady = Boolean(currentPuzzle);
+    const shouldRenderGameplayHud = currentView === 'puzzle' && isPuzzleReady;
+    const appLoadingMessage = 'Đang tải...';
     const isPhoneLandscape = layoutMode === 'phone-landscape';
     const mobileOverlayMode = getMobileOverlayMode({
         isMirrored,
@@ -244,7 +333,7 @@ const App: React.FC = () => {
         || puzzlePhase === 'declaring_intent'
         || puzzlePhase === 'declaring_plan';
 
-    const isScoutRequired = !isMirrored && isAugmentOpen && !hasScouted && isCoachAvailablePhase;
+    const isScoutRequired = !isMirrored && isAugmentOpen && !hasScouted && isCoachAvailablePhase && isPuzzlePlayable;
 
     const coachDecisionType: CoachDecisionType = puzzlePhase === 'declaring_intent'
         ? 'path'
@@ -328,14 +417,12 @@ const App: React.FC = () => {
         && !isTransitioning
         && puzzlePhase !== 'reviewing'
         && (!isPhoneLandscape || mobileOverlayMode === 'none');
-    const shouldRenderMobileAugmentButton = currentView === 'puzzle'
+    const shouldRenderMobileAugmentButton = shouldRenderGameplayHud
         && isPhoneLandscape
         && puzzlePhase !== 'reviewing'
         && !hasBlockingWorkspaceModal
         && !isTransitioning;
 
-    // Preload all arena images so scouting never shows bare teal background
-    useArenaPreloader();
     const requestMobileAutoFullscreen = useMobileAutoFullscreen({ enabled: shouldEnableMobileAutoFullscreen });
 
     // Keyboard shortcuts: Q (scout next), R (scout prev), Space (return home)
@@ -391,6 +478,89 @@ const App: React.FC = () => {
         setHasScouted(false); // Reset scout requirement
     }, [currentPuzzle?.id]);
 
+    useEffect(() => {
+        const currentArenaUrl = playerArena.backgroundUrl || playerArena.thumbnailUrl || playerArena.iconUrl;
+        if (!currentArenaUrl || isArenaBackgroundReady(currentArenaUrl)) {
+            return;
+        }
+
+        void preloadArenaBackground(currentArenaUrl);
+    }, [playerArena.id, playerArena.backgroundUrl, playerArena.thumbnailUrl, playerArena.iconUrl]);
+
+    useEffect(() => {
+        if (visibleArenaId === playerArena.id) {
+            return;
+        }
+
+        let cancelled = false;
+        const targetArenaUrl = playerArena.backgroundUrl || playerArena.thumbnailUrl || playerArena.iconUrl;
+
+        void preloadArenaBackground(targetArenaUrl).then(() => {
+            if (!cancelled) {
+                requestAnimationFrame(() => {
+                    if (!cancelled) {
+                        setVisibleArenaId(playerArena.id);
+                    }
+                });
+            }
+        });
+
+        return () => {
+            cancelled = true;
+        };
+    }, [playerArena.id, playerArena.backgroundUrl, playerArena.thumbnailUrl, playerArena.iconUrl, visibleArenaId]);
+
+    useEffect(() => {
+        if (!isPuzzleReady || likelyScoutArenaUrls.length === 0) {
+            return;
+        }
+
+        let cancelled = false;
+        let timeoutId: number | undefined;
+        let idleId: number | undefined;
+
+        const preloadLikelyScoutArenas = async () => {
+            for (const url of likelyScoutArenaUrls) {
+                if (cancelled || isArenaBackgroundReady(url)) {
+                    continue;
+                }
+
+                await preloadArenaBackground(url);
+            }
+        };
+
+        const requestIdle = (window as Window & {
+            requestIdleCallback?: (callback: IdleRequestCallback, options?: IdleRequestOptions) => number;
+            cancelIdleCallback?: (handle: number) => void;
+        }).requestIdleCallback;
+
+        if (requestIdle) {
+            idleId = requestIdle(() => {
+                void preloadLikelyScoutArenas();
+            }, { timeout: 800 });
+        } else {
+            timeoutId = window.setTimeout(() => {
+                void preloadLikelyScoutArenas();
+            }, 180);
+        }
+
+        return () => {
+            cancelled = true;
+
+            if (timeoutId !== undefined) {
+                window.clearTimeout(timeoutId);
+            }
+
+            const cancelIdle = (window as Window & {
+                cancelIdleCallback?: (handle: number) => void;
+            }).cancelIdleCallback;
+
+            if (idleId !== undefined && cancelIdle) {
+                cancelIdle(idleId);
+            }
+        };
+    }, [isPuzzleReady, likelyScoutArenaPreloadKey]);
+
     const consumedCoachCompletionToken = React.useRef(0);
 
     useEffect(() => {
@@ -406,12 +576,13 @@ const App: React.FC = () => {
     useEffect(() => {
         if (
             currentView !== 'puzzle'
+            || !isPuzzleReady
             || !isCoachAvailablePhase
             || !isPuzzlePlayable
         ) {
             dismissSession();
         }
-    }, [currentPuzzle?.id, currentView, dismissSession, isCoachAvailablePhase, isPuzzlePlayable]);
+    }, [currentPuzzle?.id, currentView, dismissSession, isCoachAvailablePhase, isPuzzlePlayable, isPuzzleReady]);
 
     useEffect(() => {
         if (showCoachOverlay) {
@@ -470,7 +641,7 @@ const App: React.FC = () => {
         reopenOverlay();
     };
 
-    const shouldRenderCoachEntryFab = currentView === 'puzzle'
+    const shouldRenderCoachEntryFab = shouldRenderGameplayHud
         && isCoachAvailablePhase
         && isAugmentOpen
         && !isMirrored
@@ -478,7 +649,7 @@ const App: React.FC = () => {
         && !hasBlockingWorkspaceModal
         && !showReturnFab
         && !isTransitioning;
-    const shouldRenderCoachReturnFab = currentView === 'puzzle'
+    const shouldRenderCoachReturnFab = shouldRenderGameplayHud
         && isCoachAvailablePhase
         && isPuzzlePlayable
         && !hasBlockingWorkspaceModal
@@ -488,23 +659,13 @@ const App: React.FC = () => {
 
     // Removed routing for TestFlex
 
-    if (!currentPuzzle) {
-        return (
-            <div className="layout-wrapper">
-                <div className="app-loading-screen">
-                    {isLoadingPuzzles ? 'Đang tải...' : 'Không tìm thấy kịch bản.'}
-                </div>
-            </div>
-        );
-    }
-
     return (
         <>
             <LandscapePrompt />
             <div
                 className="layout-wrapper"
                 data-layout-mode={layoutMode}
-                style={{ backgroundImage: `url(${arenaSkinUrl})` }}
+                style={{ backgroundImage: `url(${layoutBackdropUrl})` }}
             >
                 <div
                     className="viewport-hud-layer"
@@ -562,10 +723,9 @@ const App: React.FC = () => {
                     data-layout-mode={layoutMode}
                     data-mobile-overlay-mode={mobileOverlayMode}
                     style={{
-                        backgroundImage: `url(${arenaSkinUrl})`,
+                        backgroundImage: `url(${visibleArenaBackgroundUrl})`,
                     }}
                 >
-
                     {/* Video Library View */}
                     {currentView === 'library' && (
                         <Suspense fallback={<div className="app-loading-screen">Đang tải...</div>}>
@@ -578,6 +738,8 @@ const App: React.FC = () => {
                     when the user navigates to the library and comes back. */}
                     <div style={{ display: currentView === 'puzzle' ? 'contents' : 'none' }}>
                         <>
+                            {isPuzzleReady ? (
+                                <>
                             <GameScene
                                 myPlayer={myPlayerWithArena}
                                 activePlayer={activePlayer}
@@ -625,12 +787,14 @@ const App: React.FC = () => {
                             )}
 
                             {isSettingsOpen && (
-                                <ArenaSelectorModal
-                                    isOpen={isSettingsOpen}
-                                    onClose={() => setIsSettingsOpen(false)}
-                                    onSelectArena={(arena) => { setMyArenaId(arena.id); setIsSettingsOpen(false); }}
-                                    currentArena={ARENA_SKINS.find(a => a.id === (myArenaId || myPlayer.arenaId)) || ARENA_SKINS[0]}
-                                />
+                                <Suspense fallback={null}>
+                                    <ArenaSelectorModal
+                                        isOpen={isSettingsOpen}
+                                        onClose={() => setIsSettingsOpen(false)}
+                                        onSelectArena={(arena) => { setMyArenaId(arena.id); setIsSettingsOpen(false); }}
+                                        currentArena={ARENA_SKINS.find(a => a.id === (myArenaId || myPlayer.arenaId)) || ARENA_SKINS[0]}
+                                    />
+                                </Suspense>
                             )}
 
                             {/* V2: PathSelector — shown during declaring_intent phase */}
@@ -759,48 +923,48 @@ const App: React.FC = () => {
                             {isScoutRequired && <div className="scout-interaction-blocker" />}
 
                             {!isMirrored && isAugmentOpen && puzzlePhase === 'reviewing' && selectedAugment && (
-                                <DecisionReview
-                                    userRerollOrder={rerollOrder}
-                                    userChoice={selectedAugment}
-                                    puzzleTier={currentPuzzle.tier || 'free'}
-                                    proPlayerName={currentPuzzle.proPlayer}
-                                    proSecondRoll={currentPuzzle.proSecondRoll}
-                                    proFirstRoll={currentPuzzle.proFirstRoll}
-                                    proRerollIndices={currentPuzzle.proRerollIndices || currentPuzzle.meta_data?.proRerollIndices || []}
-                                    initialAugments={currentPuzzle.augments?.filter((a: any) => a !== null) || []}
-                                    rerollAugments={currentPuzzle.rerollAugments?.filter((a: any) => a !== null) || []}
-                                    secondRerollAugments={currentPuzzle.secondRerollAugments?.filter((a: any) => a !== null) || []}
-                                    proSecondRerollIndices={currentPuzzle.proSecondRerollIndices || []}
-                                    secondRerollOrder={secondRerollOrder}
-                                    proFinalPickData={currentPuzzle.proFinalPick}
-                                    correctAugmentId={currentPuzzle.proFinalPick?.id || ''}
-                                    communityVotes={communityVotes}
-                                    iqChangeResult={iqChangeResult}
-                                    explanation={currentPuzzle.explanation}
-                                    onReplay={handleReplay}
-                                    onNextPuzzle={handleNextPuzzle}
-                                    puzzleId={currentPuzzle.id}
-                                    streamUrl={currentPuzzle.streamUrl}
-                                    date={currentPuzzle.date}
-                                    server={currentPuzzle.server}
-                                    encounter={currentPuzzle.encounter}
-                                    patch={currentPuzzle.patch}
-                                    videoUrl={currentPuzzle.video_url}
-                                    videoTitle={currentPuzzle.video_title}
-                                    onViewLibrary={() => setCurrentView('library')}
-                                    // V2: Intent data
-                                    declaredPath={declaredPath || undefined}
-                                    proPickPath={currentPuzzle.proPickPath}
-                                    proReasoningIntent={currentPuzzle.proReasoningIntent}
-                                    // V3: Plan data (4-2)
-                                    declaredPlan={declaredPlan || undefined}
-                                    proPlan={currentPuzzle.proPlan}
-                                    planReasoning={currentPuzzle.planReasoning}
-                                    onSupportClick={() => setShowSupportModal(true)}
-                                    monetizationMode={MONETIZATION_MODE}
-                                    showPremiumLaneCta={MONETIZATION_MODE === 'free-pro' && currentPuzzleAccess.reason !== 'pro_supporter'}
-                                    onUpgradeClick={() => setShowSupportModal(true)}
-                                />
+                                <Suspense fallback={null}>
+                                    <DecisionReview
+                                        userRerollOrder={rerollOrder}
+                                        userChoice={selectedAugment}
+                                        puzzleTier={currentPuzzle.tier || 'free'}
+                                        proPlayerName={currentPuzzle.proPlayer}
+                                        proSecondRoll={currentPuzzle.proSecondRoll}
+                                        proFirstRoll={currentPuzzle.proFirstRoll}
+                                        proRerollIndices={currentPuzzle.proRerollIndices || currentPuzzle.meta_data?.proRerollIndices || []}
+                                        initialAugments={currentPuzzle.augments?.filter((a: any) => a !== null) || []}
+                                        rerollAugments={currentPuzzle.rerollAugments?.filter((a: any) => a !== null) || []}
+                                        secondRerollAugments={currentPuzzle.secondRerollAugments?.filter((a: any) => a !== null) || []}
+                                        proSecondRerollIndices={currentPuzzle.proSecondRerollIndices || []}
+                                        secondRerollOrder={secondRerollOrder}
+                                        proFinalPickData={currentPuzzle.proFinalPick}
+                                        correctAugmentId={currentPuzzle.proFinalPick?.id || ''}
+                                        communityVotes={communityVotes}
+                                        iqChangeResult={iqChangeResult}
+                                        explanation={currentPuzzle.explanation}
+                                        onReplay={handleReplay}
+                                        onNextPuzzle={handleNextPuzzle}
+                                        puzzleId={currentPuzzle.id}
+                                        streamUrl={currentPuzzle.streamUrl}
+                                        date={currentPuzzle.date}
+                                        server={currentPuzzle.server}
+                                        encounter={currentPuzzle.encounter}
+                                        patch={currentPuzzle.patch}
+                                        videoUrl={currentPuzzle.video_url}
+                                        videoTitle={currentPuzzle.video_title}
+                                        onViewLibrary={() => setCurrentView('library')}
+                                        declaredPath={declaredPath || undefined}
+                                        proPickPath={currentPuzzle.proPickPath}
+                                        proReasoningIntent={currentPuzzle.proReasoningIntent}
+                                        declaredPlan={declaredPlan || undefined}
+                                        proPlan={currentPuzzle.proPlan}
+                                        planReasoning={currentPuzzle.planReasoning}
+                                        onSupportClick={() => setShowSupportModal(true)}
+                                        monetizationMode={MONETIZATION_MODE}
+                                        showPremiumLaneCta={MONETIZATION_MODE === 'free-pro' && currentPuzzleAccess?.reason !== 'pro_supporter'}
+                                        onUpgradeClick={() => setShowSupportModal(true)}
+                                    />
+                                </Suspense>
                             )}
 
                             {puzzlePhase !== 'reviewing' && !isMirrored && !isPhoneLandscape && (
@@ -817,6 +981,12 @@ const App: React.FC = () => {
                                         rollChargesRemaining={hasExtraReroll ? rollChargesRemaining : undefined}
                                     />
                                 </>
+                            )}
+                                </>
+                            ) : (
+                                <div className="app-loading-shell" aria-live="polite">
+                                    <div className="app-loading-screen">{appLoadingMessage}</div>
+                                </div>
                             )}
 
                             {showLoginModal && (
@@ -843,11 +1013,15 @@ const App: React.FC = () => {
                                 </Suspense>
                             )}
 
-                            <SupportModal
-                                isOpen={showSupportModal}
-                                onClose={() => setShowSupportModal(false)}
-                            />
-                            {currentView === 'puzzle' && showCoachOverlay && (
+                            {showSupportModal && (
+                                <Suspense fallback={null}>
+                                    <SupportModal
+                                        isOpen={showSupportModal}
+                                        onClose={() => setShowSupportModal(false)}
+                                    />
+                                </Suspense>
+                            )}
+                            {currentView === 'puzzle' && showCoachOverlay && coachGameContext && (
                                 <CoachSelectOverlay
                                     coach={selectedCoach}
                                     currentAugments={currentAugments.filter((augment: any) => Boolean(augment))}
@@ -870,10 +1044,14 @@ const App: React.FC = () => {
                 </div>
             </div>
 
-            <PuzzleCompletionModal
-                isOpen={showCompletionModal}
-                onClose={() => setShowCompletionModal(false)}
-            />
+            {showCompletionModal && (
+                <Suspense fallback={null}>
+                    <PuzzleCompletionModal
+                        isOpen={showCompletionModal}
+                        onClose={() => setShowCompletionModal(false)}
+                    />
+                </Suspense>
+            )}
             <RightClickEffect />
         </>
     );

@@ -11,6 +11,9 @@ Welcome, Agent. This file is a living document intended to capture common mistak
 > **⚠️ DO NOT AUTO-COMMIT AND PUSH:**
 > Never run `git commit` or `git push` unless the user EXPLICITLY asks you to (e.g., "commit and push", "lưu code lên git"). Auto-committing disrupts the user's workflow and version control history. If you finish a task, just tell the user the code is ready for review.
 
+> **ALWAYS REFRESH REPO CONTEXT AFTER COMPLETED TASKS:**
+> This repo does not use one root `context.md` file. Durable context lives under `docs/agent-context/` (`active.md`, `decisions.md`, `patterns.md`). After every completed non-trivial task, update the relevant file(s) there so future agents inherit the latest state.
+
 ---
 
 ## 0. Core Business Identity (CRITICAL — Read First)
@@ -289,6 +292,11 @@ Get-ChildItem -Path src -Recurse -Include "*.tsx" | ForEach-Object {
 - **Symptom:** ScoutingPanel, ItemPanel, SynergyPanel bị trượt lên/xuống khi overlay xuất hiện hoặc biến mất.
 - **Cause:** `app-container` có `filter: contrast(1.05) saturate(1.08) brightness(1.02)` tạo stacking context. Nếu wrap game content trong div có `filter: blur()` toggle (`none` ↔ `blur(8px)`), việc tạo/huỷ stacking context sẽ làm các panel `position: absolute` bị reflow.
 - **Avoid:** KHÔNG BAO GIỜ wrap game content trong div toggle `filter`. Overlay đã có background atmosphere đủ tối (`rgba(0,0,0,0.78)`), không cần blur content bên dưới. Xem pattern "Hextech Overlay" ở Section 1.
+
+### Overlay/modal inside `.app-container` must use `position: fixed; inset: 0; pointer-events: auto`
+- **Symptom:** Modal không phủ full viewport (bị cắt trên/dưới), hoặc click xuyên qua modal xuống game UI bên dưới.
+- **Cause:** `.app-container` có `filter` tạo stacking context mới nên `position: absolute` + `100cqh` chỉ bám container, không bám viewport. Nếu modal render qua component nằm trong `viewport-hud-layer` (có `pointer-events: none`), click cũng bị xuyên.
+- **Avoid:** Mọi full-screen overlay/modal phải dùng `position: fixed; inset: 0; pointer-events: auto`. Không dùng `position: absolute` + `width: 100cqw; height: 100cqh` cho overlay cần phủ viewport.
 
 ### `position: fixed` bên trong `.app-container` đang có `filter` sẽ bám theo canvas bị crop, không bám viewport thật
 - **Symptom:** `TopStatusBar`, menu hamburger, nút fullscreen, T-Coin badge nhìn như bị browser che ở mép trên/phải khi cửa sổ không đúng tỷ lệ 16:9.

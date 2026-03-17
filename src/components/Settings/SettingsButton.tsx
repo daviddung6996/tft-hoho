@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { Suspense, lazy, useState, useEffect, useRef } from 'react';
 import './SettingsButton.css';
 import { useAuth } from '../../contexts/AuthContext';
 import { getUserIqStats } from '../../features/user-iq/userIq.service';
 import { UserIqStats, USER_IQ_RANKS } from '../../features/user-iq/userIq.types';
 import { getUserIqRankColor } from '../../features/user-iq/userIqCalculator';
 import { IqRankIcon } from '../../features/user-iq/components/IqRankIcon';
-import { SupportModal } from './SupportModal';
 import { useTCoin } from '../../features/tcoin/hooks/useTCoin';
 import { TCoinIcon } from '../../features/tcoin/components/TCoinIcon';
 import { useVideoLibrary } from '../../features/video-library/hooks/useVideoLibrary';
@@ -18,6 +17,10 @@ import {
     requestDocumentFullscreenSafe
 } from '../../utils/fullscreen';
 import type { MonetizationMode } from '../../features/monetization/monetization.types';
+
+const SupportModal = lazy(() =>
+    import('./SupportModal').then(m => ({ default: m.SupportModal }))
+);
 
 const getNextRankThreshold = (score: number) => {
     const sortedRanks = [...USER_IQ_RANKS].sort((a, b) => a.min - b.min);
@@ -102,10 +105,13 @@ export const MenuButton: React.FC<MenuButtonProps> = ({
     const [iqStats, setIqStats] = useState<UserIqStats | null>(null);
 
     useEffect(() => {
+        if (!isOpen) {
+            return;
+        }
         if (isAuthenticated && !isGuest && userId) {
             getUserIqStats(userId).then(setIqStats).catch(console.error);
         }
-    }, [isAuthenticated, isGuest, userId]);
+    }, [isAuthenticated, isGuest, isOpen, userId]);
 
     useEffect(() => {
         const handleResize = () => setLayoutMode(getLayoutMode());
@@ -113,8 +119,8 @@ export const MenuButton: React.FC<MenuButtonProps> = ({
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    const { balance: tcoinBalance } = useTCoin();
-    const { unlockedCount, totalCount } = useVideoLibrary();
+    const { balance: tcoinBalance } = useTCoin(isOpen);
+    const { unlockedCount, totalCount } = useVideoLibrary(isOpen);
 
     const [showLogoutToast, setShowLogoutToast] = useState(false);
 
@@ -483,7 +489,11 @@ export const MenuButton: React.FC<MenuButtonProps> = ({
 
             </div>
 
-            <SupportModal isOpen={showSupportModal} onClose={() => setShowSupportModal(false)} />
+            {showSupportModal && (
+                <Suspense fallback={null}>
+                    <SupportModal isOpen={showSupportModal} onClose={() => setShowSupportModal(false)} />
+                </Suspense>
+            )}
 
             {showLogoutToast && (
                 <Toast

@@ -15,6 +15,24 @@ export const ArenaSelectorModal: React.FC<ArenaSelectorModalProps> = ({
     onSelectArena,
     currentArena
 }) => {
+    const preloadedBackgroundsRef = React.useRef(new Set<string>());
+
+    const preloadArenaBackground = React.useCallback((skin: ArenaSkin) => {
+        if (!skin.backgroundUrl || preloadedBackgroundsRef.current.has(skin.id)) {
+            return;
+        }
+
+        preloadedBackgroundsRef.current.add(skin.id);
+        const img = new Image();
+        img.src = skin.backgroundUrl;
+    }, []);
+
+    React.useEffect(() => {
+        if (isOpen && currentArena) {
+            preloadArenaBackground(currentArena);
+        }
+    }, [currentArena, isOpen, preloadArenaBackground]);
+
     if (!isOpen) return null;
 
     return (
@@ -29,12 +47,16 @@ export const ArenaSelectorModal: React.FC<ArenaSelectorModalProps> = ({
                         <div
                             key={skin.id}
                             className={`arena-option ${currentArena?.id === skin.id ? 'selected' : ''}`}
+                            onMouseEnter={() => preloadArenaBackground(skin)}
+                            onFocus={() => preloadArenaBackground(skin)}
+                            onTouchStart={() => preloadArenaBackground(skin)}
                             onClick={() => {
+                                preloadArenaBackground(skin);
                                 onSelectArena(skin);
                                 onClose();
                             }}
                         >
-                            <img src={skin.iconUrl} alt={skin.name} loading="lazy" />
+                            <img src={skin.thumbnailUrl} alt={skin.name} loading="lazy" />
                             <div className="arena-name">{skin.name}</div>
                             <div className={`arena-rarity ${skin.rarity.toLowerCase()}`}>{skin.rarity}</div>
                         </div>

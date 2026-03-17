@@ -17,7 +17,8 @@ export const proSupporterService = {
      * Returns a dummy active status as all features are now free.
      */
     async getStatus(): Promise<ProSupporter | null> {
-        const { data: { user } } = await supabase.auth.getUser();
+        const { data: { session } } = await supabase.auth.getSession();
+        const user = session?.user;
         if (!user) return null;
 
         return {

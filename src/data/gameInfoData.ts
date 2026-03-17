@@ -3,6 +3,10 @@
  * Pro players check these at the start of every match
  */
 
+const base = import.meta.env.BASE_URL || '/';
+const cleanBase = base.endsWith('/') ? base : `${base}/`;
+const LOCAL_VOID_EMBLEM_ICON = `${cleanBase}tft-assets/tft16_emblem_void.tft_set16.png`;
+
 // ============================================================================
 // IONIA PATHS (5 Đạo)
 // ============================================================================
@@ -95,7 +99,7 @@ export const VOID_MODS: VoidMod[] = [
         name: 'Royal Protection',
         nameVi: 'Bảo Hộ Hoàng Gia',
         description: 'Nhận 200 Máu. Khi xuống dưới 50% Máu, triệu hồi 1 Bọ Hư Không có 30% Máu của tướng đó.',
-        icon: 'https://ap.tft.tools/img/items_s14/16Void_RoyalHusk.png?w=32',
+        icon: LOCAL_VOID_EMBLEM_ICON,
         recommended: "Cho'Gath, Sứ Giả"
     },
     {
@@ -103,7 +107,7 @@ export const VOID_MODS: VoidMod[] = [
         name: 'Toxic Spines',
         nameVi: 'Gai Phun Độc',
         description: 'Sau khi gây 1000 sát thương, bắn gai vào 2 kẻ địch gần nhất gây 100 sát thương vật lý.',
-        icon: 'https://ap.tft.tools/img/items_s14/16Void_SpitterSpines.png?w=32',
+        icon: LOCAL_VOID_EMBLEM_ICON,
         recommended: "Rek'Sai, Malzahar, Kai'Sa"
     },
     {
@@ -111,7 +115,7 @@ export const VOID_MODS: VoidMod[] = [
         name: 'Leeching Nucleus',
         nameVi: 'Hạch Hút Hạ',
         description: 'Hồi máu cho đồng minh thấp máu nhất bằng 15% sát thương gây ra. Đòn đánh đánh cắp 2% SMCK/SMPT từ mục tiêu (tối đa 15 cộng dồn).',
-        icon: 'https://ap.tft.tools/img/items_s14/16Void_LeechingNucleus.png?w=32',
+        icon: LOCAL_VOID_EMBLEM_ICON,
         recommended: "Kog'Maw, Malzahar, Kai'Sa"
     },
     {
@@ -119,7 +123,7 @@ export const VOID_MODS: VoidMod[] = [
         name: 'Adrenaline Modules',
         nameVi: 'Mô-đun Adrenaline',
         description: 'Nhận 15% Khuếch đại sát thương, tăng thêm 1% sau mỗi 3 đòn đánh.',
-        icon: 'https://ap.tft.tools/img/items_s14/16Void_AdrenalineModules.png?w=32',
+        icon: LOCAL_VOID_EMBLEM_ICON,
         recommended: "Bel'Veth, Kai'Sa"
     },
     {
@@ -127,7 +131,7 @@ export const VOID_MODS: VoidMod[] = [
         name: 'Armored Plating',
         nameVi: 'Thiết Giáp',
         description: 'Nhận 200 Máu tối đa. Nhận Giáp và Kháng Phép tương đương 0.6% Máu tối đa.',
-        icon: 'https://ap.tft.tools/img/items_s14/16Void_IronCarapace.png?w=32',
+        icon: LOCAL_VOID_EMBLEM_ICON,
         recommended: "Cho'Gath, Sứ Giả"
     }
 ];

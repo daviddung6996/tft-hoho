@@ -3,30 +3,37 @@ import { tcoinService } from '../tcoin.service';
 import { UserWallet, EarnReason, SpendReason, PuzzleTier, PuzzleAccessResult } from '../tcoin.types';
 import { useAuth } from '../../../contexts/AuthContext';
 
-export function useTCoin() {
+export function useTCoin(enabled: boolean = true) {
     const { isAuthenticated, isGuest } = useAuth();
     const [wallet, setWallet] = useState<UserWallet | null>(null);
     const [isLoading, setIsLoading] = useState(false);
 
     const balance = wallet?.balance ?? 0;
 
-    const refresh = useCallback(async () => {
+    const loadWallet = useCallback(async (forceRefresh: boolean = false) => {
         if (!isAuthenticated || isGuest) {
             setWallet(null);
             return;
         }
         setIsLoading(true);
         try {
-            const w = await tcoinService.getWallet();
+            const w = await tcoinService.getWallet({ forceRefresh });
             setWallet(w);
         } finally {
             setIsLoading(false);
         }
     }, [isAuthenticated, isGuest]);
 
+    const refresh = useCallback(async () => {
+        await loadWallet(true);
+    }, [loadWallet]);
+
     useEffect(() => {
-        refresh();
-    }, [refresh]);
+        if (!enabled) {
+            return;
+        }
+        void loadWallet(false);
+    }, [enabled, loadWallet]);
 
     const earn = useCallback(async (reason: EarnReason, referenceId?: string) => {
         const result = await tcoinService.earnCoins(reason, referenceId);
