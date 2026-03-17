@@ -42,7 +42,8 @@ import { PuzzleLockOverlay } from './features/tcoin/components/PuzzleLockOverlay
 import { LandscapePrompt } from './components/common/LandscapePrompt';
 import { RightClickEffect } from './components/common/RightClickEffect';
 import { SupportModal } from './components/Settings/SupportModal';
-import { MONETIZATION_ENABLED } from './config/monetization';
+import { MONETIZATION_ENABLED, MONETIZATION_MODE, MONETIZATION_PACKAGING } from './config/monetization';
+import { BetaStatusBanner } from './features/monetization/components/BetaStatusBanner';
 import { CoachFab } from './features/coach-select/components/CoachFab';
 import { CoachSelectOverlay } from './features/coach-select/components/CoachSelectOverlay';
 import { playCoachCompletionChime } from './features/coach-select/coachCompletionChime';
@@ -581,12 +582,18 @@ const App: React.FC = () => {
                                 isInteractionLocked={hasBlockingWorkspaceModal}
                             />
                             {!isMirrored && (
-                                <TopStatusBar
-                                    stage={currentPuzzle.stage || ''}
-                                    streakHistory={currentPuzzle.streakHistory}
-                                    streakCount={currentPuzzle.streakCount}
-                                    dimmed={isAugmentOpen}
-                                />
+                                <>
+                                    <TopStatusBar
+                                        stage={currentPuzzle.stage || ''}
+                                        streakHistory={currentPuzzle.streakHistory}
+                                        streakCount={currentPuzzle.streakCount}
+                                        dimmed={isAugmentOpen}
+                                    />
+                                    <BetaStatusBanner
+                                        mode={MONETIZATION_MODE}
+                                        betaEndsAt={MONETIZATION_PACKAGING.betaWindow.endsAt}
+                                    />
+                                </>
                             )}
 
                             <GameHUD
