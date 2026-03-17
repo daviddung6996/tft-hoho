@@ -540,14 +540,34 @@ Get-ChildItem -Path src -Recurse -Include "*.tsx" | ForEach-Object {
 - **Avoid:** Infer production topology from `vite.config.ts`, `public/_headers`, `public/_redirects`, and live domain usage. Do NOT treat generated deploy folders as authoritative deployment config.
 
 
-### Monetization Reactivation (2026-03-07)
-- **Context:** To reduce friction and focus on user acquisition, TCoin and ProSupporter paywalls were disabled.
-- **Current State:** The app is 100% free. `isProSupporter()` always returns `true`, and missing table `pro_supporters` queries have been bypassed to fix a 406 Error.
-- **How to Reactivate:**
-  1. Open "src/config/monetization.ts"
-  2. Set "export const MONETIZATION_ENABLED = true;"
-  3. Revert `proSupporter.service.ts` and `videoLibrary.service.ts` to their previous remote Supabase query logic. DB migrations for `pro_supporters` might be needed.
-  4. Re-build the app. All paywalls and overlays will be restored.
+### Monetization Mode Toggle (updated 2026-03-17)
+
+**Current architecture:** `MONETIZATION_MODE` is date-driven via `resolveMonetizationMode(new Date(), MONETIZATION_PACKAGING)` in `src/config/monetization.ts`. No more boolean flag.
+
+| Mode | Meaning | `MONETIZATION_ENABLED` |
+|------|---------|------------------------|
+| `'beta'` | Open Beta — all puzzles free, beta banner shown | `false` |
+| `'free-pro'` | Post-beta paywall active | `true` |
+
+**Bật OPEN BETA (tắt paywall):**
+```ts
+// src/config/monetization.ts
+betaWindow: {
+    startsAt: '2026-03-17T00:00:00.000Z',
+    endsAt: '2026-04-16T23:59:59.999Z',  // ← real end date
+},
+```
+
+**Simulate post-beta (bật paywall để test):**
+```ts
+// src/config/monetization.ts
+betaWindow: {
+    startsAt: '2026-03-17T00:00:00.000Z',
+    endsAt: '2026-03-16T23:59:59.999Z',  // TEMP: simulate post-beta — revert to 2026-04-16
+},
+```
+
+> ⚠️ Luôn revert `endsAt` về `2026-04-16` sau khi test xong. Đây là "TEMP" flag, không commit lên main.
 
 ### Coach Select swap performance optimization (2026-03-12)
 - **Date:** 2026-03-12

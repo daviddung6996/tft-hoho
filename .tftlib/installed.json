@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "libraryName": "tftiseasy-library",
+  "libraryVersion": "0.1.0",
+  "updatedAt": "2026-03-17T06:34:44.222Z",
+  "items": [
+    {
+      "moduleId": "identity-core",
+      "type": "prompt",
+      "agent": "claude",
+      "scope": "local",
+      "installPath": "D:\\TFT-hoho\\.claude\\skills\\identity-core",
+      "mainFile": "D:\\TFT-hoho\\.claude\\skills\\identity-core\\SKILL.md",
+      "sourcePath": "D:\\tftiseasy-library\\modules\\prompts\\identity-core.md",
+      "sourceChecksum": "d86b6787d22c4146546e26614e7dacac923520022fb13484e91d525ff56782ab",
+      "dependencies": [],
+      "projectRoot": "D:\\TFT-hoho",
+      "catalogVersion": "0.1.0",
+      "installedAt": "2026-03-17T06:34:44.210Z"
+    },
+    {
+      "moduleId": "tft-frontend-ui",
+      "type": "skill",
+      "agent": "claude",
+      "scope": "local",
+      "installPath": "D:\\TFT-hoho\\.claude\\skills\\tft-frontend-ui",
+      "mainFile": "D:\\TFT-hoho\\.claude\\skills\\tft-frontend-ui\\SKILL.md",
+      "sourcePath": "D:\\tftiseasy-library\\modules\\skills\\tft-frontend-ui\\SKILL.md",
+      "sourceChecksum": "7d1d2aa911cdd097ed2a11d1a52c66508e943147bb8421205c9ac2c8b1b3f901",
+      "dependencies": [
+        "prompt:identity-core"
+      ],
+      "projectRoot": "D:\\TFT-hoho",
+      "catalogVersion": "0.1.0",
+      "installedAt": "2026-03-17T06:34:44.222Z"
+    }
+  ]
+}

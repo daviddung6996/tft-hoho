@@ -1,0 +1,39 @@
+<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="em-body" x1="32" y1="4" x2="32" y2="60" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#6EE7B7"/>
+      <stop offset="50%" stop-color="#10B981"/>
+      <stop offset="100%" stop-color="#047857"/>
+    </linearGradient>
+    <linearGradient id="em-edge" x1="32" y1="4" x2="32" y2="60" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#A7F3D0"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+    <radialGradient id="em-core" cx="32" cy="32" r="12" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#A7F3D0" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#047857" stop-opacity="0.1"/>
+    </radialGradient>
+    <linearGradient id="em-gem" x1="26" y1="22" x2="38" y2="42" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#34D399"/>
+      <stop offset="100%" stop-color="#065F46"/>
+    </linearGradient>
+  </defs>
+  <polygon points="32,4 56,18 56,46 32,60 8,46 8,18" fill="url(#em-body)" stroke="url(#em-edge)" stroke-width="2" stroke-linejoin="round"/>
+  <!-- Inner frame -->
+  <polygon points="32,12 49,21 49,43 32,52 15,43 15,21" fill="none" stroke="#A7F3D0" stroke-width="0.8" stroke-linejoin="round" opacity="0.4"/>
+  <!-- Emerald cut gem — octagonal step cut -->
+  <path d="M27 20L37 20L44 27L44 37L37 44L27 44L20 37L20 27Z" fill="url(#em-gem)" stroke="#6EE7B7" stroke-width="1.2" stroke-linejoin="round"/>
+  <!-- Step cut inner facets -->
+  <path d="M29 23L35 23L40 28L40 36L35 41L29 41L24 36L24 28Z" fill="#047857" stroke="#34D399" stroke-width="0.6" stroke-linejoin="round" opacity="0.7"/>
+  <path d="M30 26L34 26L37 29L37 35L34 38L30 38L27 35L27 29Z" fill="#059669" stroke="#6EE7B7" stroke-width="0.5" stroke-linejoin="round" opacity="0.8"/>
+  <!-- Core glow -->
+  <circle cx="32" cy="32" r="6" fill="url(#em-core)"/>
+  <!-- Center gem point -->
+  <path d="M30 30L32 28L34 30L34 34L32 36L30 34Z" fill="#10B981" stroke="#A7F3D0" stroke-width="0.6"/>
+  <circle cx="32" cy="32" r="1.2" fill="#A7F3D0" opacity="0.9"/>
+  <!-- Facet glints -->
+  <circle cx="27" cy="20" r="0.8" fill="#A7F3D0" opacity="0.6"/>
+  <circle cx="37" cy="20" r="0.8" fill="#A7F3D0" opacity="0.6"/>
+  <circle cx="37" cy="44" r="0.8" fill="#A7F3D0" opacity="0.4"/>
+  <circle cx="27" cy="44" r="0.8" fill="#A7F3D0" opacity="0.4"/>
+</svg>
