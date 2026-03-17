@@ -11,64 +11,74 @@ Prefetch the NotebookLM response while the user is browsing the carousel. When t
 ## Flow
 
 ```
-Click "Hỏi Coach" → Carousel opens
+Click "Hỏi Coach" → Carousel opens (click-to-select grid)
     ↓
-User pauses on coach X ≥500ms → prefetch(coachX, contextSnapshot)
+User clicks coach X → prefetch(coachX) fires immediately
     ↓
-User swipes to coach Y → debounce resets → pauses ≥500ms → prefetch(coachY, contextSnapshot)
+User clicks coach Y within 500ms → debounce resets → prefetch(coachY) fires
+(previous coach X prefetch is aborted)
     ↓
 User confirms coach Y:
-    ├→ prefetch Y done + context matches → use cached response (instant)
-    ├→ prefetch Y running + context matches → await existing request
-    └→ context changed OR no prefetch → send new request as normal
+    ├→ prefetch Y done + contextSignature matches → use cached response (instant)
+    ├→ prefetch Y running + contextSignature matches → await existing request
+    └→ contextSignature changed OR no prefetch → send new request as normal
 
-User clicks X to close overlay → AbortController.abort() all pending requests
+User dismisses overlay (dismissSession) → AbortController.abort() all pending requests
 ```
 
 ## Components
 
 ### 1. `usePrefetchCoach` hook
 
-New hook managing all prefetch state and lifecycle.
+New hook managing prefetch state and lifecycle. Only one prefetch is in-flight at a time — selecting a new coach aborts the previous one.
 
 **State:**
 ```typescript
+import type { CoachId, CoachAskResponse } from '../coachSelect.types';
+
 type PrefetchEntry = {
-  coachId: string;
-  response: CoachResponse | null;
-  contextSnapshot: CoachGameContext;
+  coachId: CoachId;
+  response: CoachAskResponse | null;
+  contextSignature: string;          // from buildCoachContextSignature()
   abortController: AbortController;
+  promise: Promise<CoachAskResponse>; // to await if still pending
   status: 'pending' | 'done' | 'error' | 'aborted';
 };
 
-// Map<coachId, PrefetchEntry>
+// Single active prefetch entry (not a Map — only 1 in-flight at a time)
 ```
 
 **API:**
-- `prefetch(coachId: string)` — debounced 500ms. Captures current `coachGameContext` snapshot, creates AbortController, calls `askCoach()`. Stores result in map keyed by coachId.
-- `getPrefetchedResponse(coachId: string, currentContext: CoachGameContext): PrefetchResult` — looks up cache entry for coachId. If found, shallow-compares stored contextSnapshot against currentContext. Returns `{ hit: true, response }` if match, `{ hit: false }` if mismatch or missing.
-- `abortAll()` — iterates all entries, calls `abort()` on each AbortController. Clears the map.
+- `prefetch(coachId: CoachId)` — debounced 500ms. Aborts any existing in-flight prefetch. Captures current `contextSignature` via `buildCoachContextSignature()`, creates AbortController, calls `askCoach()` with its signal. Stores result as active entry.
+- `consumePrefetch(coachId: CoachId, currentSignature: string): PrefetchResult` — checks if active entry matches coachId AND contextSignature. Returns `{ hit: true, response }` if done+match, `{ hit: 'pending', promise }` if still running+match, `{ hit: false }` otherwise.
+- `abortAll()` — aborts active prefetch if any. Clears entry.
 - Cleanup on unmount — calls `abortAll()`.
 
-### 2. Context snapshot & comparison
+**Design dependency:** `coachSelectService.askCoach()` already accepts an `AbortSignal` parameter, which makes prefetch cancellation possible without any service-level changes.
 
-- At prefetch time: deep-copy `coachGameContext` as snapshot
-- At confirm time: shallow compare snapshot fields against current context
-- Fields to compare: `stage`, `comp`, `gold`, `level`, `hp`, `decisionType`, `currentAugmentOptions`, `chosenAugments`, `synergies`, `boardChampions`, `items`
-- If any field differs → discard cached response, send fresh request
+### 2. Context validation via `buildCoachContextSignature()`
+
+Reuses the existing `buildCoachContextSignature()` function (already in `useCoachSelect`) as the single source of truth for context comparison:
+
+- At prefetch time: capture `buildCoachContextSignature(coachGameContext)` as string
+- At confirm time: compare stored signature against `buildCoachContextSignature(currentContext)`
+- If strings differ → discard cached response, send fresh request
+
+This avoids maintaining a separate field-comparison list and stays consistent with the existing cache-key logic used elsewhere in the hook.
 
 ### 3. Integration into `useCoachSelect`
 
-- **Carousel `onSlideChange`**: trigger `prefetch(highlightedCoachId)` on each slide change (debounce handles rapid swiping)
-- **`askCoach()` modification**: before sending a new request, call `getPrefetchedResponse(coachId, currentContext)`. If hit → use cached response. If pending → await existing promise. If miss → send new request.
-- **`close()` / click X**: call `abortAll()` to cancel all in-flight prefetch requests
-- **Initial slide**: trigger prefetch for the first visible coach when carousel opens (after 500ms debounce)
+- **Coach selection (`selectCoach`)**: when user clicks a coach in the carousel, trigger `prefetch(coachId)`. Debounce handles rapid clicking.
+- **`askCoach()` modification**: before sending a new request, call `consumePrefetch(coachId, currentSignature)`. If `hit: true` → write response into existing `cachedAnswersRef` and use it. If `hit: 'pending'` → await the existing promise. If `hit: false` → send new request as normal.
+- **`cachedAnswersRef` integration**: successful prefetch writes into the existing `cachedAnswersRef` Map (keyed by `buildCoachAnswerCacheKey`), so the existing cache-hit path in `askCoach()` works transparently.
+- **`dismissSession()`**: call `abortAll()` to cancel any in-flight prefetch.
+- **Initial coach**: trigger prefetch for the initially selected/default coach when carousel opens (after 500ms debounce).
 
 ## What does NOT change
 
 - **Backend**: No changes to Supabase Edge Function, NotebookLM Bridge, or Python service
 - **UI/UX**: User sees no indication of prefetch. Same carousel, same flow. Only difference is faster response.
-- **`askCoach()` service function**: Interface stays the same. Only the hook-level caller adds cache-check logic before calling it.
+- **`askCoach()` service function**: Interface stays the same. Only the hook-level caller adds prefetch-check logic before calling it.
 - **Coach data/selection logic**: No changes to coach carousel, coach data, or selection mechanics.
 
 ## Edge cases
@@ -76,14 +86,15 @@ type PrefetchEntry = {
 | Scenario | Behavior |
 |----------|----------|
 | User confirms before debounce fires (< 500ms) | No prefetch exists → normal request |
-| User swipes rapidly through all 5 coaches | Debounce prevents any request until user pauses ≥500ms |
-| Network error on prefetch | Silently ignored; confirm triggers fresh request |
-| Prefetch aborted (user closed overlay) | AbortController signal cancels fetch; no response stored |
-| Game context changes while overlay is open | Detected at confirm time via snapshot comparison; fresh request sent |
-| User re-opens overlay after closing | Fresh prefetch cycle starts; previous cache was cleared by abortAll |
+| User clicks rapidly through all 5 coaches | Debounce prevents any request until user stops for ≥500ms. Each new click aborts previous prefetch. |
+| Network error on prefetch | Silently stored as `error` status; confirm triggers fresh request |
+| Prefetch aborted (user dismissed overlay) | AbortController signal cancels fetch; entry cleared |
+| Game context changes while overlay is open | Detected at confirm time via contextSignature comparison; fresh request sent |
+| User re-opens overlay after dismissing | Fresh prefetch cycle starts; previous entry was cleared by abortAll |
+| `onObserveBoard` (minimize to board) | Does NOT abort prefetch — user may return to overlay. Only `dismissSession` aborts. |
 
 ## Risk assessment
 
-- **Resource usage**: At most 1 in-flight prefetch at a time (debounce ensures this). Bridge-side deduplication handles any overlap.
-- **Correctness**: Context snapshot comparison guarantees response matches current game state.
+- **Resource usage**: At most 1 in-flight prefetch at a time. Previous prefetch is aborted when user selects a different coach. Bridge-side deduplication handles any edge overlap.
+- **Correctness**: `buildCoachContextSignature()` comparison guarantees response matches current game state. Prefetch writes into existing `cachedAnswersRef` for transparent integration.
 - **Failure mode**: If prefetch fails for any reason, falls back to existing behavior (send request on confirm). No degradation.
