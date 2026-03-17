@@ -444,12 +444,31 @@ export const MenuButton: React.FC<MenuButtonProps> = ({
                                 {/* Monetization packaging */}
                                 {monetizationMode === 'beta' && (
                                     <div className="menu-item menu-item--info">
-                                        <span className="menu-icon">⏳</span> Beta — Free &amp; Pro coming
+                                        <span className="menu-icon" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+                                            <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M6 2h12v2H6V2z" fill="#c8aa6e" />
+                                                <path d="M6 20h12v2H6v-2z" fill="#c8aa6e" />
+                                                <path d="M7 4v3c0 2.5 2 4.5 4 5.5v-1C9.5 10.5 8 9 8 7V4h8v3c0 2-1.5 3.5-3 4.5v1c2-1 4-3 4-5.5V4" stroke="#c8aa6e" strokeWidth="1.2" fill="none" />
+                                                <path d="M7 20v-3c0-2.5 2-4.5 4-5.5v1c-1.5 1-3 2.5-3 4.5v3h8v-3c0-2 1.5-3.5 3-4.5v-1c-2 1-4 3-4 5.5v3" stroke="#c8aa6e" strokeWidth="1.2" fill="none" />
+                                                <circle cx="12" cy="12" r="1.5" fill="#c8aa6e" opacity="0.6" />
+                                            </svg>
+                                        </span> Beta — Free &amp; Pro coming
                                     </div>
                                 )}
                                 {monetizationMode === 'free-pro' && !isProEntitled && onUpgradeClick && (
                                     <button className="menu-item menu-item--upgrade" onClick={() => { onUpgradeClick(); setIsOpen(false); }}>
-                                        <span className="menu-icon">⭐</span> Upgrade to Pro
+                                        <span className="menu-icon" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+                                            <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <defs>
+                                                    <linearGradient id="pro-star-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                        <stop offset="0%" stopColor="#f0e6d2" />
+                                                        <stop offset="50%" stopColor="#c8aa6e" />
+                                                        <stop offset="100%" stopColor="#7a5c28" />
+                                                    </linearGradient>
+                                                </defs>
+                                                <path d="M12 2l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17l-5.8 3L7.3 13.5 2.6 8.9l6.5-1L12 2z" fill="url(#pro-star-grad)" />
+                                            </svg>
+                                        </span> Upgrade to Pro
                                     </button>
                                 )}
 
