@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { DecisionReview, type DecisionReviewProps } from './DecisionReview';
 
@@ -150,5 +151,114 @@ describe('DecisionReview', () => {
         expect(container.querySelector('.decision-review-mobile-video iframe')).toBeInTheDocument();
         expect(container.querySelector('.decision-review-mobile-action-row')).toBeInTheDocument();
         expect(screen.getByText('Pro VOD')).toBeInTheDocument();
+    });
+});
+
+describe('DecisionReview — monetization CTA', () => {
+    beforeEach(() => {
+        setViewport(1024, 768);
+
+        Object.defineProperty(window, 'matchMedia', {
+            writable: true,
+            configurable: true,
+            value: vi.fn().mockImplementation((query: string) => ({
+                matches: false,
+                media: query,
+                onchange: null,
+                addEventListener: vi.fn(),
+                removeEventListener: vi.fn(),
+                addListener: vi.fn(),
+                removeListener: vi.fn(),
+                dispatchEvent: vi.fn(),
+            })),
+        });
+    });
+
+    it('keeps Review Decision and IQ summary visible before any premium CTA', () => {
+        render(
+            <DecisionReview
+                {...createMockProps()}
+                monetizationMode="free-pro"
+                showPremiumLaneCta={true}
+                onUpgradeClick={() => {}}
+            />,
+        );
+
+        // Review content must still be present
+        expect(screen.getByText(/lựa chọn cuối/i)).toBeInTheDocument();
+
+        // IQ summary must still be present
+        expect(screen.getByText(/1420/)).toBeInTheDocument();
+
+        // Premium CTA must also be present — additive, not a replacement
+        expect(screen.getByTestId('premium-lane-callout')).toBeInTheDocument();
+    });
+
+    it('does not show premium CTA during beta for free users', () => {
+        render(
+            <DecisionReview
+                {...createMockProps()}
+                monetizationMode="beta"
+                showPremiumLaneCta={false}
+                onUpgradeClick={() => {}}
+            />,
+        );
+
+        // Review content still renders normally
+        expect(screen.getByText(/lựa chọn cuối/i)).toBeInTheDocument();
+
+        // No premium CTA during beta
+        expect(screen.queryByTestId('premium-lane-callout')).not.toBeInTheDocument();
+    });
+
+    it('shows premium CTA after review in free-pro mode for free users', () => {
+        const onUpgradeClick = vi.fn();
+
+        render(
+            <DecisionReview
+                {...createMockProps()}
+                monetizationMode="free-pro"
+                showPremiumLaneCta={true}
+                onUpgradeClick={onUpgradeClick}
+            />,
+        );
+
+        const callout = screen.getByTestId('premium-lane-callout');
+        expect(callout).toBeInTheDocument();
+        expect(callout).toHaveTextContent(/pro/i);
+    });
+
+    it('calls onUpgradeClick when the CTA button is pressed in review', async () => {
+        const user = userEvent.setup();
+        const onUpgradeClick = vi.fn();
+
+        render(
+            <DecisionReview
+                {...createMockProps()}
+                monetizationMode="free-pro"
+                showPremiumLaneCta={true}
+                onUpgradeClick={onUpgradeClick}
+            />,
+        );
+
+        await user.click(screen.getByRole('button', { name: /upgrade/i }));
+        expect(onUpgradeClick).toHaveBeenCalledOnce();
+    });
+
+    it('hides premium CTA for pro-entitled users even in free-pro mode', () => {
+        render(
+            <DecisionReview
+                {...createMockProps()}
+                monetizationMode="free-pro"
+                showPremiumLaneCta={false}
+                onUpgradeClick={() => {}}
+            />,
+        );
+
+        // Review content renders normally
+        expect(screen.getByText(/lựa chọn cuối/i)).toBeInTheDocument();
+
+        // No CTA when showPremiumLaneCta is false (pro-entitled)
+        expect(screen.queryByTestId('premium-lane-callout')).not.toBeInTheDocument();
     });
 });
