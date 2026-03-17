@@ -16,6 +16,7 @@ build/
 .claude/
 .agent/
 .kiro/
+.worktrees/
 .venv/
 __pycache__/
 *.py[cod]
