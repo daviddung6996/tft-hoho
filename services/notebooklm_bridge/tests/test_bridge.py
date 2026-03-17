@@ -511,5 +511,77 @@ class NotebookLMBridgeTests(unittest.TestCase):
         self.assertEqual(events[-1].data['answer'], 'Tai sao: Tempo quan trong hon econ.')
 
 
+class ConversationReuseTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.storage_state = Path(__file__).resolve()
+        self.config = BridgeConfig(
+            notebook_id='nb-123',
+            storage_state_path=self.storage_state,
+            api_key='secret-key',
+            timeout_ms=4567,
+            command='notebooklm',
+        )
+
+    def test_build_command_uses_conversation_id_instead_of_new(self) -> None:
+        command = build_notebooklm_ask_command(
+            self.config, 'nb-123', 'hello', conversation_id='conv-456'
+        )
+        self.assertEqual(
+            command,
+            [
+                'notebooklm',
+                '--storage',
+                str(self.storage_state),
+                'ask',
+                '-c',
+                'conv-456',
+                '-n',
+                'nb-123',
+                '--json',
+                'hello',
+            ],
+        )
+
+    @patch.object(NotebookLMBridge, '_run_json_command')
+    def test_ask_reuses_conversation_id_on_second_cache_miss(self, run_json_command: Mock) -> None:
+        run_json_command.return_value = {
+            'answer': 'Coach says hold econ',
+            'conversation_id': 'conv-abc',
+        }
+        bridge = NotebookLMBridge(self.config)
+
+        bridge.ask('query 1', 'secret-key', 'nb-123', coach_id='visian')
+        bridge.ask('query 2', 'secret-key', 'nb-123', coach_id='visian')
+
+        self.assertEqual(run_json_command.call_count, 2)
+        second_cmd = run_json_command.call_args_list[1][0][0]
+        self.assertIn('-c', second_cmd)
+        self.assertIn('conv-abc', second_cmd)
+        self.assertNotIn('--new', second_cmd)
+
+    @patch.object(NotebookLMBridge, '_run_json_command')
+    def test_ask_falls_back_to_new_when_stored_conversation_fails(self, run_json_command: Mock) -> None:
+        bridge = NotebookLMBridge(self.config)
+        run_json_command.return_value = {
+            'answer': 'First answer',
+            'conversation_id': 'conv-stale',
+        }
+        bridge.ask('query 1', 'secret-key', 'nb-123', coach_id='visian')
+
+        def side_effect(cmd, **kwargs):
+            if '-c' in cmd:
+                raise BridgeError('conversation not found', status_code=502, code='cli_failed')
+            return {'answer': 'Fallback answer', 'conversation_id': 'conv-new'}
+
+        run_json_command.side_effect = side_effect
+        result = bridge.ask('query 2', 'secret-key', 'nb-123', coach_id='visian')
+
+        self.assertEqual(result.payload['answer'], 'Fallback answer')
+        # After fallback the new conversation_id should be stored
+        self.assertEqual(run_json_command.call_count, 3)  # 1 first + 1 fail + 1 retry
+        last_cmd = run_json_command.call_args_list[2][0][0]
+        self.assertIn('--new', last_cmd)
+
+
 if __name__ == '__main__':
     unittest.main()
