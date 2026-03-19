@@ -1,5 +1,11 @@
 # Decisions
 
+## 2026-03-20 - Keep test files aligned with live component props because `npm run build` typechecks tests too
+
+- Why: Cloudflare Pages runs `npm run build`, and this repo's TypeScript build includes `.test.tsx` files.
+- Evidence: `PuzzleCompletionModal.test.tsx` and `PuzzleLockOverlay.test.tsx` still passed a removed `layoutMode` prop and asserted deleted mobile-layout classes, which broke the build even though the runtime components compiled conceptually.
+- Consequence: when component props/layout contracts change, update colocated tests in the same pass; stale tests are enough to block production deploys.
+
 ## 2026-03-20 - Remove the unused GitHub Supabase deploy workflow and treat Cloudflare as the active app deploy path
 
 - Why: the repo emitted failing GitHub Actions notifications from `.github/workflows/supabase-deploy.yml`, but the team deploys the app through Cloudflare rather than that workflow.

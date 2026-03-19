@@ -3,17 +3,16 @@ import { describe, expect, it, vi } from 'vitest';
 import { PuzzleCompletionModal } from './PuzzleCompletionModal';
 
 describe('PuzzleCompletionModal', () => {
-    it('adds the phone-landscape compact classes when the shell passes mobile layout mode', () => {
+    it('renders the completion modal shell when open', () => {
         const { container } = render(
             <PuzzleCompletionModal
                 isOpen
                 onClose={vi.fn()}
-                layoutMode="phone-landscape"
             />,
         );
 
-        expect(container.querySelector('.puzzle-done-overlay--phone-landscape')).not.toBeNull();
-        expect(container.querySelector('.puzzle-done-modal--phone-landscape')).not.toBeNull();
-        expect(screen.getByRole('button')).toBeInTheDocument();
+        expect(container.querySelector('.puzzle-done-overlay')).not.toBeNull();
+        expect(container.querySelector('.puzzle-done-modal')).not.toBeNull();
+        expect(screen.getByRole('button', { name: 'Đóng' })).toBeInTheDocument();
     });
 });

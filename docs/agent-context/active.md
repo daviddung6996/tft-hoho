@@ -2,6 +2,7 @@
 
 Latest completed work (2026-03-20):
 
+- Fixed the Cloudflare production build by updating stale tests in `src/components/Arena/PuzzleCompletionModal.test.tsx` and `src/features/tcoin/components/PuzzleLockOverlay.test.tsx`. Those tests still passed a removed `layoutMode` prop and asserted deleted `--phone-landscape` classes, so TypeScript failed in `npm run build` even though runtime components were fine.
 - Removed the unused GitHub Actions workflow `.github/workflows/supabase-deploy.yml` after confirming the product deploy path is Cloudflare, not GitHub Actions. This prevents irrelevant Supabase CI failure emails from a workflow the team does not use.
 
 Latest completed work (2026-03-19):
