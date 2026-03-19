@@ -1,5 +1,11 @@
 # Decisions
 
+## 2026-03-20 - Remove the unused GitHub Supabase deploy workflow and treat Cloudflare as the active app deploy path
+
+- Why: the repo emitted failing GitHub Actions notifications from `.github/workflows/supabase-deploy.yml`, but the team deploys the app through Cloudflare rather than that workflow.
+- Evidence: the failing job was a separate Supabase CI runner that was missing required non-interactive migration configuration, while the user explicitly confirmed they do not use GitHub Actions for deployment.
+- Consequence: keep `.github/workflows/` empty unless the team intentionally reintroduces CI, and do not treat GitHub Actions emails as part of the normal Cloudflare deploy path.
+
 ## 2026-03-19 - Scout arena switching must reuse the shared decode-aware preload helper
 
 - Why: `src/App.tsx` drifted back to an inline arena preload helper that treated `img.complete` as ready immediately, so the first revisit to a scouted arena could still flicker even though `src/utils/arenaBackgroundPreload.ts` already guarded cached images until decode finished.

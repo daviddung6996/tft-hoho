@@ -1,5 +1,9 @@
 # Active Work
 
+Latest completed work (2026-03-20):
+
+- Removed the unused GitHub Actions workflow `.github/workflows/supabase-deploy.yml` after confirming the product deploy path is Cloudflare, not GitHub Actions. This prevents irrelevant Supabase CI failure emails from a workflow the team does not use.
+
 Latest completed work (2026-03-19):
 
 - Fixed the first-pass scout revisit flicker by removing the stale inline arena preload helper from `src/App.tsx` and routing scout arena readiness through `src/utils/arenaBackgroundPreload.ts`, so cached backgrounds are not committed until decode finishes.
@@ -48,6 +52,7 @@ Status:
 - Added a production deployment playbook at `docs/deployment/visian-chat-production-ec2.md`.
 - `npm run dev` now starts the local bridge, local adapter, and Vite together; `npm run dev:vite` remains available for frontend-only work.
 - Coach select prompt/answer contract now targets exactly two labels: `Pick:` and `Giai thich:`. Frontend normalization still accepts legacy `Tai sao:` while caches and old responses age out.
+- GitHub Actions no longer handle Supabase deploys in this repo; `.github/workflows/supabase-deploy.yml` was removed because the active deploy path is Cloudflare for the app, with Supabase managed outside that unused workflow.
 
 In scope now:
 
