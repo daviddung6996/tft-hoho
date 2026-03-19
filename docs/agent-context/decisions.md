@@ -1,5 +1,11 @@
 # Decisions
 
+## 2026-03-19 - Scout arena switching must reuse the shared decode-aware preload helper
+
+- Why: `src/App.tsx` drifted back to an inline arena preload helper that treated `img.complete` as ready immediately, so the first revisit to a scouted arena could still flicker even though `src/utils/arenaBackgroundPreload.ts` already guarded cached images until decode finished.
+- Evidence: the first scout revisit flashed only once per arena, then stabilized after cache warm-up; `App.tsx` still had its own preload state while the shared utility and its regression tests handled the cached-image path correctly.
+- Consequence: keep arena readiness logic centralized in `src/utils/arenaBackgroundPreload.ts` and import that utility from `App.tsx` instead of re-implementing preload state inline.
+
 ## 2026-03-17 - Gameplay HUD CTAs must stay hidden while the in-canvas loading shell is visible
 
 - Why: showing coach or augment CTA on top of the shell makes the app look broken, because the user sees gameplay actions before the puzzle itself exists.

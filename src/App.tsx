@@ -61,6 +61,7 @@ import type {
     CoachDecisionType,
     CoachGameContext,
 } from './features/coach-select/coachSelect.types';
+import { isArenaBackgroundReady, preloadArenaBackground } from './utils/arenaBackgroundPreload';
 
 import './App.css';
 
@@ -77,69 +78,6 @@ const COACH_PLAN_OPTIONS = [
     { id: 'patch', title: 'Fix item lại cho đẹp', subtitle: 'Lấy mảnh đồ để vá lại bài' },
     { id: 'greed', title: 'Chơi Loto', subtitle: 'Ra gì chơi đó vì chưa chốt bài' },
 ];
-
-const loadedArenaBackgrounds = new Set<string>();
-const arenaBackgroundPreloads = new Map<string, Promise<void>>();
-
-function isArenaBackgroundReady(url?: string | null): boolean {
-    return !!url && loadedArenaBackgrounds.has(url);
-}
-
-function preloadArenaBackground(url?: string | null): Promise<void> {
-    if (!url) {
-        return Promise.resolve();
-    }
-
-    if (loadedArenaBackgrounds.has(url)) {
-        return Promise.resolve();
-    }
-
-    const existingRequest = arenaBackgroundPreloads.get(url);
-    if (existingRequest) {
-        return existingRequest;
-    }
-
-    const request = new Promise<void>((resolve) => {
-        const img = new Image();
-        let settled = false;
-
-        const finalize = () => {
-            if (settled) {
-                return;
-            }
-            settled = true;
-            loadedArenaBackgrounds.add(url);
-            arenaBackgroundPreloads.delete(url);
-            resolve();
-        };
-
-        img.onload = () => {
-            if (typeof img.decode === 'function') {
-                void img.decode().catch(() => undefined).finally(finalize);
-                return;
-            }
-
-            finalize();
-        };
-        img.onerror = () => {
-            if (settled) {
-                return;
-            }
-            settled = true;
-            arenaBackgroundPreloads.delete(url);
-            resolve();
-        };
-        img.decoding = 'async';
-        img.src = url;
-
-        if (img.complete) {
-            finalize();
-        }
-    });
-
-    arenaBackgroundPreloads.set(url, request);
-    return request;
-}
 
 const App: React.FC = () => {
     // --- 1. Authentication ---

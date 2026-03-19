@@ -1,5 +1,9 @@
 # Active Work
 
+Latest completed work (2026-03-19):
+
+- Fixed the first-pass scout revisit flicker by removing the stale inline arena preload helper from `src/App.tsx` and routing scout arena readiness through `src/utils/arenaBackgroundPreload.ts`, so cached backgrounds are not committed until decode finishes.
+
 Latest completed work (2026-03-17):
 
 - Smoothed scouting interactions after the first-load optimization pass by keeping `layout-wrapper` on lightweight arena thumbnails, preloading only the current lobby's arena backgrounds in idle time, and swapping `app-container` to the full background only after it is cached.
