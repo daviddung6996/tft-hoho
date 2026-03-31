@@ -125,7 +125,37 @@ npm run build
 
 If `VITE_VISIAN_CHAT_URL` still points at `localhost`, Vite now throws and blocks the build.
 
-## 8. Verify end-to-end
+## 8. Recover expired NotebookLM auth on EC2
+
+If production starts returning `502` from `functions/v1/visian-chat`, verify the bridge before changing frontend code:
+
+```bash
+curl http://127.0.0.1:8080/live
+curl http://127.0.0.1:8080/health
+```
+
+If `/health` returns `cli_failed` with `Authentication expired or invalid`, refresh the mounted auth file from the Windows machine that owns the valid NotebookLM login:
+
+```powershell
+scp -i "C:\Users\Administrator\notebooklm.pem" "C:\Users\Administrator\.notebooklm\storage_state.json" ubuntu@47.129.233.206:~/notebooklm-bridge/secrets/storage_state.json
+```
+
+Then restart the bridge on EC2 and re-run health:
+
+```bash
+cd ~/notebooklm-bridge
+docker compose restart
+sleep 5
+curl http://127.0.0.1:8080/health
+```
+
+Expected healthy response shape:
+
+```json
+{"defaultNotebookId":null,"ok":true,"storageStatePath":"/app/secrets/storage_state.json","visibleNotebookCount":16}
+```
+
+## 9. Verify end-to-end
 
 On EC2:
 

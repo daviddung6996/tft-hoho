@@ -7,13 +7,13 @@ describe('buildScoutImagePreloadUrls', () => {
             {
                 units: [
                     {
-                        image: 'https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/assets/characters/tft16_nautilus/hud/tft16_nautilus_square.tft_set16.png',
+                        image: 'https://ap.tft.tools/img/new17/face/tft17_nautilus.jpg',
                         items: ['Redemption'],
                     },
                 ],
                 bench: [
                     {
-                        image: 'https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/assets/characters/tft16_fizz/hud/tft16_fizz_square.tft_set16.png',
+                        image: 'https://ap.tft.tools/img/new17/face/tft17_fizz.jpg',
                         items: ['BlueBuff'],
                     },
                 ],
@@ -24,7 +24,7 @@ describe('buildScoutImagePreloadUrls', () => {
             {
                 units: [
                     {
-                        image: 'https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/assets/characters/tft16_nautilus/hud/tft16_nautilus_square.tft_set16.png',
+                        image: 'https://ap.tft.tools/img/new17/face/tft17_nautilus.jpg',
                         items: ['Redemption'],
                     },
                 ],
@@ -35,9 +35,9 @@ describe('buildScoutImagePreloadUrls', () => {
         ]);
 
         expect(urls).toEqual([
-            '/tft-assets/tft16_nautilus_square.tft_set16.png',
+            '/tft-assets/tft17_nautilus.jpg',
             '/tft-assets/redemption.png',
-            '/tft-assets/tft16_fizz_square.tft_set16.png',
+            '/tft-assets/tft17_fizz.jpg',
             '/tft-assets/blue_buff.png',
             '/tft-assets/ascension2.png',
         ]);

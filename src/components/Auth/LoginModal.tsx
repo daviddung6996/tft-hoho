@@ -93,7 +93,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({ onClose }) => {
                     <div className="hero-corner hero-corner-bl" />
                     <div className="hero-corner hero-corner-br" />
 
-                    <div className="hero-badge">SET 16</div>
+                    <div className="hero-badge">SET 17</div>
 
                     <h1 className="hero-title">
                         <span className="hero-title-sub">Teamfight Tactics</span>

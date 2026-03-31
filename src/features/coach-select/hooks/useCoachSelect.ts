@@ -230,6 +230,13 @@ export function useCoachSelect(gameContext: CoachGameContext | null, puzzleId: s
     }, [abortInflight, contextSignature, resetAnswerState]);
 
     const openSelect = useCallback((coachId: CoachId = DEFAULT_COACH_ID) => {
+        if (uiStateRef.current === 'loading' || uiStateRef.current === 'response') {
+            setIsOverlayVisible(true);
+            setIsMinimizedForBoard(false);
+            setHasUnreadResult(false);
+            return;
+        }
+
         interactionVersionRef.current += 1;
         setSelectedCoachId(coachId);
         resetAnswerState();

@@ -75,7 +75,7 @@ export const SynergyPanel: React.FC<SynergyPanelProps & {
             // Not activated (below first breakpoint) = inactive
             if (activeIndex === -1) return 'tier-inactive';
 
-            // Use Set 16 Style data if available
+            // Use style data if available
             if (styles && styles.length > activeIndex) {
                 const style = styles[activeIndex];
                 if (style === 1) return 'tier-bronze';

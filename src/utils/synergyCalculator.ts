@@ -65,7 +65,7 @@ export function calculateSynergies(input: SynergyInput): Synergy[] {
         let styles: number[] = [];
 
         if (traitDef?.effects) {
-            // Primary: Handle array format from Set 16 API
+            // Primary: Handle array format from TFT API
             if (Array.isArray(traitDef.effects) && traitDef.effects.length > 0) {
                 const validEffects = traitDef.effects
                     .filter((e: any) => e.minUnits !== undefined && typeof e.minUnits === 'number')

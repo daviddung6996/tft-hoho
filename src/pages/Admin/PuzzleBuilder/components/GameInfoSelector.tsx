@@ -59,7 +59,7 @@ const GameInfoSelector: React.FC<GameInfoSelectorProps> = ({
                         <>
                             <img
                                 src={getTraitIconUrl('Ionia')}
-                                alt="Ionia"
+                                alt="Set 17 path"
                                 className="gis-slot-icon"
                             />
                             <span className="gis-slot-label">{selectedPath.nameVi}</span>
@@ -73,7 +73,7 @@ const GameInfoSelector: React.FC<GameInfoSelectorProps> = ({
                     ) : (
                         <>
                             <span className="gis-slot-plus">+</span>
-                            <span className="gis-slot-hint">Ionia</span>
+                            <span className="gis-slot-hint">Set 17 Path</span>
                         </>
                     )}
                 </div>
@@ -84,7 +84,7 @@ const GameInfoSelector: React.FC<GameInfoSelectorProps> = ({
                         <>
                             <img
                                 src={getTraitIconUrl('Void')}
-                                alt="Void"
+                                alt="Set 17 mods"
                                 className="gis-slot-icon"
                             />
                             <span className="gis-slot-label">{selectedMods.length} Mods</span>
@@ -98,7 +98,7 @@ const GameInfoSelector: React.FC<GameInfoSelectorProps> = ({
                     ) : (
                         <>
                             <span className="gis-slot-plus">+</span>
-                            <span className="gis-slot-hint">Void</span>
+                            <span className="gis-slot-hint">Set 17 Mods</span>
                         </>
                     )}
                 </div>
@@ -109,8 +109,8 @@ const GameInfoSelector: React.FC<GameInfoSelectorProps> = ({
                 <div className="gis-modal-overlay" onClick={() => setModalType(null)}>
                     <div className="gis-modal" onClick={e => e.stopPropagation()}>
                         <div className="gis-modal-header">
-                            <img src={getTraitIconUrl('Ionia')} alt="Ionia" className="gis-modal-icon" />
-                            <span className="gis-modal-title">Chọn Đường Ionia</span>
+                            <img src={getTraitIconUrl('Ionia')} alt="Set 17 path" className="gis-modal-icon" />
+                            <span className="gis-modal-title">Chọn khung Set 17</span>
                             <button className="gis-modal-close" onClick={() => setModalType(null)}>✕</button>
                         </div>
                         <div className="gis-modal-content">
@@ -134,8 +134,8 @@ const GameInfoSelector: React.FC<GameInfoSelectorProps> = ({
                 <div className="gis-modal-overlay" onClick={() => setModalType(null)}>
                     <div className="gis-modal" onClick={e => e.stopPropagation()}>
                         <div className="gis-modal-header">
-                            <img src={getTraitIconUrl('Void')} alt="Void" className="gis-modal-icon" />
-                            <span className="gis-modal-title">Chọn Void Mods ({selectedVoidModIds.length}/3)</span>
+                            <img src={getTraitIconUrl('Void')} alt="Set 17 mods" className="gis-modal-icon" />
+                            <span className="gis-modal-title">Chọn modifier Set 17 ({selectedVoidModIds.length}/3)</span>
                             <button className="gis-modal-close" onClick={() => setModalType(null)}>✕</button>
                         </div>
                         <div className="gis-modal-content">

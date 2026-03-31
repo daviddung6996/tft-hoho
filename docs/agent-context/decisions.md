@@ -1,5 +1,11 @@
 # Decisions
 
+## 2026-03-20 - Treat production `visian-chat` `502` as a downstream NotebookLM bridge failure first, and recover by refreshing bridge auth state
+
+- Why: the browser showed repeated `502` from `functions/v1/visian-chat`, while the Edge Function code only maps bridge/downstream failures to `502`; missing bridge secrets would have shown up as `500` instead.
+- Evidence: Supabase edge-function logs showed `OPTIONS 200` and repeated `POST 502`; EC2 `curl http://127.0.0.1:8080/health` returned `cli_failed` with `Authentication expired or invalid`; replacing `~/notebooklm-bridge/secrets/storage_state.json` with a fresh copy from `C:\Users\Administrator\.notebooklm\storage_state.json` and restarting `docker compose` restored `/health` and a direct POST to `visian-chat`.
+- Consequence: when production coach requests start returning `502`, debug the bridge before touching Cloudflare/frontend code. Verify `/live`, then `/health`, refresh `storage_state.json` if auth expired, restart the bridge, and only then retest the Supabase function.
+
 ## 2026-03-20 - Keep test files aligned with live component props because `npm run build` typechecks tests too
 
 - Why: Cloudflare Pages runs `npm run build`, and this repo's TypeScript build includes `.test.tsx` files.
@@ -59,3 +65,22 @@
 - Why: NotebookLM CLI supports `-s/--source`, so the best latency win is to route the query to a narrow source set before the model reads the notebook.
 - Evidence: local CLI help shows `notebooklm ask -s src_001 -s src_002 "question"`.
 - Consequence: bridge accepts source IDs/groups and resolves them before spawning the CLI; prompt text stays compact instead of carrying source-selection instructions.
+
+## 2026-03-31 - Move Set 17 skill knowledge into official Claude skill directory
+
+- Decision: The Set 17 skill must live under `C:/Users/Administrator/.claude/skills/tft-set17-reference/`, not in the repo temporary folder.
+- Why: the repo folder `D:/TFT-hoho/tftset17/` is temporary and will be deleted after migration.
+- Evidence: approved design spec at `D:/TFT-hoho/docs/superpowers/specs/2026-03-31-tft-set17-reference-design.md`.
+- Consequence: the official skill must bundle all required references and must not depend on the repo folder at runtime.
+
+## 2026-03-31 - Set 17 champion seeding must require a service-role key and preserve the documented stats contract
+
+- Why: `champions` writes are protected by RLS (`supabase/migrations/002_add_rls_to_existing_tables.sql`), so anon-key fallback makes the seed path look valid while failing in normal environments; also the documented Set 17 `champions.stats` JSONB contract expects nested fields (`hp[]`, `ad[]`, `as`, `mr`, `mana.{min,max}`, `dps[]`) rather than the temporary flat compatibility shape.
+- Evidence: focused tests now cover the seed helper in `src/utils/set17ChampionSeed.test.ts`, the script requires `SUPABASE_SERVICE_ROLE_KEY` in `src/utils/seedChampions.ts`, and the schema docs/migration comment in `tftset17/supabase-schema.md` plus `supabase/migrations/add_champion_stats.sql` both define the nested stats contract.
+- Consequence: do not run real Set 17 champion seeds without `SUPABASE_SERVICE_ROLE_KEY`, and do not treat the current flat generated artifact as the final DB contract; the generator still needs a follow-up pass to emit true nested Set 17 stats before end-to-end seeding is considered complete.
+
+## 2026-03-31 - Runtime Set 17 cleanup must replace live Set 16 game-info surfaces, not just seed data
+
+- Why: the repo already had a working Set 17 parser/generator path, but the app still looked like Set 16 because visible runtime-facing modules were still hardcoded to Set 16 concepts (`SET 16` login hero copy plus the live `gameInfoData.ts` Ionia/Void model used by gameplay and the admin puzzle builder).
+- Evidence: focused RED/GREEN tests now cover `src/components/Auth/LoginModal.test.tsx` and `src/data/gameInfoData.test.ts`; the runtime/admin consumers are `src/components/Game/GameScene.tsx` and `src/pages/Admin/PuzzleBuilder/components/GameInfoSelector.tsx`; `npm run build` passes again after the runtime copy swap plus unrelated parser/test cleanup.
+- Consequence: future Set migrations must audit live UI modules and gameplay metadata providers, not just DB seeds/artifacts; stale sample files can remain, but any module consumed by `GameScene` or puzzle-builder flows must be updated in the same pass.

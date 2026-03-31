@@ -11,6 +11,7 @@
         "test": "vitest --run",
         "test:watch": "vitest",
         "download-assets": "tsx scripts/download_tft_assets.ts",
+        "generate:set17-champions": "tsx scripts/generateSet17Champions.ts",
         "visian-chat:local": "tsx scripts/local_visian_chat_server.ts"
     },
     "dependencies": {

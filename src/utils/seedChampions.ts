@@ -3,22 +3,26 @@ import { createClient } from '@supabase/supabase-js';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as dotenv from 'dotenv';
+import { mapArtifactChampionToDbChampion, resolveSupabaseSeedKey } from './set17ChampionSeed';
 // Database types imported from supabase_types if needed
 
 // Load environment variables from .env file
 dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL;
-const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY;
+const supabaseKey = resolveSupabaseSeedKey({
+    anonKey: process.env.VITE_SUPABASE_ANON_KEY,
+    serviceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY,
+});
 
 if (!supabaseUrl || !supabaseKey) {
-    console.error('Missing Supabase credentials in .env file');
+    console.error('Missing VITE_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY in .env file');
     process.exit(1);
 }
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-const DATA_FILE = path.resolve(process.cwd(), 'src/data/set16_champions.json');
+const DATA_FILE = path.resolve(process.cwd(), 'src/data/set17_champions.json');
 
 interface RiotChampion {
     name: string;
@@ -29,38 +33,21 @@ interface RiotChampion {
     tileIcon: string;
     squareIcon: string;
     stats: {
-        hp: number;
-        mana: number;
-        initialMana: number;
-        damage: number;
-        attackSpeed: number;
-        armor: number;
-        magicResist: number;
-        range: number;
+        hp: number | null;
+        mana: number | null;
+        initialMana: number | null;
+        damage: number | null;
+        attackSpeed: number | null;
+        armor: number | null;
+        magicResist: number | null;
+        range: number | null;
     };
     ability: {
-        name: string;
-        desc: string;
-        icon: string;
+        name: string | null;
+        desc: string | null;
+        icon: string | null;
+        variables?: unknown[];
     };
-}
-
-const CDRAGON_URL_BASE = 'https://raw.communitydragon.org/latest/game/';
-
-function formatIconUrl(path: string): string {
-    if (!path) return '';
-    // Convert "ASSETS/Characters/..." to lowercase and replace .tex with .png
-    // Remove "ASSETS/" prefix if double (CommunityDragon path usually starts after ASSETS/ or game/assets)
-    // Actually CommunityDragon raw usually maps 'game/assets' correctly.
-    // The JSON paths start with "ASSETS/...".
-    // CDragon URL: https://raw.communitydragon.org/latest/game/assets/characters/...
-
-    let cleanPath = path.toLowerCase().replace('.tex', '.png');
-
-    // If it starts with assets/, it maps to game/assets/
-    // We can just prepend appropriate base.
-
-    return CDRAGON_URL_BASE + cleanPath;
 }
 
 async function seedChampions() {
@@ -81,21 +68,34 @@ async function seedChampions() {
 
     for (const champ of champions) {
         try {
-            // Check if champion exists by name
+            const championData = mapArtifactChampionToDbChampion(champ);
+
             const { data: existing } = await supabase
                 .from('champions')
                 .select('id')
-                .eq('name', champ.name)
-                .single();
+                .eq('id', championData.id)
+                .maybeSingle();
 
-            const championData = {
-                name: champ.name,
-                cost: champ.cost,
-                traits: champ.traits,
-                avatar: formatIconUrl(champ.tileIcon || champ.squareIcon || champ.icon), // Prefer tileIcon (Square) for HUD
-                stats: champ.stats,
-                ability: champ.ability
-            };
+            if (!existing) {
+                const { data: existingByName } = await supabase
+                    .from('champions')
+                    .select('id')
+                    .eq('name', champ.name)
+                    .maybeSingle();
+
+                if (existingByName) {
+                    const { error } = await supabase
+                        .from('champions')
+                        .update(championData)
+                        .eq('id', existingByName.id);
+
+                    if (error) throw error;
+                    console.log(`Updated by name fallback: ${champ.name}`);
+                    successCount++;
+                    continue;
+                }
+            }
+
 
             if (existing) {
                 // Update
@@ -107,13 +107,9 @@ async function seedChampions() {
                 if (error) throw error;
                 console.log(`Updated: ${champ.name}`);
             } else {
-                // Insert - Need to generate ID
-                // Node.js crypto global is available in recent versions, or use 'crypto' module
-                // Since we are using tsx/node, we can try native global crypto or import it.
-                // Let's assume global crypto is available or use a fallback.
                 const { error } = await supabase
                     .from('champions')
-                    .insert([{ ...championData, id: champ.apiName }]);
+                    .insert([championData]);
 
                 if (error) throw error;
                 console.log(`Inserted: ${champ.name}`);

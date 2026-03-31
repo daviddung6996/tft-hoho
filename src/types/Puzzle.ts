@@ -53,10 +53,10 @@ export interface PuzzleState {
 
 export interface PuzzleMetadata {
     title: string;        // e.g., "2-1 Augments"
-    patch: string;        // e.g., "16.3b"
+    patch: string;        // e.g., "17.1"
     date: string;         // ISO Date "2025-01-31"
     proPlayer: string;    // e.g., "Pengu"
-    proRank: string;      // e.g., "Set 16 T1"
+    proRank: string;      // e.g., "Set 17 T1"
     encounter: string;    // e.g., "Howling Abyss"
 
     // The "See Pro Pick" Button Data

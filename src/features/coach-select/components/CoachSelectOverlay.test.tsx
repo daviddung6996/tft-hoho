@@ -139,7 +139,7 @@ describe('CoachSelectOverlay', () => {
 
         await waitFor(() => {
             expect(screen.getByTestId('coach-hero-image').getAttribute('src')).toContain(
-                '/tft-assets/tft16_ryze_square.tft_set16.png',
+                '/tft-assets/tft17_ryze.jpg',
             );
             expect(screen.getByTestId('coach-hero-image').closest('.coach-select-visual__hero')?.className).toContain(
                 'coach-select-visual__hero--art-fallback',

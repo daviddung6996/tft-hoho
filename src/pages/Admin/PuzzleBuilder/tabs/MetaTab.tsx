@@ -112,7 +112,7 @@ const MetaTab: React.FC<MetaTabProps> = ({
                                     className="hex-input"
                                     value={puzzle.proLpRank || ''}
                                     onChange={e => updatePuzzle({ proLpRank: e.target.value })}
-                                    placeholder="e.g., 1200 LP, Set 16 T1"
+                                    placeholder="e.g., 1200 LP, Set 17 T1"
                                 />
                             </div>
                             <div className="pb-field-group">

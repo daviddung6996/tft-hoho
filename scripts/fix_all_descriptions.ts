@@ -236,12 +236,12 @@ async function fetchCDragon() {
 async function fixTraits(cdData: any) {
     console.log('\n========== TRAITS ==========');
 
-    const set16 = cdData.setData?.find((s: any) =>
-        s.mutator === 'TFTSet16' || s.mutator === 'TFTSet16_Stage2'
+    const set17 = cdData.setData?.find((s: any) =>
+        s.mutator === 'TFTSet17' || s.mutator === 'TFTSet17_Stage2'
     );
-    if (!set16) throw new Error('Set 16 not found');
+    if (!set17) throw new Error('Set 17 not found');
 
-    const cdTraits: CDragonTrait[] = set16.traits || [];
+    const cdTraits: CDragonTrait[] = set17.traits || [];
     console.log(`CDragon traits: ${cdTraits.length}`);
 
     // Build lookup
@@ -264,7 +264,7 @@ async function fixTraits(cdData: any) {
             let found: CDragonTrait | undefined;
             for (const [key, val] of cdByApi) {
                 if (key.includes(dbT.id.toLowerCase().replace('tft16_', '')) ||
-                    dbT.id.toLowerCase().includes(key.replace('set16_', ''))) {
+                    dbT.id.toLowerCase().includes(key.replace('set17_', ''))) {
                     found = val;
                     break;
                 }

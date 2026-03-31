@@ -1,21 +1,17 @@
 /**
- * Game Info Data - Ionia Paths & Void Mods
- * Pro players check these at the start of every match
+ * Game Info Data - Set 17 featured paths & modifiers
+ * These are lightweight Set 17-flavored scouting hints used by the current UI.
  */
 
 const base = import.meta.env.BASE_URL || '/';
 const cleanBase = base.endsWith('/') ? base : `${base}/`;
-const LOCAL_VOID_EMBLEM_ICON = `${cleanBase}tft-assets/tft16_emblem_void.tft_set16.png`;
-
-// ============================================================================
-// IONIA PATHS (5 Đạo)
-// ============================================================================
+const LOCAL_SET17_ICON = `${cleanBase}tft-assets/tft17_emblem.png`;
 
 export interface IoniaPath {
     id: string;
-    name: string;           // English name
-    nameVi: string;         // Vietnamese name
-    description: string;    // Vietnamese description
+    name: string;
+    nameVi: string;
+    description: string;
     breakpoints: {
         level: 3 | 5 | 7;
         stats: string;
@@ -24,115 +20,111 @@ export interface IoniaPath {
 
 export const IONIA_PATHS: IoniaPath[] = [
     {
-        id: 'blades',
-        name: 'Path of Blades',
-        nameVi: 'Đạo Kiếm',
-        description: 'Đòn đánh có tỉ lệ kích hoạt đòn tấn công phụ và gây thêm sát thương vật lý.',
+        id: 'nova-flex',
+        name: 'N.O.V.A. Flex',
+        nameVi: 'Khung N.O.V.A.',
+        description: 'Giữ hướng đánh xoay quanh N.O.V.A. với front line chắc và carry tầm xa linh hoạt.',
         breakpoints: [
-            { level: 3, stats: '30% tỉ lệ, +3 sát thương' },
-            { level: 5, stats: '38% tỉ lệ, +8 sát thương' },
-            { level: 7, stats: '45% tỉ lệ, +15 sát thương' }
+            { level: 3, stats: 'Ưu tiên giữ khung rẻ và đồ thủ' },
+            { level: 5, stats: 'Bổ sung carry phụ hoặc khống chế' },
+            { level: 7, stats: 'Chốt bài với tanker + backline chủ lực' }
         ]
     },
     {
-        id: 'enlightened',
-        name: 'Path of the Enlightened',
-        nameVi: 'Đạo Khai Sáng',
-        description: 'Tướng Ionia nhận Sức Mạnh Công Kích và Sức Mạnh Phép Thuật, tăng theo cấp người chơi. Sau mỗi giao tranh người chơi, nhận thêm XP.',
+        id: 'anima-pressure',
+        name: 'Anima Pressure',
+        nameVi: 'Khung Anima',
+        description: 'Đẩy nhịp đấu sớm với tướng Anima rẻ, tận dụng chuỗi thắng và giữ đồ sát thương.',
         breakpoints: [
-            { level: 3, stats: '10 AD/AP + 2/cấp, 1 XP' },
-            { level: 5, stats: '15 AD/AP + 3/cấp, 2 XP' },
-            { level: 7, stats: '20 AD/AP + 4/cấp, 4 XP' }
+            { level: 3, stats: 'Giữ máu và tempo đầu trận' },
+            { level: 5, stats: 'Ưu tiên bổ sung sát thương tuyến sau' },
+            { level: 7, stats: 'Chuyển bài nếu lobby tranh quá mạnh' }
         ]
     },
     {
-        id: 'prosperous',
-        name: 'Path of the Prosperous',
-        nameVi: 'Đạo Phú Quý',
-        description: 'Nhận 1 vàng với mỗi 3 lần tướng Ionia tham gia hạ gục. Tướng Ionia nhận thêm Sức Mạnh Công Kích và Sức Mạnh Phép Thuật, tăng thêm 2% với mỗi vàng nhận được theo cách này.',
+        id: 'timebreaker-tempo',
+        name: 'Timebreaker Tempo',
+        nameVi: 'Khung Timebreaker',
+        description: 'Đánh theo nhịp nâng cấp, ghép đồ sớm cho carry tốc đánh và giữ đội hình cân bằng.',
         breakpoints: [
-            { level: 3, stats: '10 AD/AP + 2%/vàng' },
-            { level: 5, stats: '25 AD/AP + 2%/vàng' },
-            { level: 7, stats: '40 AD/AP + 2%/vàng' }
+            { level: 3, stats: 'Ưu tiên ổn định bàn cờ' },
+            { level: 5, stats: 'Hoàn thiện cặp chống chịu + gây sát thương' },
+            { level: 7, stats: 'Chốt carry chính và nâng cấp tuyến trước' }
         ]
     },
     {
-        id: 'spirits',
-        name: 'Path of Spirits',
-        nameVi: 'Đạo Linh Hồn',
-        description: 'Tướng Ionia nhận Máu cộng thêm. Mỗi lần một tướng Ionia thi triển, tất cả tướng Ionia nhận cộng dồn Sức Mạnh Công Kích và Sức Mạnh Phép Thuật.',
+        id: 'fateweaver-scaling',
+        name: 'Fateweaver Scaling',
+        nameVi: 'Khung Fateweaver',
+        description: 'Giữ bàn an toàn để lên cấp mượt, tích lũy sức mạnh dần cho giai đoạn giữa trận.',
         breakpoints: [
-            { level: 3, stats: '20% Máu, 3 AD/AP' },
-            { level: 5, stats: '25% Máu, 4 AD/AP' },
-            { level: 7, stats: '35% Máu, 5 AD/AP' }
+            { level: 3, stats: 'Ổn định bàn với tướng rẻ dễ nâng cấp' },
+            { level: 5, stats: 'Thêm utility và giữ máu' },
+            { level: 7, stats: 'Mở chỗ cho carry 4 vàng' }
         ]
     },
     {
-        id: 'transcendent',
-        name: 'Path of the Transcendent',
-        nameVi: 'Đạo Siêu Việt',
-        description: 'Tướng Ionia nhận thêm máu và gây thêm sát thương phép. Tướng Ionia 3 sao nhận thêm 100% nữa.',
+        id: 'bastion-bulwark',
+        name: 'Bastion Bulwark',
+        nameVi: 'Khung Bastion',
+        description: 'Dồn tài nguyên cho tuyến trước Bastion để câu giờ cho carry Set 17 xả sát thương.',
         breakpoints: [
-            { level: 3, stats: '10% Máu, +22% sát thương phép' },
-            { level: 5, stats: '15% Máu, +28% sát thương phép' },
-            { level: 7, stats: '20% Máu, +33% sát thương phép' }
+            { level: 3, stats: 'Ưu tiên đồ thủ và giữ máu' },
+            { level: 5, stats: 'Ghép thêm utility hoặc hồi phục' },
+            { level: 7, stats: 'Chốt bài quanh tanker 2 sao và carry sau lưng' }
         ]
     }
 ];
 
-// ============================================================================
-// VOID MODS (6 Mô-đun Hư Không)
-// ============================================================================
-
 export interface VoidMod {
     id: string;
-    name: string;           // English name
-    nameVi: string;         // Vietnamese name
-    description: string;    // Vietnamese description
-    icon: string;           // Icon URL
-    recommended?: string;   // Recommended champions (Vietnamese)
+    name: string;
+    nameVi: string;
+    description: string;
+    icon: string;
+    recommended?: string;
 }
 
 export const VOID_MODS: VoidMod[] = [
     {
-        id: 'royal_protection',
-        name: 'Royal Protection',
-        nameVi: 'Bảo Hộ Hoàng Gia',
-        description: 'Nhận 200 Máu. Khi xuống dưới 50% Máu, triệu hồi 1 Bọ Hư Không có 30% Máu của tướng đó.',
-        icon: LOCAL_VOID_EMBLEM_ICON,
-        recommended: "Cho'Gath, Sứ Giả"
+        id: 'tempo-surge',
+        name: 'Tempo Surge',
+        nameVi: 'Nhịp Độ Cao',
+        description: 'Ưu tiên các nâng cấp giúp mạnh ngay để giữ chuỗi thắng và snowball Set 17.',
+        icon: LOCAL_SET17_ICON,
+        recommended: 'N.O.V.A., Anima, Timebreaker'
     },
     {
-        id: 'toxic_spines',
-        name: 'Toxic Spines',
-        nameVi: 'Gai Phun Độc',
-        description: 'Sau khi gây 1000 sát thương, bắn gai vào 2 kẻ địch gần nhất gây 100 sát thương vật lý.',
-        icon: LOCAL_VOID_EMBLEM_ICON,
-        recommended: "Rek'Sai, Malzahar, Kai'Sa"
+        id: 'frontline-anchor',
+        name: 'Frontline Anchor',
+        nameVi: 'Neo Tuyến Trước',
+        description: 'Tập trung tài nguyên cho tanker chủ lực để bảo kê carry trong lobby nhiều sát thương.',
+        icon: LOCAL_SET17_ICON,
+        recommended: 'Bastion, front line 2 sao'
     },
     {
-        id: 'leeching_nucleus',
-        name: 'Leeching Nucleus',
-        nameVi: 'Hạch Hút Hạ',
-        description: 'Hồi máu cho đồng minh thấp máu nhất bằng 15% sát thương gây ra. Đòn đánh đánh cắp 2% SMCK/SMPT từ mục tiêu (tối đa 15 cộng dồn).',
-        icon: LOCAL_VOID_EMBLEM_ICON,
-        recommended: "Kog'Maw, Malzahar, Kai'Sa"
+        id: 'backline-overclock',
+        name: 'Backline Overclock',
+        nameVi: 'Quá Tải Tuyến Sau',
+        description: 'Đẩy tối đa hiệu suất carry tầm xa với đồ tốc đánh, SMPT hoặc xuyên thủng phù hợp.',
+        icon: LOCAL_SET17_ICON,
+        recommended: 'Caitlyn, Ezreal, các carry Set 17'
     },
     {
-        id: 'adrenaline_modules',
-        name: 'Adrenaline Modules',
-        nameVi: 'Mô-đun Adrenaline',
-        description: 'Nhận 15% Khuếch đại sát thương, tăng thêm 1% sau mỗi 3 đòn đánh.',
-        icon: LOCAL_VOID_EMBLEM_ICON,
-        recommended: "Bel'Veth, Kai'Sa"
+        id: 'econ-window',
+        name: 'Econ Window',
+        nameVi: 'Cửa Sổ Kinh Tế',
+        description: 'Giữ mốc vàng và chọn thời điểm roll hợp lý để lên cấp mượt, không mất quá nhiều máu.',
+        icon: LOCAL_SET17_ICON,
+        recommended: 'Các khung cần lên cấp ổn định'
     },
     {
-        id: 'armored_plating',
-        name: 'Armored Plating',
-        nameVi: 'Thiết Giáp',
-        description: 'Nhận 200 Máu tối đa. Nhận Giáp và Kháng Phép tương đương 0.6% Máu tối đa.',
-        icon: LOCAL_VOID_EMBLEM_ICON,
-        recommended: "Cho'Gath, Sứ Giả"
+        id: 'flex-pivot',
+        name: 'Flex Pivot',
+        nameVi: 'Chuyển Bài Linh Hoạt',
+        description: 'Giữ đồ và khung trung tính để xoay nhanh sang bài Set 17 ít bị tranh hơn trong lobby.',
+        icon: LOCAL_SET17_ICON,
+        recommended: 'Lobby tranh mạnh, cần xoay carry'
     }
 ];
 

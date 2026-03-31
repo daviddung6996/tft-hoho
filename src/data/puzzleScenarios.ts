@@ -27,7 +27,7 @@ export interface PuzzleScenario {
     patch?: string;
     // Pro player details
     proSocialLink?: string;       // Twitch/Twitter profile URL
-    proLpRank?: string;          // e.g., "Challenger 1200 LP" or "Set 16 T1"
+    proLpRank?: string;          // e.g., "Challenger 1200 LP" or "Set 17 T1"
     // Game context
     lobbyHealth?: string;         // Comma-separated HP values (e.g., "100, 95, 90, 85, 80, 75, 70, 65")
     tournamentName?: string;      // e.g., "Tactician's Cup", "Regional Finals"
@@ -78,7 +78,7 @@ export interface PuzzleScenario {
     opponents?: OpponentData[];
     // Starting items/components available to the player
     startingItems?: (Item | null)[];
-    // Game Info (Ionia Path & Void Mods)
+    // Game Info (Set 17 path & modifiers)
     ioniaPathId?: string;
     voidModIds?: string[];
 

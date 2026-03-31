@@ -615,7 +615,7 @@ describe('App mobile overlay shell', () => {
         expect(screen.queryByText('ActivePlayer:2')).not.toBeInTheDocument();
     });
 
-    it('minimizes loading coach overlay back to the board and shows a dim return fab', async () => {
+    it('minimizes loading coach overlay back to the board and shows a loading return fab', async () => {
         const user = userEvent.setup();
         mockCoachUiState = 'loading';
         mockShowCoachOverlay = true;
@@ -627,7 +627,20 @@ describe('App mobile overlay shell', () => {
 
         expect(minimizeToBoardMock).toHaveBeenCalledTimes(1);
         expect(screen.queryByTestId('coach-select-overlay')).not.toBeInTheDocument();
-        expect(screen.getByRole('button', { name: 'Coach Visian đang nhìn nhận thế trận' })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Tiếp tục với Visian' })).toBeInTheDocument();
+    });
+
+    it('reopens the in-flight coach session from the loading return fab', async () => {
+        const user = userEvent.setup();
+        mockCoachUiState = 'loading';
+        mockShowReturnFab = true;
+        mockReturnFabMode = 'loading';
+
+        render(<App />);
+
+        await user.click(screen.getByRole('button', { name: 'Tiếp tục với Visian' }));
+
+        expect(reopenOverlayMock).toHaveBeenCalledTimes(1);
     });
 
     it('promotes the return fab when hidden analysis finishes', () => {
@@ -704,7 +717,7 @@ describe('App mobile overlay shell', () => {
         await user.click(screen.getByRole('button', { name: 'Scout Fuwa' }));
 
         expect(dismissSessionMock).not.toHaveBeenCalled();
-        expect(screen.getByRole('button', { name: 'Coach Visian đang nhìn nhận thế trận' })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Tiếp tục với Visian' })).toBeInTheDocument();
     });
 
     it('dismisses the hidden coach session when the overlay close action is used', async () => {

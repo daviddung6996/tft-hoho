@@ -1,106 +1,106 @@
 import { Champion, Synergy, Player, BoardUnit } from './types';
 
 /**
- * TFT SET 16 "Lore & Legends" - Sample Champions
- * All champions are from Set 16 only
+ * TFT SET 17 "Monsters Attack!" - Sample Champions
+ * All champions are from Set 17 only
  */
 export const sampleChampions: Champion[] = [
     {
-        id: 'ahri',
-        name: 'Ahri',
-        cost: 3,
-        traits: ['Ionia', 'Arcanist'],
-        stars: 2,
-        icon: '◇'
-    },
-    {
-        id: 'jhin',
-        name: 'Jhin',
-        cost: 4,
-        traits: ['Ionia', 'Sniper'],
-        stars: 2,
-        icon: '◆'
-    },
-    {
         id: 'aatrox',
         name: 'Aatrox',
-        cost: 5,
-        traits: ['Darkin', 'Slayer'],
+        cost: 1,
+        traits: ['N.O.V.A.', 'Bastion'],
         stars: 1,
         icon: '▲'
     },
     {
-        id: 'poppy',
-        name: 'Poppy',
+        id: 'briar',
+        name: 'Briar',
         cost: 1,
-        traits: ['Demacia', 'Warden'],
+        traits: ['Anima', 'Primordian', 'Rogue'],
         stars: 1,
         icon: '◈'
     },
     {
-        id: 'nautilus',
-        name: 'Nautilus',
-        cost: 4,
-        traits: ['Bilgewater', 'Warden'],
+        id: 'caitlyn',
+        name: 'Caitlyn',
+        cost: 1,
+        traits: ['Enforcer', 'Marksman'],
         stars: 1,
+        icon: '◇'
+    },
+    {
+        id: 'kogmaw',
+        name: "Kog'Maw",
+        cost: 2,
+        traits: ['Anima', 'Marksman'],
+        stars: 2,
+        icon: '◆'
+    },
+    {
+        id: 'ezreal',
+        name: 'Ezreal',
+        cost: 3,
+        traits: ['N.O.V.A.', 'Marksman'],
+        stars: 2,
         icon: '◆'
     }
 ];
 
 /**
- * TFT SET 16 "Lore & Legends" - Sample Synergies/Traits
- * Regional traits: Ionia, Demacia, Freljord, Bilgewater, etc.
- * Class traits: Arcanist, Warden, Slayer, Sniper, etc.
+ * TFT SET 17 "Monsters Attack!" - Sample Synergies/Traits
+ * Origin traits: N.O.V.A., Anima, Enforcer, Primordian, etc.
+ * Class traits: Bastion, Marksman, Rogue, etc.
  */
 export const sampleSynergies: Synergy[] = [
     {
-        id: 'ionia',
-        name: 'Ionia',
-        breakpoints: [3, 5, 7, 10],
-        activeCount: 3,
-        icon: '◈'
-    },
-    {
-        id: 'demacia',
-        name: 'Demacia',
-        breakpoints: [3, 5, 7, 11],
-        activeCount: 3,
-        icon: '◆'
-    },
-    {
-        id: 'bilgewater',
-        name: 'Bilgewater',
-        breakpoints: [3, 5, 7, 10],
-        activeCount: 3,
-        icon: '⚓'
-    },
-    {
-        id: 'freljord',
-        name: 'Freljord',
-        breakpoints: [3, 5, 7],
-        activeCount: 3,
-        icon: '❄'
-    },
-    {
-        id: 'arcanist',
-        name: 'Arcanist',
+        id: 'nova',
+        name: 'N.O.V.A.',
         breakpoints: [2, 4, 6],
         activeCount: 2,
-        icon: '◇'
+        icon: '🌟'
     },
     {
-        id: 'warden',
-        name: 'Warden',
+        id: 'anima',
+        name: 'Anima',
+        breakpoints: [2, 4, 6],
+        activeCount: 2,
+        icon: '🐾'
+    },
+    {
+        id: 'bastion',
+        name: 'Bastion',
         breakpoints: [2, 4, 6],
         activeCount: 2,
         icon: '🛡'
     },
     {
-        id: 'slayer',
-        name: 'Slayer',
+        id: 'marksman',
+        name: 'Marksman',
+        breakpoints: [2, 4],
+        activeCount: 2,
+        icon: '🎯'
+    },
+    {
+        id: 'enforcer',
+        name: 'Enforcer',
         breakpoints: [2, 4, 6],
         activeCount: 2,
         icon: '⚔'
+    },
+    {
+        id: 'primordian',
+        name: 'Primordian',
+        breakpoints: [2, 4],
+        activeCount: 2,
+        icon: '◆'
+    },
+    {
+        id: 'rogue',
+        name: 'Rogue',
+        breakpoints: [2, 4],
+        activeCount: 2,
+        icon: '🗡'
     }
 ];
 
@@ -119,15 +119,15 @@ export const samplePlayers: Player[] = [
 // Sample board state - units positioned on hexes
 export const sampleBoardUnits: BoardUnit[] = [
     {
-        champion: sampleChampions[0], // Ahri
+        champion: sampleChampions[0], // Aatrox
         position: { row: 2, col: 3 }
     },
     {
-        champion: sampleChampions[1], // Jhin
+        champion: sampleChampions[2], // Caitlyn
         position: { row: 2, col: 4 }
     },
     {
-        champion: sampleChampions[3], // Poppy
+        champion: sampleChampions[4], // Ezreal
         position: { row: 2, col: 5 }
     }
 ];

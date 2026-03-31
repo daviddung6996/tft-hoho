@@ -35,8 +35,8 @@ export interface PlayerData {
 }
 
 /**
- * TFT SET 16 "Lore & Legends" Champions Only
- * Updated to include only champions available in Set 16
+ * TFT SET 17 Champions Only
+ * Updated to include only champions available in Set 17
  */
 export const MOCK_PLAYERS: PlayerData[] = [
     {
@@ -52,11 +52,11 @@ export const MOCK_PLAYERS: PlayerData[] = [
         arenaId: 'summoners_rift',
         augmentTreeUrl: augmentTreeImg,
         units: [
-            { id: 'p1', name: 'Jhin', row: 3, col: 3, cost: 4, stars: 1, image: getChampionIconUrl('Jhin'), items: ['InfinityEdge', 'GiantSlayer'] },
-            { id: 'p2', name: 'Ahri', row: 3, col: 1, cost: 3, stars: 2, image: getChampionIconUrl('Ahri') },
+            { id: 'p1', name: 'Aphelios', row: 3, col: 3, cost: 4, stars: 1, image: getChampionIconUrl('Aphelios'), items: ['InfinityEdge', 'GiantSlayer'] },
+            { id: 'p2', name: 'Nami', row: 3, col: 1, cost: 3, stars: 2, image: getChampionIconUrl('Nami') },
         ],
         bench: [
-            { id: 'pb1', name: 'Jhin', row: -1, col: 0, cost: 4, stars: 1, image: getChampionIconUrl('Jhin') },
+            { id: 'pb1', name: 'Aphelios', row: -1, col: 0, cost: 4, stars: 1, image: getChampionIconUrl('Aphelios') },
         ],
         augments: [] // Augments should be loaded from DB
     },
@@ -73,12 +73,12 @@ export const MOCK_PLAYERS: PlayerData[] = [
         arenaId: 'deep_sea',
         augmentTreeUrl: augmentTreeImg,
         units: [
-            { id: 'c1', name: 'Nautilus', row: 0, col: 3, cost: 4, stars: 1, image: getChampionIconUrl('Nautilus'), items: ['Redemption'] },
-            { id: 'c2', name: 'Fizz', row: 1, col: 2, cost: 2, stars: 1, image: getChampionIconUrl('Fizz') },
-            { id: 'c3', name: 'Graves', row: 1, col: 4, cost: 3, stars: 1, image: getChampionIconUrl('Graves') },
+            { id: 'c1', name: 'Garen', row: 0, col: 3, cost: 4, stars: 1, image: getChampionIconUrl('Garen'), items: ['Redemption'] },
+            { id: 'c2', name: 'Thresh', row: 1, col: 2, cost: 2, stars: 1, image: getChampionIconUrl('Thresh') },
+            { id: 'c3', name: 'Gragas', row: 1, col: 4, cost: 3, stars: 1, image: getChampionIconUrl('Gragas') },
         ],
         bench: [
-            { id: 'cb1', name: 'Illaoi', row: -1, col: 0, cost: 4, stars: 2, image: getChampionIconUrl('Illaoi') },
+            { id: 'cb1', name: 'Illaoi', row: -1, col: 0, cost: 3, stars: 2, image: getChampionIconUrl('Illaoi') },
         ],
         augments: [] // Augments should be loaded from DB
     },
@@ -95,11 +95,11 @@ export const MOCK_PLAYERS: PlayerData[] = [
         arenaId: 'lotus_pond',
         augmentTreeUrl: augmentTreeImg,
         units: [
-            { id: 'a1', name: 'Lux', row: 2, col: 0, cost: 4, stars: 2, image: getChampionIconUrl('Lux'), items: ['RabadonsDeathcap', 'Morellonomicon'] },
-            { id: 'a2', name: 'Diana', row: 2, col: 6, cost: 3, stars: 1, image: getChampionIconUrl('Diana') },
+            { id: 'a1', name: 'Karma', row: 2, col: 0, cost: 4, stars: 2, image: getChampionIconUrl('Karma'), items: ['RabadonsDeathcap', 'Morellonomicon'] },
+            { id: 'a2', name: 'Morgana', row: 2, col: 6, cost: 3, stars: 1, image: getChampionIconUrl('Morgana') },
         ],
         bench: [
-            { id: 'ab1', name: 'Ahri', row: -1, col: 1, cost: 3, stars: 1, image: getChampionIconUrl('Ahri') },
+            { id: 'ab1', name: 'Syndra', row: -1, col: 1, cost: 2, stars: 1, image: getChampionIconUrl('Syndra') },
         ],
         augments: [] // Augments should be loaded from DB
     },
@@ -116,8 +116,8 @@ export const MOCK_PLAYERS: PlayerData[] = [
         arenaId: 'yuumi_library',
         augmentTreeUrl: augmentTreeImg,
         units: [
-            { id: 'n1', name: 'Sona', row: 3, col: 3, cost: 2, stars: 1, image: getChampionIconUrl('Sona'), items: ['Redemption'] },
-            { id: 'n2', name: 'Poppy', row: 2, col: 3, cost: 1, stars: 1, image: getChampionIconUrl('Poppy') },
+            { id: 'n1', name: 'Senna', row: 3, col: 3, cost: 2, stars: 1, image: getChampionIconUrl('Senna'), items: ['Redemption'] },
+            { id: 'n2', name: 'Seraphine', row: 2, col: 3, cost: 1, stars: 1, image: getChampionIconUrl('Seraphine') },
         ],
         bench: []
     },
@@ -134,11 +134,11 @@ export const MOCK_PLAYERS: PlayerData[] = [
         arenaId: 'monsters_attack',
         augmentTreeUrl: augmentTreeImg,
         units: [
-            { id: 'b1', name: 'Aatrox', row: 0, col: 3, cost: 5, stars: 1, image: getChampionIconUrl('Aatrox'), items: ['HandOfJustice', 'Bloodthirster', 'TitansResolve'] },
+            { id: 'b1', name: 'Mordekaiser', row: 0, col: 3, cost: 5, stars: 1, image: getChampionIconUrl('Mordekaiser'), items: ['HandOfJustice', 'Bloodthirster', 'TitansResolve'] },
         ],
         bench: [
-            { id: 'bb1', name: 'Renekton', row: -1, col: 0, cost: 3, stars: 1, image: getChampionIconUrl('Renekton') },
-            { id: 'bb2', name: 'Nasus', row: -1, col: 1, cost: 4, stars: 2, image: getChampionIconUrl('Nasus') },
+            { id: 'bb1', name: 'Neeko', row: -1, col: 0, cost: 3, stars: 1, image: getChampionIconUrl('Neeko') },
+            { id: 'bb2', name: 'Sett', row: -1, col: 1, cost: 4, stars: 2, image: getChampionIconUrl('Sett') },
         ],
         augments: [] // Augments should be loaded from DB
     },
@@ -155,9 +155,9 @@ export const MOCK_PLAYERS: PlayerData[] = [
         arenaId: 'bilgewater_depths',
         augmentTreeUrl: augmentTreeImg,
         units: [
-            { id: 'f1', name: 'Miss Fortune', row: 3, col: 2, cost: 4, stars: 1, image: getChampionIconUrl('Miss Fortune'), items: ['GuinsoosRageblade'] },
-            { id: 'f2', name: 'Tahm Kench', row: 3, col: 4, cost: 3, stars: 1, image: getChampionIconUrl('Tahm Kench') },
-            { id: 'f3', name: 'Nautilus', row: 2, col: 3, cost: 4, stars: 1, image: getChampionIconUrl('Nautilus') },
+            { id: 'f1', name: 'Miss Fortune', row: 3, col: 2, cost: 5, stars: 1, image: getChampionIconUrl('Miss Fortune'), items: ['GuinsoosRageblade'] },
+            { id: 'f2', name: 'Tahm Kench', row: 3, col: 4, cost: 2, stars: 1, image: getChampionIconUrl('Tahm Kench') },
+            { id: 'f3', name: 'Skarner', row: 2, col: 3, cost: 1, stars: 1, image: getChampionIconUrl('Skarner') },
         ],
         bench: []
     },
@@ -174,11 +174,11 @@ export const MOCK_PLAYERS: PlayerData[] = [
         arenaId: 'cyber_city',
         augmentTreeUrl: augmentTreeImg,
         units: [
-            { id: 's1', name: 'Ziggs', row: 0, col: 0, cost: 2, stars: 2, image: getChampionIconUrl('Ziggs'), items: ['StatikkShiv'] },
-            { id: 's2', name: 'Orianna', row: 0, col: 6, cost: 3, stars: 1, image: getChampionIconUrl('Orianna') },
+            { id: 's1', name: 'Twisted Fate', row: 0, col: 0, cost: 2, stars: 2, image: getChampionIconUrl('Twisted Fate'), items: ['StatikkShiv'] },
+            { id: 's2', name: 'Varus', row: 0, col: 6, cost: 3, stars: 1, image: getChampionIconUrl('Varus') },
         ],
         bench: [
-            { id: 'sb1', name: 'Loris', row: -1, col: 4, cost: 2, stars: 1, image: getChampionIconUrl('Loris') },
+            { id: 'sb1', name: 'Lulu', row: -1, col: 4, cost: 2, stars: 1, image: getChampionIconUrl('Lulu') },
         ],
         augments: [] // Augments should be loaded from DB
     },
@@ -195,11 +195,11 @@ export const MOCK_PLAYERS: PlayerData[] = [
         arenaId: 'water_dragon_village',
         augmentTreeUrl: augmentTreeImg,
         units: [
-            { id: 'm1', name: 'Yone', row: 1, col: 3, cost: 4, stars: 1, image: getChampionIconUrl('Yone'), items: ['SunfireCape', 'IonicSpark'] },
-            { id: 'm2', name: 'Xin Zhao', row: 2, col: 2, cost: 2, stars: 1, image: getChampionIconUrl('Xin Zhao') },
+            { id: 'm1', name: 'Xayah', row: 1, col: 3, cost: 4, stars: 1, image: getChampionIconUrl('Xayah'), items: ['SunfireCape', 'IonicSpark'] },
+            { id: 'm2', name: 'Warwick', row: 2, col: 2, cost: 2, stars: 1, image: getChampionIconUrl('Warwick') },
         ],
         bench: [
-            { id: 'mb1', name: 'Anivia', row: -1, col: 2, cost: 5, stars: 1, image: getChampionIconUrl('Anivia') },
+            { id: 'mb1', name: 'Kindred', row: -1, col: 2, cost: 5, stars: 1, image: getChampionIconUrl('Kindred') },
         ],
         augments: [] // Augments should be loaded from DB
     },

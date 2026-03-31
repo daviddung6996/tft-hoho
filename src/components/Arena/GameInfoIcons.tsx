@@ -422,9 +422,9 @@ const VoidIcon: React.FC<VoidIconProps> = ({ mods }) => {
         >
             <div className="game-info-header">
                 <div className="game-info-header-icon">
-                    <img src={VOID_ICON_URL} alt="Void" />
+                    <img src={VOID_ICON_URL} alt="Set 17 mods" />
                 </div>
-                <div className="game-info-title">Hư Không</div>
+                <div className="game-info-title">Modifier Set 17</div>
             </div>
             <div className="game-info-mods-list">
                 {mods.map((mod, index) => (
@@ -452,7 +452,7 @@ const VoidIcon: React.FC<VoidIconProps> = ({ mods }) => {
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
         >
-            <img src={VOID_ICON_URL} alt="Void Mods" draggable={false} />
+            <img src={VOID_ICON_URL} alt="Set 17 Mods" draggable={false} />
             {tooltipContent}
         </div>
     );

@@ -172,6 +172,48 @@ describe('useCoachSelect', () => {
             expect(askCoachMock).toHaveBeenCalledTimes(1);
             expect(result.current.answer).toBe('Featherweights III. Still valid.');
         });
+
+        it('reopens the in-flight minimized session instead of resetting the coach flow', async () => {
+            let resolveAsk: ((value: { answer: string }) => void) | null = null;
+            askCoachMock.mockImplementation(() => new Promise(resolve => {
+                resolveAsk = resolve;
+            }));
+
+            const { result } = renderHook(() => useCoachSelect(gameContext, 'puzzle-1'));
+
+            act(() => {
+                result.current.openSelect();
+            });
+
+            let pendingAsk: Promise<void> | null = null;
+            act(() => {
+                pendingAsk = result.current.askCoach();
+            });
+
+            act(() => {
+                result.current.minimizeToBoard();
+            });
+
+            expect(result.current.showReturnFab).toBe(true);
+            expect(result.current.uiState).toBe('loading');
+
+            act(() => {
+                result.current.openSelect();
+            });
+
+            expect(result.current.showCoachOverlay).toBe(true);
+            expect(result.current.showReturnFab).toBe(false);
+            expect(result.current.uiState).toBe('loading');
+            expect(askCoachMock).toHaveBeenCalledTimes(1);
+
+            await act(async () => {
+                resolveAsk?.({ answer: 'Pick: Featherweights III\nGiai thich: Still loading.' });
+                await pendingAsk;
+            });
+
+            expect(result.current.uiState).toBe('response');
+            expect(result.current.answer).toBe('Featherweights III. Still loading.');
+        });
     });
 
 

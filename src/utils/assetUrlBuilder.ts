@@ -1,7 +1,7 @@
 /**
  * TFT Asset URL Builder
- * Utility for building reliable asset URLs for TFT Set 16 from Community Dragon CDN.
- * Uses TFT-specific paths to avoid confusion with LoL assets.
+ * Utility for building reliable asset URLs for TFT Set 17.
+ * Uses TFT-specific paths and tactics.tools fallbacks for current Set 17 assets.
  */
 
 export type AssetType = 'champion' | 'item' | 'augment' | 'trait' | 'spatula';
@@ -14,56 +14,43 @@ interface AssetUrlOptions {
     fallbackIndex?: number;
 }
 
-// TFT Set 16 specific paths - Community Dragon primary
+// TFT Set 17 specific paths
 const COMMUNITY_DRAGON_BASE = 'https://raw.communitydragon.org/latest';
 const COMMUNITY_DRAGON_PBE = 'https://raw.communitydragon.org/pbe';
+const TACTICS_TOOLS_BASE = 'https://ap.tft.tools';
 
-// Asset path templates - TFT Set 16 specific paths ONLY
 const ASSET_PATHS: Record<AssetType, string[]> = {
     champion: [
-        // TFT Set 16 champion icons (with tft16_ prefix in directory and filename)
-        `${COMMUNITY_DRAGON_BASE}/plugins/rcp-be-lol-game-data/global/default/assets/characters/tft16_{key}/hud/tft16_{key}_square.tft_set16.png`,
-        // Fallback: PBE version
-        `${COMMUNITY_DRAGON_PBE}/plugins/rcp-be-lol-game-data/global/default/assets/characters/tft16_{key}/hud/tft16_{key}_square.tft_set16.png`,
-        // Fallback: JPG version
-        `${COMMUNITY_DRAGON_BASE}/plugins/rcp-be-lol-game-data/global/default/assets/characters/tft16_{key}/hud/tft16_{key}_square.tft_set16.jpg`,
+        `${TACTICS_TOOLS_BASE}/img/new17/face/tft17_{key}.jpg`,
+        `${COMMUNITY_DRAGON_BASE}/plugins/rcp-be-lol-game-data/global/default/assets/characters/tft17_{key}/hud/tft17_{key}_square.tft_set17.png`,
+        `${COMMUNITY_DRAGON_PBE}/plugins/rcp-be-lol-game-data/global/default/assets/characters/tft17_{key}/hud/tft17_{key}_square.tft_set17.png`,
     ],
     item: [
-        // TFT item icons (specific TFT path, not LoL items)
         `${COMMUNITY_DRAGON_BASE}/game/assets/maps/particles/tft/item_icons/standard/{key}.png`,
-        // Fallback: Alternative TFT item path
         `${COMMUNITY_DRAGON_BASE}/game/assets/maps/particles/tft/item_icons/{key}.png`,
-        // Fallback: PBE TFT items
         `${COMMUNITY_DRAGON_PBE}/game/assets/maps/particles/tft/item_icons/standard/{key}.png`,
     ],
     augment: [
-        // TFT augments (hexcore path)
         `${COMMUNITY_DRAGON_BASE}/game/assets/maps/particles/tft/augments/hexcore/{key}.png`,
-        // Fallback: Generic augments path
         `${COMMUNITY_DRAGON_BASE}/game/assets/maps/particles/tft/augments/{key}.png`,
-        // Fallback: PBE augments
         `${COMMUNITY_DRAGON_PBE}/game/assets/maps/particles/tft/augments/{key}.png`,
     ],
     trait: [
-        // TFT Set 16 trait icons (with trait_icon_16_ prefix and .tft_set16.png suffix)
-        `${COMMUNITY_DRAGON_BASE}/game/assets/ux/traiticons/trait_icon_16_{key}.tft_set16.png`,
-        // Fallback: PNG without set suffix
-        `${COMMUNITY_DRAGON_BASE}/game/assets/ux/traiticons/trait_icon_16_{key}.png`,
-        // Fallback: PBE version
-        `${COMMUNITY_DRAGON_PBE}/game/assets/ux/traiticons/trait_icon_16_{key}.tft_set16.png`,
+        `${TACTICS_TOOLS_BASE}/static/trait-icons/new17_tft17_{key}_w.svg`,
+        `${COMMUNITY_DRAGON_BASE}/game/assets/ux/traiticons/trait_icon_17_{key}.tft_set17.png`,
+        `${COMMUNITY_DRAGON_PBE}/game/assets/ux/traiticons/trait_icon_17_{key}.tft_set17.png`,
     ],
     spatula: [
-        // TFT spatula item
         `${COMMUNITY_DRAGON_BASE}/game/assets/maps/particles/tft/item_icons/standard/spatula.png`,
         `${COMMUNITY_DRAGON_BASE}/game/assets/maps/particles/tft/item_icons/spatula.png`,
     ],
 };
 
 /**
- * Normalize asset name to key format (lowercase for TFT Set 16)
+ * Normalize asset name to key format (lowercase for TFT Set 17)
  */
 function normalizeKey(name: string): string {
-    // TFT Set 16 uses lowercase keys for all assets
+    // TFT Set 17 uses lowercase keys for current URL templates
     if (!name) return '';
     return name.toLowerCase().replace(/[^a-z0-9]/g, '');
 }
@@ -95,7 +82,7 @@ export function buildAssetUrl(options: AssetUrlOptions): string {
     let url = paths[fallbackIndex];
 
     if (type === 'champion') {
-        // TFT Set 16 uses lowercase champion keys
+        // TFT Set 17 uses lowercase champion keys
         const key = normalizeKey(name || String(id));
         url = url.replace(/{key}/g, key);
     } else if (type === 'item' || type === 'spatula') {

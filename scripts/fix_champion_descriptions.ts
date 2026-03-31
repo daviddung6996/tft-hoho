@@ -38,16 +38,16 @@ async function fetchVietnameseChampions(): Promise<CDragonChampion[]> {
     if (!response.ok) throw new Error(`Failed to fetch: ${response.statusText}`);
     const data = await response.json();
 
-    // Find Set 16 champions
-    const set16 = data.setData?.find((s: any) =>
-        s.mutator === 'TFTSet16' || s.mutator === 'TFTSet16_Stage2'
+    // Find Set 17 champions
+    const set17 = data.setData?.find((s: any) =>
+        s.mutator === 'TFTSet17' || s.mutator === 'TFTSet17_Stage2'
     );
-    if (!set16) {
+    if (!set17) {
         console.log('Available sets:', data.setData?.map((s: any) => s.mutator));
-        throw new Error('Set 16 not found');
+        throw new Error('Set 17 not found');
     }
-    console.log(`Found ${set16.champions.length} champions in CDragon vi_vn`);
-    return set16.champions;
+    console.log(`Found ${set17.champions.length} champions in CDragon vi_vn`);
+    return set17.champions;
 }
 
 // Format a number for display

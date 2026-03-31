@@ -593,7 +593,7 @@ const App: React.FC = () => {
         && !hasBlockingWorkspaceModal
         && showReturnFab
         && !isTransitioning;
-    const loadingCoachFabLabel = `Coach ${selectedCoach.displayName} đang nhìn nhận thế trận`;
+    const loadingCoachFabLabel = `Tiếp tục với ${selectedCoach.displayName}`;
 
     // Removed routing for TestFlex
 
@@ -647,9 +647,9 @@ const App: React.FC = () => {
                                 <CoachFab
                                     onClick={handleReopenCoachOverlay}
                                     variant={returnFabMode === 'ready' ? 'return-ready' : 'return-loading'}
-                                    eyebrow={returnFabMode === 'ready' ? 'Đã xong' : 'Coach'}
+                                    eyebrow={returnFabMode === 'ready' ? 'Đã xong' : 'Đang phân tích'}
                                     label={returnFabMode === 'ready' ? 'Xem phân tích' : loadingCoachFabLabel}
-                                    isDimmed={returnFabMode !== 'ready'}
+                                    isDimmed={returnFabMode === 'ready' ? undefined : false}
                                     isPulsing={returnFabMode === 'ready'}
                                 />
                             )}

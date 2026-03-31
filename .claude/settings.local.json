@@ -54,7 +54,10 @@
       "Bash(git worktree:*)",
       "Bash(xargs -I{} git worktree remove --force \"{}\")",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "mcp__obsidian__search_notes",
+      "mcp__plugin_context-mode_context-mode__ctx_execute_file",
+      "mcp__plugin_context-mode_context-mode__ctx_fetch_and_index"
     ]
   },
   "enableAllProjectMcpServers": true,

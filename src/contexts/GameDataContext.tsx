@@ -114,7 +114,7 @@ export const GameDataProvider: React.FC<GameDataProviderProps> = ({ children }) 
     };
 
     // Lookup by English name (from champion.traits array)
-    // Handles various ID formats: TFT16_Void, Void, Set16_Void, etc.
+    // Handles various ID formats: TFT17_Nova, Nova, Set17_Nova, etc.
     const getTraitByNameEn = (nameEn: string): Trait | undefined => {
         const normalized = normalizeLookupValue(nameEn).replace(/tft\d+_|set\d+_/gi, '');
         return traits.find(t => {

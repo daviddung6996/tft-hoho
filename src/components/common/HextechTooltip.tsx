@@ -223,6 +223,7 @@ interface ChampionStats {
 interface AbilityVariable {
     name: string;
     value: number[];
+    values?: number[];
 }
 
 const getVariableDisplayName = (name: string): string => {
@@ -301,10 +302,10 @@ export const ChampionTooltip: React.FC<ChampionTooltipProps> = ({
             )}
             {stats && (
                 <div className="champion-tooltip-compact-stats">
-                    <span><img src="https://cdn.tft.tools/general/hp.png" alt="HP" className="compact-stat-icon" />{stats.hp[currentStars - 1]}</span>
-                    <span><img src={getLocalUrl("https://raw.communitydragon.org/latest/game/assets/perks/statmods/statmodsattackdamageicon.png")} alt="AD" className="compact-stat-icon" />{stats.ad[currentStars - 1]}</span>
-                    <span><img src={getLocalUrl("https://raw.communitydragon.org/latest/game/assets/perks/statmods/statmodsarmoricon.png")} alt="AR" className="compact-stat-icon" />{stats.armor}<img src={getLocalUrl("https://raw.communitydragon.org/latest/game/assets/perks/statmods/statmodsmagicresicon.png")} alt="MR" className="compact-stat-icon" style={{ marginLeft: '4px' }} />{stats.mr}</span>
-                    <span><img src={getLocalUrl("https://raw.communitydragon.org/latest/game/assets/perks/statmods/statmodsattackspeedicon.png")} alt="AS" className="compact-stat-icon" />{stats.as.toFixed(2)}</span>
+                    {stats.hp && <span><img src="https://cdn.tft.tools/general/hp.png" alt="HP" className="compact-stat-icon" />{stats.hp[currentStars - 1]}</span>}
+                    {stats.ad && <span><img src={getLocalUrl("https://raw.communitydragon.org/latest/game/assets/perks/statmods/statmodsattackdamageicon.png")} alt="AD" className="compact-stat-icon" />{stats.ad[currentStars - 1]}</span>}
+                    {(stats.armor != null || stats.mr != null) && <span><img src={getLocalUrl("https://raw.communitydragon.org/latest/game/assets/perks/statmods/statmodsarmoricon.png")} alt="AR" className="compact-stat-icon" />{stats.armor ?? '?'}<img src={getLocalUrl("https://raw.communitydragon.org/latest/game/assets/perks/statmods/statmodsmagicresicon.png")} alt="MR" className="compact-stat-icon" style={{ marginLeft: '4px' }} />{stats.mr ?? '?'}</span>}
+                    {stats.as != null && <span><img src={getLocalUrl("https://raw.communitydragon.org/latest/game/assets/perks/statmods/statmodsattackspeedicon.png")} alt="AS" className="compact-stat-icon" />{stats.as.toFixed(2)}</span>}
                 </div>
             )}
             {items.length > 0 && (
@@ -335,7 +336,7 @@ export const ChampionTooltip: React.FC<ChampionTooltipProps> = ({
                         <div className="hextech-tooltip-ability">
                             <div className="hextech-tooltip-ability-header">
                                 <div className="hextech-tooltip-ability-name">{abilityName}</div>
-                                {stats && (
+                                {stats?.mana && (
                                     <div className="hextech-tooltip-mana">
                                         <img src="https://cdn.tft.tools/general/mana.png" alt="Mana" className="stat-icon" />
                                         <span>{stats.mana.min}/{stats.mana.max}</span>
@@ -349,14 +350,16 @@ export const ChampionTooltip: React.FC<ChampionTooltipProps> = ({
                                 <div className="ability-scaling-section">
                                     {abilityVariables
                                         .filter(v => {
-                                            const starValues = [v.value[1], v.value[2], v.value[3]];
-                                            return starValues.some(val => val !== 0 && val !== starValues[0]);
+                                            const vals = v.value || v.values || [];
+                                            const starValues = [vals[1], vals[2], vals[3]];
+                                            return starValues.some(val => val !== undefined && val !== 0 && val !== starValues[0]);
                                         })
                                         .slice(0, 4)
                                         .map((variable, idx) => {
-                                            const currentValue = variable.value[currentStars] || variable.value[1];
+                                            const vals = variable.value || variable.values || [];
+                                            const currentValue = vals[currentStars] || vals[1] || 0;
                                             const displayValues = [
-                                                variable.value[1], variable.value[2], variable.value[3]
+                                                vals[1] || 0, vals[2] || 0, vals[3] || 0
                                             ].map(v => Math.round(v * 100) / 100);
                                             return (
                                                 <div key={idx} className="ability-scaling-row">
@@ -374,28 +377,28 @@ export const ChampionTooltip: React.FC<ChampionTooltipProps> = ({
                     )}
                     {stats && (
                         <div className="hextech-tooltip-stats">
-                            <div className="stat-item">
+                            {stats.hp && <div className="stat-item">
                                 <img src="https://cdn.tft.tools/general/hp.png" alt="HP" className="stat-icon" />
                                 <span className="stat-values">{stats.hp[0]}/{stats.hp[1]}/{stats.hp[2]}</span>
-                            </div>
-                            <div className="stat-item">
+                            </div>}
+                            {stats.ad && <div className="stat-item">
                                 <img src={getLocalUrl("https://raw.communitydragon.org/latest/game/assets/perks/statmods/statmodsattackdamageicon.png")} alt="AD" className="stat-icon" />
                                 <span className="stat-values">{stats.ad[0]}/{stats.ad[1]}/{stats.ad[2]}</span>
-                            </div>
-                            <div className="stat-item">
+                            </div>}
+                            {(stats.armor != null || stats.mr != null) && <div className="stat-item">
                                 <img src={getLocalUrl("https://raw.communitydragon.org/latest/game/assets/perks/statmods/statmodsarmoricon.png")} alt="AR" className="stat-icon" />
-                                <span className="stat-values">{stats.armor}</span>
+                                <span className="stat-values">{stats.armor ?? '?'}</span>
                                 <img src={getLocalUrl("https://raw.communitydragon.org/latest/game/assets/perks/statmods/statmodsmagicresicon.png")} alt="MR" className="stat-icon" style={{ marginLeft: '8px' }} />
-                                <span className="stat-values">{stats.mr}</span>
-                            </div>
-                            <div className="stat-item">
+                                <span className="stat-values">{stats.mr ?? '?'}</span>
+                            </div>}
+                            {stats.as != null && <div className="stat-item">
                                 <img src={getLocalUrl("https://raw.communitydragon.org/latest/game/assets/perks/statmods/statmodsattackspeedicon.png")} alt="AS" className="stat-icon" />
                                 <span className="stat-values">{stats.as.toFixed(2)}</span>
-                            </div>
-                            <div className="stat-item">
+                            </div>}
+                            {stats.range != null && <div className="stat-item">
                                 <img src="https://cdn.tft.tools/general/range.png" alt="Range" className="stat-icon" />
                                 <span className="stat-values">{stats.range}</span>
-                            </div>
+                            </div>}
                         </div>
                     )}
                 </div>

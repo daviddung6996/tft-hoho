@@ -435,6 +435,11 @@ Get-ChildItem -Path src -Recurse -Include "*.tsx" | ForEach-Object {
 - **Cause:** `DecisionReview` historically had mobile overrides in both `src/components/Arena/DecisionReview.css` and `src/styles/mobile.css`, so old rules could keep forcing stale layout assumptions like `position: fixed`.
 - **Avoid:** Treat `src/components/Arena/DecisionReview.css` as the source of truth for DecisionReview mobile styling and remove/neutralize duplicate overrides from `src/styles/mobile.css`.
 
+### Coach Select CTA can become untappable on `phone-landscape` if the overlay keeps desktop height budgets
+- **Symptom:** The user can open Coach Select and even see `Hỏi Visian`, but tapping it does nothing or the CTA only becomes reachable after browser/programmatic scroll.
+- **Cause:** `CoachSelectOverlay` can still act like a cropped in-canvas layer while `phone-landscape` keeps desktop-sized header/context/carousel rows. That combination can squeeze `.coach-select-content` to a tiny height, push the CTA outside the real visible hit area, and leave touch input fighting clipped layout instead of reaching `askCoach()`.
+- **Avoid:** Keep `src/features/coach-select/components/CoachSelectOverlay.css` on the fixed-overlay contract (`position: fixed; inset: 0; pointer-events: auto`) and maintain a dedicated compact `phone-landscape` layout for the header, context chips, panel copy, CTA, and carousel so the CTA stays inside the viewport before any scroll.
+
 ### Teemo extra reroll is per augment slot, not a shared global pool
 - **Symptom:** After using two rerolls on one augment during Teemo encounter, other augments lose their `2` badge, look clickable but do nothing, or get disabled incorrectly.
 - **Cause:** Runtime modeled `hasExtraReroll` as two global charges shared by the whole screen instead of `2 rerolls per slot`.
@@ -663,6 +668,11 @@ betaWindow: {
 - **Symptom:** Bridge P95 xau di du traffic that rat thap, va EC2 co request CLI nen khong ro nguon tu user hay background.
 - **Cause:** `GET /health` cua bridge goi `notebooklm list --json` de verify notebook visibility. Neu Docker Compose/Nginx/system monitor ping `/health` dinh ky, no se spawn CLI subprocess nen va canh tranh tai nguyen voi hot path `/ask`.
 - **Avoid:** Dung `GET /live` cho container liveness. Giu `GET /health` cho deep canary theo chu ky dai hon (vd 5 phut) bang timer/cron rieng.
+
+### Production `visian-chat` `502` can be just an expired NotebookLM `storage_state.json` on EC2
+- **Symptom:** Browser spam `502` for `functions/v1/visian-chat`; Supabase edge logs show `OPTIONS 200` but `POST 502`; bridge `/health` returns `cli_failed` with `Authentication expired or invalid`.
+- **Cause:** The Edge Function can still reach the EC2 bridge, but the bridge's mounted NotebookLM auth file at `~/notebooklm-bridge/secrets/storage_state.json` is expired, so downstream CLI calls fail and `visian-chat` maps that failure to `502`.
+- **Avoid:** Debug in this order: `curl http://127.0.0.1:8080/live`, then `curl http://127.0.0.1:8080/health`, then refresh the server copy of `storage_state.json` from the Windows source `C:\Users\Administrator\.notebooklm\storage_state.json`, restart `docker compose`, and finally retest the Supabase function directly.
 
 ### NotebookLM bridge observability should correlate via `x-request-id` end-to-end
 - **Symptom:** Co log `subprocess_ms` o EC2 va log loi o Supabase nhung kho biet cung mot request hay khong, nhat la luc timeout / dedupe / retry.

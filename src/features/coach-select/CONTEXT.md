@@ -35,6 +35,7 @@ Document the overlay flow that lets the user choose a coach and request decision
 - Cache keys must include the live decision context, not just puzzle ID and coach ID.
 - Do not fabricate local coach analysis when the backend fails; show an unavailable state instead.
 - Treat coach overlay state as a real UI session that can be preserved across minimization when the feature expects it.
+- If a coach session is already `loading` or `response`, `openSelect()` must reopen that live session instead of resetting back to `select`; background analysis is resumable state, not a new request.
 - **Prefetch (trick lỏ):** `useCoachSelect` fires a background request (`prefetchCoach`) as soon as a coach is selected or the overlay opens — before the user clicks "Hỏi Coach". The prefetch uses a separate `AbortController` (`prefetchRef`) and stores results in `cachedAnswersRef`. When `askCoach()` is called: (1) cache hit → instant, (2) prefetch still in-flight for same coach+context → adopt the promise and show loading, (3) otherwise → fire fresh request. Switching coach or closing the overlay aborts the prefetch.
 
 ## Known Gotchas

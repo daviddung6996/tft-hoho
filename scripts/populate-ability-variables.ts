@@ -50,27 +50,27 @@ async function fetchCommunityDragonData(): Promise<CDragonData> {
     return response.json();
 }
 
-function findSet16Champions(data: CDragonData): CDragonChampion[] {
-    // Find current set (TFT16 / Set 16)
-    const set16 = data.setData.find(set =>
-        set.mutator === 'TFTSet16' ||
-        set.mutator === 'TFTSet16_Stage2'
+function findSet17Champions(data: CDragonData): CDragonChampion[] {
+    // Find current set (TFT17 / Set 17)
+    const set17 = data.setData.find(set =>
+        set.mutator === 'TFTSet17' ||
+        set.mutator === 'TFTSet17_Stage2'
     );
 
-    if (!set16) {
+    if (!set17) {
         console.log('Available sets:', data.setData.map(s => s.mutator));
-        throw new Error('Set 16 not found in data');
+        throw new Error('Set 17 not found in data');
     }
 
-    console.log(`Found set: ${set16.mutator} with ${set16.champions.length} champions`);
-    return set16.champions;
+    console.log(`Found set: ${set17.mutator} with ${set17.champions.length} champions`);
+    return set17.champions;
 }
 
 async function populateAbilityVariables() {
     try {
         // 1. Fetch CommunityDragon data
         const cdData = await fetchCommunityDragonData();
-        const champions = findSet16Champions(cdData);
+        const champions = findSet17Champions(cdData);
 
         // 2. Get existing champions from our DB
         const { data: dbChampions, error: fetchError } = await supabase

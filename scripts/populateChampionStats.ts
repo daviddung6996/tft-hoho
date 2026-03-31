@@ -43,13 +43,13 @@ async function fetchChampionsFromCDragon(): Promise<CDragonChampion[]> {
     const response = await fetch('https://raw.communitydragon.org/latest/cdragon/tft/vi_vn.json');
     const data = await response.json();
 
-    // Filter for Set 16 champions only
-    const set16Champs = data.setData
-        ?.find((set: any) => set.mutator === 'TFTSet16')
+    // Filter for Set 17 champions only
+    const set17Champs = data.setData
+        ?.find((set: any) => set.mutator === 'TFTSet17')
         ?.champions || [];
 
-    console.log(`📊 Found ${set16Champs.length} Set 16 champions`);
-    return set16Champs;
+    console.log(`📊 Found ${set17Champs.length} Set 17 champions`);
+    return set17Champs;
 }
 
 function calculateStarScaling(baseValue: number): [number, number, number] {
