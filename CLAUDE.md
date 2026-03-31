@@ -60,3 +60,11 @@ When spawning subagents (Agent/Task tool), the routing block is automatically in
 | `ctx stats` | Call the `ctx_stats` MCP tool and display the full output verbatim |
 | `ctx doctor` | Call the `ctx_doctor` MCP tool, run the returned shell command, display as checklist |
 | `ctx upgrade` | Call the `ctx_upgrade` MCP tool, run the returned shell command, display as checklist |
+
+## Worktree cleanup (MANDATORY)
+
+After completing ANY task, clean up all git worktrees and their branches:
+1. `git worktree list` — check for active worktrees
+2. `git worktree remove <path> --force` — remove each worktree
+3. `git branch -D <branch>` — delete associated worktree branches
+4. Verify with `git worktree list` and `git branch` — only `main` and intentional feature branches should remain

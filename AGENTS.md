@@ -13,6 +13,8 @@ Welcome, Agent. This file is a living document intended to capture common mistak
 
 > **ALWAYS REFRESH REPO CONTEXT AFTER COMPLETED TASKS:**
 > This repo does not use one root `context.md` file. Durable context lives under `docs/agent-context/` (`active.md`, `decisions.md`, `patterns.md`). After every completed non-trivial task, update the relevant file(s) there so future agents inherit the latest state.
+> **ALWAYS CLEAN UP WORKTREES AFTER COMPLETING WORK:**
+> After finishing any task that used git worktrees, **immediately** remove all worktrees (`git worktree remove <path> --force`) and delete their associated branches (`git branch -D <branch>`). Stale worktrees accumulate rapidly and clutter the repo. Run `git worktree list` and `git branch | Select-String 'worktree-agent'` to verify cleanup is complete before ending the session.
 
 ---
 
