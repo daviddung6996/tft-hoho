@@ -14,11 +14,14 @@ export const ComingSoonPage: React.FC = () => {
     <main className="coming-soon-page" role="main" aria-label="Coming Soon Page">
       <div className="coming-soon-content">
         <div className="coming-soon-logo" aria-hidden="true">
-          <img
-            src="/coach-assets/tftiseasy-thumb.png"
-            alt="TFTISEASY"
-            className="coming-soon-avatar"
-          />
+          <picture>
+            <source srcSet="/tftiseasy-logo.webp" type="image/webp" />
+            <img
+              src="/tftiseasy-logo.png"
+              alt="TFTISEASY"
+              className="coming-soon-avatar"
+            />
+          </picture>
         </div>
         
         <h1 className="coming-soon-title">
