@@ -365,6 +365,11 @@ Get-ChildItem -Path src -Recurse -Include "*.tsx" | ForEach-Object {
 - **Cause:** `useGameFlow` dung dieu kien `!!currentPuzzle.proPickPath` de bat `puzzlePhase = 'declaring_intent'`. Neu puzzle `2-1` thieu `proPickPath` metadata, step intent bi skip.
 - **Avoid:** Rule hien tai: chi stage `3-2` moi vao intent step. `2-1` phai vao thang augment select, khong duoc gate theo `proPickPath`.
 
+### `useArenaPreloader` must use `preloadArenaBackground()`, not raw `new Image()`
+- **Symptom:** Black flash (flicker đen) khi lần đầu chuyển sang scouting nhà người chơi khác.
+- **Cause:** `useArenaPreloader` dùng `new Image(); img.src = url` chỉ download image vào browser cache, nhưng không gọi `decode()` và không register vào `loadedImageAssets`. Khi user click scout, `isArenaBackgroundReady()` trả `false`, forcing async preload+decode+rAF path → 1-2 frame gap → `layout-wrapper` background `#000` lộ ra.
+- **Avoid:** `useArenaPreloader` phải dùng `preloadArenaBackground()` từ `arenaBackgroundPreload.ts` (cùng helper mà scouting effect dùng). Scouting effect trong `App.tsx` phải check `isArenaBackgroundReady()` trước — nếu warm thì swap `visibleArenaId` đồng bộ, không đi qua async path.
+
 ### Puzzle `playerState.level` is a hard board cap, not decorative metadata
 - **Symptom:** Builder/gameplay cho phep dat them tuong len board du da full slot theo cap, hoac puzzle cu bi load voi level sai / missing.
 - **Cause:** `playerState.level` da ton tai trong schema JSON puzzle tu truoc, nhung runtime khong enforce va admin co luc cho input > `10`.
@@ -714,3 +719,8 @@ betaWindow: {
 - **File:** `src/features/coach-select/components/CoachResponseCard.tsx`, `src/features/coach-select/components/CoachSelectOverlay.css`
 - **Problem:** Loading state cua `CoachResponseCard` tung khong co layout rieng, lam dots/status/CTA "Ra ngoai xem lai board" bi troi lech trong card. Dong thoi component bi rot mat structure `Pick / Tai sao / Trang thai` du CSS va test da xem day la contract.
 - **Fix:** Khoi phuc render theo section `Pick`, `Tai sao`, `Trang thai`; them loading composition rieng cho khu "Coach dang doc the tran" va canh lai CTA observe-board de card can doi hon, dung visual language cua overlay, va pass lai test component.
+
+### Coach Select prefetch adoption must enter loading immediately after the user clicks
+- **Symptom:** User bam `Hỏi Visian` khi prefetch background dang chay, nhung overlay van nam o man `select` mot luc nen nhin giong nhu CTA bi chet / click khong an.
+- **Cause:** `askCoach()` truoc day `await prefetchPromiseRef.current` truoc khi set `uiState = 'loading'`, nen click cua user khong co ack UI ngay lap tuc neu request dang duoc "adopt" tu prefetch.
+- **Avoid:** Giữ prefetch hoan toan silent truoc click, nhung ngay khi user click CTA thi phai set loading state ngay lap tuc, roi moi cho promise prefetched resolve va reuse ket qua do thay vi spawn request thu hai.

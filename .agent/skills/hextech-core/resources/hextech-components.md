@@ -1,301 +1,346 @@
-# Hextech Component Patterns
+# Hextech × SpaceGod Component Patterns
 
-> All components follow the **5 Pillars** from SKILL.md. Reference LoginModal as the canonical implementation.
+> These are reusable motifs for the global Hextech system. Keep Hextech colors, but use SpaceGod framing, typography rhythm, and ornamental structure.
 
-## 1. Atmosphere Overlay (Fullscreen backdrop)
+## 1. App Atmosphere Shell
 
-Used for: Login, Loading, Fullscreen modals.
+Used for: app roots, fullscreen shells, major page wrappers.
 
 ```css
-.hex-atmosphere-overlay {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100cqw; height: 100cqh;
-    background:
-        radial-gradient(ellipse at 50% 30%, rgba(200, 170, 110, 0.08) 0%, transparent 60%),
-        radial-gradient(ellipse at 50% 80%, rgba(21, 58, 62, 0.4) 0%, transparent 50%),
-        linear-gradient(180deg, rgba(5, 28, 30, 0.92) 0%, rgba(0, 0, 0, 0.96) 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
-    container-type: inline-size;
+.hex-app-shell {
+  position: relative;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top, rgba(200, 170, 110, 0.08), transparent 42%),
+    radial-gradient(circle at bottom, rgba(91, 164, 207, 0.06), transparent 30%),
+    linear-gradient(180deg, #051c1e 0%, #081e20 55%, #051c1e 100%);
+  color: var(--sg-text);
+  overflow: hidden;
 }
 
-/* Optional: Ambient gold particles */
-.hex-atmosphere-overlay::before {
-    content: '';
-    position: absolute;
-    top: -50%; left: -50%;
-    width: 200%; height: 200%;
-    background:
-        radial-gradient(1.5px 1.5px at 20% 30%, rgba(200, 170, 110, 0.25) 0%, transparent 100%),
-        radial-gradient(1px 1px at 70% 15%, rgba(200, 170, 110, 0.2) 0%, transparent 100%),
-        radial-gradient(1.5px 1.5px at 45% 70%, rgba(200, 170, 110, 0.15) 0%, transparent 100%);
-    animation: drift 20s linear infinite;
-    pointer-events: none;
-}
-@keyframes drift {
-    from { transform: translate(0, 0); }
-    to { transform: translate(5%, 3%); }
+.hex-app-shell__content {
+  position: relative;
+  z-index: 10;
 }
 ```
 
-## 2. Section Panel (Connected sections)
+## 2. Sacred Geometry Overlay
 
-Used for: Building multi-part layouts (Hero + CTA + Footer).
-
-```css
-/* Top section - has top+side borders, no bottom */
-.hex-section-top {
-    width: 100%;
-    padding: 3cqw;
-    text-align: center;
-    border: 0.06cqw solid rgba(200, 170, 110, 0.15);
-    border-bottom: none;
-    background:
-        radial-gradient(ellipse at 50% 0%, rgba(200, 170, 110, 0.06) 0%, transparent 70%),
-        linear-gradient(180deg, rgba(21, 58, 62, 0.5) 0%, rgba(5, 28, 30, 0.8) 100%);
-}
-
-/* Middle section - side borders only */
-.hex-section-mid {
-    width: 100%;
-    padding: 2cqw 3cqw;
-    background: linear-gradient(180deg, rgba(5, 28, 30, 0.8) 0%, rgba(5, 28, 30, 0.95) 100%);
-    border-left: 0.06cqw solid rgba(200, 170, 110, 0.15);
-    border-right: 0.06cqw solid rgba(200, 170, 110, 0.15);
-}
-
-/* Bottom section - has side+bottom borders, no top */
-.hex-section-bottom {
-    width: 100%;
-    padding: 0 3cqw 2.5cqw;
-    background: rgba(5, 28, 30, 0.95);
-    border: 0.06cqw solid rgba(200, 170, 110, 0.15);
-    border-top: none;
-}
-```
-
-## 3. Corner Accent Frame
-
-Used for: Decorating hero sections.
+Used for: global decoration layer behind content.
 
 ```tsx
-{/* Place inside a position:relative parent */}
-<div className="corner-accent corner-tl" />
-<div className="corner-accent corner-tr" />
-<div className="corner-accent corner-bl" />
-<div className="corner-accent corner-br" />
+<div className="hex-sacred-geometry" aria-hidden="true" />
 ```
 
 ```css
-.corner-accent {
-    position: absolute;
-    width: 1.8cqw; height: 1.8cqw;
-    border-color: #c8aa6e;
-    border-style: solid;
-    border-width: 0;
-    opacity: 0.5;
+.hex-sacred-geometry {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.08;
+  background:
+    radial-gradient(circle at center, rgba(200, 170, 110, 0.08) 0, transparent 45%),
+    linear-gradient(rgba(200, 170, 110, 0.06), rgba(200, 170, 110, 0.06));
+  mask-image: radial-gradient(circle at center, black, transparent 75%);
 }
-.corner-tl { top: -0.06cqw; left: -0.06cqw; border-top-width: 0.12cqw; border-left-width: 0.12cqw; }
-.corner-tr { top: -0.06cqw; right: -0.06cqw; border-top-width: 0.12cqw; border-right-width: 0.12cqw; }
-.corner-bl { bottom: 0; left: -0.06cqw; border-bottom-width: 0.12cqw; border-left-width: 0.12cqw; }
-.corner-br { bottom: 0; right: -0.06cqw; border-bottom-width: 0.12cqw; border-right-width: 0.12cqw; }
 ```
 
-## 4. Primary CTA Button (Gold Chamfer)
+## 3. Title Block
 
-Used for: Main action buttons (Play, Confirm, Submit).
+Used for: page headers, section intros, major tab headings.
+
+```tsx
+<section className="hex-title-block">
+  <p className="hex-title-block__eyebrow">∞ ARCANE INDEX ∞</p>
+  <h1 className="hex-title-block__title">Tier List</h1>
+  <p className="hex-title-block__subtitle">meta snapshot // live coaching context</p>
+</section>
+```
 
 ```css
-.hex-cta {
-    position: relative;
-    width: 100%;
-    padding: 1.2cqw 2cqw;
-    background: linear-gradient(180deg, #C89B3C 0%, #A07828 100%);
-    border: 0.1cqw solid #c8aa6e;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.2cqw;
-    overflow: hidden;
-    clip-path: polygon(
-        1cqw 0, calc(100% - 1cqw) 0,
-        100% 1cqw, 100% calc(100% - 1cqw),
-        calc(100% - 1cqw) 100%, 1cqw 100%,
-        0 calc(100% - 1cqw), 0 1cqw
-    );
-}
-.hex-cta:hover:not(:disabled) {
-    background: linear-gradient(180deg, #d4a844 0%, #b08830 100%);
-    filter: drop-shadow(0 0 1cqw rgba(200, 170, 110, 0.4));
+.hex-title-block {
+  position: relative;
+  padding: 1.25rem 2rem;
+  border: 1px solid var(--sg-gold);
+  background: rgba(5, 28, 30, 0.6);
+  backdrop-filter: blur(4px);
+  text-align: center;
 }
 
-/* CTA text */
-.hex-cta-text {
-    font-family: 'Spectral', serif;
-    font-size: 1.4cqw;
-    font-weight: 700;
-    color: #051c1e;
-    text-transform: uppercase;
-    letter-spacing: 0.15cqw;
-}
-.hex-cta-sub {
-    font-family: 'Inter', sans-serif;
-    font-size: 0.65cqw;
-    color: rgba(5, 28, 30, 0.7);
+.hex-title-block::before,
+.hex-title-block::after {
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border: 1px solid var(--sg-gold);
 }
 
-/* Glow sweep child */
-.hex-cta .glow-sweep {
-    position: absolute;
-    top: 0; left: -100%;
-    width: 60%; height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
-    animation: sweep 3s ease-in-out infinite;
-    pointer-events: none;
+.hex-title-block::before {
+  top: -1px;
+  left: -1px;
+  border-right: 0;
+  border-bottom: 0;
 }
-@keyframes sweep { 0%,100% { left: -60%; } 50% { left: 100%; } }
+
+.hex-title-block::after {
+  right: -1px;
+  bottom: -1px;
+  border-left: 0;
+  border-top: 0;
+}
+
+.hex-title-block__eyebrow {
+  margin: 0 0 0.4rem;
+  font: 500 10px/1 var(--sg-font-mono, 'IBM Plex Mono', monospace);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--sg-gold);
+}
+
+.hex-title-block__title {
+  margin: 0;
+  font-family: var(--sg-font-display, 'Cinzel', serif);
+  font-size: clamp(1.4rem, 2vw, 2rem);
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--sg-text);
+}
+
+.hex-title-block__subtitle {
+  margin: 0.45rem 0 0;
+  font: 400 12px/1.5 var(--sg-font-mono, 'IBM Plex Mono', monospace);
+  color: var(--sg-text-muted);
+}
 ```
 
-## 5. Secondary Button (Ghost)
+## 4. Ceremonial Navigation
 
-Used for: Google login, Email toggle, secondary actions.
+Used for: tab bars, section nav, compact mode switchers.
 
 ```css
-.hex-btn-ghost {
-    flex: 1;
-    padding: 0.7cqw;
-    border: 0.06cqw solid rgba(200, 170, 110, 0.2);
-    background: rgba(200, 170, 110, 0.04);
-    color: rgba(240, 230, 210, 0.8);
-    font-size: 0.75cqw;
-    font-weight: 500;
-    font-family: 'Inter', sans-serif;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5cqw;
-    transition: border-color 0.2s ease, background 0.2s ease;
+.hex-nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  color: var(--sg-text-muted);
+  font: 500 10px/1 var(--sg-font-display, 'Cinzel', serif);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
 }
-.hex-btn-ghost:hover:not(:disabled) {
-    border-color: rgba(200, 170, 110, 0.5);
-    background: rgba(200, 170, 110, 0.08);
-}
-```
 
-## 6. Divider
-
-Used for: Separating sections with centered text.
-
-```css
-.hex-divider {
-    text-align: center;
-    margin: 1.2cqw 0;
-    position: relative;
-    height: 1.2cqw;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.hex-nav__item {
+  position: relative;
+  padding-bottom: 0.35rem;
 }
-.hex-divider::before,
-.hex-divider::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    height: 0.04cqw;
-    background: linear-gradient(90deg, transparent, rgba(200, 170, 110, 0.2), transparent);
+
+.hex-nav__item.is-active {
+  color: var(--sg-gold);
 }
-.hex-divider::before { left: 0; width: 25%; }
-.hex-divider::after { right: 0; width: 25%; }
-.hex-divider span {
-    color: rgba(200, 170, 110, 0.45);
-    font-size: 0.65cqw;
-    font-family: 'Inter', sans-serif;
-    padding: 0 1cqw;
-    position: relative;
-    z-index: 1;
-    white-space: nowrap;
+
+.hex-nav__item.is-active::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: var(--sg-gold);
+}
+
+.hex-nav__sep {
+  color: var(--sg-gold-30);
 }
 ```
 
-## 7. Badge
+## 5. Section Panel
 
-Used for: Labels like "SET 16", "MỚI", "PRO".
-
-```css
-.hex-badge {
-    display: inline-block;
-    padding: 0.25cqw 1cqw;
-    background: rgba(200, 170, 110, 0.1);
-    border: 0.06cqw solid rgba(200, 170, 110, 0.3);
-    color: #c8aa6e;
-    font-family: 'Inter', sans-serif;
-    font-size: 0.65cqw;
-    font-weight: 600;
-    letter-spacing: 0.15cqw;
-    text-transform: uppercase;
-}
-```
-
-## 8. Form Input
-
-Used for: Email, password, text inputs.
-
-```css
-.hex-input {
-    width: 100%;
-    padding: 0.7cqw 1cqw;
-    background: rgba(0, 0, 0, 0.35);
-    border: 0.06cqw solid rgba(200, 170, 110, 0.25);
-    color: #F0E6D2;
-    font-family: 'Inter', sans-serif;
-    font-size: 0.8cqw;
-    box-sizing: border-box;
-    transition: border-color 0.2s ease;
-}
-.hex-input:focus {
-    outline: none;
-    border-color: rgba(200, 170, 110, 0.6);
-}
-.hex-input::placeholder {
-    color: rgba(148, 163, 184, 0.5);
-}
-```
-
-## 9. Close Button
-
-```css
-.hex-close {
-    width: 2cqw; height: 2cqw;
-    background: rgba(0, 0, 0, 0.3);
-    border: 0.06cqw solid rgba(200, 170, 110, 0.3);
-    color: rgba(200, 170, 110, 0.6);
-    font-size: 1cqw;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: border-color 0.2s ease, color 0.2s ease;
-}
-.hex-close:hover {
-    border-color: #c8aa6e;
-    color: #c8aa6e;
-}
-```
-
-## 10. Standard Panel (Legacy - for modals without section composition)
+Used for: form sections, metrics surfaces, article sections, detail panes.
 
 ```css
 .hex-panel {
-    background: linear-gradient(180deg, #153a3e 0%, #051c1e 100%);
-    border: 0.1cqw solid #c8aa6e;
-    box-shadow: 0 0 1.5cqw rgba(200, 170, 110, 0.25);
-    backdrop-filter: blur(8px);
-    color: #F0F6FC;
+  position: relative;
+  padding: 1.25rem;
+  border: 1px solid var(--sg-border);
+  background: var(--sg-bg-card);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
+}
+
+.hex-panel__title {
+  margin: 0 0 0.85rem;
+  padding-bottom: 0.65rem;
+  border-bottom: 1px solid var(--sg-gold-15);
+  font: 500 13px/1.3 var(--sg-font-display, 'Cinzel', serif);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--sg-gold);
 }
 ```
+
+## 6. Tier / List Row Container
+
+Used for: ranking rows, grouped lists, feature clusters.
+
+```css
+.hex-tier-row {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--sg-border-silver);
+  background: rgba(8, 30, 32, 0.5);
+}
+
+.hex-tier-row::before {
+  content: '';
+  width: 3px;
+  background: var(--tier-accent, var(--sg-gold));
+  grid-column: 1;
+  grid-row: 1 / span 2;
+}
+```
+
+## 7. Card Pattern
+
+Used for: comp cards, unit cards, feature tiles, image-backed cards.
+
+```css
+.hex-card {
+  position: relative;
+  border: 1px solid var(--sg-border);
+  background: linear-gradient(180deg, rgba(13, 46, 48, 0.92), rgba(8, 30, 32, 0.95));
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease;
+}
+
+.hex-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--sg-gold);
+}
+
+.hex-card__label {
+  font: 500 9px/1.2 var(--sg-font-mono, 'IBM Plex Mono', monospace);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--sg-text);
+}
+```
+
+## 8. Buttons
+
+Used for: primary / ghost / badge-like actions.
+
+```css
+.hex-btn-primary {
+  padding: 0.8rem 1.1rem;
+  border: 1px solid var(--sg-gold);
+  background: var(--sg-bg-surface);
+  color: var(--sg-gold);
+  font: 500 11px/1 var(--sg-font-mono, 'IBM Plex Mono', monospace);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hex-btn-primary:hover {
+  background: var(--sg-gold);
+  color: var(--sg-gold-ink);
+  transform: translateY(-2px);
+}
+
+.hex-btn-ghost {
+  padding: 0.8rem 1.1rem;
+  border: 1px solid var(--sg-border);
+  background: transparent;
+  color: var(--sg-text-muted);
+  font: 500 11px/1 var(--sg-font-mono, 'IBM Plex Mono', monospace);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.hex-btn-ghost:hover {
+  border-color: var(--sg-gold);
+  color: var(--sg-gold);
+}
+```
+
+## 9. Inputs and Labels
+
+Used for: forms, filters, compact data entry.
+
+```css
+.hex-label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font: 500 10px/1.2 var(--sg-font-mono, 'IBM Plex Mono', monospace);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--sg-text-muted);
+}
+
+.hex-input {
+  width: 100%;
+  padding: 0.8rem 0.9rem;
+  border: 1px solid var(--sg-border);
+  background: var(--sg-bg-surface);
+  color: var(--sg-text);
+  font: 400 13px/1.4 var(--sg-font-mono, 'IBM Plex Mono', monospace);
+}
+
+.hex-input:focus {
+  outline: none;
+  border-color: var(--sg-gold);
+}
+```
+
+## 10. Decorative Separators
+
+Used for: section breaks, ceremonial accents, between major blocks.
+
+```css
+.hex-diamond-separator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  color: var(--sg-gold);
+}
+
+.hex-diamond-separator::before,
+.hex-diamond-separator::after {
+  content: '';
+  width: 48px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--sg-gold-45), transparent);
+}
+```
+
+## 11. Motion Tokens
+
+Used for: repeated rows, page enter, subtle ambient detail.
+
+```css
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-gold {
+  0%, 100% { opacity: 0.07; }
+  50% { opacity: 0.12; }
+}
+
+@keyframes page-enter {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+```
+
+## 12. Usage Notes
+
+- Start with shell + typography + panels before micro-decoration.
+- Use decorative layers sparingly; readability wins.
+- Prefer one coherent ornamental language across the app over many custom flourishes.
+- If a project already has good structure, reskin it by mapping these motifs into existing components rather than rewriting everything.

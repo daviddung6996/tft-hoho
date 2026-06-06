@@ -1,14 +1,14 @@
 import { useEffect, useRef } from 'react';
 import { ARENA_SKINS } from '../data/arenas';
+import { preloadArenaBackground } from '../utils/arenaBackgroundPreload';
 
 /**
- * Preloads all arena background images on mount so scouting
- * never shows a bare teal background while the image downloads.
+ * Preloads AND decodes all arena background images on mount so scouting
+ * never shows a black flash while the image decodes on first switch.
  *
- * All arena images are local bundled assets (webp via Vite import),
- * so they are effectively instant. We fire preload requests to warm
- * the browser cache but never gate rendering — this avoids the
- * opacity 0→1 flash on first load.
+ * Uses the same preloadArenaBackground() that the scouting effect uses,
+ * so images are registered in loadedImageAssets and isArenaBackgroundReady()
+ * returns true immediately when the user clicks to scout.
  */
 export function useArenaPreloader() {
     const startedRef = useRef(false);
@@ -19,8 +19,7 @@ export function useArenaPreloader() {
 
         const urls = ARENA_SKINS.map(a => a.backgroundUrl).filter(Boolean);
         urls.forEach(url => {
-            const img = new Image();
-            img.src = url;
+            void preloadArenaBackground(url);
         });
     }, []);
 }

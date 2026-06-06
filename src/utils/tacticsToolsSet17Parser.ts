@@ -31,8 +31,17 @@ function normalizeChampionKey(name: string): string {
     return name.toLowerCase().replace(/[^a-z0-9]/g, '');
 }
 
+function decodeHtmlEntities(value: string): string {
+    return value
+        .replace(/&#x27;|&#39;/gi, "'")
+        .replace(/&quot;/gi, '"')
+        .replace(/&amp;/gi, '&')
+        .replace(/&lt;/gi, '<')
+        .replace(/&gt;/gi, '>');
+}
+
 function stripTags(value: string): string {
-    return value.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+    return decodeHtmlEntities(value.replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').trim();
 }
 
 export function sanitizeSet17AbilityDescription(value: string | null): string | null {
@@ -184,16 +193,7 @@ export function buildSet17ChampionArtifactFromTacticsToolsHtml(html: string) {
             icon: champion.avatar,
             tileIcon: champion.avatar,
             squareIcon: champion.avatar,
-            stats: {
-                hp: champion.stats.hp,
-                mana: champion.stats.mana?.max ?? null,
-                initialMana: champion.stats.mana?.min ?? null,
-                damage: champion.stats.ad?.[0] ?? null,
-                attackSpeed: champion.stats.as,
-                armor: champion.stats.armor,
-                magicResist: champion.stats.mr,
-                range: champion.stats.range,
-            },
+            stats: champion.stats,
             ability: {
                 name: champion.ability.name,
                 desc: champion.ability.desc,

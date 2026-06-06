@@ -139,10 +139,10 @@ const PuzzleBuilder: React.FC<PuzzleBuilderProps> = ({ onClose, onSaveSuccess, i
                         onAugmentsChange={(newAugments) => updatePuzzle({ augments: newAugments })}
                         items={puzzle.startingItems || []}
                         onItemsChange={(newItems) => updatePuzzle({ startingItems: newItems })}
-                        ioniaPathId={puzzle.ioniaPathId}
-                        voidModIds={puzzle.voidModIds}
-                        onIoniaPathChange={(pathId) => updatePuzzle({ ioniaPathId: pathId })}
-                        onVoidModsChange={(modIds) => updatePuzzle({ voidModIds: modIds })}
+                        featuredPathId={puzzle.featuredPathId}
+                        featuredModifierIds={puzzle.featuredModifierIds}
+                        onFeaturedPathChange={(pathId) => updatePuzzle({ featuredPathId: pathId })}
+                        onFeaturedModifiersChange={(modifierIds) => updatePuzzle({ featuredModifierIds: modifierIds })}
                     />
                 )}
 

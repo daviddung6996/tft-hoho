@@ -80,6 +80,7 @@ export const augmentService = {
         const { data, error } = await supabase
             .from('augments')
             .select('*')
+            .is('deleted_at', null)
             .or(`name.ilike.%${query}%,name_vi.ilike.%${query}%`)
             .order('tier', { ascending: true });
 

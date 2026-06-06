@@ -1,5 +1,5 @@
 /* ==========================================================================
-   GAME INFO ICONS - Ionia Path & Void Mod Indicators
+   GAME INFO ICONS - Stargazer Constellation + Realm of the Gods
    ========================================================================== */
 
 .game-info-icons {
@@ -107,14 +107,14 @@
     filter: drop-shadow(0 0 2px rgba(200, 170, 110, 0.3));
 }
 
-/* Ionia specific styling */
-.game-info-icon.ionia-icon::before {
+/* Featured path styling */
+.game-info-icon.featured-path-icon::before {
     background: linear-gradient(135deg, #2a5a5e 0%, #153538 100%);
 }
 
-/* Void specific styling */
-.game-info-icon.void-icon::before {
-    background: linear-gradient(135deg, #3a2a5e 0%, #1f1538 100%);
+/* Featured modifier styling */
+.game-info-icon.featured-modifier-icon::before {
+    background: linear-gradient(135deg, #5f4924 0%, #2d1f0f 100%);
 }
 
 /* ==========================================================================
@@ -132,8 +132,8 @@
     box-shadow: 0 0 12px rgba(200, 170, 110, 0.25);
 
     padding: 10px 12px;
-    min-width: 180px;
-    max-width: 260px;
+    min-width: 220px;
+    max-width: 320px;
     border-radius: 6px;
 }
 
@@ -190,7 +190,7 @@
     margin-bottom: 6px;
 }
 
-/* Breakpoints table for Ionia */
+/* Breakpoints table for featured paths */
 .game-info-breakpoints {
     display: flex;
     flex-direction: column;
@@ -215,7 +215,7 @@
     color: #F0E6D2;
 }
 
-/* Void Mods list */
+/* Featured modifier list */
 .game-info-mods-list {
     display: flex;
     flex-direction: column;

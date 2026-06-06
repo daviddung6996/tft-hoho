@@ -78,9 +78,11 @@ export interface PuzzleScenario {
     opponents?: OpponentData[];
     // Starting items/components available to the player
     startingItems?: (Item | null)[];
-    // Game Info (Set 17 path & modifiers)
-    ioniaPathId?: string;
-    voidModIds?: string[];
+    // Set 17 match modifiers:
+    // - featuredPathId -> Stargazer Constellation id
+    // - featuredModifierIds -> 2 Realm of the Gods ids
+    featuredPathId?: string;
+    featuredModifierIds?: string[];
 
     // === V2: Augment Trainer 3-2 Fields ===
     // Streak data (W/L history for rounds 1-1 through 2-5)
@@ -138,7 +140,7 @@ export const PUZZLE_SCENARIOS: PuzzleScenario[] = [
         date: '1/30/26',
         server: 'NA',
         encounter: 'Component Anvils',
-        patch: '16.3b',
+        patch: '17.1',
         augments: [], // Load from DB
         proFirstRoll: [], // Load from DB
         proSecondRoll: [], // Load from DB
@@ -155,7 +157,7 @@ export const PUZZLE_SCENARIOS: PuzzleScenario[] = [
         date: '1/29/26',
         server: 'NA',
         encounter: 'Gold Opener',
-        patch: '16.3b',
+        patch: '17.1',
         augments: [], // Load from DB
         proFirstRoll: [], // Load from DB
         proSecondRoll: [], // Load from DB
@@ -172,7 +174,7 @@ export const PUZZLE_SCENARIOS: PuzzleScenario[] = [
         date: '1/28/26',
         server: 'NA',
         encounter: 'Krugs',
-        patch: '16.3a',
+        patch: '17.1',
         augments: [], // Load from DB
         proFirstRoll: [], // Load from DB
         proSecondRoll: [], // Load from DB

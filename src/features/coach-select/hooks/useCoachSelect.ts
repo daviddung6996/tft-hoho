@@ -323,6 +323,17 @@ export function useCoachSelect(gameContext: CoachGameContext | null, puzzleId: s
             setUiState('response');
         };
 
+        const showLoadingState = () => {
+            setError(null);
+            setHasUnreadResult(false);
+            setAnswerState({
+                answer: '',
+                isLoading: true,
+                isComplete: false,
+            });
+            setUiState('loading');
+        };
+
         if (cachedAnswer) {
             setError(null);
             setHasUnreadResult(false);
@@ -340,6 +351,7 @@ export function useCoachSelect(gameContext: CoachGameContext | null, puzzleId: s
             && prefetchSignatureRef.current === requestContextSignature
             && prefetchPromiseRef.current
         ) {
+            showLoadingState();
             await prefetchPromiseRef.current;
             if (isStaleRequest()) return;
             const reCachedAnswer = cacheKey ? cachedAnswersRef.current.get(cacheKey) : null;
@@ -360,14 +372,7 @@ export function useCoachSelect(gameContext: CoachGameContext | null, puzzleId: s
         const controller = new AbortController();
         abortControllerRef.current = controller;
 
-        setError(null);
-        setHasUnreadResult(false);
-        setAnswerState({
-            answer: '',
-            isLoading: true,
-            isComplete: false,
-        });
-        setUiState('loading');
+        showLoadingState();
 
         try {
             const response = await coachSelectService.askCoach(

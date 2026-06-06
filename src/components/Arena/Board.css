@@ -194,7 +194,7 @@ body.is-dragging .hextech-tooltip-wrapper {
     height: 100%;
     clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
     background: #090C14;
-    /* Dark Void background behind unit */
+    /* Dark tactical backdrop behind unit */
     display: flex;
     justify-content: center;
     align-items: center;

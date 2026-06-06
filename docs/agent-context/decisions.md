@@ -1,5 +1,19 @@
 # Decisions
 
+## 2026-03-29 - Production Coming Soon page is the default via committed .env.production + dynamic app bootstrap for true lightweight isolation
+
+- Why: The plan required the announcement page at https://training.tftiseasy.com/ during dev phase, while keeping local `npm run dev` able to run the full app for normal work. Relying only on CF dashboard env or .env.local was fragile (local .env.local was left with `true`, and builds could differ). Additionally, the initial static-import implementation in main.tsx meant even maintenance builds bundled the entire app (hundreds of kB of modals, supabase, game code) into the entry chunks.
+- Evidence / Changes:
+  - Created `.env.production` with `VITE_MAINTENANCE_MODE=true` (loaded for all `vite build` and CF Pages prod builds).
+  - Cleaned `VITE_MAINTENANCE_MODE` from `.env.local` (with comment) so development mode always runs the full application unless explicitly overridden.
+  - Updated `.env.example` with docs for the toggle and the dev vs prod behavior.
+  - Refactored `src/main.tsx` + introduced `src/bootstrapApp.tsx`: the full App + AuthProvider + GameDataProvider + global index.css/Common.css are now only reachable via dynamic `import()` in the `else` branch.
+  - Result after clean `npm run build` (picks .env.production): entry JS 2.44 kB, global+coming css 2.59 kB, vendor-supabase emitted as 0 kB stub, entry chunk contains zero references to AuthProvider / supabase / UserProfileModal / heavy app code. Only the tiny ComingSoonPage + React vendor are in the critical path. `index.html` loads exactly one  ~2.5 kB JS + one ~2.6 kB CSS.
+  - When forcing `VITE_MAINTENANCE_MODE=false` for a build, the entry correctly contains the bootstrapApp dynamic reference.
+  - All 77 ComingSoonPage tests (basic + requirements + responsive + accessibility) continue to pass.
+- Consequence: Any production deploy (or local `npm run build && npm run preview`) now reliably shows the Hextech coming-soon page with near-zero unused code. Local dev (`npm run dev` / `npm run dev:vite`) shows the full interactive app. When ready to launch, flip the value in .env.production to false (or remove) and redeploy. The pattern (committed .env.* + dynamic bootstrap behind compile-time maintenance const) is reusable for other pre-launch gates. Updated MAINTENANCE_MODE_IMPLEMENTATION.md and agent context.
+- See: src/main.tsx, src/bootstrapApp.tsx, .env.production, src/components/ComingSoonPage/*, MAINTENANCE_MODE_IMPLEMENTATION.md
+
 ## 2026-03-20 - Treat production `visian-chat` `502` as a downstream NotebookLM bridge failure first, and recover by refreshing bridge auth state
 
 - Why: the browser showed repeated `502` from `functions/v1/visian-chat`, while the Edge Function code only maps bridge/downstream failures to `502`; missing bridge secrets would have shown up as `500` instead.
@@ -84,3 +98,33 @@
 - Why: the repo already had a working Set 17 parser/generator path, but the app still looked like Set 16 because visible runtime-facing modules were still hardcoded to Set 16 concepts (`SET 16` login hero copy plus the live `gameInfoData.ts` Ionia/Void model used by gameplay and the admin puzzle builder).
 - Evidence: focused RED/GREEN tests now cover `src/components/Auth/LoginModal.test.tsx` and `src/data/gameInfoData.test.ts`; the runtime/admin consumers are `src/components/Game/GameScene.tsx` and `src/pages/Admin/PuzzleBuilder/components/GameInfoSelector.tsx`; `npm run build` passes again after the runtime copy swap plus unrelated parser/test cleanup.
 - Consequence: future Set migrations must audit live UI modules and gameplay metadata providers, not just DB seeds/artifacts; stale sample files can remain, but any module consumed by `GameScene` or puzzle-builder flows must be updated in the same pass.
+
+## 2026-03-31 - Supabase remote pushes must route around duplicate-prefix local migrations before applying new schema work
+
+- Why: this repo still carries several local migration files whose versions collapse to the same coarse date prefix (`20260227`, `20260301`, `20260307`), but Supabase stores a unique `version` key in `supabase_migrations.schema_migrations`.
+- Evidence: `supabase db push --include-all` failed with `duplicate key value violates unique constraint "schema_migrations_pkey"` on version `20260227`; repairing remote history to the coarse local versions was necessary, and the final Set 17 cleanup migration only applied successfully after temporarily moving the duplicate-prefix files out of `supabase/migrations/` so the CLI saw just `20260331153000_set17_only_cleanup.sql`.
+- Consequence: do not trust raw `supabase db push` in this repo until duplicate-prefix files are renamed or intentionally hidden. For remote hotfixes, repair the history table deliberately, dry-run first, and isolate any new migration so the CLI inserts exactly one new version.
+
+## 2026-03-31 - Clicking Coach CTA while prefetch is in flight must enter loading immediately
+
+- Why: background prefetch is allowed to run silently, but once the player explicitly clicks `Hỏi <Coach>`, the UI has to acknowledge that interaction right away.
+- Evidence: `useCoachSelect.ts` previously awaited `prefetchPromiseRef.current` while still in `uiState = 'select'`, so the CTA looked dead until the background request finished even though no second network call was needed.
+- Consequence: when `askCoach()` adopts a matching prefetch, it must set `uiState = 'loading'` and `answerState.isLoading = true` before awaiting the prefetched promise; keep the one-request reuse, but do not keep the user in the idle select state after a click.
+
+## 2026-03-31 - Arena preloader must decode+register, and scouting effect must swap synchronously when warm
+
+- Why: `useArenaPreloader` used raw `new Image(); img.src = url` which downloads but doesn't decode or register in `loadedImageAssets`; the scouting effect always took the async `preloadArenaBackground → rAF → setState` path even for warm images, creating a 1-2 frame gap where `layout-wrapper` background `#000` was visible.
+- Evidence: first scout switch to any opponent showed a brief black flash; subsequent switches were fine because `preloadArenaBackground` had since registered the image.
+- Consequence: `useArenaPreloader` now calls `preloadArenaBackground()` (decode + register); the scouting effect in `App.tsx` checks `isArenaBackgroundReady()` first and swaps `visibleArenaId` synchronously when warm, falling back to async only for cold images.
+
+## 2026-03-31 - Remove runtime legacy puzzle-column shims immediately after the DB rename lands
+
+- Why: once the linked Supabase database has physically renamed `puzzles.ionia_path_id` / `puzzles.void_mod_ids` to `featured_path_id` / `featured_mod_ids`, any remaining runtime alias like `featured_path_id:ionia_path_id` becomes a hard production error on both reads and writes.
+- Evidence: the admin puzzle builder started failing with `column puzzles.ionia_path_id does not exist`; the cause was `src/services/puzzleService.ts` still selecting and upserting through computed legacy column names even though the DB migration had already completed.
+- Consequence: compatibility probes for old puzzle columns belong only in one-off audit scripts or migrations, never in runtime services. Keep `puzzleService` and all admin save flows on the live `featured_*` columns only.
+
+## 2026-03-31 - Keep `featured_*` DB columns, but reinterpret them as the real Set 17 match modifiers
+
+- Why: the live puzzle schema already persists through `featured_path_id` / `featured_mod_ids`, so renaming the database again would add migration risk without product value. The real gap was semantic: runtime/admin still treated those columns like a generic placeholder shell instead of the actual Set 17 mechanics.
+- Evidence: before the fix, `src/data/gameInfoData.ts` contained invented gods, `src/pages/Admin/PuzzleBuilder/components/GameInfoSelector.tsx` still framed the fields as generic path/modifier picks, and `src/components/Game/GameScene.tsx` ignored puzzle metadata and rolled random data every session. After the fix, `src/data/gameInfoData.ts` uses the repo Set 17 reference for the 7 official Stargazer Constellations and 9 Realm Gods, `src/App.tsx` resolves saved ids into runtime objects, and `GameScene.tsx` renders puzzle-authored values with random fill only when data is missing.
+- Consequence: future puzzle/admin/runtime work should treat `featured_path_id` as the Stargazer Constellation id and `featured_mod_ids` as up to 2 Realm God ids. Do not add new columns unless the product later needs deeper per-god state than identity.

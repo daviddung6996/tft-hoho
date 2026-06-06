@@ -20,10 +20,10 @@ interface PlayerTeamBuilderProps {
     items: (Item | null)[];
     onItemsChange: (items: (Item | null)[]) => void;
     synergies: Synergy[];
-    ioniaPathId?: string;
-    voidModIds?: string[];
-    onIoniaPathChange?: (pathId: string) => void;
-    onVoidModsChange?: (modIds: string[]) => void;
+    featuredPathId?: string;
+    featuredModifierIds?: string[];
+    onFeaturedPathChange?: (pathId: string) => void;
+    onFeaturedModifiersChange?: (modifierIds: string[]) => void;
     onLevelCapHit?: () => void;
 }
 
@@ -37,10 +37,10 @@ const PlayerTeamBuilder: React.FC<PlayerTeamBuilderProps> = ({
     items,
     onItemsChange,
     synergies,
-    ioniaPathId,
-    voidModIds,
-    onIoniaPathChange,
-    onVoidModsChange,
+    featuredPathId,
+    featuredModifierIds,
+    onFeaturedPathChange,
+    onFeaturedModifiersChange,
     onLevelCapHit
 }) => {
     const [searchQuery, setSearchQuery] = useState('');
@@ -270,10 +270,10 @@ const PlayerTeamBuilder: React.FC<PlayerTeamBuilderProps> = ({
                     GAME INFO
                 </div>
                 <GameInfoSelector
-                    selectedIoniaPathId={ioniaPathId}
-                    selectedVoidModIds={voidModIds}
-                    onIoniaPathChange={onIoniaPathChange || (() => { })}
-                    onVoidModsChange={onVoidModsChange || (() => { })}
+                    selectedFeaturedPathId={featuredPathId}
+                    selectedFeaturedModifierIds={featuredModifierIds}
+                    onFeaturedPathChange={onFeaturedPathChange || (() => { })}
+                    onFeaturedModifiersChange={onFeaturedModifiersChange || (() => { })}
                 />
 
                 <div style={{ padding: '1cqw', borderBottom: '0.1cqw solid var(--border-subtle)', borderTop: '0.1cqw solid var(--border-subtle)', color: 'var(--text-label)', fontSize: '0.9cqw', fontWeight: 600, marginTop: '2cqw' }}>

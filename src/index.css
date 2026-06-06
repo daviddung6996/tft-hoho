@@ -38,7 +38,7 @@ body.is-dragging *::after {
 
     /* Backgrounds */
     --color-surface-dark: #090C14;
-    /* Deep Void */
+    /* Deep tactical backdrop */
     --color-surface-panel: rgba(13, 22, 36, 0.85);
     /* Glassy Hextech */
     --color-surface-overlay: rgba(0, 0, 0, 0.6);

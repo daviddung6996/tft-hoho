@@ -55,10 +55,14 @@ Recent Set 17 migration progress (2026-03-31):
 - Updated `src/utils/seedChampions.ts` to consume the tested mapper, seed by stable champion ID first, and keep a name fallback only for migration reconciliation.
 - Review found a stats-shape regression risk: the temporary artifact is still Set-16-compatible/flat, while the documented Set 17 DB contract expects nested stats. The mapper now accepts both shapes, but the generator has not yet been upgraded to emit the fully nested Set 17 stats object.
 - Cleared the remaining live Set 16-facing runtime surfaces: `src/components/Auth/LoginModal.tsx` now shows `SET 17`, `src/data/gameInfoData.ts` now serves Set 17-themed featured path/modifier data instead of Ionia/Void Set 16 content, and `src/pages/Admin/PuzzleBuilder/components/GameInfoSelector.tsx` copy now matches the Set 17 framing. Focused tests were added in `src/components/Auth/LoginModal.test.tsx` and `src/data/gameInfoData.test.ts`.
+- Finished the Set 17-only DB and asset cleanup. `scripts/normalizeSet17AssetRefs.ts` now audits and removes legacy rows/votes/attempts plus stray legacy asset files, `scripts/download_tft_assets.ts` now prunes recursively while respecting local nested asset refs, and `scripts/populateChampionStats.ts` re-imported all 62 champion stats/ability payloads from the generated Set 17 artifact.
+- Applied `supabase/migrations/20260331153000_set17_only_cleanup.sql` to the linked remote database after repairing the coarse local migration history and temporarily hiding the duplicate-prefix local migration files that collide in `schema_migrations`. Post-cleanup audit now reports zero legacy champion/trait/item/augment IDs, zero legacy puzzle votes/attempts/payloads, zero legacy asset files, `hasFeaturedPuzzleColumns: true`, and `hasLegacyPuzzleColumns: false`.
+- Fixed the admin puzzle create/save crash caused by stale runtime schema compatibility code. `src/services/puzzleService.ts` was still selecting and writing `ionia_path_id` / `void_mod_ids`; it now uses only `featured_path_id` / `featured_mod_ids`, and bulk import was updated the same way. Verified with a direct DB insert/delete smoke test plus `npm run build`.
+- Completed the real Set 17 game-info migration. `src/data/gameInfoData.ts` now uses the official 7 Stargazer Constellations and 9 Realm Gods from the repo Set 17 reference, `src/pages/Admin/PuzzleBuilder/components/GameInfoSelector.tsx` now lets admins pick 1 constellation plus 2 gods, and runtime gameplay resolves puzzle ids into real tooltips/rendered state instead of rolling the old placeholder gods/modifiers.
 
 Immediate next step:
 
-- Upgrade the Set 17 champion generator output from the temporary flat compatibility stats shape to the documented nested Set 17 `champions.stats` JSONB contract before running the real Supabase seed.
+- Next verification focus: do a browser QA pass in both the admin puzzle builder and gameplay board to confirm existing puzzles with saved `featured_*` ids render the intended constellation/gods and that empty puzzles still get the random fallback roll.
 
 High-value files:
 
@@ -75,9 +79,8 @@ High-value files:
 
 Open follow-up:
 
-- Do not run the real champion seed with the current flat artifact if downstream readers expect nested Set 17 stats.
 - The script now correctly requires `SUPABASE_SERVICE_ROLE_KEY`; anon-key fallback was removed because RLS only allows admin writes on `champions`.
-- Remaining raw Set 16 references found in code are limited to old helper scripts (`scripts/fix_all_descriptions.ts`, `scripts/populateChampionStats.ts`), not the active runtime path.
+- Grep for `Set16|set16|TFT16|tft16` now returns documentation/memory files only, not active runtime, seed, parser, or migration paths.
 
 In scope now:
 
@@ -147,6 +150,23 @@ High-value files:
 - `src/features/visian-coach/visianCoach.service.ts`
 - `vite.config.ts`
 - `docs/deployment/visian-chat-production-ec2.md`
+
+## 2026-03-31 - Coach select click must acknowledge in-flight prefetch immediately
+
+Context:
+
+- `useCoachSelect` already prefetches coach answers in the background after `openSelect()` / `selectCoach()` to hide NotebookLM latency.
+- Users reported that clicking `Hỏi Visian` could feel dead when the matching prefetch was still running.
+
+What changed:
+
+- `src/features/coach-select/hooks/useCoachSelect.ts` now flips the hook into `loading` as soon as `askCoach()` adopts an in-flight prefetch for the same coach/context.
+- `src/features/coach-select/hooks/useCoachSelect.test.tsx` now covers the regression: while prefetch is pending, a user click must immediately move the UI to `loading`, then reuse the prefetched response without spawning a second request.
+
+Why it matters:
+
+- Background prefetch should keep the CTA clickable before the user clicks.
+- Once the user clicks, the UI must acknowledge ownership of that request immediately; otherwise the CTA looks broken even though the background promise is still working.
 
 Status:
 

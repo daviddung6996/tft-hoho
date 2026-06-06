@@ -1,127 +1,163 @@
 import React, { useState } from 'react';
-import { IONIA_PATHS, VOID_MODS, IoniaPath, VoidMod } from '../../../../data/gameInfoData';
-import { getTraitIconUrl } from '../../../../utils/assetUrlBuilder';
+import {
+    REALM_GODS,
+    REALM_GODS_PER_GAME,
+    REALM_OF_THE_GODS_ICON_URL,
+    RealmGod,
+    STARGAZER_CONSTELLATIONS,
+    STARGAZER_CONSTELLATION_ICON_URL,
+    StargazerConstellation,
+} from '../../../../data/gameInfoData';
 import './GameInfoSelector.css';
 
 interface GameInfoSelectorProps {
-    selectedIoniaPathId?: string;
-    selectedVoidModIds?: string[];
-    onIoniaPathChange: (pathId: string) => void;
-    onVoidModsChange: (modIds: string[]) => void;
+    selectedFeaturedPathId?: string;
+    selectedFeaturedModifierIds?: string[];
+    onFeaturedPathChange: (pathId: string) => void;
+    onFeaturedModifiersChange: (modifierIds: string[]) => void;
 }
 
-type ModalType = 'ionia' | 'void' | null;
+type ModalType = 'constellation' | 'gods' | null;
+
+const buildRealmGodLabel = (selectedGods: RealmGod[]): string => {
+    if (selectedGods.length === 0) {
+        return '2 Gods';
+    }
+
+    if (selectedGods.length === 1) {
+        return selectedGods[0].name;
+    }
+
+    return selectedGods.map(god => god.name).join(' + ');
+};
+
+const buildConstellationDescription = (constellation: StargazerConstellation): string =>
+    `${constellation.summary} Breakpoints: ${constellation.breakpoints.map(point => point.level).join(' / ')}.`;
+
+const buildRealmGodDescription = (god: RealmGod): string =>
+    `${god.title}. ${god.summary} 4-7 boon: ${god.boon}`;
 
 const GameInfoSelector: React.FC<GameInfoSelectorProps> = ({
-    selectedIoniaPathId,
-    selectedVoidModIds = [],
-    onIoniaPathChange,
-    onVoidModsChange
+    selectedFeaturedPathId,
+    selectedFeaturedModifierIds = [],
+    onFeaturedPathChange,
+    onFeaturedModifiersChange,
 }) => {
     const [modalType, setModalType] = useState<ModalType>(null);
 
-    const selectedPath = IONIA_PATHS.find(p => p.id === selectedIoniaPathId);
-    const selectedMods = VOID_MODS.filter(m => selectedVoidModIds.includes(m.id));
+    const selectedRealmGodIds = selectedFeaturedModifierIds
+        .filter(id => REALM_GODS.some(god => god.id === id))
+        .slice(0, REALM_GODS_PER_GAME);
+    const selectedConstellation = STARGAZER_CONSTELLATIONS.find(
+        constellation => constellation.id === selectedFeaturedPathId,
+    );
+    const selectedGods = selectedRealmGodIds
+        .map(id => REALM_GODS.find(god => god.id === id))
+        .filter((god): god is RealmGod => Boolean(god));
 
-    const handlePathSelect = (path: IoniaPath) => {
-        onIoniaPathChange(path.id);
+    const handleConstellationSelect = (constellation: StargazerConstellation) => {
+        onFeaturedPathChange(constellation.id);
         setModalType(null);
     };
 
-    const handleModToggle = (mod: VoidMod) => {
-        const isSelected = selectedVoidModIds.includes(mod.id);
-        let newMods: string[];
+    const handleRealmGodToggle = (god: RealmGod) => {
+        const isSelected = selectedRealmGodIds.includes(god.id);
+        let nextGodIds: string[];
 
         if (isSelected) {
-            newMods = selectedVoidModIds.filter(id => id !== mod.id);
+            nextGodIds = selectedRealmGodIds.filter(id => id !== god.id);
+        } else if (selectedRealmGodIds.length >= REALM_GODS_PER_GAME) {
+            nextGodIds = [...selectedRealmGodIds.slice(1), god.id];
         } else {
-            if (selectedVoidModIds.length >= 3) {
-                newMods = [...selectedVoidModIds.slice(1), mod.id];
-            } else {
-                newMods = [...selectedVoidModIds, mod.id];
-            }
+            nextGodIds = [...selectedRealmGodIds, god.id];
         }
 
-        onVoidModsChange(newMods);
-    };
-
-    const handleClearIonia = () => {
-        onIoniaPathChange('');
+        onFeaturedModifiersChange(nextGodIds);
     };
 
     return (
         <div className="gis-container">
-            {/* Compact Row with 2 buttons */}
             <div className="gis-buttons-row">
-                {/* Ionia Button */}
-                <div className="gis-slot" onClick={() => setModalType('ionia')}>
-                    {selectedPath ? (
+                <div className="gis-slot" onClick={() => setModalType('constellation')}>
+                    {selectedConstellation ? (
                         <>
                             <img
-                                src={getTraitIconUrl('Ionia')}
-                                alt="Set 17 path"
+                                src={STARGAZER_CONSTELLATION_ICON_URL}
+                                alt="Stargazer constellation"
                                 className="gis-slot-icon"
                             />
-                            <span className="gis-slot-label">{selectedPath.nameVi}</span>
+                            <span className="gis-slot-label">{selectedConstellation.name}</span>
                             <button
+                                type="button"
                                 className="gis-slot-clear"
-                                onClick={(e) => { e.stopPropagation(); handleClearIonia(); }}
+                                onClick={(event) => {
+                                    event.stopPropagation();
+                                    onFeaturedPathChange('');
+                                }}
                             >
-                                ✕
+                                x
                             </button>
                         </>
                     ) : (
                         <>
                             <span className="gis-slot-plus">+</span>
-                            <span className="gis-slot-hint">Set 17 Path</span>
+                            <span className="gis-slot-hint">Constellation</span>
                         </>
                     )}
                 </div>
 
-                {/* Void Button */}
-                <div className="gis-slot" onClick={() => setModalType('void')}>
-                    {selectedMods.length > 0 ? (
+                <div className="gis-slot" onClick={() => setModalType('gods')}>
+                    {selectedGods.length > 0 ? (
                         <>
                             <img
-                                src={getTraitIconUrl('Void')}
-                                alt="Set 17 mods"
+                                src={REALM_OF_THE_GODS_ICON_URL}
+                                alt="Realm of the Gods"
                                 className="gis-slot-icon"
                             />
-                            <span className="gis-slot-label">{selectedMods.length} Mods</span>
+                            <span className="gis-slot-label">{buildRealmGodLabel(selectedGods)}</span>
                             <button
+                                type="button"
                                 className="gis-slot-clear"
-                                onClick={(e) => { e.stopPropagation(); onVoidModsChange([]); }}
+                                onClick={(event) => {
+                                    event.stopPropagation();
+                                    onFeaturedModifiersChange([]);
+                                }}
                             >
-                                ✕
+                                x
                             </button>
                         </>
                     ) : (
                         <>
                             <span className="gis-slot-plus">+</span>
-                            <span className="gis-slot-hint">Set 17 Mods</span>
+                            <span className="gis-slot-hint">2 Gods</span>
                         </>
                     )}
                 </div>
             </div>
 
-            {/* Ionia Modal */}
-            {modalType === 'ionia' && (
+            {modalType === 'constellation' && (
                 <div className="gis-modal-overlay" onClick={() => setModalType(null)}>
-                    <div className="gis-modal" onClick={e => e.stopPropagation()}>
+                    <div className="gis-modal" onClick={event => event.stopPropagation()}>
                         <div className="gis-modal-header">
-                            <img src={getTraitIconUrl('Ionia')} alt="Set 17 path" className="gis-modal-icon" />
-                            <span className="gis-modal-title">Chọn khung Set 17</span>
-                            <button className="gis-modal-close" onClick={() => setModalType(null)}>✕</button>
+                            <img
+                                src={STARGAZER_CONSTELLATION_ICON_URL}
+                                alt="Stargazer constellation"
+                                className="gis-modal-icon"
+                            />
+                            <span className="gis-modal-title">Choose the Stargazer Constellation</span>
+                            <button type="button" className="gis-modal-close" onClick={() => setModalType(null)}>
+                                x
+                            </button>
                         </div>
                         <div className="gis-modal-content">
-                            {IONIA_PATHS.map(path => (
+                            {STARGAZER_CONSTELLATIONS.map(constellation => (
                                 <div
-                                    key={path.id}
-                                    className={`gis-option ${selectedIoniaPathId === path.id ? 'selected' : ''}`}
-                                    onClick={() => handlePathSelect(path)}
+                                    key={constellation.id}
+                                    className={`gis-option ${selectedFeaturedPathId === constellation.id ? 'selected' : ''}`}
+                                    onClick={() => handleConstellationSelect(constellation)}
                                 >
-                                    <div className="gis-option-name">{path.nameVi}</div>
-                                    <div className="gis-option-desc">{path.description}</div>
+                                    <div className="gis-option-name">{constellation.name}</div>
+                                    <div className="gis-option-desc">{buildConstellationDescription(constellation)}</div>
                                 </div>
                             ))}
                         </div>
@@ -129,31 +165,38 @@ const GameInfoSelector: React.FC<GameInfoSelectorProps> = ({
                 </div>
             )}
 
-            {/* Void Modal */}
-            {modalType === 'void' && (
+            {modalType === 'gods' && (
                 <div className="gis-modal-overlay" onClick={() => setModalType(null)}>
-                    <div className="gis-modal" onClick={e => e.stopPropagation()}>
+                    <div className="gis-modal" onClick={event => event.stopPropagation()}>
                         <div className="gis-modal-header">
-                            <img src={getTraitIconUrl('Void')} alt="Set 17 mods" className="gis-modal-icon" />
-                            <span className="gis-modal-title">Chọn modifier Set 17 ({selectedVoidModIds.length}/3)</span>
-                            <button className="gis-modal-close" onClick={() => setModalType(null)}>✕</button>
+                            <img
+                                src={REALM_OF_THE_GODS_ICON_URL}
+                                alt="Realm of the Gods"
+                                className="gis-modal-icon"
+                            />
+                            <span className="gis-modal-title">
+                                Choose Realm Gods ({selectedRealmGodIds.length}/{REALM_GODS_PER_GAME})
+                            </span>
+                            <button type="button" className="gis-modal-close" onClick={() => setModalType(null)}>
+                                x
+                            </button>
                         </div>
                         <div className="gis-modal-content">
-                            {VOID_MODS.map(mod => {
-                                const isSelected = selectedVoidModIds.includes(mod.id);
-                                const idx = selectedVoidModIds.indexOf(mod.id);
+                            {REALM_GODS.map(god => {
+                                const isSelected = selectedRealmGodIds.includes(god.id);
+                                const index = selectedRealmGodIds.indexOf(god.id);
 
                                 return (
                                     <div
-                                        key={mod.id}
+                                        key={god.id}
                                         className={`gis-option gis-mod-option ${isSelected ? 'selected' : ''}`}
-                                        onClick={() => handleModToggle(mod)}
+                                        onClick={() => handleRealmGodToggle(god)}
                                     >
-                                        {isSelected && <div className="gis-mod-badge">{idx + 1}</div>}
-                                        <img src={mod.icon} alt={mod.nameVi} className="gis-mod-icon" />
+                                        {isSelected && <div className="gis-mod-badge">{index + 1}</div>}
+                                        <img src={god.icon} alt={god.name} className="gis-mod-icon" />
                                         <div className="gis-option-info">
-                                            <div className="gis-option-name">{mod.nameVi}</div>
-                                            <div className="gis-option-desc">{mod.description}</div>
+                                            <div className="gis-option-name">{god.name}</div>
+                                            <div className="gis-option-desc">{buildRealmGodDescription(god)}</div>
                                         </div>
                                     </div>
                                 );

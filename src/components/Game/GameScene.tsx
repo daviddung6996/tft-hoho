@@ -4,7 +4,13 @@ import { ArenaEffects } from '../Arena/ArenaEffects';
 import { PlayerLevelDisplay } from '../Arena/PlayerLevelDisplay';
 import { PlayerData } from '../../data/mockPlayers';
 import { UnitData } from '../../data/types';
-import { getRandomIoniaPath, getRandomVoidMods } from '../../data/gameInfoData';
+import {
+    FeaturedModifier,
+    FeaturedPath,
+    REALM_GODS_PER_GAME,
+    getRandomFeaturedModifiers,
+    getRandomFeaturedPath,
+} from '../../data/gameInfoData';
 import Toast from '../common/Toast';
 
 interface GameSceneProps {
@@ -13,14 +19,37 @@ interface GameSceneProps {
     isMirrored: boolean;
     streakCount?: number;
     isInteractionLocked?: boolean;
+    featuredPath?: FeaturedPath;
+    featuredModifiers?: FeaturedModifier[];
 }
 
-export const GameScene: React.FC<GameSceneProps> = ({ myPlayer, activePlayer, isMirrored, streakCount, isInteractionLocked = false }) => {
-    // Generate random Ionia Path and Void Mods once per game session
+export const GameScene: React.FC<GameSceneProps> = ({
+    myPlayer,
+    activePlayer,
+    isMirrored,
+    streakCount,
+    isInteractionLocked = false,
+    featuredPath,
+    featuredModifiers = [],
+}) => {
+    // Use puzzle-authored Set 17 match info when present, otherwise roll a fresh game state.
     const gameInfo = useMemo(() => ({
-        ioniaPath: getRandomIoniaPath(),
-        voidMods: getRandomVoidMods(3)
-    }), []);
+        featuredPath: featuredPath ?? getRandomFeaturedPath(),
+        featuredModifiers: (() => {
+            const selectedGods = featuredModifiers.slice(0, REALM_GODS_PER_GAME);
+
+            if (selectedGods.length >= REALM_GODS_PER_GAME) {
+                return selectedGods;
+            }
+
+            const fallbackGods = getRandomFeaturedModifiers(
+                REALM_GODS_PER_GAME - selectedGods.length,
+                selectedGods.map(god => god.id),
+            );
+
+            return [...selectedGods, ...fallbackGods];
+        })(),
+    }), [featuredModifiers, featuredPath]);
 
     // Local state for interactive unit positioning (drag-drop)
     const [localUnits, setLocalUnits] = useState<UnitData[]>(myPlayer.units);
@@ -63,8 +92,8 @@ export const GameScene: React.FC<GameSceneProps> = ({ myPlayer, activePlayer, is
                     opponentAugments={isMirrored ? activePlayer.augments : undefined}
                     playerAugmentTreeUrl={!isMirrored ? myPlayer.augmentTreeUrl : undefined}
                     playerAugments={!isMirrored ? myPlayer.augments : undefined}
-                    ioniaPath={gameInfo.ioniaPath}
-                    voidMods={gameInfo.voidMods}
+                    featuredPath={gameInfo.featuredPath}
+                    featuredModifiers={gameInfo.featuredModifiers}
                     streakCount={streakCount}
                     onUnitsChange={!isMirrored ? handleUnitsChange : undefined}
                     playerLevel={!isMirrored ? myPlayer.level : undefined}

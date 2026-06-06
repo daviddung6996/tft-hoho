@@ -33,14 +33,14 @@ interface RiotChampion {
     tileIcon: string;
     squareIcon: string;
     stats: {
-        hp: number | null;
-        mana: number | null;
-        initialMana: number | null;
-        damage: number | null;
-        attackSpeed: number | null;
+        hp: number[] | null;
+        ad: number[] | null;
+        as: number | null;
         armor: number | null;
-        magicResist: number | null;
+        mr: number | null;
+        mana: { min: number; max: number } | null;
         range: number | null;
+        dps: number[] | null;
     };
     ability: {
         name: string | null;

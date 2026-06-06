@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useCallback, Suspense } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, Suspense } from 'react';
 import { usePuzzleGame } from './hooks/usePuzzleGame';
 import { useGameFlow } from './hooks/useGameFlow';
 import { usePuzzleToPlayers } from './hooks/usePuzzleToPlayers';
@@ -7,6 +7,7 @@ import { useMobileAutoFullscreen } from './hooks/useMobileAutoFullscreen';
 import { GameScene } from './components/Game/GameScene';
 import { GameHUD, type MobilePanel } from './components/Game/GameHUD';
 import { getLayoutMode, getMobileOverlayMode, type LayoutMode } from './components/Game/mobileLayout';
+import { FeaturedModifier, getFeaturedModifierById, getFeaturedPathById } from './data/gameInfoData';
 
 // Components
 import { AugmentButton } from './components/Arena/AugmentButton';
@@ -224,6 +225,28 @@ const App: React.FC = () => {
         items
     } = usePuzzleToPlayers(currentPuzzle);
 
+    const selectedGameInfo = useMemo(() => {
+        const featuredPath = currentPuzzle?.featuredPathId
+            ? getFeaturedPathById(currentPuzzle.featuredPathId)
+            : undefined;
+        const featuredModifierIds = Array.isArray(currentPuzzle?.featuredModifierIds)
+            ? currentPuzzle.featuredModifierIds
+            : [];
+        const featuredModifiers: FeaturedModifier[] = [];
+
+        for (const id of featuredModifierIds) {
+            const god = getFeaturedModifierById(String(id));
+            if (god) {
+                featuredModifiers.push(god);
+            }
+        }
+
+        return {
+            featuredPath,
+            featuredModifiers,
+        };
+    }, [currentPuzzle]);
+
     // Apply user-selected arena to myPlayer
     const myPlayerWithArena = myArenaId
         ? { ...myPlayer, arenaId: myArenaId }
@@ -430,16 +453,19 @@ const App: React.FC = () => {
             return;
         }
 
-        let cancelled = false;
         const targetArenaUrl = playerArena.backgroundUrl || playerArena.thumbnailUrl || playerArena.iconUrl;
 
+        // If image is already decoded (warm from useArenaPreloader), swap immediately — no async gap
+        if (isArenaBackgroundReady(targetArenaUrl)) {
+            setVisibleArenaId(playerArena.id);
+            return;
+        }
+
+        // Cold path: preload + decode first, then swap
+        let cancelled = false;
         void preloadArenaBackground(targetArenaUrl).then(() => {
             if (!cancelled) {
-                requestAnimationFrame(() => {
-                    if (!cancelled) {
-                        setVisibleArenaId(playerArena.id);
-                    }
-                });
+                setVisibleArenaId(playerArena.id);
             }
         });
 
@@ -683,6 +709,8 @@ const App: React.FC = () => {
                                 activePlayer={activePlayer}
                                 isMirrored={isMirrored}
                                 isInteractionLocked={hasBlockingWorkspaceModal}
+                                featuredPath={selectedGameInfo.featuredPath}
+                                featuredModifiers={selectedGameInfo.featuredModifiers}
                             />
                             {!isMirrored && (
                                 <>

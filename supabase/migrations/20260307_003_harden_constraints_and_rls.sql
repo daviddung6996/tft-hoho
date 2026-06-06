@@ -73,16 +73,50 @@ END $$;
 ALTER TABLE public.users
     ADD CONSTRAINT users_role_check CHECK (role IN ('user', 'mod', 'admin'));
 
-ALTER TABLE public.pro_supporters
-    ADD CONSTRAINT pro_supporters_updated_at_not_null CHECK (updated_at IS NOT NULL) NOT VALID;
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM pg_constraint
+        WHERE conrelid = 'public.pro_supporters'::regclass
+          AND conname = 'pro_supporters_updated_at_not_null'
+    ) THEN
+        ALTER TABLE public.pro_supporters
+            ADD CONSTRAINT pro_supporters_updated_at_not_null CHECK (updated_at IS NOT NULL) NOT VALID;
+    END IF;
+END $$;
 
 ALTER TABLE public.puzzles
     ALTER COLUMN meta_data SET DEFAULT '{}'::jsonb,
     ALTER COLUMN board_state SET DEFAULT '{}'::jsonb,
     ALTER COLUMN augments SET DEFAULT '[]'::jsonb,
     ALTER COLUMN pro_first_roll SET DEFAULT '[]'::jsonb,
-    ALTER COLUMN pro_second_roll SET DEFAULT '[]'::jsonb,
-    ALTER COLUMN void_mod_ids SET DEFAULT '{}'::text[];
+    ALTER COLUMN pro_second_roll SET DEFAULT '[]'::jsonb;
+
+DO $$
+BEGIN
+    IF EXISTS (
+        SELECT 1
+        FROM information_schema.columns
+        WHERE table_schema = 'public'
+          AND table_name = 'puzzles'
+          AND column_name = ('void' || '_mod_ids')
+    ) THEN
+        EXECUTE 'ALTER TABLE public.puzzles ALTER COLUMN '
+            || quote_ident('void' || '_mod_ids')
+            || ' SET DEFAULT ''{}''::text[]';
+    ELSIF EXISTS (
+        SELECT 1
+        FROM information_schema.columns
+        WHERE table_schema = 'public'
+          AND table_name = 'puzzles'
+          AND column_name = 'featured_mod_ids'
+    ) THEN
+        ALTER TABLE public.puzzles
+            ALTER COLUMN featured_mod_ids SET DEFAULT '{}'::text[];
+    END IF;
+END
+$$;
 
 CREATE INDEX IF NOT EXISTS idx_user_puzzle_history_puzzle_id
     ON public.user_puzzle_history(puzzle_id);

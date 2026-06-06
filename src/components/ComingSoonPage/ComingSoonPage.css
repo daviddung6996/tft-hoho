@@ -1,0 +1,229 @@
+/* ComingSoonPage.css - Hextech theme implementation */
+
+/* Keyframe for entrance animation */
+@keyframes coming-soon-fade-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Main page container - full viewport with Hextech atmosphere */
+.coming-soon-page {
+  position: fixed;
+  inset: 0;
+  
+  /* Hextech atmosphere background pattern */
+  background:
+    radial-gradient(ellipse at 50% 30%, rgba(200, 170, 110, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 80%, rgba(21, 58, 62, 0.25) 0%, transparent 50%),
+    linear-gradient(180deg, #0d2e30 0%, #081e20 100%);
+  
+  /* Center content both horizontally and vertically */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  /* Smooth entrance */
+  animation: coming-soon-fade-in 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Content container */
+.coming-soon-content {
+  text-align: center;
+  max-width: 90vw;
+  padding: 2rem;
+}
+
+/* Logo/ornament area */
+.coming-soon-logo {
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Hexagonal ornament */
+.hex-ornament {
+  width: 4rem;
+  height: 4rem;
+  background: linear-gradient(135deg, rgba(200, 170, 110, 0.2), rgba(200, 170, 110, 0.05));
+  border: 2px solid #c8aa6e;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  box-shadow: 0 0 20px rgba(200, 170, 110, 0.3);
+  position: relative;
+}
+
+.hex-ornament::before {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  background: rgba(21, 58, 62, 0.5);
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+}
+
+/* Title styling */
+.coming-soon-title {
+  font-size: 4cqw;
+  font-weight: 700;
+  color: #c8aa6e;
+  margin: 0 0 1.5rem 0;
+  text-shadow: 0 0 10px rgba(200, 170, 110, 0.5);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Main announcement message */
+.coming-soon-message {
+  font-size: 1.5cqw;
+  color: rgba(200, 170, 110, 0.9);
+  margin: 0 0 2rem 0;
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+/* Hextech divider */
+.hex-divider {
+  width: 60%;
+  max-width: 300px;
+  height: 1px;
+  margin: 2rem auto;
+  background: linear-gradient(
+    to right,
+    transparent,
+    #c8aa6e 20%,
+    #c8aa6e 80%,
+    transparent
+  );
+  box-shadow: 0 0 8px rgba(200, 170, 110, 0.4);
+  position: relative;
+}
+
+.hex-divider::before,
+.hex-divider::after {
+  content: '';
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: #c8aa6e;
+  transform: rotate(45deg);
+  box-shadow: 0 0 6px rgba(200, 170, 110, 0.6);
+}
+
+.hex-divider::before {
+  left: 0;
+  top: -2.5px;
+}
+
+.hex-divider::after {
+  right: 0;
+  top: -2.5px;
+}
+
+/* Subtitle styling */
+.coming-soon-subtitle {
+  font-size: 1.2cqw;
+  color: rgba(200, 170, 110, 0.75);
+  margin: 0;
+  font-weight: 300;
+}
+
+/* Responsive breakpoints */
+
+/* Desktop (1280px and wider) - use container query units */
+@media (min-width: 1280px) {
+  .coming-soon-title {
+    font-size: 4cqw;
+  }
+  
+  .coming-soon-message {
+    font-size: 1.5cqw;
+  }
+  
+  .coming-soon-subtitle {
+    font-size: 1.2cqw;
+  }
+  
+  .hex-ornament {
+    width: 5rem;
+    height: 5rem;
+  }
+}
+
+/* Tablet (768px to 1279px) - use viewport units */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .coming-soon-title {
+    font-size: 5vw;
+  }
+  
+  .coming-soon-message {
+    font-size: 1.8vw;
+  }
+  
+  .coming-soon-subtitle {
+    font-size: 1.4vw;
+  }
+  
+  .hex-ornament {
+    width: 4rem;
+    height: 4rem;
+  }
+}
+
+/* Mobile (320px to 767px) - use viewport units with minimum readable sizes */
+@media (max-width: 767px) {
+  .coming-soon-content {
+    padding: 1.5rem;
+  }
+  
+  .coming-soon-title {
+    font-size: max(6vw, 1.5rem);
+  }
+  
+  .coming-soon-message {
+    font-size: max(2vw, 1rem);
+    line-height: 1.5;
+  }
+  
+  .coming-soon-subtitle {
+    font-size: max(1.8vw, 0.875rem);
+  }
+  
+  .hex-ornament {
+    width: 3rem;
+    height: 3rem;
+  }
+  
+  .coming-soon-logo {
+    margin-bottom: 1.5rem;
+  }
+  
+  .hex-divider {
+    width: 70%;
+    margin: 1.5rem auto;
+  }
+}
+
+/* Ultra-wide displays (3840px+) - cap maximum sizes */
+@media (min-width: 3840px) {
+  .coming-soon-title {
+    font-size: 8rem;
+  }
+  
+  .coming-soon-message {
+    font-size: 3rem;
+  }
+  
+  .coming-soon-subtitle {
+    font-size: 2.5rem;
+  }
+  
+  .hex-ornament {
+    width: 6rem;
+    height: 6rem;
+  }
+}

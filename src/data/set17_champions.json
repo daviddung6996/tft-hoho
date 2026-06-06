@@ -14,13 +14,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_aatrox.jpg",
       "stats": {
         "hp": null,
-        "mana": 90,
-        "initialMana": 30,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 1
+        "mr": null,
+        "mana": {
+          "min": 30,
+          "max": 90
+        },
+        "range": 1,
+        "dps": null
       },
       "ability": {
         "name": "Stellar Slash",
@@ -44,13 +47,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_briar.jpg",
       "stats": {
         "hp": null,
-        "mana": 40,
-        "initialMana": 0,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 1
+        "mr": null,
+        "mana": {
+          "min": 0,
+          "max": 40
+        },
+        "range": 1,
+        "dps": null
       },
       "ability": {
         "name": "Fish Frenzy",
@@ -73,13 +79,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_caitlyn.jpg",
       "stats": {
         "hp": null,
-        "mana": 70,
-        "initialMana": 30,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 4
+        "mr": null,
+        "mana": {
+          "min": 30,
+          "max": 70
+        },
+        "range": 4,
+        "dps": null
       },
       "ability": {
         "name": "Aim for the Head",
@@ -102,13 +111,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_ezreal.jpg",
       "stats": {
         "hp": null,
-        "mana": 30,
-        "initialMana": 0,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 4
+        "mr": null,
+        "mana": {
+          "min": 0,
+          "max": 30
+        },
+        "range": 4,
+        "dps": null
       },
       "ability": {
         "name": "Temporal Shot",
@@ -131,13 +143,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_leona.jpg",
       "stats": {
         "hp": null,
-        "mana": 100,
-        "initialMana": 40,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 1
+        "mr": null,
+        "mana": {
+          "min": 40,
+          "max": 100
+        },
+        "range": 1,
+        "dps": null
       },
       "ability": {
         "name": "Shield of Daybreak",
@@ -161,13 +176,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_lissandra.jpg",
       "stats": {
         "hp": null,
-        "mana": 30,
-        "initialMana": 0,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 4
+        "mr": null,
+        "mana": {
+          "min": 0,
+          "max": 30
+        },
+        "range": 4,
+        "dps": null
       },
       "ability": {
         "name": "Dark Matter",
@@ -190,16 +208,19 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_nasus.jpg",
       "stats": {
         "hp": null,
-        "mana": 120,
-        "initialMana": 60,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 1
+        "mr": null,
+        "mana": {
+          "min": 60,
+          "max": 120
+        },
+        "range": 1,
+        "dps": null
       },
       "ability": {
-        "name": "Groovin&#x27; Susan",
+        "name": "Groovin' Susan",
         "desc": "Transform for Duration seconds, temporarily gaining MaxHealth max Health and dealing DamageHealth + DamageAP () magic damage to adjacent enemies each second. While transformed, Nasus is in the Groove.",
         "icon": "https://ap.tft.tools/img/new17/ability/TFT17_Nasus.png",
         "variables": []
@@ -219,13 +240,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_poppy.jpg",
       "stats": {
         "hp": null,
-        "mana": 100,
-        "initialMana": 30,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 1
+        "mr": null,
+        "mana": {
+          "min": 30,
+          "max": 100
+        },
+        "range": 1,
+        "dps": null
       },
       "ability": {
         "name": "Huddle Up!",
@@ -243,18 +267,21 @@
         "Primordian",
         "Brawler"
       ],
-      "icon": "https://ap.tft.tools/img/new17/face/tft17_rekx27sai.jpg",
-      "tileIcon": "https://ap.tft.tools/img/new17/face/tft17_rekx27sai.jpg",
-      "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_rekx27sai.jpg",
+      "icon": "https://ap.tft.tools/img/new17/face/tft17_reksai.jpg",
+      "tileIcon": "https://ap.tft.tools/img/new17/face/tft17_reksai.jpg",
+      "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_reksai.jpg",
       "stats": {
         "hp": null,
-        "mana": 110,
-        "initialMana": 50,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 1
+        "mr": null,
+        "mana": {
+          "min": 50,
+          "max": 110
+        },
+        "range": 1,
+        "dps": null
       },
       "ability": {
         "name": "Upheaval",
@@ -277,16 +304,19 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_talon.jpg",
       "stats": {
         "hp": null,
-        "mana": 30,
-        "initialMana": 0,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 1
+        "mr": null,
+        "mana": {
+          "min": 0,
+          "max": 30
+        },
+        "range": 1,
+        "dps": null
       },
       "ability": {
-        "name": "Diviner&#x27;s Judgement",
+        "name": "Diviner's Judgement",
         "desc": "Stab the target, causing them to bleed for ADBleedDamage + APBleedDamage () physical damage over BleedDuration seconds. After the attack, leap to the highest percent Health enemy within HexDistance hexes.",
         "icon": "https://ap.tft.tools/img/new17/ability/TFT17_Talon.png",
         "variables": []
@@ -306,13 +336,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_teemo.jpg",
       "stats": {
         "hp": null,
-        "mana": 50,
-        "initialMana": 0,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 4
+        "mr": null,
+        "mana": {
+          "min": 0,
+          "max": 50
+        },
+        "range": 4,
+        "dps": null
       },
       "ability": {
         "name": "Double Time",
@@ -335,16 +368,19 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_twistedfate.jpg",
       "stats": {
         "hp": null,
-        "mana": 50,
-        "initialMana": 0,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 4
+        "mr": null,
+        "mana": {
+          "min": 0,
+          "max": 50
+        },
+        "range": 4,
+        "dps": null
       },
       "ability": {
-        "name": "Fate&#x27;s Gambit",
+        "name": "Fate's Gambit",
         "desc": "Draw a card with a value between 1 and 9 by chance, then throw it at the target. Based on the card drawn, deal between DamageMin () and DamageMax () magic damage. Overkill damage bounces to the nearest enemy.",
         "icon": "https://ap.tft.tools/img/new17/ability/TFT17_TwistedFate.png",
         "variables": []
@@ -364,13 +400,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_veigar.jpg",
       "stats": {
         "hp": null,
-        "mana": 50,
-        "initialMana": 10,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 4
+        "mr": null,
+        "mana": {
+          "min": 10,
+          "max": 50
+        },
+        "range": 4,
+        "dps": null
       },
       "ability": {
         "name": "Meepteor Shower",
@@ -393,13 +432,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_akali.jpg",
       "stats": {
         "hp": null,
-        "mana": 30,
-        "initialMana": 0,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 1
+        "mr": null,
+        "mana": {
+          "min": 0,
+          "max": 30
+        },
+        "range": 1,
+        "dps": null
       },
       "ability": {
         "name": "Star Strike",
@@ -418,18 +460,21 @@
         "Challenger",
         "Marauder"
       ],
-      "icon": "https://ap.tft.tools/img/new17/face/tft17_belx27veth.jpg",
-      "tileIcon": "https://ap.tft.tools/img/new17/face/tft17_belx27veth.jpg",
-      "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_belx27veth.jpg",
+      "icon": "https://ap.tft.tools/img/new17/face/tft17_belveth.jpg",
+      "tileIcon": "https://ap.tft.tools/img/new17/face/tft17_belveth.jpg",
+      "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_belveth.jpg",
       "stats": {
         "hp": null,
-        "mana": 50,
-        "initialMana": 0,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 2
+        "mr": null,
+        "mana": {
+          "min": 0,
+          "max": 50
+        },
+        "range": 2,
+        "dps": null
       },
       "ability": {
         "name": "Tidal Slashes",
@@ -452,13 +497,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_gnar.jpg",
       "stats": {
         "hp": null,
-        "mana": 5,
-        "initialMana": 0,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 4
+        "mr": null,
+        "mana": {
+          "min": 0,
+          "max": 5
+        },
+        "range": 4,
+        "dps": null
       },
       "ability": {
         "name": "Slingshot Mane",
@@ -481,13 +529,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_gragas.jpg",
       "stats": {
         "hp": null,
-        "mana": 80,
-        "initialMana": 30,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 1
+        "mr": null,
+        "mana": {
+          "min": 30,
+          "max": 80
+        },
+        "range": 1,
+        "dps": null
       },
       "ability": {
         "name": "Chemical Rage",
@@ -510,16 +561,19 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_gwen.jpg",
       "stats": {
         "hp": null,
-        "mana": 30,
-        "initialMana": 0,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 2
+        "mr": null,
+        "mana": {
+          "min": 0,
+          "max": 30
+        },
+        "range": 2,
+        "dps": null
       },
       "ability": {
-        "name": "Dance n&#x27; Dice",
+        "name": "Dance n' Dice",
         "desc": "Passive: Attacks deal magic damage. Gwen is in the Groove while targeting an enemy below GrooveThreshold Health. Active: Dash to a nearby hex to snip the lowest percent Health enemy, dealing Damage () magic damage to the target and AreaDamage () magic damage to enemies in a cone. If this kills, dash and snip again at ResetDamage damage!",
         "icon": "https://ap.tft.tools/img/new17/ability/TFT17_Gwen.png",
         "variables": []
@@ -539,13 +593,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_jax.jpg",
       "stats": {
         "hp": null,
-        "mana": 70,
-        "initialMana": 10,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 1
+        "mr": null,
+        "mana": {
+          "min": 10,
+          "max": 70
+        },
+        "range": 1,
+        "dps": null
       },
       "ability": {
         "name": "Counter Star-ike",
@@ -568,13 +625,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_jinx.jpg",
       "stats": {
         "hp": null,
-        "mana": 80,
-        "initialMana": 20,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 4
+        "mr": null,
+        "mana": {
+          "min": 20,
+          "max": 80
+        },
+        "range": 4,
+        "dps": null
       },
       "ability": {
         "name": "Fishbones!",
@@ -598,13 +658,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_meepsie.jpg",
       "stats": {
         "hp": null,
-        "mana": 100,
-        "initialMana": 50,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 1
+        "mr": null,
+        "mana": {
+          "min": 50,
+          "max": 100
+        },
+        "range": 1,
+        "dps": null
       },
       "ability": {
         "name": "Meep Impact",
@@ -627,13 +690,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_milio.jpg",
       "stats": {
         "hp": null,
-        "mana": 30,
-        "initialMana": 0,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 4
+        "mr": null,
+        "mana": {
+          "min": 0,
+          "max": 30
+        },
+        "range": 4,
+        "dps": null
       },
       "ability": {
         "name": "ULTRA MEGA TIME KICK",
@@ -657,13 +723,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_mordekaiser.jpg",
       "stats": {
         "hp": null,
-        "mana": 80,
-        "initialMana": 20,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 1
+        "mr": null,
+        "mana": {
+          "min": 20,
+          "max": 80
+        },
+        "range": 1,
+        "dps": null
       },
       "ability": {
         "name": "Indestructible",
@@ -687,13 +756,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_pantheon.jpg",
       "stats": {
         "hp": null,
-        "mana": 80,
-        "initialMana": 20,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 1
+        "mr": null,
+        "mana": {
+          "min": 20,
+          "max": 80
+        },
+        "range": 1,
+        "dps": null
       },
       "ability": {
         "name": "Advanced Defences",
@@ -716,13 +788,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_pyke.jpg",
       "stats": {
         "hp": null,
-        "mana": 40,
-        "initialMana": 0,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 1
+        "mr": null,
+        "mana": {
+          "min": 0,
+          "max": 40
+        },
+        "range": 1,
+        "dps": null
       },
       "ability": {
         "name": "Marked for Death",
@@ -745,13 +820,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_zoe.jpg",
       "stats": {
         "hp": null,
-        "mana": 50,
-        "initialMana": 0,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 4
+        "mr": null,
+        "mana": {
+          "min": 0,
+          "max": 50
+        },
+        "range": 4,
+        "dps": null
       },
       "ability": {
         "name": "Paddle Star",
@@ -774,13 +852,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_aurora.jpg",
       "stats": {
         "hp": null,
-        "mana": 80,
-        "initialMana": 20,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 4
+        "mr": null,
+        "mana": {
+          "min": 20,
+          "max": 80
+        },
+        "range": 4,
+        "dps": null
       },
       "ability": {
         "name": "Hopped-Up Hacks",
@@ -803,13 +884,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_diana.jpg",
       "stats": {
         "hp": null,
-        "mana": 50,
-        "initialMana": 0,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 1
+        "mr": null,
+        "mana": {
+          "min": 0,
+          "max": 50
+        },
+        "range": 1,
+        "dps": null
       },
       "ability": {
         "name": "Pale Cascade",
@@ -832,13 +916,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_fizz.jpg",
       "stats": {
         "hp": null,
-        "mana": 20,
-        "initialMana": 0,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 1
+        "mr": null,
+        "mana": {
+          "min": 0,
+          "max": 20
+        },
+        "range": 1,
+        "dps": null
       },
       "ability": {
         "name": "Meep Bait",
@@ -862,13 +949,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_illaoi.jpg",
       "stats": {
         "hp": null,
-        "mana": 100,
-        "initialMana": 40,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 1
+        "mr": null,
+        "mana": {
+          "min": 40,
+          "max": 100
+        },
+        "range": 1,
+        "dps": null
       },
       "ability": {
         "name": "Test of Spirit",
@@ -886,18 +976,21 @@
         "Dark Star",
         "Rogue"
       ],
-      "icon": "https://ap.tft.tools/img/new17/face/tft17_kaix27sa.jpg",
-      "tileIcon": "https://ap.tft.tools/img/new17/face/tft17_kaix27sa.jpg",
-      "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_kaix27sa.jpg",
+      "icon": "https://ap.tft.tools/img/new17/face/tft17_kaisa.jpg",
+      "tileIcon": "https://ap.tft.tools/img/new17/face/tft17_kaisa.jpg",
+      "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_kaisa.jpg",
       "stats": {
         "hp": null,
-        "mana": 50,
-        "initialMana": 0,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 4
+        "mr": null,
+        "mana": {
+          "min": 0,
+          "max": 50
+        },
+        "range": 4,
+        "dps": null
       },
       "ability": {
         "name": "Bullet Cluster",
@@ -920,16 +1013,19 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_lulu.jpg",
       "stats": {
         "hp": null,
-        "mana": 60,
-        "initialMana": 0,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 4
+        "mr": null,
+        "mana": {
+          "min": 0,
+          "max": 60
+        },
+        "range": 4,
+        "dps": null
       },
       "ability": {
-        "name": "It&#x27;s Raining Stars",
+        "name": "It's Raining Stars",
         "desc": "Passive: Lulu's spell gains a different secondary effect each game. Active: Call down something from the sky, dealing Damage () magic damage to NumEnemies nearby enemies and do some special effect based on this game's Stargazer Constellation.",
         "icon": "https://ap.tft.tools/img/new17/ability/TFT17_Lulu.png",
         "variables": []
@@ -949,13 +1045,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_maokai.jpg",
       "stats": {
         "hp": null,
-        "mana": 100,
-        "initialMana": 30,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 1
+        "mr": null,
+        "mana": {
+          "min": 30,
+          "max": 100
+        },
+        "range": 1,
+        "dps": null
       },
       "ability": {
         "name": "Grasp of Convergence",
@@ -977,13 +1076,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_missfortune.jpg",
       "stats": {
         "hp": null,
-        "mana": 100,
-        "initialMana": 0,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 4
+        "mr": null,
+        "mana": {
+          "min": 0,
+          "max": 100
+        },
+        "range": 4,
+        "dps": null
       },
       "ability": {
         "name": "Gun Goddess Arsenal",
@@ -1006,13 +1108,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_ornn.jpg",
       "stats": {
         "hp": null,
-        "mana": 100,
-        "initialMana": 40,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 1
+        "mr": null,
+        "mana": {
+          "min": 40,
+          "max": 100
+        },
+        "range": 1,
+        "dps": null
       },
       "ability": {
         "name": "Disco Inferno",
@@ -1034,13 +1139,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_rhaast.jpg",
       "stats": {
         "hp": null,
-        "mana": 90,
-        "initialMana": 30,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 1
+        "mr": null,
+        "mana": {
+          "min": 30,
+          "max": 90
+        },
+        "range": 1,
+        "dps": null
       },
       "ability": {
         "name": "Alien Scythe",
@@ -1063,13 +1171,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_samira.jpg",
       "stats": {
         "hp": null,
-        "mana": 60,
-        "initialMana": 0,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 4
+        "mr": null,
+        "mana": {
+          "min": 0,
+          "max": 60
+        },
+        "range": 4,
+        "dps": null
       },
       "ability": {
         "name": "Jump and Jive",
@@ -1093,13 +1204,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_urgot.jpg",
       "stats": {
         "hp": null,
-        "mana": 50,
-        "initialMana": 0,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 2
+        "mr": null,
+        "mana": {
+          "min": 0,
+          "max": 50
+        },
+        "range": 2,
+        "dps": null
       },
       "ability": {
         "name": "Unstoppable",
@@ -1122,13 +1236,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_viktor.jpg",
       "stats": {
         "hp": null,
-        "mana": 80,
-        "initialMana": 20,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 4
+        "mr": null,
+        "mana": {
+          "min": 20,
+          "max": 80
+        },
+        "range": 4,
+        "dps": null
       },
       "ability": {
         "name": "Psionic Storm",
@@ -1146,18 +1263,21 @@
         "Mecha",
         "Channeler"
       ],
-      "icon": "https://ap.tft.tools/img/new17/face/tft17_aurelionx27sol.jpg",
-      "tileIcon": "https://ap.tft.tools/img/new17/face/tft17_aurelionx27sol.jpg",
-      "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_aurelionx27sol.jpg",
+      "icon": "https://ap.tft.tools/img/new17/face/tft17_aurelionsol.jpg",
+      "tileIcon": "https://ap.tft.tools/img/new17/face/tft17_aurelionsol.jpg",
+      "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_aurelionsol.jpg",
       "stats": {
         "hp": null,
-        "mana": 75,
-        "initialMana": 15,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 4
+        "mr": null,
+        "mana": {
+          "min": 15,
+          "max": 75
+        },
+        "range": 4,
+        "dps": null
       },
       "ability": {
         "name": "Deathbeam",
@@ -1180,13 +1300,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_corki.jpg",
       "stats": {
         "hp": null,
-        "mana": 60,
-        "initialMana": 0,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 4
+        "mr": null,
+        "mana": {
+          "min": 0,
+          "max": 60
+        },
+        "range": 4,
+        "dps": null
       },
       "ability": {
         "name": "Asteroid Blaster",
@@ -1209,13 +1332,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_themightymech.jpg",
       "stats": {
         "hp": null,
-        "mana": 100,
-        "initialMana": 40,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 1
+        "mr": null,
+        "mana": {
+          "min": 40,
+          "max": 100
+        },
+        "range": 1,
+        "dps": null
       },
       "ability": {
         "name": "Gravity Matrix",
@@ -1238,13 +1364,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_karma.jpg",
       "stats": {
         "hp": null,
-        "mana": 50,
-        "initialMana": 10,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 4
+        "mr": null,
+        "mana": {
+          "min": 10,
+          "max": 50
+        },
+        "range": 4,
+        "dps": null
       },
       "ability": {
         "name": "Singularity",
@@ -1267,13 +1396,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_kindred.jpg",
       "stats": {
         "hp": null,
-        "mana": 40,
-        "initialMana": 0,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 4
+        "mr": null,
+        "mana": {
+          "min": 0,
+          "max": 40
+        },
+        "range": 4,
+        "dps": null
       },
       "ability": {
         "name": "Cosmic Pursuit",
@@ -1296,13 +1428,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_leblanc.jpg",
       "stats": {
         "hp": null,
-        "mana": 40,
-        "initialMana": 0,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 4
+        "mr": null,
+        "mana": {
+          "min": 0,
+          "max": 40
+        },
+        "range": 4,
+        "dps": null
       },
       "ability": {
         "name": "Fracture Reality",
@@ -1325,13 +1460,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_masteryi.jpg",
       "stats": {
         "hp": null,
-        "mana": 70,
-        "initialMana": 30,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 1
+        "mr": null,
+        "mana": {
+          "min": 30,
+          "max": 70
+        },
+        "range": 1,
+        "dps": null
       },
       "ability": {
         "name": "Psi Strikes",
@@ -1354,13 +1492,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_nami.jpg",
       "stats": {
         "hp": null,
-        "mana": 85,
-        "initialMana": 30,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 4
+        "mr": null,
+        "mana": {
+          "min": 30,
+          "max": 85
+        },
+        "range": 4,
+        "dps": null
       },
       "ability": {
         "name": "Bubble Pop",
@@ -1383,13 +1524,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_nunu.jpg",
       "stats": {
         "hp": null,
-        "mana": 155,
-        "initialMana": 45,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 1
+        "mr": null,
+        "mana": {
+          "min": 45,
+          "max": 155
+        },
+        "range": 1,
+        "dps": null
       },
       "ability": {
         "name": "Calamity",
@@ -1412,13 +1556,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_rammus.jpg",
       "stats": {
         "hp": null,
-        "mana": 100,
-        "initialMana": 30,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 1
+        "mr": null,
+        "mana": {
+          "min": 30,
+          "max": 100
+        },
+        "range": 1,
+        "dps": null
       },
       "ability": {
         "name": "Gravitational Spin",
@@ -1441,13 +1588,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_riven.jpg",
       "stats": {
         "hp": null,
-        "mana": 20,
-        "initialMana": 0,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 1
+        "mr": null,
+        "mana": {
+          "min": 0,
+          "max": 20
+        },
+        "range": 1,
+        "dps": null
       },
       "ability": {
         "name": "Time Warp",
@@ -1470,13 +1620,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_tahmkench.jpg",
       "stats": {
         "hp": null,
-        "mana": 120,
-        "initialMana": 50,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 1
+        "mr": null,
+        "mana": {
+          "min": 50,
+          "max": 120
+        },
+        "range": 1,
+        "dps": null
       },
       "ability": {
         "name": "Tongue Lash",
@@ -1499,13 +1652,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_xayah.jpg",
       "stats": {
         "hp": null,
-        "mana": 50,
-        "initialMana": 0,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 4
+        "mr": null,
+        "mana": {
+          "min": 0,
+          "max": 50
+        },
+        "range": 4,
+        "dps": null
       },
       "ability": {
         "name": "Stellar Ricochet",
@@ -1528,13 +1684,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_bard.jpg",
       "stats": {
         "hp": null,
-        "mana": 70,
-        "initialMana": 0,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 4
+        "mr": null,
+        "mana": {
+          "min": 0,
+          "max": 70
+        },
+        "range": 4,
+        "dps": null
       },
       "ability": {
         "name": "Ultra Friendly Object",
@@ -1558,13 +1717,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_blitzcrank.jpg",
       "stats": {
         "hp": null,
-        "mana": 90,
-        "initialMana": 10,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 1
+        "mr": null,
+        "mana": {
+          "min": 10,
+          "max": 90
+        },
+        "range": 1,
+        "dps": null
       },
       "ability": {
         "name": "Party Crasher",
@@ -1588,13 +1750,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_fiora.jpg",
       "stats": {
         "hp": null,
-        "mana": 80,
-        "initialMana": 10,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 1
+        "mr": null,
+        "mana": {
+          "min": 10,
+          "max": 80
+        },
+        "range": 1,
+        "dps": null
       },
       "ability": {
         "name": "Perfect Bladework",
@@ -1616,13 +1781,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_graves.jpg",
       "stats": {
         "hp": null,
-        "mana": 60,
-        "initialMana": 0,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 4
+        "mr": null,
+        "mana": {
+          "min": 0,
+          "max": 60
+        },
+        "range": 4,
+        "dps": null
       },
       "ability": {
         "name": "Collateral Damage",
@@ -1646,13 +1814,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_jhin.jpg",
       "stats": {
         "hp": null,
-        "mana": 44,
-        "initialMana": 0,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 4
+        "mr": null,
+        "mana": {
+          "min": 0,
+          "max": 44
+        },
+        "range": 4,
+        "dps": null
       },
       "ability": {
         "name": "Space Opera",
@@ -1674,13 +1845,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_morgana.jpg",
       "stats": {
         "hp": null,
-        "mana": 60,
-        "initialMana": 20,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 2
+        "mr": null,
+        "mana": {
+          "min": 20,
+          "max": 60
+        },
+        "range": 2,
+        "dps": null
       },
       "ability": {
         "name": "Dark Form",
@@ -1703,13 +1877,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_shen.jpg",
       "stats": {
         "hp": null,
-        "mana": 70,
-        "initialMana": 10,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 1
+        "mr": null,
+        "mana": {
+          "min": 10,
+          "max": 70
+        },
+        "range": 1,
+        "dps": null
       },
       "ability": {
         "name": "Reality Tear",
@@ -1733,13 +1910,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_sona.jpg",
       "stats": {
         "hp": null,
-        "mana": 25,
-        "initialMana": 0,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 4
+        "mr": null,
+        "mana": {
+          "min": 0,
+          "max": 25
+        },
+        "range": 4,
+        "dps": null
       },
       "ability": {
         "name": "Psionic Crush",
@@ -1761,13 +1941,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_vex.jpg",
       "stats": {
         "hp": null,
-        "mana": 60,
-        "initialMana": 0,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 4
+        "mr": null,
+        "mana": {
+          "min": 0,
+          "max": 60
+        },
+        "range": 4,
+        "dps": null
       },
       "ability": {
         "name": "Lend Me a Hand",
@@ -1789,13 +1972,16 @@
       "squareIcon": "https://ap.tft.tools/img/new17/face/tft17_zed.jpg",
       "stats": {
         "hp": null,
-        "mana": 80,
-        "initialMana": 30,
-        "damage": null,
-        "attackSpeed": null,
+        "ad": null,
+        "as": null,
         "armor": null,
-        "magicResist": null,
-        "range": 1
+        "mr": null,
+        "mana": {
+          "min": 30,
+          "max": 80
+        },
+        "range": 1,
+        "dps": null
       },
       "ability": {
         "name": "Quantum Clone",

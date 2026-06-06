@@ -1,227 +1,283 @@
 ---
 name: hextech-core
-description: The Unified System for TFT Hextech. Contains the Hextech Premium Design Philosophy, Brand Identity, and UI Builder patterns. This is the SINGLE SOURCE OF TRUTH for all UI decisions.
+description: Global Hextech × SpaceGod visual system for premium dark fantasy / arcane / TFT-inspired interfaces. Use this whenever the user wants Hextech styling, League/TFT-inspired UI, dark teal + gold aesthetics, ornate sci-fantasy panels, sacred geometry, cosmic ornamentation, or wants an existing interface reskinned into this design language. Treat this as the default style skill across projects unless the repo has explicit override instructions.
 ---
 
 # Hextech Core System
 
-**Brand:** TFT Set 16 Hextech
-**Role:** Single Source of Truth for Design & Implementation.
+**Brand Core:** Hextech colors, SpaceGod structure.
+**Role:** Global visual system for premium arcane interfaces across projects.
 
-## 1. Design Philosophy: Hextech Premium
+## 1. Core Principle
 
-> This app is NOT a website. It is a **Game Client**. Every screen must feel like you're inside the League of Legends client.
+This system is **not** generic fantasy and not generic SaaS dark mode.
+It combines:
 
-### The 5 Pillars
+- **Hextech identity** → dark teal, antique gold, warm cream, arcane precision
+- **SpaceGod composition** → void depth, sacred geometry, ceremonial framing, ornamental hierarchy
 
-#### 1. Atmosphere First
-- Backgrounds are NEVER flat colors. Always **layered radial gradients** creating depth.
-- Gold ambient glow at top, teal depth at bottom, dark base layer.
-- Ambient gold particle dots for key screens (Login, Review, Achievement).
-- **Breathing room**: Minimum `3cqw` padding. Let atmosphere fill space, not content.
+Use this system as the **default global styling language** unless the current repo explicitly overrides it.
 
-```css
-/* Standard Atmosphere Background */
-.atmosphere {
-    background:
-        radial-gradient(ellipse at 50% 30%, rgba(200, 170, 110, 0.08) 0%, transparent 60%),
-        radial-gradient(ellipse at 50% 80%, rgba(21, 58, 62, 0.4) 0%, transparent 50%),
-        linear-gradient(180deg, rgba(5, 28, 30, 0.92) 0%, rgba(0, 0, 0, 0.96) 100%);
-}
-```
+## 2. Design Philosophy
 
-#### 2. Section-Based Composition
-- UI is NOT "floating cards". UI is **connected sections** sharing borders.
-- Each section has a role: Hero → CTA → Options → Detail.
-- Left/right borders run continuously between sections, creating **one unified block**.
-- Use **Corner Accent Frames** (L-shaped corners) instead of full clip-path on panels.
+### 2.1 Mood
+Every screen should feel like an **arcane archive / elite game client / ceremonial control panel**.
 
-```css
-/* Section with shared borders */
-.section-hero {
-    border: 0.06cqw solid rgba(200, 170, 110, 0.15);
-    border-bottom: none; /* Connects to next section */
-    background: radial-gradient(ellipse at 50% 0%, rgba(200, 170, 110, 0.06), transparent 70%),
-                linear-gradient(180deg, rgba(21, 58, 62, 0.5), rgba(5, 28, 30, 0.8));
-}
-.section-middle {
-    border-left: 0.06cqw solid rgba(200, 170, 110, 0.15);
-    border-right: 0.06cqw solid rgba(200, 170, 110, 0.15);
-    /* No top/bottom border - connected */
-}
-.section-footer {
-    border: 0.06cqw solid rgba(200, 170, 110, 0.15);
-    border-top: none; /* Connects to previous section */
-}
-```
+The user should feel:
+- depth, not flatness
+- ritual framing, not casual card stacks
+- premium restraint, not noisy effects
+- cosmic ornament, not random decoration
 
-#### 3. Progressive Disclosure
-- Show little, act clear. Never show everything at once.
-- Complex forms hide behind a single click. Default view shows only primary CTA.
-- Animation only for content transitions (`opacity + translateY`, 0.3s), NEVER for hover.
+### 2.2 Identity Contract
+- Keep the **Hextech palette** as the brand anchor.
+- Borrow **SpaceGod layout, typography rhythm, decorative framing, and motion language**.
+- Prefer **one strong atmosphere layer** and **one clear focal point**.
+- Decoration must support hierarchy, never compete with content.
 
-#### 4. Hero-CTA Pattern
-- Every fullscreen view: **Hero** (value/context) → **CTA** (primary action) → **Secondary** (options).
-- Primary CTA: Large gold button with **hextech chamfer** (octagonal clip-path) and **glow sweep**.
-- Secondary CTAs: Thin border, transparent background, inline row.
+### 2.3 What “good” looks like
+A successful screen feels:
+- premium
+- arcane
+- structured
+- immersive
+- readable
 
-```css
-/* Primary CTA - Gold Chamfer with Glow Sweep */
-.cta-primary {
-    background: linear-gradient(180deg, #C89B3C 0%, #A07828 100%);
-    border: 0.1cqw solid #c8aa6e;
-    clip-path: polygon(
-        1cqw 0, calc(100% - 1cqw) 0,
-        100% 1cqw, 100% calc(100% - 1cqw),
-        calc(100% - 1cqw) 100%, 1cqw 100%,
-        0 calc(100% - 1cqw), 0 1cqw
-    );
-    overflow: hidden;
-}
-/* Animated sweep child element */
-.cta-primary .sweep {
-    position: absolute; top: 0; left: -100%;
-    width: 60%; height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
-    animation: sweep 3s ease-in-out infinite;
-}
-@keyframes sweep { 0%,100% { left: -60%; } 50% { left: 100%; } }
-```
-
-#### 5. Guided Attention
-- Only **ONE** element animates at any time (glow sweep on primary CTA).
-- Everything else is STATIC. Only `border-color` and `box-shadow` change on hover.
-- Visual hierarchy: Badge → Title → Tagline → Features → CTA → Divider → Options.
+If it feels like a normal dashboard with teal borders, it failed.
 
 ---
 
-## 2. Brand Identity & Resources
+## 3. Global Rules
+
+### 3.1 Apply globally first
+When using this skill:
+1. establish shared tokens first
+2. establish app-shell/background treatment second
+3. establish reusable motifs third
+4. style individual screens last
+
+Do **not** treat Hextech as a one-off page skin.
+Create a global foundation that other screens/components can inherit.
+
+### 3.2 Default scope
+Unless the repo says otherwise, apply the system at these layers:
+- app shell / body background
+- typography tokens
+- primary surfaces and borders
+- navigation
+- buttons and form controls
+- card and panel motifs
+- shared decorative primitives
+
+### 3.3 Override model
+If project instructions conflict with this skill:
+- preserve this skill’s **mood and hierarchy** when possible
+- obey the repo’s concrete constraints
+- adapt patterns rather than forcing exact markup
+
+---
+
+## 4. Color System
+
+Use the Hextech palette with SpaceGod naming.
+
+```css
+:root {
+  --sg-bg: #051c1e;
+  --sg-bg-mid: #081e20;
+  --sg-bg-card: rgba(13, 46, 48, 0.97);
+  --sg-bg-surface: rgba(21, 58, 62, 0.60);
+  --sg-bg-overlay: rgba(0, 0, 0, 0.25);
+
+  --sg-gold: #c8aa6e;
+  --sg-gold-hover: #d4b876;
+  --sg-gold-dim: #a8883a;
+  --sg-gold-glow: rgba(200, 170, 110, 0.30);
+  --sg-gold-ink: #051c1e;
+
+  --sg-gold-08: rgba(200, 170, 110, 0.08);
+  --sg-gold-10: rgba(200, 170, 110, 0.10);
+  --sg-gold-15: rgba(200, 170, 110, 0.15);
+  --sg-gold-20: rgba(200, 170, 110, 0.20);
+  --sg-gold-30: rgba(200, 170, 110, 0.30);
+  --sg-gold-45: rgba(200, 170, 110, 0.45);
+
+  --sg-text: #F0E6D2;
+  --sg-text-muted: #9a94a8;
+  --sg-text-dim: rgba(240, 230, 210, 0.45);
+  --sg-text-body: rgba(240, 230, 210, 0.82);
+
+  --sg-border: rgba(200, 170, 110, 0.15);
+  --sg-border-hover: rgba(200, 170, 110, 0.35);
+  --sg-border-silver: rgba(138, 143, 168, 0.18);
+
+  --sg-tier-s: #c8aa6e;
+  --sg-tier-a: #8a8fa8;
+  --sg-tier-b: #7a7f96;
+  --sg-tier-c: #6a6f84;
+  --sg-tier-d: #5a5f72;
+
+  --sg-ok: #4fc878;
+  --sg-err: #EF4444;
+  --sg-warn: #F59E0B;
+  --sg-blue: #5ba4cf;
+}
+```
+
+### Color guidance
+- Backgrounds must stay **teal-dark**, never dead black.
+- Gold is for hierarchy, emphasis, borders, and ceremonial framing.
+- Cream is for primary text.
+- Muted violet-silver is acceptable for secondary hierarchy.
+- Do not introduce neon blue/purple as the main identity.
+
+---
+
+## 5. Typography System
+
+Use:
+- **Cinzel** for display / ceremonial headings
+- **IBM Plex Mono** for body / labels / metadata
+- optional project title serif for compact localized headings if Cinzel hurts readability
+
+```css
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=IBM+Plex+Mono:wght@300;400;500&display=swap');
+```
+
+### Roles
+- **Page title** → Cinzel, uppercase, wide tracking
+- **Section title** → Cinzel, restrained gold
+- **Body / data / forms** → IBM Plex Mono
+- **Labels / badges / nav** → IBM Plex Mono, uppercase, spaced letters
+
+### Typography intent
+Display type should feel ceremonial.
+Body type should feel technical and precise.
+
+---
+
+## 6. Layout Structure
+
+### 6.1 App shell
+Default shell order:
+1. starfield / atmospheric background
+2. sacred geometry / decorative overlay
+3. foreground shell content
+
+All real content must sit above decoration with deliberate layering.
+
+### 6.2 Navigation
+Navigation should feel like a ceremonial rail, not pill-tabs.
+
+Preferred traits:
+- thin separators
+- uppercase labels
+- muted inactive state
+- gold active state
+- ornamental flankers such as `∞`, diamonds, or subtle dividers
+
+### 6.3 Title block
+Each major screen should open with a **TitleBlock** pattern:
+- framed container
+- gold border
+- corner marks
+- subtitle/context line
+- optional connector line downward into content
+
+### 6.4 Surface hierarchy
+Prefer these layers:
+- shell atmosphere
+- elevated section panel
+- dense card surface
+- badges / accents / highlights
+
+Do not build the interface as unrelated floating cards.
+Sections should feel connected or at least rhythmically aligned.
+
+---
+
+## 7. Shared Component Motifs
+
+Use these as reusable primitives across projects.
+
+### 7.1 Decorative primitives
+- star canvas
+- sacred geometry SVG
+- corner marks
+- diamond separators
+- gradient connector lines
+
+### 7.2 Surfaces
+- title block
+- section panel
+- tier row / list row with accent rail
+- comp card / unit card / feature card
+- data table surface
+
+### 7.3 Controls
+- gold-outline primary button
+- ghost secondary button
+- mono labels
+- teal-dark input surfaces with gold focus
+
+### 7.4 Motion
+Use restrained motion only:
+- page enter
+- fade-in-up stagger for repeated rows
+- subtle hover lift on cards/buttons
+- ambient pulse on decorative elements
+
+No noisy perpetual motion beyond controlled ambient layers.
+
+---
+
+## 8. Construction Rules for AI
+
+1. Start from shared tokens, not isolated component CSS.
+2. Establish the background and typography before styling detail components.
+3. Prefer reusable visual motifs over bespoke one-off ornaments.
+4. Keep contrast readable; ornament must not reduce usability.
+5. Treat sacred geometry and stars as **supporting atmosphere**, not content.
+6. When reskinning an existing app, preserve structure that already works and swap the visual language systematically.
+7. If a repo already has design tokens, map this system into them instead of duplicating a second token system unless separation is clearly useful.
+
+---
+
+## 9. Global Application Checklist
+
+When applying this skill to a codebase, usually update in this order:
+
+1. global tokens / variables
+2. app shell / body / background
+3. typography imports and roles
+4. navigation styling
+5. shared panels and cards
+6. buttons and controls
+7. page-specific refinements
+8. decorative components only after the foundation works
+
+If only one screen is changed while the rest of the app stays visually unrelated, the rollout is incomplete.
+
+---
+
+## 10. Resources
 
 | Resource | Purpose | Path |
-| :--- | :--- | :--- |
-| **Design Tokens** | Colors, fonts, spacing (JSON) | [`resources/design-tokens.json`](resources/design-tokens.json) |
-| **Tech Stack** | Coding rules, units, libs | [`resources/tech-stack.md`](resources/tech-stack.md) |
-| **Voice & Tone** | Copywriting rules (Vietnamese) | [`resources/voice-tone.md`](resources/voice-tone.md) |
-| **Components** | Code templates | [`resources/hextech-components.md`](resources/hextech-components.md) |
+|---|---|---|
+| Design Tokens | Shared colors and system primitives | `resources/design-tokens.json` |
+| Tech Stack | Implementation constraints | `resources/tech-stack.md` |
+| Voice & Tone | Copy guidance | `resources/voice-tone.md` |
+| Components | Reusable UI patterns | `resources/hextech-components.md` |
 
 ---
 
-## 3. Construction Rules
+## 11. Workflow
 
-### A. Core Physics
-1. **Fixed Ratio**: 16:9 container.
-2. **Unit System**: `cqw` ONLY. `100cqw` = Full Width. No `px`/`rem`/`vw`/`vh`.
-3. **Static Layout**: No reflow. Absolute or rigid grid.
-4. **No Hover Animations**: Only `border-color` + `box-shadow` glow on hover.
+1. Read the project instructions.
+2. Read this skill for global style direction.
+3. Read the component resource for reusable patterns.
+4. Map the system into the project’s existing tokens/components.
+5. Apply the style globally first, then refine individual screens.
+6. Review the result: does it feel ceremonial, arcane, premium, and cohesive across the app?
 
-### B. Visual Style
-- **Theme**: Hextech Green. NO BLUE (#00A3FF).
-- **Backgrounds**: Layered atmosphere gradients (Pillar 1).
-- **Borders**: Gold `#c8aa6e`, subtle `rgba(200, 170, 110, 0.15)`.
-- **Corners**: Corner Accent Frames (L-shaped) for panels. Chamfer clip-path for CTA buttons.
-- **Icons & Graphics**: NO Unicode symbols, NO emoji, NO AI-generated icons. Only **inline SVG** with complex gradients (e.g., VIP glowing wings) or **official Riot/TFT asset images**.
-- **Particle Systems**: Use deterministic math-based particle systems (Embers, Gold Dust) driven by pure frame-counts or CSS animations for "VIP Premium" feel.
-- **Typography**: Spectral (headings, gold), Inter (body, grey/white).
-    - **Highlights**: Important numerical or status text MUST use luxurious gold (`#fff4d6` or `#e8c252` with intense `textShadow`), strictly avoiding plain colors.
-- **Copywriting & Tone (Drama/Challenge)**: Flex Cards and Share Assets MUST NOT display negative comparisons (e.g., "-1700 IQ"). Instead, inject dramatic, toxic or challenging quotes (e.g., "Học thầy không tày học tôi nè", "Hôm nay Sắt thôi ngày mai tôi sẽ khác"). This builds the "Flex & Drama" viral loop.
-
-### C. Color System
-
-| Role | Value |
-| :--- | :--- |
-| Atmosphere BG | Layered radial gradients |
-| Modal Shell BG | `linear-gradient(180deg, #0d2e30, #081e20)` |
-| Hero/Top Section BG | `linear-gradient(180deg, rgba(21,58,62,0.95), rgba(13,46,48,0.98))` |
-| Metric Section BG | `rgba(16, 52, 56, 0.95)` |
-| Chart/Content Section BG | `rgba(11, 40, 43, 0.97)` |
-| Activity/Bottom Section BG | `rgba(13, 46, 48, 0.97)` |
-| CTA Button | `linear-gradient(180deg, #C89B3C, #A07828)` |
-| Border Gold (outer/prominent) | `rgba(200, 170, 110, 0.45)` |
-| Border Gold (section dividers) | `rgba(200, 170, 110, 0.30)` |
-| Border Gold (subtle/inner) | `rgba(200, 170, 110, 0.15)` |
-| Text — Stat Values (numbers) | `#FFFFFF` |
-| Text — Title / Cream | `#F0E6D2` |
-| Text — Heading Gold | `#c8aa6e` |
-| Text — Labels | `rgba(200, 170, 110, 0.75)` |
-| Text — Body | `#94A3B8` |
-| Text — Muted/Disabled | `rgba(200, 170, 110, 0.45)` |
-| CTA Text | `#051c1e` |
-
-> 🔴 **WRONG**: `rgba(5, 28, 30, 0.8)` for section backgrounds = pitch black = **FAIL** 
-> ✅ **CORRECT**: Use `rgba(11–16, 40–52, 43–56, 0.95–0.97)` = teal dark = Game Client look.
-
-### C2. IQ Rank Color System
-
-Used as `--rank-color` CSS variable in Hero sections. **Do NOT change these.**
-
-| Rank | Color | Notes |
-| :--- | :--- | :--- |
-| Challenger | `#00D1C1` | Cyan teal |
-| Grandmaster | `#FF6B35` | Orange |
-| Master | `#8B5CF6` | Purple — only rank exception to Purple Ban |
-| Diamond | `#4F46E5` | Indigo |
-| Platinum | `#0EA5E9` | Sky blue |
-| Gold | `#EAB308` | Yellow gold |
-| Silver | `#94A3B8` | Steel |
-| Bronze | `#B45309` | Amber |
-| Iron | `#4B5563` | Gray |
-| Unranked | `#4B5563` | Same as Iron, with `opacity: 0.45` |
-
-Source of truth: `src/features/user-iq/userIqCalculator.ts → getUserIqRankColor()`
-
-### D. Typography System
-
-| Role | Font | Weight | Style |
-| :--- | :--- | :--- | :--- |
-| Hero Title | Spectral | 700 | UPPERCASE, 3cqw |
-| Section Title | Spectral | 700 | UPPERCASE, 1.5-2cqw |
-| Subtitle | Inter | 500 | uppercase, 0.7cqw, muted gold |
-| Tagline | Inter | 400 | 1.1cqw, light cream |
-| Badge | Inter | 600 | UPPERCASE, 0.65cqw, letter-spacing 0.15cqw |
-| CTA Text | Spectral | 700 | UPPERCASE, 1.4cqw |
-| Body | Inter | 400-500 | 0.8cqw |
-| Small/Hint | Inter | 400 | 0.65cqw, muted |
-
----
-
-## 4. Modal Brightness Standard
-
-> UI must feel like a **Game Client**, NOT a dark website. The reference screen is the **Review Decision** screen which uses vivid teal panels.
-
-**Rule:** Every modal/overlay background MUST use `#0d2e30` or brighter as the base — NEVER let it fall to near-black.
-
-```
-Modal Shell   → #0d2e30 base
-Hero Section  → rgba(21,58,62, 0.95) — lightest (top)
-Stats/Metrics → rgba(16,52,56, 0.95)
-Charts        → rgba(11,40,43, 0.97)
-Activity      → rgba(13,46,48, 0.97) — darkest (bottom)
-```
-
-**Outer border** on ALL modals/panels: `0.06cqw solid rgba(200, 170, 110, 0.45)` — always visible.
-
----
-
-The Login screen is the **canonical example** of all 5 pillars applied together.
-See: `src/components/Auth/LoginModal.tsx` + `LoginModal.css`
-
-**Structure:**
-```
-.login-overlay          → Atmosphere background + ambient particles
-  .login-landing        → Centered column container (36cqw)
-    .login-hero         → Section 1: Badge + Title + Tagline + Features
-    .login-cta-section  → Section 2: Gold CTA button with chamfer + sweep
-    .login-options      → Section 3: Divider + Google/Email buttons
-      .login-form       → Progressive disclosure: hidden email form
-```
-
----
-
-## 5. Workflow for AI
-
-1. **Read `AGENTS.md`** for non-negotiable rules.
-2. **Read this SKILL.md** for design philosophy and patterns.
-3. **Check `design-tokens.json`** for exact color codes.
-4. **Check `hextech-components.md`** for reusable code blocks.
-5. **Implement** using `cqw`, CSS classes, atmosphere gradients.
-6. **Review**: Does it look like the League Client? If yes, good. If it looks like a web app, **FAIL**.
+If it only looks “teal and gold,” keep going.

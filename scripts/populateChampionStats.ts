@@ -1,117 +1,67 @@
 /**
- * Populate champion abilities and stats from Community Dragon API (Vietnamese)
+ * Populate champion abilities and stats from the generated Set 17 artifact.
  * Run with: npx tsx scripts/populateChampionStats.ts
  */
 
 import { createClient } from '@supabase/supabase-js';
 import * as dotenv from 'dotenv';
+import * as fs from 'fs';
+import * as path from 'path';
+import { mapArtifactChampionToDbChampion, Set17ArtifactChampion } from '../src/utils/set17ChampionSeed';
 
 dotenv.config();
 
 const supabase = createClient(
     process.env.VITE_SUPABASE_URL!,
-    process.env.VITE_SUPABASE_ANON_KEY!
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-interface CDragonChampion {
-    name: string;
-    apiName: string;
-    characterName: string;
-    cost: number;
-    traits: string[];
-    stats: {
-        hp: number;
-        initialMana: number;
-        mana: number;
-        armor: number;
-        magicResist: number;
-        damage: number;
-        attackSpeed: number;
-        critChance: number;
-        range: number;
-    };
-    ability: {
-        name: string;
-        desc: string;
-        icon: string;
-        variables: any[];
-    };
-}
+const DATA_FILE = path.resolve(process.cwd(), 'src/data/set17_champions.json');
 
-async function fetchChampionsFromCDragon(): Promise<CDragonChampion[]> {
-    console.log('🎯 Fetching from Community Dragon (Vietnamese)...');
-    const response = await fetch('https://raw.communitydragon.org/latest/cdragon/tft/vi_vn.json');
-    const data = await response.json();
-
-    // Filter for Set 17 champions only
-    const set17Champs = data.setData
-        ?.find((set: any) => set.mutator === 'TFTSet17')
-        ?.champions || [];
-
-    console.log(`📊 Found ${set17Champs.length} Set 17 champions`);
-    return set17Champs;
-}
-
-function calculateStarScaling(baseValue: number): [number, number, number] {
-    // TFT scaling: 1★ = base, 2★ = 1.8x, 3★ = 3.24x (approximately)
-    return [
-        Math.round(baseValue),
-        Math.round(baseValue * 1.8),
-        Math.round(baseValue * 3.24)
-    ];
+function readSet17Artifact(): Set17ArtifactChampion[] {
+    const raw = fs.readFileSync(DATA_FILE, 'utf8');
+    const parsed = JSON.parse(raw) as { champions: Set17ArtifactChampion[] };
+    return parsed.champions ?? [];
 }
 
 async function updateChampionData() {
-    const cdChamps = await fetchChampionsFromCDragon();
+    const artifactChampions = readSet17Artifact();
 
-    // Get existing champions from DB
     const { data: dbChamps, error: fetchError } = await supabase
         .from('champions')
         .select('id, name');
 
     if (fetchError) {
-        console.error('❌ Failed to fetch existing champions:', fetchError);
+        console.error('Failed to fetch existing champions:', fetchError);
         return;
     }
 
-    console.log(`📦 Found ${dbChamps?.length || 0} champions in DB`);
+    console.log(`Found ${artifactChampions.length} Set 17 champions in artifact.`);
+    console.log(`Found ${dbChamps?.length || 0} champions in DB.`);
 
     let updated = 0;
     let notFound = 0;
 
-    for (const cdChamp of cdChamps) {
-        // Try to match by name or apiName
+    for (const artifactChampion of artifactChampions) {
+        const championData = mapArtifactChampionToDbChampion(artifactChampion);
         const dbChamp = dbChamps?.find(
-            c => c.name?.toLowerCase() === cdChamp.name?.toLowerCase() ||
-                c.id?.toLowerCase().includes(cdChamp.apiName?.toLowerCase()?.replace('tft16_', ''))
+            (champion) =>
+                champion.id?.toLowerCase() === championData.id.toLowerCase() ||
+                champion.name?.toLowerCase() === artifactChampion.name.toLowerCase()
         );
 
         if (!dbChamp) {
-            console.log(`⚠️  No DB match for: ${cdChamp.name} (${cdChamp.apiName})`);
+            console.log(`No DB match for: ${artifactChampion.name} (${championData.id})`);
             notFound++;
             continue;
         }
 
-        // Calculate star-scaled values
-        const stats = {
-            hp: calculateStarScaling(cdChamp.stats.hp),
-            ad: calculateStarScaling(cdChamp.stats.damage),
-            as: cdChamp.stats.attackSpeed,
-            armor: cdChamp.stats.armor,
-            mr: cdChamp.stats.magicResist,
-            mana: {
-                min: cdChamp.stats.initialMana,
-                max: cdChamp.stats.mana
-            },
-            range: cdChamp.stats.range,
-            dps: calculateStarScaling(Math.round(cdChamp.stats.damage * cdChamp.stats.attackSpeed))
-        };
-
         const updates = {
-            ability_name: cdChamp.ability?.name || null,
-            ability_name_en: cdChamp.apiName?.replace('TFT16_', '') || null,
-            ability_description: cdChamp.ability?.desc?.replace(/<[^>]*>/g, '') || null, // Strip HTML
-            stats: stats
+            ability_name: championData.ability_name,
+            ability_name_en: championData.ability_name_en,
+            ability_description: championData.ability_description,
+            ability_variables: championData.ability_variables,
+            stats: championData.stats,
         };
 
         const { error: updateError } = await supabase
@@ -120,14 +70,17 @@ async function updateChampionData() {
             .eq('id', dbChamp.id);
 
         if (updateError) {
-            console.error(`❌ Error updating ${cdChamp.name}:`, updateError);
+            console.error(`Error updating ${artifactChampion.name}:`, updateError);
         } else {
-            console.log(`✅ Updated ${cdChamp.name}`);
+            console.log(`Updated ${artifactChampion.name}`);
             updated++;
         }
     }
 
-    console.log(`\n✨ Done! Updated ${updated} champions, ${notFound} not matched in DB`);
+    console.log(`Done. Updated ${updated} champions, ${notFound} not matched in DB.`);
 }
 
-updateChampionData().catch(console.error);
+updateChampionData().catch((error) => {
+    console.error(error);
+    process.exit(1);
+});

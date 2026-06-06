@@ -1,16 +1,5 @@
 import { sanitizeSet17AbilityDescription } from './tacticsToolsSet17Parser';
 
-type FlatArtifactStats = {
-    hp: number | null;
-    mana: number | null;
-    initialMana: number | null;
-    damage: number | null;
-    attackSpeed: number | null;
-    armor: number | null;
-    magicResist: number | null;
-    range: number | null;
-};
-
 type NestedSet17Stats = {
     hp: number[] | null;
     ad: number[] | null;
@@ -30,7 +19,7 @@ export interface Set17ArtifactChampion {
     icon: string;
     tileIcon: string;
     squareIcon: string;
-    stats: FlatArtifactStats | NestedSet17Stats;
+    stats: NestedSet17Stats;
     ability: {
         name: string | null;
         desc: string | null;
@@ -45,7 +34,7 @@ export interface ChampionDbRow {
     cost: number;
     traits: string[];
     avatar: string;
-    stats: FlatArtifactStats | NestedSet17Stats;
+    stats: NestedSet17Stats;
     ability_name: string | null;
     ability_name_en: string | null;
     ability_description: string | null;

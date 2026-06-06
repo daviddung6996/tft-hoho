@@ -30,10 +30,10 @@ interface BoardTabProps {
     onOpponentSelect?: (index: number) => void;
 
     // Game Info (player only)
-    ioniaPathId?: string;
-    voidModIds?: string[];
-    onIoniaPathChange?: (pathId: string) => void;
-    onVoidModsChange?: (modIds: string[]) => void;
+    featuredPathId?: string;
+    featuredModifierIds?: string[];
+    onFeaturedPathChange?: (pathId: string) => void;
+    onFeaturedModifiersChange?: (modifierIds: string[]) => void;
     onLevelCapHit?: () => void;
 }
 
@@ -54,10 +54,10 @@ const BoardTab: React.FC<BoardTabProps> = ({
     onOpponentSelect,
     items,
     onItemsChange,
-    ioniaPathId,
-    voidModIds,
-    onIoniaPathChange,
-    onVoidModsChange,
+    featuredPathId,
+    featuredModifierIds,
+    onFeaturedPathChange,
+    onFeaturedModifiersChange,
     onLevelCapHit
 }) => {
     // State for all traits (fetched from DB)
@@ -136,10 +136,10 @@ const BoardTab: React.FC<BoardTabProps> = ({
                 onItemsChange={onItemsChange}
                 synergies={activeSynergies}
                 onLevelCapHit={onLevelCapHit}
-                ioniaPathId={ioniaPathId}
-                voidModIds={voidModIds}
-                onIoniaPathChange={onIoniaPathChange}
-                onVoidModsChange={onVoidModsChange}
+                featuredPathId={featuredPathId}
+                featuredModifierIds={featuredModifierIds}
+                onFeaturedPathChange={onFeaturedPathChange}
+                onFeaturedModifiersChange={onFeaturedModifiersChange}
             />
 
 

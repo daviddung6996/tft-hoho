@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="mod-bg" x1="10" y1="8" x2="54" y2="56" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#173f43"/>
+      <stop offset="1" stop-color="#0a2325"/>
+    </linearGradient>
+    <linearGradient id="mod-core" x1="18" y1="18" x2="46" y2="46" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f6e2b8"/>
+      <stop offset="1" stop-color="#c8aa6e"/>
+    </linearGradient>
+  </defs>
+  <path d="M32 4L55 17V47L32 60L9 47V17L32 4Z" fill="url(#mod-bg)" stroke="#c8aa6e" stroke-opacity="0.8" stroke-width="3"/>
+  <path d="M32 18L36.3 26.7L46 28.1L39 34.9L40.7 44.5L32 39.9L23.3 44.5L25 34.9L18 28.1L27.7 26.7L32 18Z" fill="url(#mod-core)"/>
+</svg>

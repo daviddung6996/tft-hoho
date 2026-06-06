@@ -1,26 +1,26 @@
 import React, { useState, useRef, useCallback, useId, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import './GameInfoIcons.css';
-import { IoniaPath, VoidMod } from '../../data/gameInfoData';
-import { getTraitIconUrl } from '../../utils/assetUrlBuilder';
-import { getLocalUrl } from '../../utils/localAssetUrl';
-
-const IONIA_ICON_URL = getLocalUrl(getTraitIconUrl('Ionia'));
-const VOID_ICON_URL = getLocalUrl(getTraitIconUrl('Void'));
+import {
+    FEATURED_MODIFIER_ICON_URL,
+    FEATURED_PATH_ICON_URL,
+    FeaturedModifier,
+    FeaturedPath,
+} from '../../data/gameInfoData';
 
 interface GameInfoIconsProps {
-    ioniaPath: IoniaPath;
-    voidMods: VoidMod[];
+    featuredPath: FeaturedPath;
+    featuredModifiers: FeaturedModifier[];
     streakCount?: number;
 }
 
 /**
- * Game Info Icons - Displays Ionia Path and Void Mod indicators
- * Pro players check these at the start of every match
+ * Game Info Icons - displays the two Set 17 game modifiers.
+ * Pro players check these at the start of every match.
  */
 export const GameInfoIcons: React.FC<GameInfoIconsProps> = ({
-    ioniaPath,
-    voidMods,
+    featuredPath,
+    featuredModifiers,
     streakCount,
 }) => {
     return (
@@ -32,8 +32,8 @@ export const GameInfoIcons: React.FC<GameInfoIconsProps> = ({
                 />
             )}
             <div className="game-info-icons__trait-group">
-                <IoniaIcon path={ioniaPath} />
-                <VoidIcon mods={voidMods} />
+                <FeaturedPathIcon path={featuredPath} />
+                <FeaturedModifierIcon modifiers={featuredModifiers} />
             </div>
         </div>
     );
@@ -223,15 +223,24 @@ const StreakIcon: React.FC<StreakIconProps> = ({ count, type }) => {
         </div>
     );
 };
+const CONSTELLATION_TOOLTIP_DESCRIPTION =
+    'One Stargazer Constellation is rolled each game. Stargazers and Lulu adapt to that roll.';
+
+const REALM_TOOLTIP_DESCRIPTION =
+    'Each game rolls 2 gods. Choose one offering at stages 2, 3, and 4. Pick the same god twice to lock in the 4-7 boon.';
+
+const buildRealmGodTooltipText = (god: FeaturedModifier): string =>
+    `${god.summary} 4-7 boon: ${god.boon}`;
+
 // ============================================================================
-// IONIA ICON WITH TOOLTIP
+// STARGAZER CONSTELLATION ICON WITH TOOLTIP
 // ============================================================================
 
-interface IoniaIconProps {
-    path: IoniaPath;
+interface FeaturedPathIconProps {
+    path: FeaturedPath;
 }
 
-const IoniaIcon: React.FC<IoniaIconProps> = ({ path }) => {
+const FeaturedPathIcon: React.FC<FeaturedPathIconProps> = ({ path }) => {
     const [isVisible, setIsVisible] = useState(false);
     const [tooltipPos, setTooltipPos] = useState({ left: 0, top: 0 });
     const [posClass, setPosClass] = useState('position-right');
@@ -307,16 +316,18 @@ const IoniaIcon: React.FC<IoniaIconProps> = ({ path }) => {
         >
             <div className="game-info-header">
                 <div className="game-info-header-icon">
-                    <img src={IONIA_ICON_URL} alt="Ionia" />
+                    <img src={FEATURED_PATH_ICON_URL} alt="Stargazer Constellation" />
                 </div>
-                <div className="game-info-title">{path.nameVi}</div>
+                <div className="game-info-title">{path.name}</div>
             </div>
-            <div className="game-info-description">{path.description}</div>
+            <div className="game-info-description">
+                {CONSTELLATION_TOOLTIP_DESCRIPTION} {path.summary}
+            </div>
             <div className="game-info-breakpoints">
                 {path.breakpoints.map((bp, index) => (
                     <div key={index} className="game-info-breakpoint">
                         <span className="game-info-breakpoint-level">({bp.level})</span>
-                        <span className="game-info-breakpoint-stats">{bp.stats}</span>
+                        <span className="game-info-breakpoint-stats">{bp.effect}</span>
                     </div>
                 ))}
             </div>
@@ -327,27 +338,27 @@ const IoniaIcon: React.FC<IoniaIconProps> = ({ path }) => {
     return (
         <div
             ref={triggerRef}
-            className="game-info-icon ionia-icon"
+            className="game-info-icon featured-path-icon"
             onTouchStart={handleTouchStart}
             onClick={handleClick}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
         >
-            <img src={IONIA_ICON_URL} alt="Ionia Path" draggable={false} />
+            <img src={FEATURED_PATH_ICON_URL} alt="Stargazer Constellation" draggable={false} />
             {tooltipContent}
         </div>
     );
 };
 
 // ============================================================================
-// VOID ICON WITH TOOLTIP
+// REALM OF THE GODS ICON WITH TOOLTIP
 // ============================================================================
 
-interface VoidIconProps {
-    mods: VoidMod[];
+interface FeaturedModifierIconProps {
+    modifiers: FeaturedModifier[];
 }
 
-const VoidIcon: React.FC<VoidIconProps> = ({ mods }) => {
+const FeaturedModifierIcon: React.FC<FeaturedModifierIconProps> = ({ modifiers }) => {
     const [isVisible, setIsVisible] = useState(false);
     const [tooltipPos, setTooltipPos] = useState({ left: 0, top: 0 });
     const [posClass, setPosClass] = useState('position-right');
@@ -422,19 +433,21 @@ const VoidIcon: React.FC<VoidIconProps> = ({ mods }) => {
         >
             <div className="game-info-header">
                 <div className="game-info-header-icon">
-                    <img src={VOID_ICON_URL} alt="Set 17 mods" />
+                    <img src={FEATURED_MODIFIER_ICON_URL} alt="Realm of the Gods" />
                 </div>
-                <div className="game-info-title">Modifier Set 17</div>
+                <div className="game-info-title">Realm of the Gods</div>
             </div>
+            <div className="game-info-description">{REALM_TOOLTIP_DESCRIPTION}</div>
             <div className="game-info-mods-list">
-                {mods.map((mod, index) => (
-                    <div key={mod.id} className="game-info-mod-item">
+                {modifiers.map((modifier, index) => (
+                    <div key={modifier.id} className="game-info-mod-item">
                         <span className="game-info-mod-index">{index + 1}.</span>
                         <div className="game-info-mod-icon">
-                            <img src={mod.icon} alt={mod.nameVi} />
+                            <img src={modifier.icon} alt={modifier.name} />
                         </div>
                         <div className="game-info-mod-details">
-                            <div className="game-info-mod-name">{mod.nameVi}</div>
+                            <div className="game-info-mod-name">{modifier.name} - {modifier.title}</div>
+                            <div className="game-info-mod-desc">{buildRealmGodTooltipText(modifier)}</div>
                         </div>
                     </div>
                 ))}
@@ -446,17 +459,16 @@ const VoidIcon: React.FC<VoidIconProps> = ({ mods }) => {
     return (
         <div
             ref={triggerRef}
-            className="game-info-icon void-icon"
+            className="game-info-icon featured-modifier-icon"
             onTouchStart={handleTouchStart}
             onClick={handleClick}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
         >
-            <img src={VOID_ICON_URL} alt="Set 17 Mods" draggable={false} />
+            <img src={FEATURED_MODIFIER_ICON_URL} alt="Realm of the Gods" draggable={false} />
             {tooltipContent}
         </div>
     );
 };
 
 export default GameInfoIcons;
-

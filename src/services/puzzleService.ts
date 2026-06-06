@@ -2,6 +2,8 @@ import { supabase } from '../lib/supabase';
 import { PuzzleScenario } from '../data/puzzleScenarios';
 import { sanitizePuzzleStateLevels } from '../features/puzzle/playerState';
 
+const PUZZLE_SELECT = '*';
+
 // Helper to check if current user has admin access
 const checkAdminAccess = async (): Promise<boolean> => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -21,7 +23,7 @@ export const puzzleService = {
     async getAll() {
         let { data, error } = await supabase
             .from('puzzles')
-            .select('*')
+            .select(PUZZLE_SELECT)
             .is('deleted_at', null)
             .order('created_at', { ascending: false });
 
@@ -31,7 +33,7 @@ export const puzzleService = {
         if (error && isMissingDeletedAtColumnError(error)) {
             const retry = await supabase
                 .from('puzzles')
-                .select('*')
+                .select(PUZZLE_SELECT)
                 .order('created_at', { ascending: false });
             data = retry.data;
             error = retry.error;
@@ -94,8 +96,8 @@ export const puzzleService = {
                 proPickRound: row.pro_pick_round,
 
                 // Game Info
-                ioniaPathId: row.ionia_path_id,
-                voidModIds: row.void_mod_ids || [],
+                featuredPathId: row.featured_path_id,
+                featuredModifierIds: row.featured_mod_ids || [],
 
                 // Puzzle tier (free/advanced/rare)
                 tier: row.tier || 'free',
@@ -224,8 +226,8 @@ export const puzzleService = {
             pro_final_pick: sanitizedPuzzle.proFinalPick,
             pro_pick_round: sanitizedPuzzle.proPickRound,
             // Game Info fields
-            ionia_path_id: sanitizedPuzzle.ioniaPathId || null,
-            void_mod_ids: sanitizedPuzzle.voidModIds || [],
+            featured_path_id: sanitizedPuzzle.featuredPathId || null,
+            featured_mod_ids: sanitizedPuzzle.featuredModifierIds || [],
             tier: sanitizedPuzzle.tier || 'free',
             // Video explanation
             video_url: sanitizedPuzzle.explanationVideoUrl || null,
@@ -324,7 +326,9 @@ export const puzzleService = {
             pro_first_roll: p.proFirstRoll,
             pro_second_roll: p.proSecondRoll,
             pro_final_pick: p.proFinalPick,
-            pro_pick_round: p.proPickRound
+            pro_pick_round: p.proPickRound,
+            featured_path_id: p.featuredPathId || null,
+            featured_mod_ids: p.featuredModifierIds || []
             });
         });
 

@@ -97,7 +97,7 @@ describe('parseChampionCardsFromTacticsToolsHtml', () => {
         ]);
     });
 
-    it('builds the compatible champion artifact shape for later seeding', () => {
+    it('builds the nested Set 17 champion artifact shape for later seeding', () => {
         expect(buildSet17ChampionArtifactFromTacticsToolsHtml(sampleChampionHtml)).toEqual({
             champions: [
                 {
@@ -111,13 +111,13 @@ describe('parseChampionCardsFromTacticsToolsHtml', () => {
                     squareIcon: 'https://ap.tft.tools/img/new17/face/tft17_ryze.jpg',
                     stats: {
                         hp: null,
-                        mana: 75,
-                        initialMana: 15,
-                        damage: null,
-                        attackSpeed: null,
+                        ad: null,
+                        as: null,
                         armor: null,
-                        magicResist: null,
+                        mr: null,
+                        mana: { min: 15, max: 75 },
                         range: 4,
+                        dps: null,
                     },
                     ability: {
                         name: 'Rune Prison',
@@ -209,10 +209,36 @@ describe('parseChampionCardsFromTacticsToolsHtml', () => {
             ),
         ).toBe('Heal HealAP (), then deal DamageAD + DamagePercentArmor () physical damage to the current target.');
     });
+
+    it('decodes HTML entities from tactics.tools markup before building the artifact', () => {
+        const html = `
+            <div class="champion-card">
+                <img src="https://ap.tft.tools/img/new17/face_full_ultrawide/TFT17_RekSai.jpg" alt="Rek&#x27;Sai" />
+                <div class="font-semibold">Rek&#x27;Sai</div>
+                <div><span>1</span><img alt="gold" src="/gold.png" /></div>
+                <div>
+                    <img src="https://ap.tft.tools/static/trait-icons/new17_tft17_bastion_w.svg" />
+                    <div>Bastion</div>
+                </div>
+                <div>
+                    <img title="Range" src="/range.png" />
+                    <div>1</div>
+                </div>
+                <div>
+                    <img src="https://ap.tft.tools/img/new17/ability/TFT17_RekSai.png" />
+                    <div>Tunnel Bite 30/80</div>
+                </div>
+                <div>
+                    Rek&#x27;Sai deals 320/480/720 physical damage if they&#x27;re in range.
+                </div>
+            </div>
+        `;
+
+        const [champion] = parseChampionCardsFromTacticsToolsHtml(html);
+        expect(champion.name).toBe("Rek'Sai");
+        expect(champion.ability_description).toBe("Rek'Sai deals 320/480/720 physical damage if they're in range.");
+    });
 });
-
-
-
 
 
 

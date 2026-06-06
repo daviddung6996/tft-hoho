@@ -153,8 +153,8 @@ export type Database = {
                     pro_final_pick: any;
                     pro_pick_round: number;
                     created_at: string;
-                    ionia_path_id: string | null;
-                    void_mod_ids: any;
+                    featured_path_id: string | null;
+                    featured_mod_ids: any;
                     deleted_at: string | null;
                     tier: 'free' | 'advanced' | 'rare';
                     video_url: string | null;
@@ -174,8 +174,8 @@ export type Database = {
                     pro_final_pick: any;
                     pro_pick_round: number;
                     created_at?: string;
-                    ionia_path_id?: string | null;
-                    void_mod_ids?: any;
+                    featured_path_id?: string | null;
+                    featured_mod_ids?: any;
                     deleted_at?: string | null;
                     tier?: 'free' | 'advanced' | 'rare';
                     video_url?: string | null;
@@ -195,8 +195,8 @@ export type Database = {
                     pro_final_pick?: any;
                     pro_pick_round?: number;
                     created_at?: string;
-                    ionia_path_id?: string | null;
-                    void_mod_ids?: any;
+                    featured_path_id?: string | null;
+                    featured_mod_ids?: any;
                     deleted_at?: string | null;
                     tier?: 'free' | 'advanced' | 'rare';
                     video_url?: string | null;

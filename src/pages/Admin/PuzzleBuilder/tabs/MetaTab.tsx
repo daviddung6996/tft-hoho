@@ -135,7 +135,7 @@ const MetaTab: React.FC<MetaTabProps> = ({
                                     className="hex-input"
                                     value={puzzle.patch || ''}
                                     onChange={e => updatePuzzle({ patch: e.target.value })}
-                                    placeholder="e.g., 16.3b, 16.4"
+                                    placeholder="e.g., 17.1, 17.1b"
                                 />
                             </div>
                             <div className="pb-field-group">

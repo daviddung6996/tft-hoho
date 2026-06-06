@@ -81,6 +81,41 @@ describe('useCoachSelect', () => {
             expect(result.current.uiState).toBe('response');
         });
 
+        it('switches to loading immediately when the user clicks while prefetch is still in flight', async () => {
+            let resolveAsk: ((value: { answer: string }) => void) | null = null;
+            askCoachMock.mockImplementation(() => new Promise(resolve => {
+                resolveAsk = resolve;
+            }));
+
+            const { result } = renderHook(() => useCoachSelect(gameContext, 'puzzle-1'));
+
+            act(() => {
+                result.current.openSelect();
+            });
+
+            await act(async () => {
+                await vi.advanceTimersByTimeAsync(600);
+            });
+
+            let pendingAsk: Promise<void> | null = null;
+            act(() => {
+                pendingAsk = result.current.askCoach();
+            });
+
+            expect(askCoachMock).toHaveBeenCalledTimes(1);
+            expect(result.current.uiState).toBe('loading');
+            expect(result.current.isAnswerLoading).toBe(true);
+            expect(result.current.answer).toBe('');
+
+            await act(async () => {
+                resolveAsk?.({ answer: 'Pick: Featherweights III\nGiai thich: Prefetch dang chay nhung click van hop le.' });
+                await pendingAsk;
+            });
+
+            expect(result.current.uiState).toBe('response');
+            expect(result.current.answer).toBe('Featherweights III. Prefetch dang chay nhung click van hop le.');
+        });
+
         it('aborts prefetch when overlay is dismissed', async () => {
             let resolveAsk: ((value: { answer: string }) => void) | null = null;
             askCoachMock.mockImplementation(() => new Promise(resolve => {

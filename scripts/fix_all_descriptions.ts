@@ -263,7 +263,7 @@ async function fixTraits(cdData: any) {
             // Try partial match
             let found: CDragonTrait | undefined;
             for (const [key, val] of cdByApi) {
-                if (key.includes(dbT.id.toLowerCase().replace('tft16_', '')) ||
+                if (key.includes(dbT.id.toLowerCase().replace(/^tft\d+_/, '')) ||
                     dbT.id.toLowerCase().includes(key.replace('set17_', ''))) {
                     found = val;
                     break;

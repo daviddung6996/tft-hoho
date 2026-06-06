@@ -3,7 +3,7 @@ import './Board.css';
 
 import { UnitData } from '../../data/types';
 import { AugmentData } from '../../services/augmentService';
-import { IoniaPath, VoidMod } from '../../data/gameInfoData';
+import { FeaturedModifier, FeaturedPath } from '../../data/gameInfoData';
 import { BOARD_CONFIG } from './BoardComponents/BoardConfig';
 import { BoardUnit } from './BoardComponents/BoardUnit';
 import { BoardHalf } from './BoardComponents/BoardHalf';
@@ -25,8 +25,8 @@ interface BoardProps {
     opponentAugments?: AugmentData[];
     playerAugmentTreeUrl?: string;
     playerAugments?: AugmentData[];
-    ioniaPath?: IoniaPath;
-    voidMods?: VoidMod[];
+    featuredPath?: FeaturedPath;
+    featuredModifiers?: FeaturedModifier[];
     streakCount?: number;
     onUnitsChange?: (units: UnitData[]) => void;
     playerLevel?: number;
@@ -49,8 +49,8 @@ export const Board: React.FC<BoardProps> = ({
     opponentAugments = [],
     playerAugmentTreeUrl,
     playerAugments = [],
-    ioniaPath,
-    voidMods = [],
+    featuredPath,
+    featuredModifiers = [],
     streakCount,
     onUnitsChange,
     playerLevel = MAX_PLAYER_LEVEL,
@@ -331,8 +331,8 @@ export const Board: React.FC<BoardProps> = ({
                 </>
             ) : (
                 <>
-                    {ioniaPath && voidMods.length > 0 && (
-                        <GameInfoIcons ioniaPath={ioniaPath} voidMods={voidMods} streakCount={streakCount} />
+                    {featuredPath && featuredModifiers.length > 0 && (
+                        <GameInfoIcons featuredPath={featuredPath} featuredModifiers={featuredModifiers} streakCount={streakCount} />
                     )}
                     <div className="board-half player-side">
                         <div className="board-grid">

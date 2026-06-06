@@ -7,21 +7,71 @@ import * as dotenv from 'dotenv';
 dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL;
-const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY;
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.VITE_SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseKey) {
-    console.error('Missing Supabase credentials in .env file');
+    console.error('Missing VITE_SUPABASE_URL or Supabase key in .env file');
     process.exit(1);
 }
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 const ASSET_DIR = path.resolve(process.cwd(), 'public/tft-assets');
+const LEGACY_ICON_MARKER = `set${16}`;
+const LEGACY_UNIT_MARKER = `tft${16}`;
+const STATIC_LOCAL_FILES = new Set([
+    'featured-path.svg',
+    'featured-modifier.svg',
+    'statmodsattackdamageicon.png',
+    'statmodsarmoricon.png',
+    'statmodsmagicresicon.png',
+    'statmodsattackspeedicon.png',
+]);
 
-// Helper to extract the filename from a URL
-function getFilenameFromUrl(url: string): string {
-    const parts = url.split('/');
-    return parts[parts.length - 1].split('?')[0];
+function walkFiles(root: string): string[] {
+    if (!fs.existsSync(root)) {
+        return [];
+    }
+
+    const files: string[] = [];
+    for (const entry of fs.readdirSync(root, { withFileTypes: true })) {
+        const fullPath = path.join(root, entry.name);
+        if (entry.isDirectory()) {
+            files.push(...walkFiles(fullPath));
+            continue;
+        }
+        files.push(fullPath);
+    }
+    return files;
+}
+
+function getFilenameFromAsset(assetRef: string): string | null {
+    if (!assetRef) {
+        return null;
+    }
+
+    if (assetRef.startsWith('/tft-assets/')) {
+        return assetRef.split('/').pop() ?? null;
+    }
+
+    if (/^https?:\/\//i.test(assetRef)) {
+        const parts = assetRef.split('/');
+        return parts[parts.length - 1].split('?')[0];
+    }
+
+    return null;
+}
+
+function getRelativeAssetPath(assetRef: string): string | null {
+    if (!assetRef) {
+        return null;
+    }
+
+    if (assetRef.startsWith('/tft-assets/')) {
+        return assetRef.slice('/tft-assets/'.length).replace(/\\/g, '/');
+    }
+
+    return getFilenameFromAsset(assetRef);
 }
 
 async function downloadFile(url: string, destPath: string): Promise<boolean> {
@@ -31,6 +81,7 @@ async function downloadFile(url: string, destPath: string): Promise<boolean> {
     }
 
     try {
+        fs.mkdirSync(path.dirname(destPath), { recursive: true });
         const response = await fetch(url);
         if (!response.ok) {
             console.error(`[FAIL] HTTP ${response.status} - ${url}`);
@@ -65,51 +116,58 @@ async function downloadTftAssets() {
     let successCount = 0;
     let errorCount = 0;
 
-    // Collect all URLs to download
-    const urlsToDownload = new Set<string>();
+    // Collect remote assets to download and the filenames we expect to keep.
+    const urlsToDownload = new Map<string, string>();
+    const expectedPaths = new Set<string>(STATIC_LOCAL_FILES);
 
     for (const url of hardcodedUrls) {
-        urlsToDownload.add(url);
+        const relativePath = getRelativeAssetPath(url);
+        if (!relativePath) continue;
+        urlsToDownload.set(url, relativePath);
+        expectedPaths.add(relativePath);
     }
 
-    // 1. Champions
-    const { data: champions, error: cError } = await supabase.from('champions').select('avatar').not('avatar', 'is', null);
-    if (!cError && champions) {
-        for (const c of champions) {
-            urlsToDownload.add(c.avatar);
+    const assetSpecs = [
+        { table: 'champions', column: 'avatar' },
+        { table: 'augments', column: 'icon' },
+        { table: 'items', column: 'icon' },
+        { table: 'traits', column: 'icon' },
+    ] as const;
+
+    for (const spec of assetSpecs) {
+        const { data, error } = await supabase
+            .from(spec.table)
+            .select(`${spec.column}, deleted_at`)
+            .is('deleted_at', null)
+            .not(spec.column, 'is', null);
+
+        if (error || !data) {
+            continue;
+        }
+
+        for (const row of data as Array<Record<string, string | null>>) {
+            const assetRef = row[spec.column];
+            if (!assetRef) {
+                continue;
+            }
+
+            const relativePath = getRelativeAssetPath(assetRef);
+            if (!relativePath) {
+                continue;
+            }
+
+            expectedPaths.add(relativePath);
+            if (/^https?:\/\//i.test(assetRef)) {
+                urlsToDownload.set(assetRef, relativePath);
+            }
         }
     }
 
-    // 2. Augments
-    const { data: augments, error: aError } = await supabase.from('augments').select('icon').not('icon', 'is', null);
-    if (!aError && augments) {
-        for (const a of augments) {
-            urlsToDownload.add(a.icon);
-        }
-    }
-
-    // 3. Items
-    const { data: items, error: iError } = await supabase.from('items').select('icon').not('icon', 'is', null);
-    if (!iError && items) {
-        for (const i of items) {
-            urlsToDownload.add(i.icon);
-        }
-    }
-
-    // 4. Traits
-    const { data: traits, error: tError } = await supabase.from('traits').select('icon').not('icon', 'is', null);
-    if (!tError && traits) {
-        for (const t of traits) {
-            if (t.icon) urlsToDownload.add(t.icon);
-        }
-    }
-
-    console.log(`Found ${urlsToDownload.size} unique asset URLs to download.`);
+    console.log(`Found ${urlsToDownload.size} remote asset URLs to download.`);
 
     // Download consecutively
-    for (const url of urlsToDownload) {
-        const filename = getFilenameFromUrl(url);
-        const destPath = path.join(ASSET_DIR, filename);
+    for (const [url, relativePath] of urlsToDownload.entries()) {
+        const destPath = path.join(ASSET_DIR, relativePath);
 
         const success = await downloadFile(url, destPath);
         if (success) {
@@ -119,7 +177,27 @@ async function downloadTftAssets() {
         }
     }
 
-    console.log(`\nDownload complete! Success: ${successCount}. Failures: ${errorCount}`);
+    let prunedCount = 0;
+    for (const filePath of walkFiles(ASSET_DIR)) {
+        const relativePath = path.relative(ASSET_DIR, filePath).replace(/\\/g, '/');
+        if (expectedPaths.has(relativePath)) {
+            continue;
+        }
+
+        const lowerName = relativePath.toLowerCase();
+        const isManagedStaleFile =
+            lowerName.includes(LEGACY_UNIT_MARKER) ||
+            lowerName.includes(LEGACY_ICON_MARKER) ||
+            path.basename(relativePath).startsWith('set17_');
+        if (!isManagedStaleFile) {
+            continue;
+        }
+
+        fs.unlinkSync(filePath);
+        prunedCount++;
+    }
+
+    console.log(`\nDownload complete! Success: ${successCount}. Failures: ${errorCount}. Pruned: ${prunedCount}`);
 }
 
 downloadTftAssets().catch(err => {
