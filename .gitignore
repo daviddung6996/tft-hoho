@@ -32,6 +32,7 @@ agentic-logs/
 !.env.project
 !.env.vault
 !.env.example
+!.env.production
 !services/notebooklm_bridge/.env.example
 services/notebooklm_bridge/secrets/
 
