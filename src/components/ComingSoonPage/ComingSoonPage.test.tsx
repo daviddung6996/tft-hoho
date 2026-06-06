@@ -121,12 +121,12 @@ describe('Task 8.1 - ComingSoonPage Basic Rendering Tests', () => {
   });
 
   describe('Requirement 2.4: Hextech gold color for accents', () => {
-    test('renders gold-colored hextech elements', () => {
+    test('renders gold-colored brand elements', () => {
       const { container } = render(<ComingSoonPage />);
       
-      // Verify hextech ornament is present
-      const hexOrnament = container.querySelector('.hex-ornament');
-      expect(hexOrnament).toBeInTheDocument();
+      // Verify round avatar logo is present
+      const avatar = container.querySelector('.coming-soon-avatar');
+      expect(avatar).toBeInTheDocument();
       
       // Verify hex divider is present (gold line separator)
       const hexDivider = container.querySelector('.hex-divider');
@@ -138,16 +138,16 @@ describe('Task 8.1 - ComingSoonPage Basic Rendering Tests', () => {
       expect(title).toHaveClass('coming-soon-title');
     });
 
-    test('renders all Hextech decorative elements', () => {
+    test('renders logo and decorative elements', () => {
       const { container } = render(<ComingSoonPage />);
       
-      // Logo area with ornament
+      // Logo area with round avatar
       const logo = container.querySelector('.coming-soon-logo');
       expect(logo).toBeInTheDocument();
       
-      // Hexagonal ornament
-      const ornament = container.querySelector('.hex-ornament');
-      expect(ornament).toBeInTheDocument();
+      // Round avatar (replaces old hexagon)
+      const avatar = container.querySelector('.coming-soon-avatar');
+      expect(avatar).toBeInTheDocument();
       
       // Hex divider separator
       const divider = container.querySelector('.hex-divider');

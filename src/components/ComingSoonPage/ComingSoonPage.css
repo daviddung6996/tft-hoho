@@ -47,23 +47,17 @@
   align-items: center;
 }
 
-/* Hexagonal ornament */
-.hex-ornament {
-  width: 4rem;
-  height: 4rem;
-  background: linear-gradient(135deg, rgba(200, 170, 110, 0.2), rgba(200, 170, 110, 0.05));
-  border: 2px solid #c8aa6e;
-  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-  box-shadow: 0 0 20px rgba(200, 170, 110, 0.3);
-  position: relative;
-}
-
-.hex-ornament::before {
-  content: '';
-  position: absolute;
-  inset: 4px;
-  background: rgba(21, 58, 62, 0.5);
-  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+/* Round avatar logo (replaces old hexagon ornament) - user's personal brand avatar */
+.coming-soon-avatar {
+  width: 4.8rem;
+  height: 4.8rem;
+  border-radius: 50%;
+  border: 3px solid #c8aa6e;
+  box-shadow: 
+    0 0 0 1px rgba(200, 170, 110, 0.2) inset,
+    0 0 25px rgba(200, 170, 110, 0.5);
+  object-fit: cover;
+  background-color: #0d2e30; /* fallback */
 }
 
 /* Title styling */
@@ -124,13 +118,7 @@
   top: -2.5px;
 }
 
-/* Subtitle styling */
-.coming-soon-subtitle {
-  font-size: 1.2cqw;
-  color: rgba(200, 170, 110, 0.75);
-  margin: 0;
-  font-weight: 300;
-}
+/* (Subtitle removed per request - no longer used) */
 
 /* Responsive breakpoints */
 
@@ -144,13 +132,9 @@
     font-size: 1.5cqw;
   }
   
-  .coming-soon-subtitle {
-    font-size: 1.2cqw;
-  }
-  
-  .hex-ornament {
-    width: 5rem;
-    height: 5rem;
+  .coming-soon-avatar {
+    width: 5.5rem;
+    height: 5.5rem;
   }
 }
 
@@ -164,13 +148,9 @@
     font-size: 1.8vw;
   }
   
-  .coming-soon-subtitle {
-    font-size: 1.4vw;
-  }
-  
-  .hex-ornament {
-    width: 4rem;
-    height: 4rem;
+  .coming-soon-avatar {
+    width: 4.5rem;
+    height: 4.5rem;
   }
 }
 
@@ -189,13 +169,10 @@
     line-height: 1.5;
   }
   
-  .coming-soon-subtitle {
-    font-size: max(1.8vw, 0.875rem);
-  }
-  
-  .hex-ornament {
-    width: 3rem;
-    height: 3rem;
+  .coming-soon-avatar {
+    width: 3.5rem;
+    height: 3.5rem;
+    border-width: 2px;
   }
   
   .coming-soon-logo {
@@ -218,12 +195,8 @@
     font-size: 3rem;
   }
   
-  .coming-soon-subtitle {
-    font-size: 2.5rem;
-  }
-  
-  .hex-ornament {
-    width: 6rem;
-    height: 6rem;
+  .coming-soon-avatar {
+    width: 7rem;
+    height: 7rem;
   }
 }
