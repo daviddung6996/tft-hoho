@@ -15,7 +15,7 @@ type ServiceConfig = {
 const repoRoot = process.cwd();
 const isWindows = process.platform === 'win32';
 const npmCommand = isWindows ? 'npm.cmd' : 'npm';
-const pythonCommand = process.env.TFT_DEV_PYTHON_CMD?.trim() || (isWindows ? 'python' : 'python3');
+const pythonCommand = process.env.TFT_DEV_PYTHON_CMD?.trim() || (isWindows ? 'py' : 'python3');
 const services: ChildProcess[] = [];
 
 function loadEnvFile(filePath: string): Record<string, string> {

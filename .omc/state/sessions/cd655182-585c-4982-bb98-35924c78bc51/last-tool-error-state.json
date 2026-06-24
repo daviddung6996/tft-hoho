@@ -1,0 +1,7 @@
+{
+  "tool_name": "mcp__plugin_context-mode_context-mode__ctx_execute",
+  "tool_input_preview": "{\"code\":\"ls -la \\\"C:\\\\Users\\\\Administrator\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python314\\\\Scripts\\\\\\\" 2>&1 | grep -i notebook\\necho \\\"---which from python314 scripts---\\\"\\n\\\"C:\\\\Users\\\\Administrator\\\\A...",
+  "error": "```shell\nls -la \"C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python314\\Scripts\\\" 2>&1 | grep -i notebook\necho \"---which from python314 scripts---\"\n\"C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python314\\python.exe\" -c \"import shutil,os; p='C:/Users/Administrator/AppData/Local/Programs/Python/Python314/Scripts'; print('notebooklm in scripts:', os.path.exists(p+'/notebooklm.exe')); print('which notebooklm:', shutil.which('notebooklm'))\"\n```\n\nExit code: 2\n\nstdout:\n\n\nstderr:\nC:/User...",
+  "timestamp": "2026-06-24T06:28:48.208Z",
+  "retry_count": 1
+}

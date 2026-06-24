@@ -278,8 +278,44 @@
   "hotPaths": [
     {
       "path": ".env",
+      "accessCount": 4,
+      "lastAccessed": 1782282342550,
+      "type": "file"
+    },
+    {
+      "path": "scripts\\dev_local_stack.ts",
+      "accessCount": 4,
+      "lastAccessed": 1782286619562,
+      "type": "file"
+    },
+    {
+      "path": "services\\notebooklm_bridge\\.env",
       "accessCount": 2,
-      "lastAccessed": 1782281278245,
+      "lastAccessed": 1782282607656,
+      "type": "file"
+    },
+    {
+      "path": "services\\notebooklm_bridge\\requirements.txt",
+      "accessCount": 1,
+      "lastAccessed": 1782282267226,
+      "type": "file"
+    },
+    {
+      "path": "services\\notebooklm_bridge\\app.py",
+      "accessCount": 1,
+      "lastAccessed": 1782282423020,
+      "type": "file"
+    },
+    {
+      "path": "services\\notebooklm_bridge\\bridge.py",
+      "accessCount": 1,
+      "lastAccessed": 1782282428491,
+      "type": "file"
+    },
+    {
+      "path": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\claude\\D--TFT-hoho\\cd655182-585c-4982-bb98-35924c78bc51\\tasks\\bi061jq5m.output",
+      "accessCount": 1,
+      "lastAccessed": 1782282711876,
       "type": "file"
     }
   ],
