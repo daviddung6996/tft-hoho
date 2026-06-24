@@ -1,0 +1,287 @@
+{
+  "version": "1.0.0",
+  "lastScanned": 1782280906283,
+  "projectRoot": "D:\\TFT-hoho",
+  "techStack": {
+    "languages": [
+      {
+        "name": "JavaScript/TypeScript",
+        "version": null,
+        "confidence": "high",
+        "markers": [
+          "package.json"
+        ]
+      },
+      {
+        "name": "TypeScript",
+        "version": null,
+        "confidence": "high",
+        "markers": [
+          "tsconfig.json"
+        ]
+      }
+    ],
+    "frameworks": [
+      {
+        "name": "react",
+        "version": "18.2.0",
+        "category": "frontend"
+      },
+      {
+        "name": "react-dom",
+        "version": "18.2.0",
+        "category": "frontend"
+      },
+      {
+        "name": "@playwright/test",
+        "version": "1.58.2",
+        "category": "testing"
+      },
+      {
+        "name": "vite",
+        "version": "7.3.1",
+        "category": "build"
+      },
+      {
+        "name": "vitest",
+        "version": "4.0.18",
+        "category": "testing"
+      }
+    ],
+    "packageManager": "npm",
+    "runtime": null
+  },
+  "build": {
+    "buildCommand": "npm run build",
+    "testCommand": "npm test",
+    "lintCommand": null,
+    "devCommand": "npm run dev",
+    "scripts": {
+      "dev": "tsx scripts/dev_local_stack.ts",
+      "dev:vite": "vite",
+      "build": "tsc && vite build",
+      "preview": "vite preview",
+      "test": "vitest --run",
+      "test:watch": "vitest",
+      "db:set17-only-audit": "tsx scripts/normalizeSet17AssetRefs.ts --audit",
+      "db:set17-only-cleanup": "tsx scripts/normalizeSet17AssetRefs.ts",
+      "download-assets": "tsx scripts/download_tft_assets.ts",
+      "generate:set17-champions": "tsx scripts/generateSet17Champions.ts",
+      "visian-chat:local": "tsx scripts/local_visian_chat_server.ts"
+    }
+  },
+  "conventions": {
+    "namingStyle": null,
+    "importStyle": null,
+    "testPattern": null,
+    "fileOrganization": "feature-based"
+  },
+  "structure": {
+    "isMonorepo": false,
+    "workspaces": [],
+    "mainDirectories": [
+      "docs",
+      "public",
+      "scripts",
+      "src"
+    ],
+    "gitBranches": {
+      "defaultBranch": "main",
+      "branchingStrategy": null
+    }
+  },
+  "customNotes": [],
+  "directoryMap": {
+    "agentic-logs": {
+      "path": "agentic-logs",
+      "purpose": null,
+      "fileCount": 2,
+      "lastAccessed": 1782280906236,
+      "keyFiles": [
+        "metadata.json",
+        "README.md"
+      ]
+    },
+    "backend": {
+      "path": "backend",
+      "purpose": null,
+      "fileCount": 1,
+      "lastAccessed": 1782280906238,
+      "keyFiles": [
+        "CONTEXT.md"
+      ]
+    },
+    "dist": {
+      "path": "dist",
+      "purpose": "Distribution/build output",
+      "fileCount": 11,
+      "lastAccessed": 1782280906249,
+      "keyFiles": [
+        "android-chrome-192x192.png",
+        "android-chrome-512x512.png",
+        "apple-touch-icon.png",
+        "favicon-16x16.png",
+        "favicon-32x32.png"
+      ]
+    },
+    "docs": {
+      "path": "docs",
+      "purpose": "Documentation",
+      "fileCount": 3,
+      "lastAccessed": 1782280906250,
+      "keyFiles": [
+        "coach-pose-assets.md",
+        "coach-prompts-export-2026-03-13.md",
+        "notebooklm-bridge-context-export-2026-03-12.md"
+      ]
+    },
+    "functions": {
+      "path": "functions",
+      "purpose": null,
+      "fileCount": 4,
+      "lastAccessed": 1782280906251,
+      "keyFiles": [
+        "CONTEXT.md",
+        "robots.txt.ts",
+        "tsconfig.json",
+        "_middleware.ts"
+      ]
+    },
+    "public": {
+      "path": "public",
+      "purpose": "Public files",
+      "fileCount": 13,
+      "lastAccessed": 1782280906252,
+      "keyFiles": [
+        "android-chrome-192x192.png",
+        "android-chrome-512x512.png",
+        "apple-touch-icon.png",
+        "favicon-16x16.png",
+        "favicon-32x32.png"
+      ]
+    },
+    "scripts": {
+      "path": "scripts",
+      "purpose": "Build/utility scripts",
+      "fileCount": 14,
+      "lastAccessed": 1782280906253,
+      "keyFiles": [
+        "CONTEXT.md",
+        "convert_images.py",
+        "dev_local_stack.ts",
+        "download_tft_assets.ts",
+        "fix_all_descriptions.ts"
+      ]
+    },
+    "services": {
+      "path": "services",
+      "purpose": "Business logic services",
+      "fileCount": 1,
+      "lastAccessed": 1782280906253,
+      "keyFiles": [
+        "CONTEXT.md"
+      ]
+    },
+    "src": {
+      "path": "src",
+      "purpose": "Source code",
+      "fileCount": 8,
+      "lastAccessed": 1782280906254,
+      "keyFiles": [
+        "App.css",
+        "App.mobile-overlay.test.tsx",
+        "App.tsx",
+        "bootstrapApp.tsx",
+        "CONTEXT.md"
+      ]
+    },
+    "supabase": {
+      "path": "supabase",
+      "purpose": null,
+      "fileCount": 2,
+      "lastAccessed": 1782280906255,
+      "keyFiles": [
+        "config.toml",
+        "CONTEXT.md"
+      ]
+    },
+    "tftset17": {
+      "path": "tftset17",
+      "purpose": null,
+      "fileCount": 1,
+      "lastAccessed": 1782280906256,
+      "keyFiles": [
+        "knowledge_base.md"
+      ]
+    },
+    "dist\\assets": {
+      "path": "dist\\assets",
+      "purpose": "Static assets",
+      "fileCount": 39,
+      "lastAccessed": 1782280906259,
+      "keyFiles": [
+        "ahri-CzOAF-qP.webp",
+        "ancient_portal-D0eDu4BD.webp",
+        "augment-tree-BUiXy6Ix.webp"
+      ]
+    },
+    "src\\assets": {
+      "path": "src\\assets",
+      "purpose": "Static assets",
+      "fileCount": 0,
+      "lastAccessed": 1782280906262,
+      "keyFiles": []
+    },
+    "src\\components": {
+      "path": "src\\components",
+      "purpose": "UI components",
+      "fileCount": 1,
+      "lastAccessed": 1782280906263,
+      "keyFiles": [
+        "CONTEXT.md"
+      ]
+    },
+    "src\\config": {
+      "path": "src\\config",
+      "purpose": "Configuration files",
+      "fileCount": 3,
+      "lastAccessed": 1782280906263,
+      "keyFiles": [
+        "CONTEXT.md",
+        "monetization.test.ts",
+        "monetization.ts"
+      ]
+    },
+    "src\\data": {
+      "path": "src\\data",
+      "purpose": "Data files",
+      "fileCount": 10,
+      "lastAccessed": 1782280906264,
+      "keyFiles": [
+        "arenas.ts",
+        "augments.ts",
+        "gameData.ts"
+      ]
+    },
+    "supabase\\migrations": {
+      "path": "supabase\\migrations",
+      "purpose": "Database migrations",
+      "fileCount": 18,
+      "lastAccessed": 1782280906265,
+      "keyFiles": [
+        "001_create_users_table.sql",
+        "002_add_rls_to_existing_tables.sql",
+        "003_create_puzzle_votes.sql"
+      ]
+    }
+  },
+  "hotPaths": [
+    {
+      "path": ".env",
+      "accessCount": 2,
+      "lastAccessed": 1782281278245,
+      "type": "file"
+    }
+  ],
+  "userDirectives": []
+}
