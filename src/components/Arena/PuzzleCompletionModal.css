@@ -6,8 +6,8 @@
   right: 0;
   bottom: 0;
   background:
-    radial-gradient(ellipse at 50% 30%, rgba(200, 170, 110, 0.08) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 80%, rgba(21, 58, 62, 0.35) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 30%, rgb(var(--color-primary-rgb) / 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 80%, rgb(var(--surface-teal-top-rgb) / 0.35) 0%, transparent 50%),
     rgba(5, 15, 18, 0.98);
   backdrop-filter: blur(12px);
   display: flex;
@@ -21,10 +21,10 @@
 .puzzle-done-modal {
   position: relative;
   width: 70cqw;
-  border: 0.06cqw solid rgba(200, 170, 110, 0.45);
+  border: 0.06cqw solid rgb(var(--color-primary-rgb) / 0.45);
   box-shadow:
-    0 0 2cqw rgba(200, 170, 110, 0.15),
-    0 0 4cqw rgba(0, 0, 0, 0.5);
+    0 0 2cqw rgb(var(--color-primary-rgb) / 0.15),
+    0 0 4cqw rgb(var(--color-black-rgb) / 0.5);
   animation: pzDoneSlideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   container-type: inline-size;
   overflow: hidden;
@@ -47,7 +47,7 @@
   position: absolute;
   width: 2.5cqw;
   height: 2.5cqw;
-  border-color: #c8aa6e;
+  border-color: var(--color-primary);
   border-style: solid;
   border-width: 0;
   opacity: 0.6;
@@ -87,16 +87,16 @@
   padding: 5cqw 5cqw 2.5cqw;
   text-align: center;
   background:
-    radial-gradient(ellipse at 50% 0%, rgba(200, 170, 110, 0.12) 0%, transparent 65%),
-    linear-gradient(180deg, rgba(21, 58, 62, 0.95), rgba(13, 46, 48, 0.98));
+    radial-gradient(ellipse at 50% 0%, rgb(var(--color-primary-rgb) / 0.12) 0%, transparent 65%),
+    linear-gradient(180deg, rgb(var(--surface-teal-top-rgb) / 0.95), rgb(var(--surface-teal-mid-rgb) / 0.98));
 }
 
 .puzzle-done-badge {
   display: inline-block;
   padding: 0.4cqw 1.8cqw;
-  background: rgba(200, 170, 110, 0.1);
-  border: 0.06cqw solid rgba(200, 170, 110, 0.3);
-  color: #c8aa6e;
+  background: rgb(var(--color-primary-rgb) / 0.1);
+  border: 0.06cqw solid rgb(var(--color-primary-rgb) / 0.3);
+  color: var(--color-primary);
   font-family: 'Inter', sans-serif;
   font-size: 1cqw;
   font-weight: 600;
@@ -109,11 +109,11 @@
   font-family: 'Spectral', serif;
   font-size: 4.5cqw;
   font-weight: 700;
-  color: #c8aa6e;
+  color: var(--color-primary);
   text-transform: uppercase;
   letter-spacing: 0.12cqw;
   margin: 0;
-  text-shadow: 0 0 2cqw rgba(200, 170, 110, 0.35);
+  text-shadow: 0 0 2cqw rgb(var(--color-primary-rgb) / 0.35);
 }
 
 /* ─── Gold Divider ─── */
@@ -130,21 +130,21 @@
   display: block;
   width: 50%;
   height: 0.08cqw;
-  background: linear-gradient(90deg, transparent, rgba(200, 170, 110, 0.4), transparent);
+  background: linear-gradient(90deg, transparent, rgb(var(--color-primary-rgb) / 0.4), transparent);
 }
 
 /* ─── Body Section (Middle) ─── */
 .puzzle-done-body {
   padding: 3.5cqw 5cqw;
   text-align: center;
-  background: rgba(16, 52, 56, 0.95);
+  background: rgb(var(--surface-teal-metric-rgb) / 0.95);
 }
 
 .puzzle-done-text {
   font-family: 'Inter', sans-serif;
   font-size: 2.2cqw;
   font-weight: 600;
-  color: #F0E6D2;
+  color: var(--color-text-gold);
   margin: 0 0 1.2cqw;
   line-height: 1.4;
 }
@@ -152,7 +152,7 @@
 .puzzle-done-muted {
   font-family: 'Inter', sans-serif;
   font-size: 1.3cqw;
-  color: rgba(200, 170, 110, 0.6);
+  color: rgb(var(--color-primary-rgb) / 0.6);
   margin: 0;
   line-height: 1.4;
 }
@@ -162,7 +162,7 @@
   padding: 2.5cqw 8cqw 4cqw;
   display: flex;
   justify-content: center;
-  background: rgba(13, 46, 48, 0.97);
+  background: rgb(var(--surface-teal-mid-rgb) / 0.97);
 }
 
 .puzzle-done-cta {
@@ -170,8 +170,8 @@
   width: fit-content;
   min-width: 20cqw;
   padding: 1.2cqw 4cqw;
-  background: linear-gradient(180deg, #C89B3C 0%, #A07828 100%);
-  border: 0.1cqw solid #c8aa6e;
+  background: linear-gradient(180deg, var(--color-accent-gold) 0%, #E7DED1 100%);
+  border: 0.1cqw solid var(--color-primary);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -185,15 +185,15 @@
 }
 
 .puzzle-done-cta:hover {
-  background: linear-gradient(180deg, #d4a844 0%, #b08830 100%);
-  filter: drop-shadow(0 0 0.8cqw rgba(200, 170, 110, 0.4));
+  background: linear-gradient(180deg, var(--color-gold-mid) 0%, var(--color-gold-deep) 100%);
+  filter: drop-shadow(0 0 0.8cqw rgb(var(--color-primary-rgb) / 0.4));
 }
 
 .puzzle-done-cta-text {
   font-family: 'Spectral', serif;
   font-size: 1.6cqw;
   font-weight: 700;
-  color: #051c1e;
+  color: var(--surface-teal-deep);
   text-transform: uppercase;
   letter-spacing: 0.15cqw;
   position: relative;
@@ -206,7 +206,7 @@
   left: -100%;
   width: 60%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.18), transparent);
+  background: linear-gradient(90deg, transparent, rgb(var(--color-white-rgb) / 0.18), transparent);
   animation: pzDoneSweep 3s ease-in-out infinite;
   pointer-events: none;
 }

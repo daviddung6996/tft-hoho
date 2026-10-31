@@ -5,14 +5,13 @@
     position: fixed;
     inset: 0;
     background:
-        radial-gradient(ellipse at 50% 30%, rgba(200, 170, 110, 0.06) 0%, transparent 50%),
-        radial-gradient(ellipse at 50% 80%, rgba(21, 58, 62, 0.25) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 30%, rgba(231, 222, 209, 0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 80%, rgba(0, 0, 0, 0.25) 0%, transparent 50%),
         rgba(0, 0, 0, 0.78);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 3000;
-    backdrop-filter: blur(8px);
     animation: hex-overlay-in 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -22,12 +21,10 @@
     max-height: 90vh;
     display: flex;
     flex-direction: column;
-    background: linear-gradient(180deg, #153a3e 0%, #051c1e 100%);
-    border: 1px solid #c8aa6e;
-    border-radius: 4px;
-    box-shadow:
-        0 0 30px rgba(200, 170, 110, 0.25),
-        0 0 60px rgba(0, 0, 0, 0.6);
+    background: linear-gradient(180deg, #000000 0%, #000000 100%);
+    border: 1px solid #E7DED1;
+    border-radius: 0;
+    box-shadow: none;
     overflow: hidden;
 }
 
@@ -37,8 +34,8 @@
     align-items: center;
     gap: 0.75rem;
     padding: 1.25rem 1.5rem;
-    border-bottom: 1px solid rgba(200, 170, 110, 0.3);
-    background: rgba(21, 58, 62, 0.5);
+    border-bottom: 1px solid rgba(231, 222, 209, 0.3);
+    background: rgba(0, 0, 0, 0.5);
 }
 
 .vem-header-icon {
@@ -50,7 +47,7 @@
 .vem-title {
     margin: 0;
     flex: 1;
-    color: #c8aa6e;
+    color: #E7DED1;
     font-family: 'Spectral', serif;
     font-size: 1.1rem;
     font-weight: 700;
@@ -65,16 +62,16 @@
     width: 26px;
     height: 26px;
     background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(200, 170, 110, 0.25);
-    border-radius: 2px;
+    border: 1px solid rgba(231, 222, 209, 0.25);
+    border-radius: 0;
     cursor: pointer;
     transition: border-color 0.2s, background 0.2s;
     flex-shrink: 0;
 }
 
 .vem-close:hover {
-    border-color: #c8aa6e;
-    background: rgba(200, 170, 110, 0.1);
+    border-color: #E7DED1;
+    background: rgba(231, 222, 209, 0.1);
 }
 
 /* ── Body ───────────────────────────────────────────────────── */
@@ -96,7 +93,7 @@
 }
 
 .vem-label {
-    color: #c8aa6e;
+    color: #E7DED1;
     font-family: 'Inter', sans-serif;
     font-size: 0.8rem;
     font-weight: 600;
@@ -113,24 +110,24 @@
 
 .vem-input {
     flex: 1;
-    background: rgba(5, 28, 30, 0.85);
-    border: 1px solid rgba(200, 170, 110, 0.4);
-    color: #F0E6D2;
+    background: rgba(0, 0, 0, 0.85);
+    border: 1px solid rgba(231, 222, 209, 0.4);
+    color: #E7DED1;
     font-family: 'Inter', sans-serif;
     font-size: 0.875rem;
     padding: 0.55rem 0.75rem;
-    border-radius: 3px;
+    border-radius: 0;
     outline: none;
     transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .vem-input:focus {
-    border-color: #c8aa6e;
-    box-shadow: 0 0 8px rgba(200, 155, 60, 0.2), inset 0 0 4px rgba(200, 155, 60, 0.08);
+    border-color: #E7DED1;
+    box-shadow: 0 0 8px rgba(231, 222, 209, 0.2), inset 0 0 4px rgba(231, 222, 209, 0.08);
 }
 
 .vem-input::placeholder {
-    color: rgba(148, 163, 184, 0.4);
+    color: rgba(231, 222, 209, 0.4);
     font-style: italic;
 }
 
@@ -141,15 +138,15 @@
     width: 28px;
     height: 28px;
     background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(148, 163, 184, 0.2);
-    border-radius: 2px;
+    border: 1px solid rgba(231, 222, 209, 0.2);
+    border-radius: 0;
     cursor: pointer;
     flex-shrink: 0;
     transition: border-color 0.15s;
 }
 
 .vem-clear-btn:hover {
-    border-color: rgba(148, 163, 184, 0.5);
+    border-color: rgba(231, 222, 209, 0.5);
 }
 
 .vem-hint {
@@ -172,7 +169,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    color: rgba(200, 170, 110, 0.75);
+    color: rgba(231, 222, 209, 0.75);
     font-family: 'Inter', sans-serif;
     font-size: 0.75rem;
     font-weight: 600;
@@ -181,7 +178,7 @@
 }
 
 .vem-preview-id {
-    color: rgba(148, 163, 184, 0.6);
+    color: rgba(231, 222, 209, 0.6);
     font-family: monospace;
     font-size: 0.7rem;
     font-style: normal;
@@ -195,8 +192,8 @@
     padding-bottom: 56.25%;
     /* 16:9 */
     background: #000;
-    border: 1px solid rgba(200, 170, 110, 0.3);
-    border-radius: 3px;
+    border: 1px solid rgba(231, 222, 209, 0.3);
+    border-radius: 0;
     overflow: hidden;
 }
 
@@ -215,10 +212,10 @@
     justify-content: center;
     gap: 0.75rem;
     padding: 2rem 1rem;
-    background: rgba(5, 28, 30, 0.4);
-    border: 1px dashed rgba(200, 170, 110, 0.2);
-    border-radius: 3px;
-    color: rgba(200, 170, 110, 0.4);
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px dashed rgba(231, 222, 209, 0.2);
+    border-radius: 0;
+    color: rgba(231, 222, 209, 0.4);
     font-family: 'Inter', sans-serif;
     font-size: 0.8rem;
     text-align: center;
@@ -236,7 +233,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 1.25rem 1.5rem;
-    border-top: 1px solid rgba(200, 170, 110, 0.3);
+    border-top: 1px solid rgba(231, 222, 209, 0.3);
     background: rgba(0, 0, 0, 0.2);
     gap: 0.75rem;
 }
@@ -255,7 +252,7 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    border-radius: 2px;
+    border-radius: 0;
     cursor: pointer;
     border: 1px solid;
     transition: background 0.15s, box-shadow 0.15s;
@@ -263,23 +260,23 @@
 
 .vem-btn--cancel {
     background: rgba(0, 0, 0, 0.3);
-    border-color: rgba(200, 170, 110, 0.45);
-    color: #F0E6D2;
+    border-color: rgba(231, 222, 209, 0.45);
+    color: #E7DED1;
 }
 
 .vem-btn--cancel:hover {
-    background: rgba(200, 170, 110, 0.08);
+    background: rgba(231, 222, 209, 0.08);
 }
 
 .vem-btn--save {
-    background: linear-gradient(180deg, rgba(21, 58, 62, 0.7) 0%, rgba(5, 28, 30, 0.7) 100%);
-    border-color: #c8aa6e;
-    color: #F0E6D2;
-    box-shadow: 0 0 10px rgba(200, 170, 110, 0.2);
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.7) 100%);
+    border-color: #E7DED1;
+    color: #E7DED1;
+    box-shadow: none;
 }
 
 .vem-btn--save:hover:not(:disabled) {
-    box-shadow: 0 0 16px rgba(200, 170, 110, 0.35);
+    box-shadow: none;
 }
 
 .vem-btn--save:disabled {

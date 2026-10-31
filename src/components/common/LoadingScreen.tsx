@@ -33,17 +33,17 @@ export function LoadingScreen({ message = 'Đang tải...', shell = false }: Loa
                     <defs>
                         <linearGradient id="hlBorder" x1="0%" y1="0%" x2="100%" y2="100%">
                             <stop offset="0%" stopColor="#FFD700" stopOpacity="0.7" />
-                            <stop offset="50%" stopColor="#A07828" stopOpacity="0.22" />
+                            <stop offset="50%" stopColor="#E7DED1" stopOpacity="0.22" />
                             <stop offset="100%" stopColor="#FFD700" stopOpacity="0.7" />
                         </linearGradient>
                         <radialGradient id="hlCoin" cx="42%" cy="38%" r="55%">
                             <stop offset="0%" stopColor="#FFE082" />
-                            <stop offset="45%" stopColor="#C89B3C" />
+                            <stop offset="45%" stopColor="#E7DED1" />
                             <stop offset="100%" stopColor="#8B6914" />
                         </radialGradient>
                         <linearGradient id="hlInner" x1="0%" y1="0%" x2="100%" y2="100%">
                             <stop offset="0%" stopColor="#FFD700" stopOpacity="0.5" />
-                            <stop offset="50%" stopColor="#C89B3C" stopOpacity="0.12" />
+                            <stop offset="50%" stopColor="#E7DED1" stopOpacity="0.12" />
                             <stop offset="100%" stopColor="#FFD700" stopOpacity="0.5" />
                         </linearGradient>
                         <linearGradient id="hlShine" x1="30%" y1="10%" x2="70%" y2="60%">

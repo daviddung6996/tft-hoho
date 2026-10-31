@@ -8,9 +8,9 @@
     position: fixed;
     inset: 0;
     background:
-        radial-gradient(ellipse at 50% 30%, rgba(200, 170, 110, 0.08) 0%, transparent 60%),
-        radial-gradient(ellipse at 50% 80%, rgba(21, 58, 62, 0.4) 0%, transparent 50%),
-        linear-gradient(180deg, rgba(5, 28, 30, 0.96) 0%, rgba(0, 0, 0, 0.99) 100%);
+        radial-gradient(ellipse at 50% 30%, rgba(231, 222, 209, 0.08) 0%, transparent 60%),
+        radial-gradient(ellipse at 50% 80%, rgba(0, 0, 0, 0.4) 0%, transparent 50%),
+        linear-gradient(180deg, rgba(0, 0, 0, 0.96) 0%, rgba(0, 0, 0, 0.99) 100%);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -32,10 +32,10 @@
     width: 200%;
     height: 200%;
     background:
-        radial-gradient(1.5px 1.5px at 20% 30%, rgba(200, 170, 110, 0.2) 0%, transparent 100%),
-        radial-gradient(1px 1px at 70% 15%, rgba(200, 170, 110, 0.15) 0%, transparent 100%),
-        radial-gradient(1.5px 1.5px at 45% 70%, rgba(200, 170, 110, 0.1) 0%, transparent 100%),
-        radial-gradient(1px 1px at 85% 55%, rgba(200, 170, 110, 0.15) 0%, transparent 100%);
+        radial-gradient(1.5px 1.5px at 20% 30%, rgba(231, 222, 209, 0.2) 0%, transparent 100%),
+        radial-gradient(1px 1px at 70% 15%, rgba(231, 222, 209, 0.15) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 45% 70%, rgba(231, 222, 209, 0.1) 0%, transparent 100%),
+        radial-gradient(1px 1px at 85% 55%, rgba(231, 222, 209, 0.15) 0%, transparent 100%);
     animation: lp-drift 20s linear infinite;
     pointer-events: none;
 }
@@ -54,9 +54,9 @@
 .landscape-prompt-icon {
     width: 80px;
     height: 80px;
-    color: #c8aa6e;
+    color: #E7DED1;
     animation: lp-rotate 2s ease-in-out infinite;
-    filter: drop-shadow(0 0 12px rgba(200, 170, 110, 0.4));
+
 }
 
 @keyframes lp-rotate {
@@ -81,7 +81,7 @@
     font-family: 'Spectral', serif;
     font-size: 28px;
     font-weight: 700;
-    color: #F0E6D2;
+    color: #E7DED1;
     text-transform: uppercase;
     letter-spacing: 2px;
     text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
@@ -93,7 +93,7 @@
     font-family: 'Inter', sans-serif;
     font-size: 14px;
     font-weight: 400;
-    color: rgba(200, 170, 110, 0.7);
+    color: rgba(231, 222, 209, 0.7);
     line-height: 1.5;
     max-width: 320px;
     margin: 0;
@@ -103,7 +103,7 @@
 .landscape-prompt-accent {
     width: 60px;
     height: 2px;
-    background: linear-gradient(90deg, transparent, #c8aa6e, transparent);
+    background: linear-gradient(90deg, transparent, #E7DED1, transparent);
     border: none;
     margin: 4px 0;
 }

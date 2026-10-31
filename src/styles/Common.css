@@ -10,10 +10,10 @@
     background: var(--gradient-panel);
     border: 0.1cqw solid var(--color-accent-gold);
     box-shadow:
-        0 0 1.5cqw rgba(200, 170, 110, 0.25),
-        0 0 3cqw rgba(0, 0, 0, 0.6);
+        0 0 1.5cqw rgb(var(--color-primary-rgb) / 0.25),
+        0 0 3cqw rgb(var(--color-black-rgb) / 0.6);
     backdrop-filter: var(--blur-panel);
-    border-radius: 0.4cqw;
+    border-radius: var(--radius-cqw-panel);
 }
 
 /* 
@@ -22,9 +22,9 @@
 .hex-close-btn {
     width: 2cqw;
     height: 2cqw;
-    background: rgba(0, 0, 0, 0.3);
+    background: rgb(var(--color-black-rgb) / 0.3);
     border: 0.08cqw solid var(--color-accent-gold);
-    border-radius: 0.25cqw;
+    border-radius: var(--radius-cqw-compact);
     color: var(--color-accent-gold);
     cursor: pointer;
     display: flex;
@@ -35,8 +35,8 @@
 }
 
 .hex-close-btn:hover {
-    background: rgba(200, 155, 60, 0.2);
-    box-shadow: 0 0 0.8cqw rgba(200, 155, 60, 0.4);
+    background: rgb(var(--color-accent-gold-rgb) / 0.2);
+    box-shadow: 0 0 0.8cqw rgb(var(--color-accent-gold-rgb) / 0.4);
 }
 
 /* 
@@ -49,27 +49,27 @@
     padding: 0.5cqw 0.8cqw;
     font-family: var(--font-body);
     font-size: 0.9cqw;
-    border-radius: 0.3cqw;
+    border-radius: var(--radius-cqw-control);
     transition: border-color 0.2s;
     outline: none;
 }
 
 .hex-input::placeholder {
-    color: rgba(148, 163, 184, 0.6);
+    color: rgb(var(--color-text-secondary-rgb) / 0.6);
 }
 
 .hex-input:focus {
     border-color: var(--color-accent-gold);
-    box-shadow: 0 0 0.5cqw rgba(200, 155, 60, 0.2);
+    box-shadow: 0 0 0.5cqw rgb(var(--color-accent-gold-rgb) / 0.2);
 }
 
 /* Select specifics for even padding with arrow */
 select.hex-input {
     appearance: none;
     padding-right: 2.5cqw;
-    background: #0d2a2e;
+    background: var(--surface-teal-common);
     /* Solid dark teal - needed so dropdown panel isn't OS gray */
-    border-color: rgba(200, 170, 110, 0.4);
+    border-color: rgb(var(--color-primary-rgb) / 0.4);
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23c8aa6e'%3E%3Cpath d='M7 10l5 5 5-5H7z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 0.8cqw center;
@@ -80,15 +80,15 @@ select.hex-input {
 
 select.hex-input:focus {
     border-color: var(--color-accent-gold);
-    box-shadow: 0 0 0.5cqw rgba(200, 155, 60, 0.2);
+    box-shadow: 0 0 0.5cqw rgb(var(--color-accent-gold-rgb) / 0.2);
     outline: none;
 }
 
 /* Option dropdown items - dark teal Hextech theme */
 select.hex-input option,
 select option {
-    background-color: #0d2a2e;
-    color: #F0E6D2;
+    background-color: var(--surface-teal-common);
+    color: var(--color-text-gold);
     padding: 4px 8px;
     font-family: 'Inter', sans-serif;
 }
@@ -96,8 +96,8 @@ select option {
 select.hex-input option:hover,
 select.hex-input option:checked,
 select option:checked {
-    background-color: #1a4d52;
-    color: #c8aa6e;
+    background-color: var(--tui-void);
+    color: var(--color-primary);
 }
 
 /* 
@@ -105,8 +105,8 @@ select option:checked {
 */
 .hex-button {
     background: transparent;
-    border: 0.1cqw solid #c8aa6e;
-    color: #F0E6D2;
+    border: 0.1cqw solid var(--color-primary);
+    color: var(--color-text-gold);
     padding: 0.5cqw 1.2cqw;
     font-family: var(--font-body);
     font-weight: 500;
@@ -123,34 +123,34 @@ select option:checked {
 
 /* Subtle hover glow - NO movement */
 .hex-button:hover {
-    border-color: #d4b876;
-    box-shadow: 0 0 0.8cqw rgba(200, 170, 110, 0.3);
+    border-color: var(--color-primary-hover);
+    box-shadow: 0 0 0.8cqw rgb(var(--color-primary-rgb) / 0.3);
 }
 
 .hex-button.primary {
-    border-color: #c8aa6e;
-    color: #F0E6D2;
+    border-color: var(--color-primary);
+    color: var(--color-text-gold);
 }
 
 .hex-button.gold {
-    border-color: #c8aa6e;
-    color: #F0E6D2;
+    border-color: var(--color-primary);
+    color: var(--color-text-gold);
 }
 
 .hex-button.danger {
-    border-color: #c8aa6e;
-    color: #F0E6D2;
+    border-color: var(--color-primary);
+    color: var(--color-text-gold);
 }
 
 /* 
    Typography Utilities 
 */
 .text-glow-gold {
-    text-shadow: 0 0 0.5cqw rgba(200, 155, 60, 0.5);
+    text-shadow: 0 0 0.5cqw rgb(var(--color-accent-gold-rgb) / 0.5);
 }
 
 .text-glow-gold-strong {
-    text-shadow: 0 0 0.5cqw rgba(200, 155, 60, 0.5);
+    text-shadow: 0 0 0.5cqw rgb(var(--color-accent-gold-rgb) / 0.5);
 }
 
 /* ==========================================================================
@@ -160,4 +160,55 @@ select option:checked {
 @keyframes hex-overlay-in {
     from { opacity: 0; }
     to   { opacity: 1; }
+}
+
+.selector-scout-instruction {
+    width: min(40rem, 88%);
+    margin: 0.75rem auto 0;
+    padding: 0.55rem 0.9rem;
+    border: 1px solid rgb(var(--color-primary-rgb) / 0.45);
+    background: rgb(var(--surface-teal-mid-rgb) / 0.92);
+    color: var(--color-text-gold);
+    font-size: clamp(0.72rem, 1.05cqw, 0.95rem);
+    line-height: 1.45;
+    text-align: center;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+:where(button, [role="button"], [tabindex]):focus-visible {
+    outline: 2px solid var(--game-focus-color, var(--color-text-gold));
+    outline-offset: 3px;
+    box-shadow: var(--game-focus-ring);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .path-selector-overlay,
+    .plan-selector-overlay,
+    .augment-modal-overlay,
+    .path-btn,
+    .plan-btn,
+    .augment-card,
+    .augment-tier-badge,
+    .scouting-panel,
+    .scout-hint,
+    .puzzle-done-overlay,
+    .puzzle-done-modal,
+    .coach-fab,
+    .decision-review-overlay,
+    .decision-review-container {
+        animation: none !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
 }

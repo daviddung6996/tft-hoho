@@ -11,7 +11,7 @@
   padding-right: env(safe-area-inset-right, 0);
   padding-top: env(safe-area-inset-top, 0);
   padding-bottom: env(safe-area-inset-bottom, 0);
-  background: #000;
+  background: var(--color-black);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -58,11 +58,11 @@
   inset: 0;
   z-index: -1;
   background: linear-gradient(to right,
-      rgba(8, 30, 32, 0.95) 0%,
+      rgb(var(--surface-teal-focus-rgb) / 0.95) 0%,
       transparent 25%,
       transparent 75%,
-      rgba(8, 30, 32, 0.95) 100%),
-    rgba(13, 46, 48, 0.65);
+      rgb(var(--surface-teal-focus-rgb) / 0.95) 100%),
+    rgb(var(--surface-teal-mid-rgb) / 0.65);
   pointer-events: none;
 }
 
@@ -147,19 +147,19 @@
   justify-content: center;
   padding: 24px;
   background:
-    radial-gradient(circle at 50% 38%, rgba(200, 170, 110, 0.12), transparent 32%),
-    linear-gradient(180deg, rgba(8, 30, 32, 0.58), rgba(5, 28, 30, 0.82));
+    radial-gradient(circle at 50% 38%, rgb(var(--color-primary-rgb) / 0.12), transparent 32%),
+    linear-gradient(180deg, rgb(var(--surface-teal-focus-rgb) / 0.58), rgb(var(--surface-teal-deep-rgb) / 0.82));
   z-index: 40;
 }
 
 .app-loading-screen {
   min-width: min(440px, calc(100% - 32px));
   padding: 18px 24px;
-  border: 1px solid rgba(200, 170, 110, 0.38);
-  border-radius: 14px;
-  background: linear-gradient(180deg, rgba(21, 58, 62, 0.88), rgba(5, 28, 30, 0.94));
-  box-shadow: 0 0 24px rgba(0, 0, 0, 0.28);
-  color: #f0f6fc;
+  border: 1px solid rgb(var(--color-primary-rgb) / 0.38);
+  border-radius: var(--radius-px-14);
+  background: linear-gradient(180deg, rgb(var(--surface-teal-top-rgb) / 0.88), rgb(var(--surface-teal-deep-rgb) / 0.94));
+  box-shadow: 0 0 24px rgb(var(--color-black-rgb) / 0.28);
+  color: var(--color-text-primary);
   font-family: "Inter", sans-serif;
   font-size: clamp(0.95rem, 1.4vw, 1.05rem);
   letter-spacing: 0.02em;
@@ -179,18 +179,18 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: linear-gradient(180deg, #153a3e 0%, #051c1e 100%);
-  border: 0.06cqw solid #c8aa6e;
-  border-radius: 0.3cqw;
+  background: linear-gradient(180deg, var(--surface-teal-top) 0%, var(--surface-teal-deep) 100%);
+  border: 0.06cqw solid var(--color-primary);
+  border-radius: var(--radius-cqw-control);
   padding: 0.3cqw 0.9cqw;
   z-index: 50;
-  box-shadow: 0 0 1.2cqw rgba(200, 170, 110, 0.2);
-  backdrop-filter: blur(4px);
+  box-shadow: 0 0 1.2cqw rgb(var(--color-primary-rgb) / 0.2);
+
 }
 
 .stage-label {
   font-size: 0.5cqw;
-  color: #94a3b8;
+  color: var(--color-text-secondary);
   font-family: "Inter", sans-serif;
   text-transform: uppercase;
   letter-spacing: 0.08cqw;
@@ -199,10 +199,10 @@
 
 .stage-value {
   font-size: 0.95cqw;
-  color: #c8aa6e;
+  color: var(--color-primary);
   font-family: "Spectral", serif;
   font-weight: 600;
-  text-shadow: 0 0 0.6cqw rgba(200, 170, 110, 0.3);
+  text-shadow: 0 0 0.6cqw rgb(var(--color-primary-rgb) / 0.3);
 }
 
 /* ==========================================================================
@@ -219,7 +219,7 @@
   pointer-events: none;
   z-index: 999;
   opacity: 0;
-  background: rgba(0, 0, 0, 0.92);
+  background: rgb(var(--color-black-rgb) / 0.92);
   transition: opacity 0.15s ease-out;
 }
 
@@ -274,11 +274,11 @@
 
 .layout-wrapper[data-layout-mode="phone-landscape"]::after {
   background: linear-gradient(180deg,
-      rgba(8, 30, 32, 0.52) 0%,
-      rgba(8, 30, 32, 0.18) 24%,
-      rgba(8, 30, 32, 0.16) 76%,
-      rgba(8, 30, 32, 0.55) 100%),
-    rgba(13, 46, 48, 0.42);
+      rgb(var(--surface-teal-focus-rgb) / 0.52) 0%,
+      rgb(var(--surface-teal-focus-rgb) / 0.18) 24%,
+      rgb(var(--surface-teal-focus-rgb) / 0.16) 76%,
+      rgb(var(--surface-teal-focus-rgb) / 0.55) 100%),
+    rgb(var(--surface-teal-mid-rgb) / 0.42);
 }
 
 /* phone-landscape: app-container fits window, HUD scales to window.
@@ -364,9 +364,9 @@
   width: clamp(116px, 23vw, 152px);
   height: clamp(48px, 9vw, 58px);
   border-width: 1px;
-  border-radius: 16px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35),
-    0 0 18px rgba(200, 170, 110, 0.18);
+  border-radius: var(--radius-px-16);
+  box-shadow: 0 12px 30px rgb(var(--color-black-rgb) / 0.35),
+    0 0 18px rgb(var(--color-primary-rgb) / 0.18);
 }
 
 .viewport-hud-layer[data-layout-mode="phone-landscape"] .augment-button svg {
@@ -430,16 +430,4 @@
 .app-container[data-layout-mode="phone-landscape"] .mobile-scouting-rail .player-avatar-img {
   width: calc(clamp(24px, 5vw, 30px) - 4px);
   height: calc(clamp(24px, 5vw, 30px) - 4px);
-}
-
-/* ==========================================================================
-   SCOUT INTERACTION BLOCKER
-   Invisible layer to prevent clicking on augments/paths while scouting is required
-   ========================================================================== */
-.scout-interaction-blocker {
-  position: absolute;
-  inset: 0;
-  z-index: 250;
-  /* Above the panels, below the AugmentButton (which is z-index 300) */
-  cursor: not-allowed;
 }

@@ -313,7 +313,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({ isOpen, onCl
                                 {/* RIGHT WING: Community Rank */}
                                 <div className="hero-wing hero-wing--right">
                                     <div className="hero-wing-icon">
-                                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#c8aa6e" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#E7DED1" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                                             <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
                                             <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
                                             <path d="M4 22h16" />
@@ -413,7 +413,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({ isOpen, onCl
                                                             <Area
                                                                 type="monotone"
                                                                 dataKey="rollingAccuracy"
-                                                                stroke="#c8aa6e"
+                                                                stroke="#E7DED1"
                                                                 strokeWidth={3}
                                                                 fillOpacity={1}
                                                                 fill="url(#colorAccuracy)"

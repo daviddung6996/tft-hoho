@@ -32,50 +32,278 @@ body.is-dragging *::after {
 }
 
 :root {
+  --tui-theme: after-hours;
+  --tui-void: #000000;
+  --tui-bone: #E7DED1;
+  --tui-bone-rgb: 231 222 209;
+  --tui-bone-04: rgb(231 222 209 / 0.04);
+  --tui-bone-08: rgb(231 222 209 / 0.08);
+  --tui-bone-12: rgb(231 222 209 / 0.12);
+  --tui-bone-16: rgb(231 222 209 / 0.16);
+  --tui-bone-24: rgb(231 222 209 / 0.24);
+  --tui-bone-32: rgb(231 222 209 / 0.32);
+  --tui-bone-48: rgb(231 222 209 / 0.48);
+  --tui-bone-60: rgb(231 222 209 / 0.60);
+  --tui-bone-64: rgb(231 222 209 / 0.64);
+  --tui-bone-78: rgb(231 222 209 / 0.78);
+  --tui-bone-80: rgb(231 222 209 / 0.80);
+  --tui-surface-app: #000000;
+  --tui-surface-panel: #000000;
+  --tui-surface-panel-top: #000000;
+  --tui-surface-content: #000000;
+  --tui-surface-control: transparent;
+  --tui-surface-metric: #000000;
+  --tui-surface-elevated: #000000;
+  --tui-surface-review: #000000;
+  --tui-surface-modal: #000000;
+  --tui-surface-input: transparent;
+  --tui-text-primary: #E7DED1;
+  --tui-text-secondary: var(--tui-bone-78);
+  --tui-text-muted: var(--tui-bone-60);
+  --tui-text-disabled: var(--tui-bone-48);
+  --tui-text-inverse: #000000;
+  --tui-text-gold: #E7DED1; /* deprecated old name; maps to Bone */
+  --tui-gold: #E7DED1; /* deprecated old name; NOT Hextech gold */
+  --tui-gold-rgb: 231 222 209;
+  --tui-gold-hover: #E7DED1;
+  --tui-gold-deep: #E7DED1;
+  --tui-gold-accent: #E7DED1;
+  --tui-gold-accent-rgb: 231 222 209;
+  --tui-gold-game: #FFD700; /* TFT coin/gameplay semantic: unchanged */
+  --tui-border: var(--tui-bone-64);
+  --tui-border-strong: #E7DED1;
+  --tui-border-subtle: var(--tui-bone-24);
+  --tui-border-focus: #E7DED1;
+  --tui-border-panel: var(--tui-bone-24);
+  --tui-success: #10B981; --tui-success-rgb: 16 185 129;
+  --tui-danger: #EF4444; --tui-danger-rgb: 239 68 68;
+  --tui-warning: #EAB308; --tui-warning-rgb: 234 179 8;
+  --tui-info: #0EA5E9; --tui-info-rgb: 14 165 233;
+  --tui-combat: #FF4E50;
+  /* Gameplay rank colors are not TFTISEASY brand accent colors. */
+  --tui-rank-challenger: #00D1C1;
+  --tui-rank-grandmaster: #FF6B35;
+  --tui-rank-master: #8B5CF6;
+  --tui-rank-diamond: #4F46E5;
+  --tui-rank-platinum: #0EA5E9;
+  --tui-rank-gold: #EAB308;
+  --tui-rank-silver: #94A3B8;
+  --tui-rank-bronze: #B45309;
+  --tui-rank-iron: #4B5563;
+  --tui-font-heading: 'NB Akademie', Georgia, serif;
+  --tui-font-body: 'Be Vietnam Pro', system-ui, sans-serif;
+  --tui-font-mono: 'NB Akademie Mono', 'IBM Plex Mono', ui-monospace, Consolas, monospace;
+  --tui-text-xs: 0.75rem;
+  --tui-text-sm: 0.875rem;
+  --tui-text-base: 1rem;
+  --tui-text-md: 1rem;
+  --tui-text-lg: 1.125rem;
+  --tui-text-xl: 1.25rem;
+  --tui-text-2xl: 1.5rem;
+  --tui-text-3xl: 1.875rem;
+  --tui-text-4xl: 2.25rem;
+  --tui-font-normal: 400;
+  --tui-font-medium: 400;
+  --tui-font-semibold: 400;
+  --tui-font-bold: 400;
+  --tui-space-0: 0; --tui-space-1: 0.25rem; --tui-space-2: 0.5rem;
+  --tui-space-3: 0.75rem; --tui-space-4: 1rem; --tui-space-5: 1.25rem;
+  --tui-space-6: 1.5rem; --tui-space-8: 2rem; --tui-space-10: 2.5rem;
+  --tui-space-12: 3rem; --tui-space-16: 4rem;
+  --tui-space-xs: 0.25rem; --tui-space-sm: 0.5rem; --tui-space-md: 0.875rem;
+  --tui-space-lg: 1.25rem; --tui-space-xl: 2rem; --tui-space-2xl: 3rem;
+  --tui-radius-none: 0px; --tui-radius-hairline: 0px; --tui-radius-micro: 0px;
+  --tui-radius-subtle: 0px; --tui-radius-tight: 0px; --tui-radius-compact: 0px;
+  --tui-radius-control: 0px; --tui-radius-control-lg: 0px;
+  --tui-radius-panel: 0px; --tui-radius-panel-lg: 0px;
+  --tui-radius-panel-xl: 0px; --tui-radius-display: 0px;
+  --tui-radius-pill: 0px; --tui-radius-circle: 50%;
+  --tui-shadow-panel: none; --tui-shadow-focus: none;
+  --tui-shadow-focus-ring: none; --tui-shadow-reward: none;
+  --tui-shadow-sm: none; --tui-shadow-md: none; --tui-shadow-lg: none;
+  --tui-shadow-gold-border: none;
+  --tui-duration-instant: 0ms; --tui-duration-fast: 100ms;
+  --tui-duration-base: 160ms; --tui-duration-moderate: 220ms;
+  --tui-duration-slow: 300ms;
+  --tui-ease-standard: cubic-bezier(0.16, 1, 0.3, 1);
+  --tui-ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --tui-ease-in: cubic-bezier(0.4, 0, 0, 1);
+  --tui-z-base: 0; --tui-z-raised: 10; --tui-z-dropdown: 100;
+  --tui-z-sticky: 200; --tui-z-overlay: 300; --tui-z-modal: 400;
+  --tui-z-toast: 500; --tui-z-tooltip: 600; --tui-z-max: 9999;
+  --tui-gradient-panel: none;
+  --tui-gradient-overlay: none;
+}
+
+:root {
     /* ==========================================================================
        COLORS (AGENTS.md Strict)
        ========================================================================== */
 
     /* Backgrounds */
-    --color-surface-dark: #090C14;
-    /* Deep tactical backdrop */
-    --color-surface-panel: rgba(13, 22, 36, 0.85);
+    --color-surface-dark: #000000;
+    /* Submerged Green — app/base/sunken background (was #090C14 Deep Navy, now green-anchored) */
+    --color-surface-panel: rgb(var(--color-surface-panel-rgb) / 0.85);
     /* Glassy Hextech */
-    --color-surface-overlay: rgba(0, 0, 0, 0.6);
+    --color-surface-overlay: rgb(var(--color-black-rgb) / 0.6);
 
     /* Primary Colors */
-    --color-primary: #c8aa6e;
+    --color-primary: #E7DED1;
+    --color-primary-rgb: 231 222 209;
     /* Hextech Gold */
-    --color-primary-dark: #A07828;
-    --color-primary-glow: 0 0 15px rgba(200, 155, 60, 0.4);
+    --color-primary-dark: #E7DED1;
+    --color-primary-hover: #E7DED1;
+    --color-primary-glow: none;
 
     /* Accents */
-    --color-accent-gold: #C89B3C;
+    --color-accent-gold: #E7DED1;
+    --color-accent-gold-rgb: 231 222 209;
     /* Prestige Gold */
-    --color-accent-gold-glow: 0 0 10px rgba(200, 155, 60, 0.3);
-    --color-accent-cyan: #c8aa6e;
+    --color-accent-gold-glow: none;
+    --color-accent-cyan: #E7DED1;
     /* Gold (unified theme) */
     --color-accent-rose: #FF4E50;
+    --color-accent-rose-rgb: 255 78 80;
     /* Combat */
 
+    /* Gameplay tier and semantic colors */
+    --color-tier-advanced: #E8C252;
+    --color-tier-advanced-rgb: 232 194 82;
+    --color-tier-rare: #C084FC;
+    --color-tier-rare-rgb: 192 132 252;
+    --color-tier-rare-depth: #A855F7;
+    --color-tier-rare-depth-rgb: 168 85 247;
+    --color-success: #10B981;
+    --color-success-rgb: 16 185 129;
+    --color-danger: #EF4444;
+    --color-danger-rgb: 239 68 68;
+    --color-warning: #EAB308;
+    --color-warning-rgb: 234 179 8;
+    --color-info: #0EA5E9;
+    --color-info-rgb: 14 165 233;
+    --color-rank-challenger: #00D1C1;
+    --color-rank-challenger-rgb: 0 209 193;
+    --color-interaction-swap: #9333EA;
+    --color-interaction-swap-rgb: 147 51 234;
+    --color-game-gold: #FFD700;
+    --color-game-gold-rgb: 255 215 0;
+    --color-live-danger: #FF3B3B;
+    --color-live-danger-rgb: 255 59 59;
+    --color-live-pink: #FF5B78;
+    --color-live-pink-rgb: 255 91 120;
+    --color-review-accent: #FFB8C6;
+    --color-review-accent-rgb: 255 184 198;
+    --color-review-accent-strong: #FFD6DF;
+    --color-sky-bright: #00A3FF;
+    --color-sky-highlight-rgb: 56 189 248;
+    --color-metal-silver: #C0C0C0;
+    --color-gold-mid: #D4A844;
+    --color-gold-deep: #B08830;
+    --color-teal-highlight-rgb: 74 201 190;
+
     /* Text */
-    --color-text-primary: #F0F6FC;
+    --color-text-primary: #E7DED1;
+    --color-text-primary-rgb: 231 222 209;
     /* Starlight White */
-    --color-text-secondary: #94A3B8;
+    --color-text-secondary: var(--tui-text-secondary);
+    --color-text-secondary-rgb: 231 222 209;
     /* Blue Grey */
-    --color-text-gold: #F0E6D2;
+    --color-text-gold: #E7DED1;
+    --color-text-gold-rgb: 231 222 209;
     /* Pale Gold */
 
+    /* Shared neutral and teal primitives for alpha-aware surfaces */
+    --color-white: #FFFFFF;
+    --color-white-rgb: 255 255 255;
+    --color-black: #000000;
+    --color-black-rgb: 0 0 0;
+    --color-neutral-800: #333333;
+    --color-neutral-700: #444444;
+    --color-neutral-400: #A0A0A0;
+    --color-neutral-200: #E0E0E0;
+    --color-text-slate: var(--tui-text-muted);
+    --color-text-bright: #E7DED1;
+    --color-surface-dark-rgb: 0 0 0;   /* matches #000000 Void */
+    --color-surface-panel-rgb: 0 0 0; /* matches #000000 Void */
+    --surface-teal-top: #000000;
+    --surface-teal-top-rgb: 0 0 0;
+    --surface-teal-mid: #000000;
+    --surface-teal-mid-rgb: 0 0 0;
+    --surface-teal-focus: #000000;
+    --surface-teal-focus-rgb: 0 0 0;
+    --surface-teal-deep: #000000;
+    --surface-teal-deep-rgb: 0 0 0;
+    --surface-teal-content: #000000;
+    --surface-teal-content-rgb: 0 0 0;
+    --surface-teal-metric: #000000;
+    --surface-teal-metric-rgb: 0 0 0;
+    --surface-teal-elevated: #000000;
+    --surface-teal-elevated-rgb: 0 0 0;
+    --surface-teal-review: #000000;
+    --surface-teal-review-rgb: 0 0 0;
+    --surface-teal-control: #000000;
+    --surface-teal-control-rgb: 0 0 0;
+    --surface-teal-common: #000000;
+    --surface-coach-deep: #000000;
+    --surface-coach-deep-rgb: 0 0 0;
+    --surface-coach-ink: #000000;
+    --surface-coach-ink-rgb: 0 0 0;
+    --surface-coach-panel: #000000;
+    --surface-coach-panel-rgb: 0 0 0;
+
+    /* Gameplay interaction tokens */
+    --game-focus-color: var(--color-text-gold);
+    --game-focus-ring: 0 0 0 2px #E7DED1;
+    --game-overlay-bg: rgb(var(--color-black-rgb) / 0.78);
+    --game-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --game-motion-fast: 160ms;
+    --game-motion-base: 300ms;
+
+    /* Shared shape scale — cqw inside the 16:9 canvas, px on viewport/mobile UI */
+    --radius-none: 0;
+    --radius-cqw-hairline: 0.1cqw;
+    --radius-cqw-micro: 0.12cqw;
+    --radius-cqw-subtle: 0.15cqw;
+    --radius-cqw-tight: 0.2cqw;
+    --radius-cqw-compact: 0.25cqw;
+    --radius-cqw-control: 0.3cqw;
+    --radius-cqw-control-lg: 0.35cqw;
+    --radius-cqw-panel: 0.4cqw;
+    --radius-cqw-panel-lg: 0.45cqw;
+    --radius-cqw-panel-xl: 0.5cqw;
+    --radius-cqw-display: 0.6cqw;
+    --radius-px-2: 2px;
+    --radius-px-4: 4px;
+    --radius-px-6: 6px;
+    --radius-px-7: 7px;
+    --radius-px-8: 8px;
+    --radius-px-9: 9px;
+    --radius-px-10: 10px;
+    --radius-px-12: 12px;
+    --radius-px-14: 14px;
+    --radius-px-15: 15px;
+    --radius-px-16: 16px;
+    --radius-px-17: 17px;
+    --radius-px-18: 18px;
+    --radius-px-20: 20px;
+    --radius-px-22: 22px;
+    --radius-px-24: 24px;
+    --radius-px-26: 26px;
+    --radius-px-32: 32px;
+    --radius-pill: 999px;
+    --radius-circle: 50%;
+    --radius-portrait-base: 36%;
+
     /* Admin specifics (Operations Deck) */
-    --bg-admin-dark: #020617;
-    --bg-admin-panel: #0D1624;
-    --border-admin: rgba(200, 170, 110, 0.3);
-    --input-bg: rgba(0, 0, 0, 0.4);
+    --bg-admin-dark: #000000;
+    --bg-admin-panel: #000000;  /* was #0D1624 (navy); migrated to panel content surface */
+    --border-admin: rgb(var(--color-primary-rgb) / 0.3);
+    --input-bg: rgb(var(--color-black-rgb) / 0.4);
 
     /* ==========================================================================
        EFFECTS & BORDERS
        ========================================================================== */
-    --blur-panel: blur(8px);
+    --blur-panel: none;
 
     /* Variable width borders using cqw to ensure scalability */
     /* Note: In CSS vars we can't easily use cqw for composite values like border shorthand 
@@ -83,11 +311,11 @@ body.is-dragging *::after {
        Standard border width should be around 1px -> 0.05cqw approx */
     --border-width-std: 0.1cqw;
 
-    --border-primary: var(--border-width-std) solid rgba(200, 155, 60, 0.3);
-    --border-gold: var(--border-width-std) solid rgba(200, 155, 60, 0.3);
+    --border-primary: var(--border-width-std) solid rgb(var(--color-accent-gold-rgb) / 0.3);
+    --border-gold: var(--border-width-std) solid rgb(var(--color-accent-gold-rgb) / 0.3);
 
     /* Panel Standard Gradient */
-    --gradient-panel: linear-gradient(180deg, #153a3e 0%, #051c1e 100%);
+    --gradient-panel: #000000;
 
     /* ==========================================================================
        FONTS
@@ -167,14 +395,14 @@ h6 {
 }
 
 ::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.2);
+    background: rgb(var(--color-black-rgb) / 0.2);
 }
 
 ::-webkit-scrollbar-thumb {
     background: var(--color-accent-gold);
-    border-radius: 0.2cqw;
+    border-radius: 0;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #E0C070;
+    background: var(--color-primary-hover);
 }

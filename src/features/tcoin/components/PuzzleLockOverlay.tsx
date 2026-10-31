@@ -61,15 +61,15 @@ export function PuzzleLockOverlay({
                     <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <defs>
                             <linearGradient id="lock-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stopColor="#c8aa6e" />
+                                <stop offset="0%" stopColor="#E7DED1" />
                                 <stop offset="100%" stopColor="#7a5c28" />
                             </linearGradient>
                         </defs>
                         <rect x="5" y="11" width="14" height="10" rx="1.5" fill="url(#lock-grad)" />
                         <rect x="7" y="11" width="10" height="8" rx="1" fill="#4a3010" fillOpacity="0.5" />
-                        <path d="M8 11V7.5a4 4 0 0 1 8 0V11" stroke="#c8aa6e" strokeWidth="1.8" strokeLinecap="round" fill="none" />
-                        <circle cx="12" cy="15.5" r="1.5" fill="#c8aa6e" />
-                        <line x1="12" y1="16.5" x2="12" y2="18.5" stroke="#c8aa6e" strokeWidth="1.4" strokeLinecap="round" />
+                        <path d="M8 11V7.5a4 4 0 0 1 8 0V11" stroke="#E7DED1" strokeWidth="1.8" strokeLinecap="round" fill="none" />
+                        <circle cx="12" cy="15.5" r="1.5" fill="#E7DED1" />
+                        <line x1="12" y1="16.5" x2="12" y2="18.5" stroke="#E7DED1" strokeWidth="1.4" strokeLinecap="round" />
                     </svg>
                 </div>
                 <div className="puzzle-lock-tier">

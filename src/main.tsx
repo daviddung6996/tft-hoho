@@ -25,6 +25,6 @@ if (MAINTENANCE_MODE) {
       // Surface bootstrap failure (e.g. network chunk load error) in console for diagnostics.
       console.error('[TFTISEASY] Failed to bootstrap full application:', err)
       // Fallback: at least show something (or we could render a minimal error here)
-      document.getElementById('root')!.innerHTML = '<div style="padding:2rem;color:#c8aa6e;font-family:sans-serif">Unable to load application. Please refresh.</div>'
+      document.getElementById('root')!.innerHTML = '<div style="padding:2rem;color:#E7DED1;font-family:sans-serif">Unable to load application. Please refresh.</div>'
     })
 }

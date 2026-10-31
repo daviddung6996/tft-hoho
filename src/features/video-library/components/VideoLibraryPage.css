@@ -16,9 +16,9 @@
 
     /* Pillar 1: Atmosphere — Layered radial gradients, NOT flat color */
     background:
-        radial-gradient(ellipse at 50% 10%, rgba(200, 170, 110, 0.06) 0%, transparent 50%),
-        radial-gradient(ellipse at 50% 90%, rgba(21, 58, 62, 0.5) 0%, transparent 55%),
-        linear-gradient(180deg, rgba(13, 46, 48, 0.98) 0%, rgba(8, 30, 32, 0.99) 100%);
+        radial-gradient(ellipse at 50% 10%, rgba(231, 222, 209, 0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 90%, rgba(0, 0, 0, 0.5) 0%, transparent 55%),
+        linear-gradient(180deg, rgba(0, 0, 0, 0.98) 0%, rgba(0, 0, 0, 0.99) 100%);
 }
 
 /* Optional ambient gold particles */
@@ -30,9 +30,9 @@
     width: 200%;
     height: 200%;
     background:
-        radial-gradient(1.5px 1.5px at 15% 25%, rgba(200, 170, 110, 0.2) 0%, transparent 100%),
-        radial-gradient(1px 1px at 65% 12%, rgba(200, 170, 110, 0.15) 0%, transparent 100%),
-        radial-gradient(1.5px 1.5px at 40% 65%, rgba(200, 170, 110, 0.1) 0%, transparent 100%);
+        radial-gradient(1.5px 1.5px at 15% 25%, rgba(231, 222, 209, 0.2) 0%, transparent 100%),
+        radial-gradient(1px 1px at 65% 12%, rgba(231, 222, 209, 0.15) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 40% 65%, rgba(231, 222, 209, 0.1) 0%, transparent 100%);
     animation: vlp-drift 25s linear infinite;
     pointer-events: none;
     z-index: 0;
@@ -54,11 +54,11 @@
     position: relative;
     z-index: 1;
     padding: 2.5cqw 3cqw 1.5cqw;
-    border: 0.06cqw solid rgba(200, 170, 110, 0.25);
+    border: 0.06cqw solid rgba(231, 222, 209, 0.25);
     border-bottom: none;
     background:
-        radial-gradient(ellipse at 50% 0%, rgba(200, 170, 110, 0.07) 0%, transparent 65%),
-        linear-gradient(180deg, rgba(21, 58, 62, 0.6) 0%, rgba(13, 46, 48, 0.85) 100%);
+        radial-gradient(ellipse at 50% 0%, rgba(231, 222, 209, 0.07) 0%, transparent 65%),
+        linear-gradient(180deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.85) 100%);
 }
 
 /* Corner Accent Frames on Hero */
@@ -66,7 +66,7 @@
     position: absolute;
     width: 2cqw;
     height: 2cqw;
-    border-color: #c8aa6e;
+    border-color: #E7DED1;
     border-style: solid;
     border-width: 0;
     opacity: 0.45;
@@ -100,9 +100,9 @@
     gap: 0.4cqw;
     height: 1.7cqw;
     padding: 0 0.8cqw;
-    background: rgba(200, 170, 110, 0.08);
-    border: 0.06cqw solid rgba(200, 170, 110, 0.32);
-    color: #c8aa6e;
+    background: rgba(231, 222, 209, 0.08);
+    border: 0.06cqw solid rgba(231, 222, 209, 0.32);
+    color: #E7DED1;
     font-size: 0.6cqw;
     font-family: var(--font-body);
     font-weight: 700;
@@ -116,9 +116,9 @@
 }
 
 .video-library-back:hover {
-    border-color: #c8aa6e;
-    color: #F0E6D2;
-    background: rgba(200, 170, 110, 0.14);
+    border-color: #E7DED1;
+    color: #E7DED1;
+    background: rgba(231, 222, 209, 0.14);
     transform: translateX(-0.08cqw);
 }
 
@@ -158,9 +158,9 @@
     gap: 0.4cqw;
     height: 1.7cqw;
     padding: 0 0.8cqw;
-    background: rgba(200, 170, 110, 0.1);
-    border: 0.06cqw solid rgba(200, 170, 110, 0.38);
-    color: #c8aa6e;
+    background: rgba(231, 222, 209, 0.1);
+    border: 0.06cqw solid rgba(231, 222, 209, 0.38);
+    color: #E7DED1;
     font-family: var(--font-body);
     font-size: 0.6cqw;
     font-weight: 700;
@@ -178,7 +178,7 @@
     font-family: var(--font-heading);
     font-size: 1.8cqw;
     font-weight: 700;
-    color: #F0E6D2;
+    color: #E7DED1;
     letter-spacing: 0.05em;
     text-transform: uppercase;
 }
@@ -186,7 +186,7 @@
 .video-library-subtitle {
     font-family: var(--font-body);
     font-size: 0.7cqw;
-    color: rgba(200, 170, 110, 0.65);
+    color: rgba(231, 222, 209, 0.65);
     margin-top: 0.1cqw;
 }
 
@@ -195,10 +195,10 @@
     position: relative;
     z-index: 1;
     padding: 1.5cqw 3cqw 2.5cqw;
-    border-left: 0.06cqw solid rgba(200, 170, 110, 0.25);
-    border-right: 0.06cqw solid rgba(200, 170, 110, 0.25);
-    border-bottom: 0.06cqw solid rgba(200, 170, 110, 0.25);
-    background: rgba(11, 40, 43, 0.6);
+    border-left: 0.06cqw solid rgba(231, 222, 209, 0.25);
+    border-right: 0.06cqw solid rgba(231, 222, 209, 0.25);
+    border-bottom: 0.06cqw solid rgba(231, 222, 209, 0.25);
+    background: rgba(0, 0, 0, 0.6);
     flex: 1;
     min-height: 0;
 }
@@ -207,7 +207,7 @@
 .video-library-divider {
     position: relative;
     height: 0.06cqw;
-    background: linear-gradient(90deg, transparent 5%, rgba(200, 170, 110, 0.25) 30%, rgba(200, 170, 110, 0.25) 70%, transparent 95%);
+    background: linear-gradient(90deg, transparent 5%, rgba(231, 222, 209, 0.25) 30%, rgba(231, 222, 209, 0.25) 70%, transparent 95%);
     margin: 0 3cqw;
     z-index: 1;
 }
@@ -221,9 +221,9 @@
 
 .video-library-filter-btn {
     padding: 0.4cqw 1cqw;
-    background: rgba(11, 40, 43, 0.7);
-    border: 0.06cqw solid rgba(200, 170, 110, 0.15);
-    color: rgba(200, 170, 110, 0.6);
+    background: rgba(0, 0, 0, 0.7);
+    border: 0.06cqw solid rgba(231, 222, 209, 0.15);
+    color: rgba(231, 222, 209, 0.6);
     font-family: var(--font-body);
     font-size: 0.7cqw;
     font-weight: 500;
@@ -232,14 +232,14 @@
 }
 
 .video-library-filter-btn:hover {
-    border-color: rgba(200, 170, 110, 0.4);
-    color: #F0E6D2;
+    border-color: rgba(231, 222, 209, 0.4);
+    color: #E7DED1;
 }
 
 .video-library-filter-btn.active {
-    background: rgba(200, 170, 110, 0.12);
-    border-color: #c8aa6e;
-    color: #c8aa6e;
+    background: rgba(231, 222, 209, 0.12);
+    border-color: #E7DED1;
+    color: #E7DED1;
     font-weight: 600;
 }
 
@@ -255,7 +255,7 @@
 .video-library-empty {
     text-align: center;
     padding: 5cqw 2cqw;
-    color: rgba(200, 170, 110, 0.5);
+    color: rgba(231, 222, 209, 0.5);
     font-family: var(--font-body);
     font-size: 0.85cqw;
 }
@@ -286,13 +286,13 @@
         padding: 0 12px;
         font-size: 10px;
         letter-spacing: 1px;
-        background: rgba(200, 170, 110, 0.12);
-        border: 1px solid rgba(200, 170, 110, 0.5);
-        color: #c8aa6e;
+        background: rgba(231, 222, 209, 0.12);
+        border: 1px solid rgba(231, 222, 209, 0.5);
+        color: #E7DED1;
     }
 
     .video-library-back:hover {
-        background: rgba(200, 170, 110, 0.18);
+        background: rgba(231, 222, 209, 0.18);
         transform: scale(1.08);
     }
 

@@ -43,18 +43,18 @@ export const VideoExplanationModal: React.FC<VideoExplanationModalProps> = ({
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                             <defs>
                                 <linearGradient id="yt-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                                    <stop offset="0%" stopColor="#c8aa6e" />
+                                    <stop offset="0%" stopColor="#E7DED1" />
                                     <stop offset="100%" stopColor="#7a5c28" />
                                 </linearGradient>
                             </defs>
                             <path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.54C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z" fill="url(#yt-grad)" stroke="rgba(200,170,110,0.5)" strokeWidth="0.5" />
-                            <polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="#051c1e" />
+                            <polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="#000000" />
                         </svg>
                     </div>
                     <h3 className="vem-title">Giải Thích Bằng Video</h3>
                     <button className="vem-close" onClick={onClose} aria-label="Đóng">
                         <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                            <path d="M1 1l12 12M13 1L1 13" stroke="#c8aa6e" strokeWidth="1.5" strokeLinecap="round" />
+                            <path d="M1 1l12 12M13 1L1 13" stroke="#E7DED1" strokeWidth="1.5" strokeLinecap="round" />
                         </svg>
                     </button>
                 </div>

@@ -6,15 +6,15 @@
     position: fixed;
     inset: 0;
     background:
-        radial-gradient(ellipse at 50% 30%, rgba(200, 170, 110, 0.06) 0%, transparent 50%),
-        radial-gradient(ellipse at 50% 80%, rgba(21, 58, 62, 0.25) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 30%, rgba(231, 222, 209, 0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 80%, rgba(0, 0, 0, 0.25) 0%, transparent 50%),
         rgba(0, 0, 0, 0.78);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 1000;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+
+
     animation: hex-overlay-in 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     will-change: opacity;
     contain: layout style;
@@ -26,11 +26,11 @@
     width: 65cqw;
     max-height: 82cqh;
     background:
-        radial-gradient(ellipse at 50% 0%, rgba(200, 170, 110, 0.12) 0%, transparent 55%),
-        radial-gradient(ellipse at 50% 100%, rgba(21, 58, 62, 0.6) 0%, transparent 60%),
-        linear-gradient(180deg, #0d2e30 0%, #081e20 100%);
+        radial-gradient(ellipse at 50% 0%, rgba(231, 222, 209, 0.12) 0%, transparent 55%),
+        radial-gradient(ellipse at 50% 100%, rgba(0, 0, 0, 0.6) 0%, transparent 60%),
+        linear-gradient(180deg, #000000 0%, #000000 100%);
     border-radius: 0.3cqw;
-    border: 0.06cqw solid rgba(200, 170, 110, 0.45);
+    border: 0.06cqw solid rgba(231, 222, 209, 0.45);
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -47,9 +47,9 @@
     width: 2.2cqw;
     height: 2.2cqw;
     background: transparent;
-    border: 0.1cqw solid #c8aa6e;
+    border: 0.1cqw solid #E7DED1;
     border-radius: 0.4cqw;
-    color: #c8aa6e;
+    color: #E7DED1;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -60,8 +60,8 @@
 }
 
 .profile-close-btn:hover {
-    background: rgba(200, 170, 110, 0.15);
-    color: #F0E6D2;
+    background: rgba(231, 222, 209, 0.15);
+    color: #E7DED1;
 }
 
 /* ---- Scrollable Content ---- */
@@ -86,7 +86,7 @@
 }
 
 .profile-modal-content::-webkit-scrollbar-thumb {
-    background: rgba(200, 170, 110, 0.2);
+    background: rgba(231, 222, 209, 0.2);
     border-radius: 0.15cqw;
 }
 
@@ -101,9 +101,9 @@
    Hero Section — 3-Column Grid
    ================================================ */
 .hero-section {
-    border-bottom: 0.06cqw solid rgba(200, 170, 110, 0.3);
-    background: radial-gradient(ellipse at 50% 0%, var(--hero-atmosphere, rgba(200, 170, 110, 0.18)) 0%, transparent 60%),
-        linear-gradient(180deg, rgba(21, 58, 62, 0.95), rgba(13, 46, 48, 0.98));
+    border-bottom: 0.06cqw solid rgba(231, 222, 209, 0.3);
+    background: radial-gradient(ellipse at 50% 0%, var(--hero-atmosphere, rgba(231, 222, 209, 0.18)) 0%, transparent 60%),
+        linear-gradient(180deg, rgba(0, 0, 0, 0.95), rgba(0, 0, 0, 0.98));
     display: grid;
     grid-template-columns: 1fr 2.5fr 1fr;
     align-items: center;
@@ -141,16 +141,16 @@
     font-family: 'Spectral', serif;
     font-size: 1.8cqw;
     font-weight: 700;
-    color: #F0E6D2;
+    color: #E7DED1;
     line-height: 1;
-    text-shadow: 0 0 0.5cqw rgba(200, 170, 110, 0.2);
+    text-shadow: none;
 }
 
 .hero-wing-label {
     font-family: 'Inter', sans-serif;
     font-size: 0.6cqw;
     font-weight: 600;
-    color: rgba(200, 170, 110, 0.55);
+    color: rgba(231, 222, 209, 0.55);
     text-transform: uppercase;
     letter-spacing: 0.12cqw;
 }
@@ -180,7 +180,7 @@
     position: absolute;
     inset: 0;
     border-radius: 50%;
-    border: 0.08cqw solid var(--rank-color, rgba(200, 170, 110, 0.3));
+    border: 0.08cqw solid var(--rank-color, rgba(231, 222, 209, 0.3));
     opacity: 0.35;
 }
 
@@ -190,7 +190,7 @@
     position: absolute;
     inset: -0.5cqw;
     border-radius: 50%;
-    box-shadow: 0 0 1.5cqw 0.3cqw var(--rank-color, rgba(200, 170, 110, 0.3));
+    box-shadow: 0 0 1.5cqw 0.3cqw var(--rank-color, rgba(231, 222, 209, 0.3));
     animation: glow-ring 2.4s ease-in-out infinite;
     opacity: 0.6;
     will-change: opacity, transform;
@@ -203,7 +203,7 @@
 .hero-rank-icon {
     width: 5cqw;
     height: 5cqw;
-    color: var(--rank-color, rgba(200, 170, 110, 0.5));
+    color: var(--rank-color, rgba(231, 222, 209, 0.5));
     display: flex;
     align-items: center;
     justify-content: center;
@@ -234,16 +234,16 @@
     font-family: 'Spectral', serif;
     font-size: 2.5cqw;
     font-weight: 700;
-    color: #c8aa6e;
+    color: #E7DED1;
     text-transform: uppercase;
     letter-spacing: 0.2cqw;
     line-height: 1;
     margin-bottom: 0.5cqw;
-    text-shadow: 0 0 1.5cqw rgba(200, 170, 110, 0.35);
+    text-shadow: none;
 }
 
 .hero-rank-name.unranked {
-    color: rgba(200, 170, 110, 0.55);
+    color: rgba(231, 222, 209, 0.55);
 }
 
 /* ---- IQ Score ---- */
@@ -251,7 +251,7 @@
     font-family: 'Spectral', serif;
     font-size: 1.5cqw;
     font-weight: 700;
-    color: var(--rank-color, rgba(200, 170, 110, 0.7));
+    color: var(--rank-color, rgba(231, 222, 209, 0.7));
     margin-bottom: 1.2cqw;
 }
 
@@ -273,15 +273,15 @@
     width: 100%;
     height: 0.4cqw;
     background: rgba(0, 0, 0, 0.5);
-    border: 0.04cqw solid rgba(200, 170, 110, 0.15);
+    border: 0.04cqw solid rgba(231, 222, 209, 0.15);
     border-radius: 1cqw;
     overflow: hidden;
 }
 
 .hero-progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, var(--rank-color, #c8aa6e), color-mix(in srgb, var(--rank-color, #c8aa6e) 60%, white));
-    box-shadow: 0 0 0.4cqw var(--rank-color, rgba(200, 170, 110, 0.5));
+    background: linear-gradient(90deg, var(--rank-color, #E7DED1), color-mix(in srgb, var(--rank-color, #E7DED1) 60%, white));
+    box-shadow: 0 0 0.4cqw var(--rank-color, rgba(231, 222, 209, 0.5));
     border-radius: 1cqw;
     transition: width 0.6s ease;
 }
@@ -289,7 +289,7 @@
 .hero-progress-label {
     font-family: 'Inter', sans-serif;
     font-size: 0.7cqw;
-    color: #94A3B8;
+    color: rgba(231, 222, 209, 0.78);
     letter-spacing: 0.03cqw;
 }
 
@@ -307,12 +307,12 @@
     content: '';
     flex: 1;
     height: 0.06cqw;
-    background: linear-gradient(90deg, transparent, rgba(200, 170, 110, 0.35), transparent);
+    background: linear-gradient(90deg, transparent, rgba(231, 222, 209, 0.35), transparent);
 }
 
 .hero-diamond-dot {
     font-size: 0.6cqw;
-    color: rgba(200, 170, 110, 0.7);
+    color: rgba(231, 222, 209, 0.7);
     line-height: 1;
 }
 
@@ -321,7 +321,7 @@
     font-family: 'Inter', sans-serif;
     font-size: 1.1cqw;
     font-weight: 500;
-    color: rgba(200, 170, 110, 0.7);
+    color: rgba(231, 222, 209, 0.7);
 }
 
 /* ---- Pro Badge Icon ---- */
@@ -337,20 +337,20 @@
 .hero-tagline {
     font-family: 'Inter', sans-serif;
     font-size: 1cqw;
-    color: #94A3B8;
+    color: rgba(231, 222, 209, 0.78);
     margin-top: 0.5cqw;
 }
 
 .hero-tagline-highlight {
-    color: #F0E6D2;
+    color: #E7DED1;
 }
 
 /* ================================================
    Core Metrics Section
    ================================================ */
 .metrics-section {
-    border-bottom: 0.06cqw solid rgba(200, 170, 110, 0.3);
-    background: rgba(16, 52, 56, 0.95);
+    border-bottom: 0.06cqw solid rgba(231, 222, 209, 0.3);
+    background: rgba(0, 0, 0, 0.95);
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     will-change: transform;
@@ -370,7 +370,7 @@
     right: 0;
     height: 60%;
     width: 0.06cqw;
-    background: linear-gradient(180deg, transparent, rgba(200, 170, 110, 0.3), transparent);
+    background: linear-gradient(180deg, transparent, rgba(231, 222, 209, 0.3), transparent);
 }
 
 .stat-value {
@@ -389,7 +389,7 @@
 .stat-label {
     font-family: 'Inter', sans-serif;
     font-size: 0.75cqw;
-    color: rgba(200, 170, 110, 0.75);
+    color: rgba(231, 222, 209, 0.75);
     text-transform: uppercase;
     letter-spacing: 0.15cqw;
     margin-top: 0.8cqw;
@@ -412,8 +412,8 @@
    Charts Section
    ================================================ */
 .charts-section {
-    border-bottom: 0.06cqw solid rgba(200, 170, 110, 0.3);
-    background: rgba(11, 40, 43, 0.97);
+    border-bottom: 0.06cqw solid rgba(231, 222, 209, 0.3);
+    background: rgba(0, 0, 0, 0.97);
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 3cqw;
@@ -424,7 +424,7 @@
 
 .chart-container {
     position: relative;
-    background: radial-gradient(circle at center, rgba(30, 60, 65, 0.2), transparent 70%);
+    background: radial-gradient(circle at center, rgba(0, 0, 0, 0.2), transparent 70%);
     padding: 1.5cqw;
 }
 
@@ -441,15 +441,15 @@
 .chart-container::before {
     top: 0;
     left: 0;
-    border-top: 0.15cqw solid #c8aa6e;
-    border-left: 0.15cqw solid #c8aa6e;
+    border-top: 0.15cqw solid #E7DED1;
+    border-left: 0.15cqw solid #E7DED1;
 }
 
 .chart-container::after {
     bottom: 0;
     right: 0;
-    border-bottom: 0.15cqw solid #c8aa6e;
-    border-right: 0.15cqw solid #c8aa6e;
+    border-bottom: 0.15cqw solid #E7DED1;
+    border-right: 0.15cqw solid #E7DED1;
 }
 
 .chart-header {
@@ -462,7 +462,7 @@
 .chart-title {
     font-family: 'Spectral', serif;
     font-size: 1.1cqw;
-    color: #c8aa6e;
+    color: #E7DED1;
     text-transform: uppercase;
     letter-spacing: 0.08cqw;
     font-weight: 700;
@@ -491,7 +491,7 @@
 .legend-text {
     font-family: 'Inter', sans-serif;
     font-size: 0.65cqw;
-    color: #94A3B8;
+    color: rgba(231, 222, 209, 0.78);
 }
 
 .chart-wrapper {
@@ -508,15 +508,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: rgba(200, 170, 110, 0.35);
+    color: rgba(231, 222, 209, 0.35);
     font-family: 'Inter', sans-serif;
     font-size: 0.85cqw;
 }
 
 /* ---- Custom Tooltip ---- */
 .hextech-chart-tooltip {
-    background: rgba(5, 28, 30, 0.95);
-    border: 0.06cqw solid rgba(200, 170, 110, 0.4);
+    background: rgba(0, 0, 0, 0.95);
+    border: 0.06cqw solid rgba(231, 222, 209, 0.4);
     padding: 0.5cqw 0.8cqw;
     pointer-events: none;
 }
@@ -524,14 +524,14 @@
 .hextech-chart-tooltip-label {
     font-family: 'Inter', sans-serif;
     font-size: 0.65cqw;
-    color: #94A3B8;
+    color: rgba(231, 222, 209, 0.78);
     margin-bottom: 0.15cqw;
 }
 
 .hextech-chart-tooltip-value {
     font-family: 'Spectral', serif;
     font-size: 0.9cqw;
-    color: #F0E6D2;
+    color: #E7DED1;
     font-weight: 600;
 }
 
@@ -539,7 +539,7 @@
    Recent Activity
    ================================================ */
 .activity-section {
-    background: rgba(13, 46, 48, 0.97);
+    background: rgba(0, 0, 0, 0.97);
     padding: 3cqw;
     will-change: transform;
     transform: translateZ(0);
@@ -570,7 +570,7 @@
     top: 2.2cqw;
     height: calc(100% - 1.2cqw);
     width: 0.06cqw;
-    background: rgba(200, 170, 110, 0.15);
+    background: rgba(231, 222, 209, 0.15);
 }
 
 .activity-icon-container {
@@ -588,7 +588,7 @@
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    background: rgba(5, 28, 30, 0.9);
+    background: rgba(0, 0, 0, 0.9);
     border: 0.1cqw solid;
     z-index: 2;
 }
@@ -616,7 +616,7 @@
 .activity-augment {
     font-family: 'Inter', sans-serif;
     font-size: 0.9cqw;
-    color: #F0E6D2;
+    color: #E7DED1;
     font-weight: 500;
     margin-bottom: 0.2cqw;
 }
@@ -624,7 +624,7 @@
 .activity-meta {
     font-family: 'Inter', sans-serif;
     font-size: 0.75cqw;
-    color: #94A3B8;
+    color: rgba(231, 222, 209, 0.78);
 }
 
 .activity-trailing {
@@ -638,7 +638,7 @@
 .activity-time {
     font-family: 'Inter', sans-serif;
     font-size: 0.75cqw;
-    color: rgba(200, 170, 110, 0.5);
+    color: rgba(231, 222, 209, 0.5);
 }
 
 .activity-iq-chip {
@@ -665,7 +665,7 @@
     margin-top: 1cqw;
     font-family: 'Inter', sans-serif;
     font-size: 0.8cqw;
-    color: rgba(200, 170, 110, 0.7);
+    color: rgba(231, 222, 209, 0.7);
     background: transparent;
     border: none;
     cursor: pointer;
@@ -677,7 +677,7 @@
 }
 
 .view-all-btn:hover {
-    color: #c8aa6e;
+    color: #E7DED1;
 }
 
 /* ================================================
@@ -691,14 +691,14 @@
 .empty-state-line {
     width: 4cqw;
     height: 0.06cqw;
-    background: linear-gradient(90deg, transparent, rgba(200, 170, 110, 0.3), transparent);
+    background: linear-gradient(90deg, transparent, rgba(231, 222, 209, 0.3), transparent);
     margin: 0 auto 1.5cqw;
 }
 
 .empty-state-text {
     font-family: 'Inter', sans-serif;
     font-size: 0.9cqw;
-    color: #94A3B8;
+    color: rgba(231, 222, 209, 0.78);
     line-height: 1.6;
 }
 
@@ -709,7 +709,7 @@
     justify-content: center;
     gap: 1cqw;
     padding: 10cqw;
-    color: #94A3B8;
+    color: rgba(231, 222, 209, 0.78);
     font-family: 'Inter', sans-serif;
     font-size: 0.85cqw;
 }
@@ -717,8 +717,8 @@
 .loading-spinner {
     width: 2cqw;
     height: 2cqw;
-    border: 0.12cqw solid rgba(200, 170, 110, 0.15);
-    border-top-color: #c8aa6e;
+    border: 0.12cqw solid rgba(231, 222, 209, 0.15);
+    border-top-color: #E7DED1;
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
 }
@@ -734,11 +734,11 @@
    ================================================ */
 .recharts-cartesian-grid-horizontal line,
 .recharts-cartesian-grid-vertical line {
-    stroke: rgba(200, 170, 110, 0.1);
+    stroke: rgba(231, 222, 209, 0.1);
 }
 
 .recharts-text {
-    fill: #94A3B8;
+    fill: rgba(231, 222, 209, 0.78);
     font-family: 'Inter', sans-serif;
 }
 
@@ -754,45 +754,43 @@
 
 /* Enhanced atmosphere for Pro — intensified gold glow */
 .hero-section--pro {
-    border-bottom: 0.08cqw solid rgba(200, 170, 110, 0.5);
+    border-bottom: 0.08cqw solid rgba(231, 222, 209, 0.5);
     background:
-        radial-gradient(ellipse at 50% 0%, rgba(200, 170, 110, 0.12) 0%, transparent 50%),
-        radial-gradient(ellipse at 50% 100%, rgba(21, 58, 62, 0.5) 0%, transparent 55%),
-        linear-gradient(180deg, rgba(21, 58, 62, 0.95), rgba(13, 46, 48, 0.98));
+        radial-gradient(ellipse at 50% 0%, rgba(231, 222, 209, 0.12) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 100%, rgba(0, 0, 0, 0.5) 0%, transparent 55%),
+        linear-gradient(180deg, rgba(0, 0, 0, 0.95), rgba(0, 0, 0, 0.98));
 }
 
 /* Pro rank emblem — amplified glow */
 .hero-section--pro .hero-rank-emblem::after {
     opacity: 0.85;
-    box-shadow: 0 0 2cqw 0.5cqw var(--rank-color, rgba(200, 170, 110, 0.4));
+    box-shadow: 0 0 2cqw 0.5cqw var(--rank-color, rgba(231, 222, 209, 0.4));
 }
 
 /* Pro rank name — text glow enhancement */
 .hero-section--pro .hero-rank-name {
-    text-shadow:
-        0 0 1.5cqw rgba(200, 170, 110, 0.4),
-        0 0 3cqw rgba(200, 170, 110, 0.15);
+    text-shadow: none;
 }
 
 /* Pro IQ score — luminous gold */
 .hero-section--pro .hero-iq-score {
-    text-shadow: 0 0 1cqw var(--rank-color, rgba(200, 170, 110, 0.3));
+    text-shadow: 0 0 1cqw var(--rank-color, rgba(231, 222, 209, 0.3));
 }
 
 /* Pro diamond divider — elevated gold */
 .hero-section--pro .hero-diamond-divider::before,
 .hero-section--pro .hero-diamond-divider::after {
-    background: linear-gradient(90deg, transparent, rgba(200, 170, 110, 0.5), transparent);
+    background: linear-gradient(90deg, transparent, rgba(231, 222, 209, 0.5), transparent);
 }
 
 .hero-section--pro .hero-diamond-dot {
-    color: #c8aa6e;
+    color: #E7DED1;
 }
 
 /* Pro player name — cream glow */
 .hero-section--pro .hero-player-name {
-    color: #F0E6D2;
-    text-shadow: 0 0 0.8cqw rgba(240, 230, 210, 0.15);
+    color: #E7DED1;
+    text-shadow: none;
 }
 
 /* ---- Pro Badge — Premium Flex Emblem ---- */
@@ -806,8 +804,8 @@
     position: relative;
     overflow: hidden;
     background:
-        linear-gradient(135deg, rgba(200, 170, 110, 0.08) 0%, rgba(200, 170, 110, 0.02) 100%);
-    border: 0.06cqw solid rgba(200, 170, 110, 0.35);
+        linear-gradient(135deg, rgba(231, 222, 209, 0.08) 0%, rgba(231, 222, 209, 0.02) 100%);
+    border: 0.06cqw solid rgba(231, 222, 209, 0.35);
 }
 
 /* Corner Accent Frames (L-shaped) */
@@ -818,8 +816,8 @@
     left: -0.06cqw;
     width: 0.8cqw;
     height: 0.8cqw;
-    border-top: 0.1cqw solid #c8aa6e;
-    border-left: 0.1cqw solid #c8aa6e;
+    border-top: 0.1cqw solid #E7DED1;
+    border-left: 0.1cqw solid #E7DED1;
     pointer-events: none;
 }
 
@@ -830,8 +828,8 @@
     right: -0.06cqw;
     width: 0.8cqw;
     height: 0.8cqw;
-    border-bottom: 0.1cqw solid #c8aa6e;
-    border-right: 0.1cqw solid #c8aa6e;
+    border-bottom: 0.1cqw solid #E7DED1;
+    border-right: 0.1cqw solid #E7DED1;
     pointer-events: none;
 }
 
@@ -842,7 +840,7 @@
     left: -100%;
     width: 60%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(200, 170, 110, 0.12), transparent);
+    background: linear-gradient(90deg, transparent, rgba(231, 222, 209, 0.12), transparent);
     animation: pro-sweep 4s ease-in-out infinite;
     pointer-events: none;
 }
@@ -864,17 +862,17 @@
     font-family: 'Spectral', serif;
     font-size: 0.75cqw;
     font-weight: 700;
-    color: #c8aa6e;
+    color: #E7DED1;
     letter-spacing: 0.18cqw;
     text-transform: uppercase;
-    text-shadow: 0 0 0.5cqw rgba(200, 170, 110, 0.2);
+    text-shadow: none;
 }
 
 /* Divider dot between badge text and plan */
 .hero-pro-divider {
     width: 0.22cqw;
     height: 0.22cqw;
-    background: rgba(200, 170, 110, 0.45);
+    background: rgba(231, 222, 209, 0.45);
     border-radius: 50%;
     flex-shrink: 0;
 }
@@ -883,7 +881,7 @@
     font-family: 'Inter', sans-serif;
     font-size: 0.55cqw;
     font-weight: 500;
-    color: rgba(200, 170, 110, 0.55);
+    color: rgba(231, 222, 209, 0.55);
     letter-spacing: 0.08cqw;
     text-transform: uppercase;
 }

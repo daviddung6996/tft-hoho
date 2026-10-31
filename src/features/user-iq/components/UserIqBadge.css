@@ -5,11 +5,11 @@
 .user-iq-badge {
     display: inline-flex;
     align-items: center;
-    background: linear-gradient(180deg, rgba(21, 58, 62, 0.6) 0%, rgba(5, 28, 30, 0.9) 100%);
-    border: 0.06cqw solid rgba(200, 170, 110, 0.15);
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.9) 100%);
+    border: 0.06cqw solid rgba(231, 222, 209, 0.15);
     border-left: 0.15cqw solid var(--rank-color);
     box-shadow: 0 0.2cqw 1cqw rgba(0, 0, 0, 0.5);
-    color: #F0E6D2;
+    color: #E7DED1;
     font-family: 'Inter', sans-serif;
     transition: all 0.3s ease;
     overflow: hidden;
@@ -98,7 +98,7 @@
 
 .user-iq-badge.small .badge-score {
     font-size: 0.8cqw;
-    color: #F0E6D2;
+    color: #E7DED1;
 }
 
 .user-iq-badge.large .badge-score {
@@ -116,7 +116,7 @@
 .badge-rank {
     font-size: 0.7cqw;
     font-weight: 600;
-    color: #c8aa6e;
+    color: #E7DED1;
     text-transform: uppercase;
     letter-spacing: 0.08cqw;
     margin-bottom: 0.2cqw;
@@ -125,7 +125,7 @@
 .user-iq-badge.hero .badge-rank {
     font-size: 2cqw;
     font-family: 'Spectral', serif;
-    color: #c8aa6e;
+    color: #E7DED1;
     text-transform: uppercase;
     letter-spacing: 0.15cqw;
     margin-bottom: 0.4cqw;

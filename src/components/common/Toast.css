@@ -3,10 +3,10 @@
     bottom: 4cqw;
     right: 2cqw;
     min-width: 15cqw;
-    background: linear-gradient(180deg, #153a3e 0%, #051c1e 100%);
-    border: 0.1cqw solid #c8aa6e;
-    box-shadow: 0 0 1.5cqw rgba(200, 170, 110, 0.25);
-    color: #F0F6FC;
+    background: linear-gradient(180deg, #000000 0%, #000000 100%);
+    border: 0.1cqw solid #E7DED1;
+    box-shadow: none;
+    color: #E7DED1;
     padding: 0.8cqw 1.5cqw;
     border-radius: 0.4cqw;
     z-index: 3000;
@@ -16,13 +16,13 @@
     animation: slideIn 0.3s ease-out;
     font-family: 'Inter', sans-serif;
     font-size: 0.9cqw;
-    backdrop-filter: blur(4px);
+
 }
 
 .hextech-toast.success {
-    border-color: #c8aa6e;
-    box-shadow: 0 0 1.5cqw rgba(200, 170, 110, 0.35);
-    border: 0.1cqw solid #c8aa6e;
+    border-color: #E7DED1;
+    box-shadow: none;
+    border: 0.1cqw solid #E7DED1;
 }
 
 .hextech-toast.error {
@@ -32,14 +32,14 @@
 
 .toast-icon {
     font-size: 1.2cqw;
-    color: #c8aa6e;
+    color: #E7DED1;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .hextech-toast.success .toast-icon {
-    color: #c8aa6e;
+    color: #E7DED1;
 }
 
 .hextech-toast.error .toast-icon {
@@ -51,9 +51,9 @@
 }
 
 .toast-action-btn {
-    background: rgba(200, 170, 110, 0.2);
-    border: 0.08cqw solid #c8aa6e;
-    color: #c8aa6e;
+    background: rgba(231, 222, 209, 0.2);
+    border: 0.08cqw solid #E7DED1;
+    color: #E7DED1;
     padding: 0.4cqw 1cqw;
     border-radius: 0.2cqw;
     font-family: 'Inter', sans-serif;
@@ -66,8 +66,8 @@
 }
 
 .toast-action-btn:hover {
-    background: rgba(200, 170, 110, 0.3);
-    box-shadow: 0 0 0.8cqw rgba(200, 170, 110, 0.4);
+    background: rgba(231, 222, 209, 0.3);
+    box-shadow: none;
 }
 
 @keyframes slideIn {

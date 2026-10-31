@@ -2,9 +2,9 @@
     position: relative;
     padding: 1.25rem 1.5rem;
     margin: 1rem 0;
-    background: linear-gradient(180deg, rgba(21, 58, 62, 0.95) 0%, rgba(13, 46, 48, 0.98) 100%);
-    border: 1px solid rgba(200, 170, 110, 0.35);
-    border-radius: 10px;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.98) 100%);
+    border: 1px solid rgba(231, 222, 209, 0.35);
+    border-radius: 0;
     overflow: hidden;
 }
 
@@ -15,7 +15,7 @@
     transform: translateX(-50%);
     width: 80%;
     height: 60%;
-    background: radial-gradient(ellipse, rgba(200, 170, 110, 0.12) 0%, transparent 70%);
+    background: radial-gradient(ellipse, rgba(231, 222, 209, 0.12) 0%, transparent 70%);
     pointer-events: none;
 }
 
@@ -41,7 +41,7 @@
     font-family: 'Spectral', serif;
     font-weight: 700;
     font-size: 1rem;
-    color: #F0E6D2;
+    color: #E7DED1;
     margin: 0;
     line-height: 1.3;
 }
@@ -49,7 +49,7 @@
 .pro-supporter-banner-desc {
     font-family: 'Inter', sans-serif;
     font-size: 0.75rem;
-    color: #94A3B8;
+    color: rgba(231, 222, 209, 0.78);
     margin: 0;
     line-height: 1.4;
 }
@@ -72,26 +72,26 @@
 .pro-supporter-banner-price small {
     font-weight: 500;
     font-size: 0.65rem;
-    color: rgba(200, 170, 110, 0.7);
+    color: rgba(231, 222, 209, 0.7);
 }
 
 .pro-supporter-banner-price--lifetime {
-    color: #c8aa6e;
+    color: #E7DED1;
 }
 
 .pro-supporter-banner-divider {
     font-family: 'Inter', sans-serif;
     font-size: 0.7rem;
-    color: rgba(200, 170, 110, 0.45);
+    color: rgba(231, 222, 209, 0.45);
 }
 
 .pro-supporter-banner-cta {
     position: relative;
     margin-top: 0.4rem;
     padding: 0.55rem 1.8rem;
-    background: linear-gradient(180deg, #C89B3C 0%, #A07828 100%);
-    border: 1px solid #c8aa6e;
-    color: #051c1e;
+    background: linear-gradient(180deg, #E7DED1 0%, #E7DED1 100%);
+    border: 1px solid #E7DED1;
+    color: #000000;
     font-family: 'Spectral', serif;
     font-weight: 700;
     font-size: 0.85rem;
@@ -107,7 +107,7 @@
 }
 
 .pro-supporter-banner-cta:hover {
-    box-shadow: 0 0 16px rgba(200, 170, 110, 0.4);
+    box-shadow: none;
 }
 
 .pro-supporter-banner-cta-text {

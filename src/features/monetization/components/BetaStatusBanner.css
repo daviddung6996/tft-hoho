@@ -10,17 +10,17 @@
 
     height: clamp(32px, 2.6vw, 38px);
     padding: 0 12px;
-    border-radius: 10px;
+    border-radius: 0;
 
     background: linear-gradient(
         135deg,
         rgba(30, 35, 40, 0.92) 0%,
         rgba(20, 24, 28, 0.95) 100%
     );
-    border: 1px solid rgba(200, 170, 110, 0.25);
+    border: 1px solid rgba(231, 222, 209, 0.25);
     box-shadow:
-        0 0 8px rgba(200, 170, 110, 0.08),
-        inset 0 1px 0 rgba(200, 170, 110, 0.06);
+        0 0 8px rgba(231, 222, 209, 0.08),
+        inset 0 1px 0 rgba(231, 222, 209, 0.06);
 
     pointer-events: none;
     user-select: none;
@@ -35,7 +35,7 @@
     font-size: clamp(11px, 1vw, 13px);
     font-weight: 600;
     letter-spacing: 0.04em;
-    color: #c8aa6e;
+    color: #E7DED1;
     text-transform: uppercase;
 }
 
@@ -45,5 +45,5 @@
     left: var(--viewport-hud-left-gap, max(calc(env(safe-area-inset-left, 0px) + 6px), 6px));
     height: 28px;
     padding: 0 8px;
-    border-radius: 8px;
+    border-radius: 0;
 }

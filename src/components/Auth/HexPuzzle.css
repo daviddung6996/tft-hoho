@@ -8,7 +8,7 @@
 }
 
 .hex-puzzle-instruction {
-    color: #F0E6D2;
+    color: #E7DED1;
     font-family: 'Inter', sans-serif;
     font-size: 0.9rem;
     margin-bottom: 1.5rem;
@@ -26,8 +26,8 @@
     width: 70px;
     height: 70px;
     background: rgba(13, 22, 36, 0.5);
-    border: 1px solid rgba(200, 155, 60, 0.3);
-    border-radius: 4px;
+    border: 1px solid rgba(231, 222, 209, 0.3);
+    border-radius: 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -35,8 +35,8 @@
 }
 
 .hex-puzzle-slot:hover {
-    border-color: rgba(200, 155, 60, 0.7);
-    box-shadow: 0 0 10px rgba(200, 155, 60, 0.25);
+    border-color: rgba(231, 222, 209, 0.7);
+    box-shadow: none;
 }
 
 .hex-puzzle-slot.checking {
@@ -65,9 +65,9 @@
 
 .hex-puzzle-check-btn {
     padding: 0.75rem 2rem;
-    background: linear-gradient(135deg, #C89B3C 0%, #F0E6D2 100%);
-    border: 1px solid #F0E6D2;
-    border-radius: 4px;
+    background: linear-gradient(135deg, #E7DED1 0%, #E7DED1 100%);
+    border: 1px solid #E7DED1;
+    border-radius: 0;
     color: #090C14;
     font-family: 'Inter', sans-serif;
     font-weight: 600;
@@ -78,7 +78,7 @@
 
 .hex-puzzle-check-btn:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(200, 155, 60, 0.4);
+    box-shadow: none;
 }
 
 .hex-puzzle-check-btn:disabled {

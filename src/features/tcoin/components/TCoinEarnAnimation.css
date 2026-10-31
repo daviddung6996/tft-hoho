@@ -20,7 +20,7 @@
     top: 5px;
     left: 0;
     opacity: 0;
-    filter: drop-shadow(0 0 6px rgba(200, 170, 110, 0.8));
+
     animation: tcoin-gentle-float 2s ease-out forwards;
 }
 
@@ -46,7 +46,7 @@
     content: '';
     position: absolute;
     inset: -2px;
-    background: radial-gradient(circle, rgba(200, 170, 110, 0.5) 0%, transparent 60%);
+    background: radial-gradient(circle, rgba(231, 222, 209, 0.5) 0%, transparent 60%);
     border-radius: 50%;
     z-index: -1;
 }
@@ -90,12 +90,9 @@
     /* Hextech elegant font */
     font-weight: 700;
     font-size: 1.4rem;
-    color: #f0e6d2;
+    color: #E7DED1;
     /* Hextech cream gold */
-    text-shadow:
-        0 0 10px rgba(200, 170, 110, 0.9),
-        0 0 20px rgba(200, 170, 110, 0.4),
-        0 2px 4px rgba(0, 0, 0, 0.8);
+    text-shadow: none;
     letter-spacing: 0.05em;
     background: transparent;
     padding: 0;
@@ -114,21 +111,21 @@
 /* -- Soft Breathing Glow (Balance Widget) ----------------------------- */
 @keyframes tcoin-balance-breathe {
     0% {
-        background: linear-gradient(180deg, rgba(21, 58, 62, 0.9) 0%, rgba(13, 46, 48, 0.95) 100%);
-        box-shadow: 0 0 0 rgba(200, 170, 110, 0);
-        border-color: rgba(200, 170, 110, 0.35);
+        background: linear-gradient(180deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.95) 100%);
+        box-shadow: none;
+        border-color: rgba(231, 222, 209, 0.35);
     }
 
     40% {
         background: linear-gradient(180deg, rgba(30, 75, 80, 0.95) 0%, rgba(20, 60, 64, 0.98) 100%);
-        box-shadow: 0 0 12px rgba(200, 170, 110, 0.4);
-        border-color: rgba(200, 170, 110, 0.8);
+        box-shadow: none;
+        border-color: rgba(231, 222, 209, 0.8);
     }
 
     100% {
-        background: linear-gradient(180deg, rgba(21, 58, 62, 0.9) 0%, rgba(13, 46, 48, 0.95) 100%);
-        box-shadow: 0 0 0 rgba(200, 170, 110, 0);
-        border-color: rgba(200, 170, 110, 0.35);
+        background: linear-gradient(180deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.95) 100%);
+        box-shadow: none;
+        border-color: rgba(231, 222, 209, 0.35);
     }
 }
 

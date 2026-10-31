@@ -77,7 +77,7 @@ export const VideoSelect: React.FC<VideoSelectProps> = ({
                     {hasVideo ? (shortUrl || 'Có video') : 'Không có video'}
                 </span>
                 <svg className="video-select__chevron" width="10" height="10" viewBox="0 0 10 10" fill="none">
-                    <path d="M2 3.5L5 6.5L8 3.5" stroke="#c8aa6e" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M2 3.5L5 6.5L8 3.5" stroke="#E7DED1" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
             </button>
 
@@ -94,7 +94,7 @@ export const VideoSelect: React.FC<VideoSelectProps> = ({
                         <span className="video-select__option-label">Không có video</span>
                         {!hasVideo && (
                             <svg className="video-select__check" width="10" height="10" viewBox="0 0 10 10" fill="none">
-                                <path d="M1.5 5L4 7.5L8.5 2.5" stroke="#c8aa6e" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                <path d="M1.5 5L4 7.5L8.5 2.5" stroke="#E7DED1" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                             </svg>
                         )}
                     </li>
@@ -109,7 +109,7 @@ export const VideoSelect: React.FC<VideoSelectProps> = ({
                         <span className="video-select__option-label" style={{ color: '#f87171' }}>Có giải thích video</span>
                         {hasVideo && (
                             <svg className="video-select__check" width="10" height="10" viewBox="0 0 10 10" fill="none">
-                                <path d="M1.5 5L4 7.5L8.5 2.5" stroke="#c8aa6e" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                <path d="M1.5 5L4 7.5L8.5 2.5" stroke="#E7DED1" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                             </svg>
                         )}
                     </li>

@@ -36,10 +36,10 @@
     max-width: 320px;
     padding: 10px 12px;
     background: rgba(10, 12, 15, 0.98);
-    border: 1px solid rgba(200, 170, 110, 0.4);
+    border: 1px solid rgba(231, 222, 209, 0.4);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
     pointer-events: none;
-    border-radius: 6px;
+    border-radius: 0;
 }
 
 /* Portal tooltip positioning */
@@ -74,7 +74,7 @@
     gap: 16px;
     margin-top: 12px;
     padding-top: 12px;
-    border-top: 1px solid rgba(200, 170, 110, 0.3);
+    border-top: 1px solid rgba(231, 222, 209, 0.3);
 }
 
 /* Stat Icons from Riot CDN */
@@ -133,7 +133,7 @@
     font-family: 'Spectral', serif;
     font-size: 13px;
     font-weight: 600;
-    color: #c8aa6e;
+    color: #E7DED1;
     margin-bottom: 4px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -153,7 +153,7 @@
     color: #6b7a8a;
     margin-top: 6px;
     padding-top: 4px;
-    border-top: 1px solid rgba(200, 170, 110, 0.3);
+    border-top: 1px solid rgba(231, 222, 209, 0.3);
 }
 
 .hextech-tooltip-portal .hextech-tooltip-traits {
@@ -166,9 +166,9 @@
 .hextech-tooltip-portal .hextech-tooltip-trait-tag {
     font-size: 10px;
     padding: 2px 6px;
-    background: rgba(200, 170, 110, 0.15);
-    border: 1px solid rgba(200, 170, 110, 0.4);
-    color: #c8aa6e;
+    background: rgba(231, 222, 209, 0.15);
+    border: 1px solid rgba(231, 222, 209, 0.4);
+    color: #E7DED1;
 }
 
 /* Non-portal tooltip text — cqw units */
@@ -176,7 +176,7 @@
     font-family: 'Spectral', serif;
     font-size: 1cqw;
     font-weight: 600;
-    color: #c8aa6e;
+    color: #E7DED1;
     margin-bottom: 0.3cqw;
     text-transform: uppercase;
     letter-spacing: 0.05cqw;
@@ -196,16 +196,16 @@
     color: #6b7a8a;
     margin-top: 0.4cqw;
     padding-top: 0.3cqw;
-    border-top: 0.05cqw solid rgba(200, 170, 110, 0.3);
+    border-top: 0.05cqw solid rgba(231, 222, 209, 0.3);
 }
 
 /* Tier/Rarity colors */
 .hextech-tooltip-tier-silver {
-    color: #94a3b8;
+    color: rgba(231, 222, 209, 0.78);
 }
 
 .hextech-tooltip-tier-gold {
-    color: #c8aa6e;
+    color: #E7DED1;
 }
 
 .hextech-tooltip-tier-prismatic {
@@ -244,9 +244,9 @@
 .hextech-tooltip-trait-tag {
     font-size: 0.6cqw;
     padding: 0.15cqw 0.4cqw;
-    background: rgba(200, 170, 110, 0.15);
-    border: 0.05cqw solid rgba(200, 170, 110, 0.4);
-    color: #c8aa6e;
+    background: rgba(231, 222, 209, 0.15);
+    border: 0.05cqw solid rgba(231, 222, 209, 0.4);
+    color: #E7DED1;
 }
 
 /* Item list in tooltip */
@@ -259,7 +259,7 @@
 .hextech-tooltip-item-icon {
     width: 1.2cqw;
     height: 1.2cqw;
-    border: 0.05cqw solid #c8aa6e;
+    border: 0.05cqw solid #E7DED1;
 }
 
 /* Champion tooltip - larger width for ability/stats */
@@ -286,7 +286,7 @@
     font-family: 'Spectral', serif;
     font-size: 13px;
     font-weight: 600;
-    color: #c8aa6e;
+    color: #E7DED1;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
@@ -297,14 +297,14 @@
     gap: 4px;
     font-family: 'Inter', sans-serif;
     font-size: 11px;
-    color: #F0E6D2;
+    color: #E7DED1;
     white-space: nowrap;
 }
 
 .hextech-tooltip-ability-desc {
     font-family: 'Inter', sans-serif;
     font-size: 11px;
-    color: #94A3B8;
+    color: rgba(231, 222, 209, 0.78);
     line-height: 1.5;
 }
 
@@ -330,7 +330,7 @@
 }
 
 .hextech-tooltip-stats .stat-values {
-    color: #F0F6FC;
+    color: #E7DED1;
     font-weight: 500;
 }
 
@@ -338,7 +338,7 @@
 .ability-scaling-section {
     margin-top: 12px;
     padding-top: 10px;
-    border-top: 1px solid rgba(200, 170, 110, 0.2);
+    border-top: 1px solid rgba(231, 222, 209, 0.2);
     display: flex;
     flex-direction: column;
     gap: 6px;
@@ -350,7 +350,7 @@
     gap: 6px;
     font-family: 'Inter', sans-serif;
     font-size: 11px;
-    color: #94A3B8;
+    color: rgba(231, 222, 209, 0.78);
 }
 
 .ability-scaling-row .scaling-name {
@@ -359,7 +359,7 @@
 }
 
 .ability-scaling-row .scaling-current {
-    color: #c8aa6e;
+    color: #E7DED1;
     font-weight: 600;
     min-width: 40px;
 }
@@ -389,10 +389,10 @@
     gap: 6px 10px;
     margin-top: 4px;
     padding-top: 4px;
-    border-top: 1px solid rgba(200, 170, 110, 0.2);
+    border-top: 1px solid rgba(231, 222, 209, 0.2);
     font-family: 'Inter', sans-serif;
     font-size: 10px;
-    color: #F0E6D2;
+    color: #E7DED1;
 }
 
 .champion-tooltip-compact-stats span {
@@ -422,7 +422,7 @@
         /* Slightly narrower to prevent edge clipping */
         padding: 6px 8px;
         /* Tighter padding */
-        border-radius: 4px;
+        border-radius: 0;
         display: flex;
         flex-direction: column;
         gap: 4px;

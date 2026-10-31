@@ -47,8 +47,8 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
                 padding: '0',
                 display: 'flex',
                 flexDirection: 'column',
-                border: '1px solid #c8aa6e',
-                background: 'linear-gradient(180deg, #153a3e 0%, #051c1e 100%)',
+                border: '1px solid #E7DED1',
+                background: 'linear-gradient(180deg, #000000 0%, #000000 100%)',
                 boxShadow: '0 0 20px rgba(200, 170, 110, 0.25)',
                 borderRadius: '4px',
                 overflow: 'hidden'
@@ -59,7 +59,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
                     textAlign: 'center'
                 }}>
                     <h3 style={{
-                        color: '#c8aa6e',
+                        color: '#E7DED1',
                         margin: 0,
                         fontFamily: 'Spectral, serif',
                         textTransform: 'uppercase',
@@ -110,8 +110,8 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
                         style={{
                             flex: 1,
                             background: 'transparent',
-                            border: '1px solid #c8aa6e',
-                            color: '#c8aa6e',
+                            border: '1px solid #E7DED1',
+                            color: '#E7DED1',
                             padding: '0.6rem 1rem',
                             cursor: 'pointer',
                             fontFamily: 'Inter, sans-serif',

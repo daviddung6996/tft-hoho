@@ -6,22 +6,22 @@
     align-items: center;
     gap: 0.6cqw;
     padding: 0.5cqw 1cqw;
-    background: linear-gradient(135deg, rgba(21, 58, 62, 0.85), rgba(5, 28, 30, 0.92));
-    border: 0.08cqw solid rgba(200, 170, 110, 0.4);
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.92));
+    border: 0.08cqw solid rgba(231, 222, 209, 0.4);
     border-radius: 0.2cqw;
     box-shadow:
         inset 0 0 1.5cqw rgba(0, 0, 0, 0.3),
-        0 0 0.8cqw rgba(200, 170, 110, 0.08);
+        0 0 0.8cqw rgba(231, 222, 209, 0.08);
 }
 
 /* ── Rank Icon ── */
 .iq-rank-icon {
-    color: var(--rank-color, #c8aa6e);
+    color: var(--rank-color, #E7DED1);
     font-size: 1.8cqw;
     display: flex;
     align-items: center;
     flex-shrink: 0;
-    filter: drop-shadow(0 0 0.5cqw var(--rank-color, #c8aa6e));
+    filter: drop-shadow(0 0 0.5cqw var(--rank-color, #E7DED1));
     opacity: 0.9;
 }
 
@@ -37,7 +37,7 @@
     font-family: 'Spectral', serif;
     font-size: 1.6cqw;
     font-weight: 700;
-    color: #F0E6D2;
+    color: #E7DED1;
     letter-spacing: -0.02em;
     line-height: 1;
 }
@@ -46,7 +46,7 @@
     font-family: 'Inter', sans-serif;
     font-size: 0.7cqw;
     font-weight: 700;
-    color: #c8aa6e;
+    color: #E7DED1;
     text-transform: uppercase;
     letter-spacing: 0.1cqw;
     align-self: flex-start;
