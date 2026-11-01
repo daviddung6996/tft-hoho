@@ -29,7 +29,7 @@
     /* Square */
     width: 100%;
     height: auto;
-    border: 0.08cqw dashed rgba(200, 170, 110, 0.4);
+    border: 0.08cqw dashed rgb(var(--tui-primary-rgb) / 0.4);
     background: rgba(0, 0, 0, 0.2);
     display: flex;
     align-items: center;
@@ -37,19 +37,18 @@
     cursor: pointer;
     position: relative;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    border-radius: 0.2cqw;
+    border-radius: 0;
 }
 
 .icb-slot:hover {
-    background: rgba(200, 170, 110, 0.08);
-    border-color: #c8aa6e;
-    box-shadow: 0 0 1cqw rgba(200, 170, 110, 0.15);
+    background: rgb(var(--tui-primary-rgb) / 0.08);
+    border-color: var(--tui-primary);
 }
 
 .icb-slot.filled {
     border-style: solid;
-    border-color: rgba(200, 170, 110, 0.6);
-    background: radial-gradient(circle at center, rgba(30, 45, 55, 0.9), rgba(15, 25, 30, 0.95));
+    border-color: rgb(var(--tui-bone-rgb) / 0.6);
+    background: rgba(0, 0, 0, 0.5);
 }
 
 .icb-slot-icon {
@@ -61,7 +60,7 @@
 
 .icb-empty-icon {
     font-size: 1.2cqw;
-    color: rgba(200, 170, 110, 0.5);
+    color: rgb(var(--tui-bone-rgb) / 0.5);
     font-weight: 300;
 }
 
@@ -76,10 +75,10 @@
     right: -0.4cqw;
     width: 1.2cqw;
     height: 1.2cqw;
-    background: #0f172a;
+    background: #000000;
     /* Slate 900 */
-    border: 0.1cqw solid #c8aa6e;
-    color: #c8aa6e;
+    border: 0.1cqw solid var(--tui-primary);
+    color: var(--tui-primary);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -89,7 +88,6 @@
     opacity: 0;
     transition: all 0.2s ease;
     z-index: 10;
-    box-shadow: 0 0.2cqw 0.4cqw rgba(0, 0, 0, 0.5);
 }
 
 .icb-slot:hover .icb-slot-clear {
@@ -106,10 +104,7 @@
     width: 100%;
     height: calc(100% - 5cqw);
     background:
-        radial-gradient(ellipse at 50% 30%, rgba(200, 170, 110, 0.06) 0%, transparent 50%),
-        radial-gradient(ellipse at 50% 80%, rgba(21, 58, 62, 0.25) 0%, transparent 50%),
         rgba(0, 0, 0, 0.78);
-    backdrop-filter: blur(8px);
     animation: hex-overlay-in 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     z-index: 1000;
     display: flex;
@@ -120,8 +115,8 @@
 .icb-modal {
     width: 60cqw;
     height: 70vh;
-    background: linear-gradient(180deg, #153a3e 0%, #051c1e 100%);
-    border: 0.1cqw solid #c8aa6e;
+    background: #000000;
+    border: 0.1cqw solid var(--tui-border);
     box-shadow: 0 0 2cqw rgba(0, 0, 0, 0.8);
     display: flex;
     flex-direction: column;
@@ -138,8 +133,8 @@
 .icb-search-input {
     flex: 1;
     background: rgba(0, 0, 0, 0.4);
-    border: 0.1cqw solid #c8aa6e;
-    color: #fff;
+    border: 0.1cqw solid var(--tui-border);
+    color: var(--tui-bone);
     padding: 0.8cqw;
     font-family: 'Inter', sans-serif;
     font-size: 1cqw;
@@ -147,8 +142,8 @@
 
 .icb-modal-close {
     background: none;
-    border: 0.1cqw solid #c8aa6e;
-    color: #c8aa6e;
+    border: 0.1cqw solid var(--tui-primary);
+    color: var(--tui-primary);
     width: 2.5cqw;
     height: 2.5cqw;
     cursor: pointer;
@@ -160,7 +155,7 @@
 }
 
 .icb-modal-close:hover {
-    background: rgba(200, 170, 110, 0.2);
+    background: rgb(var(--tui-primary-rgb) / 0.2);
 }
 
 .icb-modal-grid {
@@ -178,15 +173,15 @@
     align-items: center;
     gap: 0.5cqw;
     padding: 1cqw;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgb(var(--tui-bone-rgb) / 0.05);
     border: 0.1cqw solid transparent;
     cursor: pointer;
     transition: all 0.2s;
 }
 
 .icb-modal-item:hover {
-    border-color: #c8aa6e;
-    background: rgba(200, 170, 110, 0.1);
+    border-color: var(--tui-primary);
+    background: rgb(var(--tui-primary-rgb) / 0.1);
 }
 
 .icb-modal-icon {
@@ -197,7 +192,7 @@
 
 .icb-modal-name {
     font-size: 0.8cqw;
-    color: #ccc;
+    color: var(--tui-bone);
     text-align: center;
     word-break: break-word;
 }

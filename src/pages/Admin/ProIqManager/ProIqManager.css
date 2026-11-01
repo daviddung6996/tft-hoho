@@ -21,15 +21,15 @@
     font-size: 0.75cqw;
     font-weight: 600;
     padding: 0.3cqw 0.6cqw;
-    border-radius: 0.15cqw;
-    background: rgba(255, 255, 255, 0.05);
-    border: 0.05cqw solid rgba(255, 255, 255, 0.1);
-    color: #94a3b8;
+    border-radius: 0;
+    background: rgb(var(--tui-bone-rgb) / 0.05);
+    border: 0.05cqw solid rgb(var(--tui-bone-rgb) / 0.1);
+    color: var(--tui-text-secondary);
 }
 
 .proiq-stat.highlight {
-    color: #c8aa6e;
-    border-color: rgba(200, 170, 110, 0.3);
+    color: var(--tui-primary);
+    border-color: rgb(var(--tui-primary-rgb) / 0.3);
 }
 
 .proiq-stat.goat {
@@ -84,21 +84,21 @@
     font-size: 0.65cqw;
     padding: 0.25cqw 0.5cqw;
     background: rgba(0, 0, 0, 0.3);
-    border: 0.05cqw solid rgba(200, 170, 110, 0.2);
-    color: #94a3b8;
+    border: 0.05cqw solid rgb(var(--tui-bone-rgb) / 0.2);
+    color: var(--tui-text-secondary);
     cursor: pointer;
     transition: all 0.2s;
     white-space: nowrap;
 }
 
 .proiq-filter-btn.active {
-    background: rgba(200, 170, 110, 0.15);
-    border-color: #c8aa6e;
-    color: #c8aa6e;
+    background: rgb(var(--tui-primary-rgb) / 0.15);
+    border-color: var(--tui-primary);
+    color: var(--tui-primary);
 }
 
 .proiq-filter-btn:hover {
-    border-color: rgba(200, 170, 110, 0.5);
+    border-color: rgb(var(--tui-primary-rgb) / 0.5);
 }
 
 .proiq-form {
@@ -106,10 +106,9 @@
     max-width: 90vw;
     max-height: 90vh;
     /* Chỉ giới hạn chiều cao tổng của Form, không cho overflow ở đây */
-    background: linear-gradient(180deg, #153a3e 0%, #051c1e 100%);
-    border: 1px solid #c8aa6e;
-    box-shadow: 0 0 20px rgba(200, 170, 110, 0.3);
-    border-radius: 4px;
+    background: #000000;
+    border: 1px solid var(--tui-border);
+    border-radius: 0;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -120,11 +119,11 @@
     font-family: 'Spectral', serif;
     font-size: 1.25rem;
     font-weight: 700;
-    color: #c8aa6e;
+    color: var(--tui-bone);
     text-transform: uppercase;
     letter-spacing: 0.05em;
     padding: 1.5rem;
-    border-bottom: 1px solid rgba(200, 170, 110, 0.3);
+    border-bottom: 1px solid rgb(var(--tui-bone-rgb) / 0.3);
     margin: 0;
     flex-shrink: 0;
     /* Header không bị bóp khi màn hình nhỏ */
@@ -154,7 +153,7 @@
     display: block;
     font-family: 'Inter', sans-serif;
     font-size: 0.85rem;
-    color: #c8aa6e;
+    color: var(--tui-text-secondary);
     text-transform: uppercase;
     font-weight: 600;
     letter-spacing: 0.05em;
@@ -164,11 +163,11 @@
 .proiq-form-field select {
     width: 100%;
     background: rgba(0, 0, 0, 0.4);
-    border: 1px solid rgba(200, 170, 110, 0.3);
-    color: #F0E6D2;
+    border: 1px solid rgb(var(--tui-bone-rgb) / 0.3);
+    color: var(--tui-bone);
     font-family: 'Inter', sans-serif;
     padding: 0.5rem;
-    border-radius: 4px;
+    border-radius: 0;
     outline: none;
     box-sizing: border-box;
     transition: all 0.2s;
@@ -176,15 +175,14 @@
 
 .proiq-form-field input:focus,
 .proiq-form-field select:focus {
-    border-color: #c8aa6e;
-    box-shadow: 0 0 10px rgba(200, 170, 110, 0.2);
+    border-color: var(--tui-primary);
 }
 
 .proiq-form-field select {
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23F0F6FC' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23E7DED1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
     background-repeat: no-repeat;
     background-position: right 0.75rem center;
     background-size: 1rem;
@@ -194,7 +192,7 @@
 
 .proiq-form-actions {
     padding: 1.5rem;
-    border-top: 1px solid rgba(200, 170, 110, 0.3);
+    border-top: 1px solid rgb(var(--tui-bone-rgb) / 0.3);
     display: flex;
     justify-content: flex-end;
     gap: 1rem;
@@ -203,20 +201,20 @@
 
 .proiq-form-actions button.hex-button {
     background: rgba(0, 0, 0, 0.3);
-    border: 1px solid #c8aa6e;
-    color: #F0E6D2;
+    border: 1px solid var(--tui-primary);
+    color: var(--tui-bone);
     padding: 0.5rem 1.5rem;
     cursor: pointer;
     font-family: 'Inter', sans-serif;
     text-transform: uppercase;
     font-size: 0.9rem;
-    border-radius: 2px;
+    border-radius: 0;
 }
 
 .proiq-form-actions button.hex-button.primary {
-    background: linear-gradient(180deg, rgba(21, 58, 62, 0.6) 0%, rgba(5, 28, 30, 0.6) 100%);
+    background: var(--tui-primary);
+    color: #000000;
     font-weight: 600;
-    box-shadow: 0 0 10px rgba(200, 170, 110, 0.25);
 }
 
 /* Pro Card List */
@@ -231,14 +229,14 @@
     justify-content: space-between;
     align-items: center;
     padding: 0.6cqw 0.8cqw;
-    background: rgba(255, 255, 255, 0.03);
-    border: 0.05cqw solid rgba(255, 255, 255, 0.08);
+    background: rgb(var(--tui-bone-rgb) / 0.03);
+    border: 0.05cqw solid var(--tui-bone-08);
     transition: all 0.2s;
 }
 
 .proiq-card:hover {
-    border-color: rgba(200, 170, 110, 0.3);
-    background: rgba(255, 255, 255, 0.05);
+    border-color: rgb(var(--tui-primary-rgb) / 0.3);
+    background: rgb(var(--tui-bone-rgb) / 0.05);
 }
 
 .proiq-card.inactive {
@@ -258,7 +256,7 @@
     height: 2.2cqw;
     border-radius: 50%;
     object-fit: cover;
-    border: 0.08cqw solid rgba(200, 170, 110, 0.4);
+    border: 0.08cqw solid rgb(var(--tui-bone-rgb) / 0.4);
     flex-shrink: 0;
 }
 
@@ -266,7 +264,7 @@
     width: 2.2cqw;
     height: 2.2cqw;
     border-radius: 50%;
-    background: rgba(200, 170, 110, 0.15);
+    background: rgb(var(--tui-bone-rgb) / 0.15);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -285,7 +283,7 @@
     font-family: 'Inter', sans-serif;
     font-size: 0.8cqw;
     font-weight: 700;
-    color: #F0F6FC;
+    color: var(--tui-bone);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -299,13 +297,13 @@
 
 .proiq-card-region {
     font-size: 0.6cqw;
-    color: #64748b;
+    color: var(--tui-text-muted);
     font-weight: 600;
 }
 
 .proiq-card-rank {
     font-size: 0.6cqw;
-    color: #94a3b8;
+    color: var(--tui-text-secondary);
 }
 
 .proiq-card-iq {
@@ -326,15 +324,15 @@
     font-size: 0.65cqw;
     font-weight: 600;
     padding: 0.15cqw 0.4cqw;
-    border-radius: 0.1cqw;
-    background: rgba(200, 170, 110, 0.1);
-    border: 0.05cqw solid rgba(200, 170, 110, 0.2);
+    border-radius: 0;
+    background: rgb(var(--tui-bone-rgb) / 0.1);
+    border: 0.05cqw solid rgb(var(--tui-bone-rgb) / 0.2);
     white-space: nowrap;
 }
 
 .proiq-card-updated {
     font-size: 0.55cqw;
-    color: #475569;
+    color: var(--tui-text-muted);
     flex-shrink: 0;
     min-width: 6cqw;
     text-align: center;
@@ -353,22 +351,18 @@
     position: fixed;
     inset: 0;
     background:
-        radial-gradient(ellipse at 50% 30%, rgba(200, 170, 110, 0.06) 0%, transparent 50%),
-        radial-gradient(ellipse at 50% 80%, rgba(21, 58, 62, 0.25) 0%, transparent 50%),
         rgba(0, 0, 0, 0.78);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 2000;
-    backdrop-filter: blur(8px);
     animation: hex-overlay-in 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .proiq-update-modal {
-    background: linear-gradient(180deg, #153a3e 0%, #051c1e 100%);
-    border: 1px solid #c8aa6e;
-    box-shadow: 0 0 20px rgba(200, 170, 110, 0.3);
-    border-radius: 4px;
+    background: #000000;
+    border: 1px solid var(--tui-border);
+    border-radius: 0;
     width: 500px;
     max-width: 90vw;
     max-height: 90vh;
@@ -382,14 +376,14 @@
     justify-content: space-between;
     align-items: center;
     padding: 1.5rem;
-    border-bottom: 1px solid rgba(200, 170, 110, 0.3);
+    border-bottom: 1px solid rgb(var(--tui-bone-rgb) / 0.3);
 }
 
 .proiq-update-title {
     font-family: 'Spectral', serif;
     font-size: 1.25rem;
     font-weight: 700;
-    color: #c8aa6e;
+    color: var(--tui-bone);
     text-transform: uppercase;
     letter-spacing: 0.05em;
     margin: 0;
@@ -398,7 +392,7 @@
 .proiq-update-close {
     background: none;
     border: none;
-    color: #64748b;
+    color: var(--tui-text-muted);
     font-size: 1.5rem;
     cursor: pointer;
     padding: 0;
@@ -406,7 +400,7 @@
 }
 
 .proiq-update-close:hover {
-    color: #c8aa6e;
+    color: var(--tui-primary);
 }
 
 .proiq-update-body {
@@ -423,14 +417,14 @@
     gap: 0.75rem;
     padding: 0.75rem;
     background: rgba(5, 8, 15, 0.5);
-    border: 1px solid #1E293B;
-    border-radius: 4px;
+    border: 1px solid var(--tui-border-subtle);
+    border-radius: 0;
 }
 
 .proiq-update-current-label {
     font-family: 'Inter', sans-serif;
     font-size: 0.85rem;
-    color: #c8aa6e;
+    color: var(--tui-text-secondary);
     text-transform: uppercase;
     font-weight: 600;
     letter-spacing: 0.05em;
@@ -440,7 +434,7 @@
     font-family: 'Inter', sans-serif;
     font-size: 1.5rem;
     font-weight: 800;
-    color: #F0E6D2;
+    color: var(--tui-bone);
 }
 
 .proiq-update-fields {
@@ -453,7 +447,7 @@
     display: block;
     font-family: 'Inter', sans-serif;
     font-size: 0.85rem;
-    color: #c8aa6e;
+    color: var(--tui-text-secondary);
     text-transform: uppercase;
     font-weight: 600;
     letter-spacing: 0.05em;
@@ -463,12 +457,12 @@
 .proiq-update-field input,
 .proiq-update-field select {
     width: 100%;
-    background: rgba(5, 28, 30, 0.8);
-    border: 1px solid rgba(200, 170, 110, 0.3);
-    color: #F0E6D2;
+    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid rgb(var(--tui-bone-rgb) / 0.3);
+    color: var(--tui-bone);
     font-family: 'Inter', sans-serif;
     padding: 0.5rem;
-    border-radius: 4px;
+    border-radius: 0;
     outline: none;
     margin-bottom: 0.25rem;
     box-sizing: border-box;
@@ -477,15 +471,14 @@
 
 .proiq-update-field input:focus,
 .proiq-update-field select:focus {
-    border-color: #c8aa6e;
-    box-shadow: 0 0 10px rgba(200, 170, 110, 0.2);
+    border-color: var(--tui-primary);
 }
 
 .proiq-update-field select {
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23F0F6FC' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23E7DED1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
     background-repeat: no-repeat;
     background-position: right 0.75rem center;
     background-size: 1rem;
@@ -508,12 +501,12 @@
 }
 
 .proiq-update-change.neutral {
-    color: #94a3b8;
+    color: var(--tui-text-secondary);
 }
 
 .proiq-update-footer {
     padding: 1.5rem;
-    border-top: 1px solid rgba(200, 170, 110, 0.3);
+    border-top: 1px solid rgb(var(--tui-bone-rgb) / 0.3);
     display: flex;
     justify-content: flex-end;
     gap: 1rem;
@@ -522,20 +515,20 @@
 
 .proiq-update-btn {
     background: rgba(0, 0, 0, 0.3);
-    border: 1px solid #c8aa6e;
-    color: #F0E6D2;
+    border: 1px solid var(--tui-primary);
+    color: var(--tui-bone);
     padding: 0.5rem 1.5rem;
     cursor: pointer;
     font-family: 'Inter', sans-serif;
     text-transform: uppercase;
     font-size: 0.9rem;
-    border-radius: 2px;
+    border-radius: 0;
 }
 
 .proiq-update-btn.primary {
-    background: linear-gradient(180deg, rgba(21, 58, 62, 0.6) 0%, rgba(5, 28, 30, 0.6) 100%);
+    background: var(--tui-primary);
+    color: #000000;
     font-weight: 600;
-    box-shadow: 0 0 10px rgba(200, 170, 110, 0.25);
 }
 
 /* History Section */
@@ -543,7 +536,7 @@
     display: block;
     font-family: 'Inter', sans-serif;
     font-size: 0.85rem;
-    color: #c8aa6e;
+    color: var(--tui-text-secondary);
     text-transform: uppercase;
     font-weight: 600;
     letter-spacing: 0.05em;
@@ -553,8 +546,8 @@
 .proiq-history {
     max-height: 180px;
     overflow-y: auto;
-    border: 1px solid #1E293B;
-    border-radius: 4px;
+    border: 1px solid var(--tui-border-subtle);
+    border-radius: 0;
     background: rgba(5, 8, 15, 0.3);
 }
 
@@ -563,7 +556,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 0.5rem 0.75rem;
-    border-bottom: 1px solid rgba(30, 41, 59, 0.5);
+    border-bottom: 1px solid var(--tui-border-subtle);
     font-size: 0.8rem;
 }
 
@@ -572,7 +565,7 @@
 }
 
 .proiq-history-reason {
-    color: #94a3b8;
+    color: var(--tui-text-secondary);
     flex: 1;
 }
 
@@ -591,7 +584,7 @@
 }
 
 .proiq-history-date {
-    color: #475569;
+    color: var(--tui-text-muted);
     min-width: 60px;
     text-align: right;
     margin-left: 0.5rem;
@@ -601,12 +594,12 @@
 .proiq-empty {
     text-align: center;
     padding: 3cqw;
-    color: #64748b;
+    color: var(--tui-text-muted);
     font-size: 0.8cqw;
 }
 
 .proiq-loading {
     text-align: center;
     padding: 2cqw;
-    color: #94a3b8;
+    color: var(--tui-text-secondary);
 }

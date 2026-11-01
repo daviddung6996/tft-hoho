@@ -4,19 +4,19 @@
    CSS Custom Properties (Admin Deck Colors)
    ============================================================================ */
 .ptb-container {
-    --bg-primary: #020617;
-    --bg-panel: #05080F;
-    --bg-hex: rgba(10, 14, 21, 0.9);
-    --bg-hex-inner: rgba(5, 8, 15, 0.95);
+    --bg-primary: #000000;
+    --bg-panel: #000000;
+    --bg-hex: rgba(0, 0, 0, 0.9);
+    --bg-hex-inner: rgba(0, 0, 0, 0.95);
     /* Added inner dark color */
-    --border-gold: #c8aa6e;
-    --border-subtle: rgba(200, 170, 110, 0.3);
-    --border-dark: #1E293B;
-    --text-primary: #F0F6FC;
-    --text-label: #94A3B8;
-    --text-muted: #64748B;
-    --accent-cyan: #c8aa6e;
-    --accent-blue: #c8aa6e;
+    --border-gold: var(--tui-primary);
+    --border-subtle: rgb(var(--tui-bone-rgb) / 0.3);
+    --border-dark: var(--tui-border-subtle);
+    --text-primary: var(--tui-bone);
+    --text-label: var(--tui-text-secondary);
+    --text-muted: var(--tui-text-muted);
+    --accent-cyan: var(--tui-primary);
+    --accent-blue: var(--tui-primary);
 
     /* Cost colors */
     --cost-1: #808080;
@@ -56,7 +56,7 @@
     display: flex;
     flex-direction: column;
     /* Standard green theme background */
-    background: linear-gradient(180deg, #153a3e 0%, #051c1e 100%);
+    background: #000000;
     border-right: 0.1cqw solid var(--border-gold);
     box-sizing: border-box;
     /* Ensure border doesn't add to width */
@@ -73,7 +73,7 @@
     padding: 0.5cqw 0.8cqw;
     background: rgba(0, 0, 0, 0.3);
     border: 0.1cqw solid var(--border-subtle);
-    border-radius: 0.3cqw;
+    border-radius: 0;
     color: var(--text-primary);
     font-size: 0.9cqw;
     outline: none;
@@ -102,9 +102,9 @@
     flex: 1;
     padding: 0.4cqw 0;
     /* Neutral dark green/black, removed blue slate */
-    background: rgba(10, 20, 20, 0.6);
+    background: rgba(0, 0, 0, 0.6);
     border: 0.1cqw solid var(--border-subtle);
-    border-radius: 0.3cqw;
+    border-radius: 0;
     color: var(--text-label);
     font-size: 0.8cqw;
     font-weight: 500;
@@ -209,7 +209,7 @@
     aspect-ratio: 1;
     position: relative;
     cursor: grab;
-    border-radius: 0.3cqw;
+    border-radius: 0;
     overflow: hidden;
     border: 0.15cqw solid transparent;
     transition: transform 0.1s, border-color 0.15s;
@@ -262,7 +262,7 @@
     right: 0;
     padding: 0.1cqw 0.2cqw;
     background: linear-gradient(transparent, rgba(0, 0, 0, 0.85));
-    color: #fff;
+    color: var(--tui-bone);
     font-size: 0.6cqw;
     text-align: center;
     white-space: nowrap;
@@ -333,14 +333,12 @@
 
 .hb-hex-cell.drag-over {
     /* Gold highlight for drag over, removing blue */
-    background: rgba(200, 170, 110, 0.2);
-    box-shadow: 0 0 2cqw rgba(200, 170, 110, 0.4);
+    background: rgb(var(--tui-primary-rgb) / 0.2);
 }
 
 .hb-hex-cell.drag-over--swap {
     /* Purple highlight — swap incoming */
     background: rgba(147, 51, 234, 0.25);
-    box-shadow: 0 0 2cqw rgba(147, 51, 234, 0.5);
 }
 
 .hb-hex-cell.occupied {
@@ -401,7 +399,7 @@
     position: absolute;
     inset: 0.3cqw;
     clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-    background: #0a0c10;
+    background: #000000;
     overflow: hidden;
 }
 
@@ -418,7 +416,7 @@
     right: 0;
     text-align: center;
     font-size: 0.8cqw;
-    color: #fff;
+    color: var(--tui-bone);
     font-weight: 600;
     text-shadow: 0 0.1cqw 0.2cqw #000, 0 0 0.4cqw #000;
     padding: 0.2cqw 0.4cqw;
@@ -460,7 +458,7 @@
     padding: 1cqw 1.5cqw;
     background: transparent;
     border: none;
-    border-radius: 0.6cqw;
+    border-radius: 0;
     margin-top: 1cqw;
     min-height: 10cqw;
 }
@@ -513,14 +511,12 @@
 
 .hb-bench-slot.drag-over::before {
     /* Synced Gold drag over, removing blue */
-    background: rgba(200, 170, 110, 0.2);
-    box-shadow: 0 0 2cqw rgba(200, 170, 110, 0.4);
+    background: rgb(var(--tui-primary-rgb) / 0.2);
 }
 
 .hb-bench-slot.drag-over--swap::before {
     /* Purple highlight — swap incoming */
     background: rgba(147, 51, 234, 0.25);
-    box-shadow: 0 0 2cqw rgba(147, 51, 234, 0.5);
 }
 
 .hb-bench-unit {
@@ -571,7 +567,7 @@
     object-fit: cover;
     clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
     display: block;
-    background: #0a0c10;
+    background: #000000;
 }
 
 .hb-bench-unit .hb-unit-stars {
@@ -603,7 +599,7 @@
 
 .cp-grid-scroll::-webkit-scrollbar-thumb {
     background: var(--border-gold);
-    border-radius: 0.2cqw;
+    border-radius: 0;
 }
 
 /* ============================================================================
@@ -637,7 +633,7 @@
     width: 15cqw;
     min-width: 12cqw;
     flex: 0 0 15cqw;
-    background: linear-gradient(180deg, #153a3e 0%, #051c1e 100%);
+    background: #000000;
     border-left: 0.11cqw solid var(--border-gold);
     box-sizing: border-box;
     display: flex;
@@ -656,7 +652,7 @@
 
 .ptb-augments-panel::-webkit-scrollbar-thumb {
     background: var(--border-gold);
-    border-radius: 0.2cqw;
+    border-radius: 0;
 }
 
 .augment-selector-container {

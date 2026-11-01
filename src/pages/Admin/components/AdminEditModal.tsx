@@ -36,20 +36,20 @@ const AdminEditModal: React.FC<AdminEditModalProps> = ({ item, type, isSaving, o
         // Hextech Input Style
         const inputStyle = {
             width: '100%',
-            background: 'rgba(5, 28, 30, 0.8)', // Hextech dark teal
-            border: '1px solid rgba(200, 170, 110, 0.3)', // Hextech Gold border
-            color: '#F0E6D2', // Hextech light gold text
+            background: 'rgba(0, 0, 0, 0.8)',
+            border: '1px solid rgb(var(--tui-bone-rgb) / 0.3)',
+            color: 'var(--tui-bone)',
             fontFamily: 'Inter, sans-serif',
             padding: '0.5rem',
             marginBottom: '1rem',
-            borderRadius: '4px',
+            borderRadius: '0',
             outline: 'none',
             transition: 'all 0.2s'
         };
 
         const labelStyle = {
             display: 'block',
-            color: '#c8aa6e', // Hextech Gold
+            color: 'var(--tui-text-secondary)',
             marginBottom: '0.5rem',
             fontSize: '0.85rem',
             fontFamily: 'Inter, sans-serif',
@@ -110,7 +110,7 @@ const AdminEditModal: React.FC<AdminEditModalProps> = ({ item, type, isSaving, o
                         />
                     </div>
                     {/* Ability Fields */}
-                    <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid rgba(200, 170, 110, 0.3)' }}>
+                    <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid rgb(var(--tui-bone-rgb) / 0.3)' }}>
                         <label style={{ ...labelStyle, color: '#00A3FF' }}>Kỹ Năng</label>
                     </div>
                     <div>
@@ -132,8 +132,8 @@ const AdminEditModal: React.FC<AdminEditModalProps> = ({ item, type, isSaving, o
                         />
                     </div>
                     {/* Stats Fields */}
-                    <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid rgba(200, 170, 110, 0.3)' }}>
-                        <label style={{ ...labelStyle, color: '#c8aa6e' }}>Stats Cơ Bản (JSON)</label>
+                    <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid rgb(var(--tui-bone-rgb) / 0.3)' }}>
+                        <label style={{ ...labelStyle, color: 'var(--tui-text-secondary)' }}>Stats Cơ Bản (JSON)</label>
                         <textarea
                             style={{ ...inputStyle, minHeight: '100px', fontFamily: 'monospace', fontSize: '0.8rem' }}
                             value={formData.stats ? JSON.stringify(formData.stats, null, 2) : ''}
@@ -236,7 +236,7 @@ const AdminEditModal: React.FC<AdminEditModalProps> = ({ item, type, isSaving, o
             left: 0,
             width: '100vw',
             height: '100vh',
-            background: 'radial-gradient(ellipse at 50% 30%, rgba(200, 170, 110, 0.06) 0%, transparent 50%), radial-gradient(ellipse at 50% 80%, rgba(21, 58, 62, 0.25) 0%, transparent 50%), rgba(0, 0, 0, 0.78)',
+            background: 'rgba(0, 0, 0, 0.78)',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
@@ -249,22 +249,21 @@ const AdminEditModal: React.FC<AdminEditModalProps> = ({ item, type, isSaving, o
                 maxHeight: '90vh',
                 display: 'flex',
                 flexDirection: 'column',
-                border: '1px solid #c8aa6e', // Hextech Gold Border
-                background: 'linear-gradient(180deg, #153a3e 0%, #051c1e 100%)', // Hextech Gradient
-                boxShadow: '0 0 20px rgba(200, 170, 110, 0.25)', // Gold Glow
-                borderRadius: '4px',
+                border: '1px solid var(--tui-border)',
+                background: '#000000',
+                borderRadius: '0',
                 overflow: 'hidden'
             }}>
                 <div style={{
                     padding: '1.5rem',
-                    borderBottom: '1px solid rgba(200, 170, 110, 0.3)',
+                    borderBottom: '1px solid rgb(var(--tui-bone-rgb) / 0.3)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between'
                 }}>
                     <h3 style={{
                         margin: 0,
-                        color: '#c8aa6e',
+                        color: 'var(--tui-bone)',
                         fontFamily: 'Spectral, serif',
                         textTransform: 'uppercase',
                         letterSpacing: '0.05em',
@@ -282,7 +281,7 @@ const AdminEditModal: React.FC<AdminEditModalProps> = ({ item, type, isSaving, o
 
                 <div style={{
                     padding: '1.5rem',
-                    borderTop: '1px solid rgba(200, 170, 110, 0.3)',
+                    borderTop: '1px solid rgb(var(--tui-bone-rgb) / 0.3)',
                     display: 'flex',
                     justifyContent: 'flex-end',
                     gap: '1rem',
@@ -294,14 +293,14 @@ const AdminEditModal: React.FC<AdminEditModalProps> = ({ item, type, isSaving, o
                         disabled={isSaving}
                         style={{
                             background: 'rgba(0, 0, 0, 0.3)',
-                            border: '1px solid #c8aa6e',
-                            color: '#F0E6D2',
+                            border: '1px solid var(--tui-primary)',
+                            color: 'var(--tui-bone)',
                             padding: '0.5rem 1.5rem',
                             cursor: 'pointer',
                             fontFamily: 'Inter, sans-serif',
                             textTransform: 'uppercase',
                             fontSize: '0.9rem',
-                            borderRadius: '2px',
+                            borderRadius: '0',
                             opacity: isSaving ? 0.5 : 1,
                             transition: 'none'
                         }}
@@ -313,17 +312,16 @@ const AdminEditModal: React.FC<AdminEditModalProps> = ({ item, type, isSaving, o
                         form="edit-form"
                         disabled={isSaving}
                         style={{
-                            background: 'linear-gradient(180deg, rgba(21, 58, 62, 0.6) 0%, rgba(5, 28, 30, 0.6) 100%)',
-                            border: '1px solid #c8aa6e',
-                            color: '#F0E6D2',
+                            background: 'var(--tui-primary)',
+                            border: '1px solid var(--tui-primary)',
+                            color: '#000000',
                             padding: '0.5rem 1.5rem',
                             cursor: isSaving ? 'wait' : 'pointer',
                             fontFamily: 'Inter, sans-serif',
                             fontWeight: 600,
                             textTransform: 'uppercase',
                             fontSize: '0.9rem',
-                            borderRadius: '2px',
-                            boxShadow: '0 0 10px rgba(200, 170, 110, 0.25)',
+                            borderRadius: '0',
                             opacity: isSaving ? 0.8 : 1,
                             transition: 'none'
                         }}

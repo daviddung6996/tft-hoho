@@ -491,7 +491,7 @@ const AdminDataModal: React.FC<AdminDataModalProps> = ({ onClose, onPuzzleSaved 
                                                     src={getLocalUrl((item as any).icon)}
                                                     alt={item.name}
                                                     className="champion-avatar"
-                                                    style={{ borderRadius: '4px' }}
+                                                    style={{ borderRadius: '0' }}
                                                 />
                                             )}
                                             <span style={{ fontWeight: 500, color: 'var(--color-text-primary)', display: 'flex', alignItems: 'center' }}>
@@ -528,27 +528,27 @@ const AdminDataModal: React.FC<AdminDataModalProps> = ({ onClose, onPuzzleSaved 
                                                 <div style={{ fontSize: '0.75cqw' }}>
                                                     {(item as Champion).ability_name ? (
                                                         <>
-                                                            <div style={{ fontWeight: 600, color: '#c8aa6e', marginBottom: '0.3cqw' }}>
+                                                            <div style={{ fontWeight: 600, color: 'var(--tui-bone)', marginBottom: '0.3cqw' }}>
                                                                 {(item as Champion).ability_name}
                                                             </div>
-                                                            <div style={{ color: '#94A3B8', lineHeight: 1.3 }}>
+                                                            <div style={{ color: 'var(--tui-text-secondary)', lineHeight: 1.3 }}>
                                                                 {(item as Champion).ability_description?.substring(0, 80)}{(item as Champion).ability_description && (item as Champion).ability_description!.length > 80 ? '...' : ''}
                                                             </div>
                                                         </>
                                                     ) : (
-                                                        <span style={{ fontStyle: 'italic', color: '#666' }}>Chưa có</span>
+                                                        <span style={{ fontStyle: 'italic', color: 'var(--tui-text-muted)' }}>Chưa có</span>
                                                     )}
                                                 </div>
                                             </td>
                                             <td>
                                                 {(item as Champion).stats ? (
-                                                    <div style={{ fontSize: '0.7cqw', lineHeight: 1.4, color: '#a8b4c2' }}>
+                                                    <div style={{ fontSize: '0.7cqw', lineHeight: 1.4, color: 'var(--tui-text-secondary)' }}>
                                                         <div>HP {(item as Champion).stats!.hp?.join('/') ?? '–'} | AD {(item as Champion).stats!.ad?.join('/') ?? '–'}</div>
                                                         <div>AR {(item as Champion).stats!.armor} | MR {(item as Champion).stats!.mr} | AS: {(item as Champion).stats!.as}</div>
                                                         <div>Mana {(item as Champion).stats!.mana.min}/{(item as Champion).stats!.mana.max} | Range {(item as Champion).stats!.range}</div>
                                                     </div>
                                                 ) : (
-                                                    <span style={{ fontStyle: 'italic', color: '#666' }}>Chưa có</span>
+                                                    <span style={{ fontStyle: 'italic', color: 'var(--tui-text-muted)' }}>Chưa có</span>
                                                 )}
                                             </td>
                                         </>
@@ -592,7 +592,7 @@ const AdminDataModal: React.FC<AdminDataModalProps> = ({ onClose, onPuzzleSaved 
             left: 0,
             width: '100%',
             height: '100%',
-            background: 'radial-gradient(ellipse at 50% 30%, rgba(200, 170, 110, 0.06) 0%, transparent 50%), radial-gradient(ellipse at 50% 80%, rgba(21, 58, 62, 0.25) 0%, transparent 50%), rgba(0, 0, 0, 0.78)',
+            background: 'rgba(0, 0, 0, 0.78)',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',

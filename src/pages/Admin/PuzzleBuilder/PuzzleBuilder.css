@@ -20,9 +20,9 @@
 
 .pb-btn {
     background: transparent;
-    border: 0.1cqw solid #c8aa6e;
-    border-radius: 0.25cqw;
-    color: #F0E6D2;
+    border: 0.1cqw solid var(--tui-primary);
+    border-radius: 0;
+    color: var(--tui-bone);
     padding: 0.6cqw 1.2cqw;
     cursor: pointer;
     font-family: var(--font-body);
@@ -36,9 +36,9 @@
 /* Hover effect removed */
 
 .pb-btn.primary {
-    background: linear-gradient(180deg, rgba(21, 58, 62, 0.6) 0%, rgba(5, 28, 30, 0.6) 100%);
-    border-color: #c8aa6e;
-    color: #F0E6D2;
+    background: var(--tui-primary);
+    border-color: var(--tui-primary);
+    color: #000000;
 }
 
 /* Hover effect removed */
@@ -69,7 +69,7 @@
     flex-direction: column;
     gap: 1cqw;
     padding-bottom: 1.5cqw;
-    border-bottom: 1px solid rgba(200, 170, 110, 0.2);
+    border-bottom: 1px solid rgb(var(--tui-bone-rgb) / 0.2);
 }
 
 .pb-section:last-child {
@@ -107,7 +107,7 @@
 }
 
 .pb-hint {
-    color: #64748B;
+    color: var(--tui-text-muted);
     font-size: 0.75cqw;
     font-style: italic;
     margin-top: -0.25cqw;
@@ -125,12 +125,11 @@
     outline: none;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
     box-sizing: border-box;
-    border-radius: 0.3cqw;
+    border-radius: 0;
 }
 
 .hex-input:focus {
-    border-color: var(--color-accent-gold);
-    box-shadow: 0 0 0.5cqw rgba(200, 155, 60, 0.2);
+    border-color: var(--tui-primary);
 }
 
 .hex-textarea {

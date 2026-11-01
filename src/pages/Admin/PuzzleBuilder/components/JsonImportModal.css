@@ -5,14 +5,11 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: radial-gradient(ellipse at 50% 30%, rgba(200, 170, 110, 0.06) 0%, transparent 50%),
-        radial-gradient(ellipse at 50% 80%, rgba(21, 58, 62, 0.25) 0%, transparent 50%),
-        rgba(0, 0, 0, 0.78);
+    background: rgba(0, 0, 0, 0.78);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 2000;
-    backdrop-filter: blur(8px);
     animation: hex-overlay-in 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -22,10 +19,9 @@
     padding: 0;
     display: flex;
     flex-direction: column;
-    border: 1px solid #c8aa6e;
-    background: linear-gradient(180deg, #153a3e 0%, #051c1e 100%);
-    box-shadow: 0 0 20px rgba(200, 170, 110, 0.25);
-    border-radius: 4px;
+    border: 1px solid var(--tui-border);
+    background: #000000;
+    border-radius: 0;
     overflow: hidden;
     /* Override any inherited positioning from hex-panel */
     position: relative;
@@ -34,12 +30,12 @@
 
 .json-import-header {
     padding: 1.25rem 1.5rem;
-    border-bottom: 1px solid rgba(200, 170, 110, 0.3);
+    border-bottom: 1px solid rgb(var(--tui-bone-rgb) / 0.3);
     text-align: center;
 }
 
 .json-import-title {
-    color: #c8aa6e;
+    color: var(--tui-bone);
     margin: 0;
     font-family: 'Spectral', serif;
     text-transform: uppercase;
@@ -63,7 +59,7 @@
 
 .json-import-footer {
     padding: 1.25rem 1.5rem;
-    border-top: 1px solid rgba(200, 170, 110, 0.3);
+    border-top: 1px solid rgb(var(--tui-bone-rgb) / 0.3);
     display: flex;
     gap: 1rem;
     justify-content: center;
@@ -77,31 +73,30 @@
     font-family: 'Inter', sans-serif;
     text-transform: uppercase;
     font-size: 0.9rem;
-    border-radius: 2px;
+    border-radius: 0;
     transition: all 0.2s;
 }
 
 .json-import-btn.cancel {
     background: transparent;
-    border: 1px solid #c8aa6e;
-    color: #c8aa6e;
+    border: 1px solid var(--tui-primary);
+    color: var(--tui-primary);
 }
 
 .json-import-btn.cancel:hover {
-    background: rgba(200, 170, 110, 0.1);
+    background: rgb(var(--tui-primary-rgb) / 0.1);
 }
 
 .json-import-btn.confirm {
-    background: linear-gradient(180deg, #c8aa6e 0%, #a0884e 100%);
-    border: 1px solid #c8aa6e;
-    color: #0a1428;
+    background: var(--tui-primary);
+    border: 1px solid var(--tui-primary);
+    color: #000000;
     font-weight: 600;
-    box-shadow: 0 0 10px rgba(200, 170, 110, 0.3);
 }
 
 .json-import-btn.confirm:hover {
-    background: linear-gradient(180deg, #d4b97a 0%, #c8aa6e 100%);
-    box-shadow: 0 0 16px rgba(200, 170, 110, 0.5);
+    background: var(--tui-primary-deep);
+    color: var(--tui-bone);
 }
 
 /* Loading state */
@@ -110,18 +105,18 @@
     align-items: center;
     gap: 0.75rem;
     padding: 0.75rem 1.5rem;
-    color: #c8aa6e;
+    color: var(--tui-primary);
     font-family: 'Inter', sans-serif;
     font-size: 0.85rem;
-    background: rgba(200, 170, 110, 0.06);
-    border-top: 1px solid rgba(200, 170, 110, 0.15);
+    background: rgb(var(--tui-primary-rgb) / 0.06);
+    border-top: 1px solid rgb(var(--tui-primary-rgb) / 0.15);
 }
 
 .json-import-spinner {
     width: 18px;
     height: 18px;
-    border: 2px solid rgba(200, 170, 110, 0.3);
-    border-top-color: #c8aa6e;
+    border: 2px solid rgb(var(--tui-primary-rgb) / 0.3);
+    border-top-color: var(--tui-primary);
     border-radius: 50%;
     animation: json-spin 0.8s linear infinite;
 }
@@ -140,7 +135,7 @@
 /* Unresolved augments confirmation panel */
 .json-import-unresolved-panel {
     padding: 1.5rem;
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.08), rgba(5, 28, 30, 0.8));
+    background: rgba(239, 68, 68, 0.08);
     border-top: 1px solid rgba(239, 68, 68, 0.35);
 }
 
@@ -153,7 +148,7 @@
 }
 
 .json-import-unresolved-list {
-    color: #F0F6FC;
+    color: var(--tui-bone);
     font-family: 'JetBrains Mono', 'Fira Code', monospace;
     font-size: 0.8rem;
     margin: 0 0 0.75rem 0;
@@ -162,7 +157,7 @@
 }
 
 .json-import-unresolved-hint {
-    color: #94A3B8;
+    color: var(--tui-text-secondary);
     font-family: 'Inter', sans-serif;
     font-size: 0.82rem;
     margin: 0 0 1rem 0;

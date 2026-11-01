@@ -259,7 +259,7 @@ const MetaTab: React.FC<MetaTabProps> = ({
                     {/* V2: Augment Trainer Fields (3-2) */}
                     {puzzle.stage === '3-2' && (
                         <div className="pb-section">
-                            <h3 className="pb-section-title" style={{ color: '#c8aa6e' }}>
+                            <h3 className="pb-section-title" style={{ color: 'var(--tui-bone)' }}>
                                 V2 — Augment Trainer (3-2)
                             </h3>
 
@@ -330,7 +330,7 @@ const MetaTab: React.FC<MetaTabProps> = ({
                                         <label key={path} style={{
                                             display: 'flex', alignItems: 'center', gap: '0.3cqw',
                                             cursor: 'pointer',
-                                            color: puzzle.proPickPath === path ? '#c8aa6e' : '#94A3B8'
+                                            color: puzzle.proPickPath === path ? 'var(--tui-primary)' : 'var(--tui-text-secondary)'
                                         }}>
                                             <input
                                                 type="radio"
@@ -449,7 +449,7 @@ const MetaTab: React.FC<MetaTabProps> = ({
                                         <label key={plan} style={{
                                             display: 'flex', alignItems: 'center', gap: '0.3cqw',
                                             cursor: 'pointer',
-                                            color: puzzle.proPlan === plan ? '#c8aa6e' : '#94A3B8'
+                                            color: puzzle.proPlan === plan ? 'var(--tui-primary)' : 'var(--tui-text-secondary)'
                                         }}>
                                             <input
                                                 type="radio"

@@ -8,9 +8,9 @@
     align-items: center;
 
     /* Flat Design - No Shadows/Gradients */
-    background: #020617;
+    background: #000000;
     /* bg-admin-dark */
-    border-bottom: 1px solid #1E293B;
+    border-bottom: 1px solid var(--tui-border-subtle);
     /* border-admin */
 
     /* Spacing using rem/cqw hybrid as per SKILL.md for Admin Modals */
@@ -37,12 +37,12 @@
     gap: 0.5rem;
 
     background: transparent;
-    border: 1px solid #1E293B;
-    color: #94A3B8;
+    border: 1px solid var(--tui-border-subtle);
+    color: var(--tui-text-secondary);
     /* text-secondary */
 
     padding: 0.4rem 0.8rem;
-    border-radius: 4px;
+    border-radius: 0;
     /* Minimal radius */
 
     font-family: 'Inter', sans-serif;
@@ -55,17 +55,17 @@
 }
 
 .pt-btn:hover:not(:disabled) {
-    background: #0D1624;
+    background: var(--tui-bone-08);
     /* bg-admin-panel */
-    color: #F0F6FC;
+    color: var(--tui-bone);
     /* text-primary */
-    border-color: #334155;
+    border-color: rgb(var(--tui-bone-rgb) / 0.4);
 }
 
 .pt-btn:active:not(:disabled) {
     transform: none;
     /* No movement */
-    background: #1E293B;
+    background: var(--tui-bone-12);
 }
 
 .pt-btn.disabled {
@@ -92,7 +92,7 @@
     font-family: 'Inter', sans-serif;
     font-size: 0.75rem;
     text-transform: uppercase;
-    color: #64748B;
+    color: var(--tui-text-muted);
     /* Darker label */
     font-weight: 600;
     letter-spacing: 0.05em;
@@ -100,14 +100,14 @@
 }
 
 .pt-input-wrapper input {
-    background: rgba(5, 28, 30, 0.8);
+    background: rgba(0, 0, 0, 0.8);
     /* Hextech Panel BG */
-    border: 1px solid rgba(200, 170, 110, 0.3);
-    color: #F0E6D2;
+    border: 1px solid rgb(var(--tui-bone-rgb) / 0.3);
+    color: var(--tui-bone);
     /* text-primary */
 
     padding: 0.3rem 0.5rem;
-    border-radius: 2px;
+    border-radius: 0;
     /* Sharp corners */
     width: 3.5rem;
 
@@ -123,7 +123,7 @@
 }
 
 .pt-input-wrapper input:focus {
-    border-color: #c8aa6e;
+    border-color: var(--tui-primary);
     /* gold highlight on focus */
 }
 

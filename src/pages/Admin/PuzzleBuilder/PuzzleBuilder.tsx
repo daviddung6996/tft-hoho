@@ -178,7 +178,7 @@ const PuzzleBuilder: React.FC<PuzzleBuilderProps> = ({ onClose, onSaveSuccess, i
                 )}
 
                 {viewMode === 'augments' && (
-                    <div className="pb-builder-view admin-content-transition" key="augments" style={{ padding: '2cqw', color: '#fff' }}>
+                    <div className="pb-builder-view admin-content-transition" key="augments" style={{ padding: '2cqw', color: 'var(--tui-bone)' }}>
                         <h3>Lựa chọn Augments</h3>
                         <p>Cấu hình lựa chọn Augments, Roll lại và lựa chọn cuối cùng.</p>
                         <AugmentChoiceBuilder
@@ -209,7 +209,7 @@ const PuzzleBuilder: React.FC<PuzzleBuilderProps> = ({ onClose, onSaveSuccess, i
             {showCancelConfirm && (
                 <div style={{
                     position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
-                    background: 'radial-gradient(ellipse at 50% 30%, rgba(200, 170, 110, 0.06) 0%, transparent 50%), radial-gradient(ellipse at 50% 80%, rgba(21, 58, 62, 0.25) 0%, transparent 50%), rgba(0, 0, 0, 0.78)',
+                    background: 'rgba(0, 0, 0, 0.78)',
                     display: 'flex',
                     justifyContent: 'center', alignItems: 'center', zIndex: 2000,
                     backdropFilter: 'blur(8px)',
@@ -217,41 +217,40 @@ const PuzzleBuilder: React.FC<PuzzleBuilderProps> = ({ onClose, onSaveSuccess, i
                 }} onClick={() => setShowCancelConfirm(false)}>
                     <div className="hex-panel" style={{
                         width: '400px', padding: 0, display: 'flex', flexDirection: 'column',
-                        border: '1px solid #c8aa6e',
-                        background: 'linear-gradient(180deg, #153a3e 0%, #051c1e 100%)',
-                        boxShadow: '0 0 20px rgba(200, 170, 110, 0.25)',
-                        borderRadius: '4px', overflow: 'hidden'
+                        border: '1px solid var(--tui-border)',
+                        background: '#000000',
+                        borderRadius: '0', overflow: 'hidden'
                     }} onClick={e => e.stopPropagation()}>
                         <div style={{
-                            padding: '1.5rem', borderBottom: '1px solid rgba(200, 170, 110, 0.3)',
+                            padding: '1.5rem', borderBottom: '1px solid rgb(var(--tui-bone-rgb) / 0.3)',
                             textAlign: 'center'
                         }}>
                             <h3 style={{
-                                color: '#c8aa6e', margin: 0, fontFamily: 'Spectral, serif',
+                                color: 'var(--tui-bone)', margin: 0, fontFamily: 'Spectral, serif',
                                 textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '1.25rem'
                             }}>Xác nhận huỷ</h3>
                         </div>
                         <div style={{ padding: '2rem 1.5rem' }}>
                             <p style={{
-                                color: '#F0F6FC', textAlign: 'center', lineHeight: 1.6,
+                                color: 'var(--tui-bone)', textAlign: 'center', lineHeight: 1.6,
                                 margin: 0, fontFamily: 'Inter, sans-serif'
                             }}>
                                 Bạn có chắc muốn huỷ?
-                                <span style={{ fontSize: '0.9em', color: '#94A3B8', display: 'block', marginTop: '0.5rem' }}>
+                                <span style={{ fontSize: '0.9em', color: 'var(--tui-text-secondary)', display: 'block', marginTop: '0.5rem' }}>
                                     Mọi thay đổi chưa lưu sẽ bị mất.
                                 </span>
                             </p>
                         </div>
                         <div style={{
-                            padding: '1.5rem', borderTop: '1px solid rgba(200, 170, 110, 0.3)',
+                            padding: '1.5rem', borderTop: '1px solid rgb(var(--tui-bone-rgb) / 0.3)',
                             display: 'flex', gap: '1rem', justifyContent: 'center',
                             background: 'rgba(0, 0, 0, 0.2)'
                         }}>
                             <button onClick={() => setShowCancelConfirm(false)} style={{
-                                flex: 1, background: 'transparent', border: '1px solid #c8aa6e',
-                                color: '#c8aa6e', padding: '0.6rem 1rem', cursor: 'pointer',
+                                flex: 1, background: 'transparent', border: '1px solid var(--tui-primary)',
+                                color: 'var(--tui-primary)', padding: '0.6rem 1rem', cursor: 'pointer',
                                 fontFamily: 'Inter, sans-serif', textTransform: 'uppercase',
-                                fontSize: '0.9rem', borderRadius: '2px', transition: 'all 0.2s'
+                                fontSize: '0.9rem', borderRadius: '0', transition: 'all 0.2s'
                             }}>Tiếp tục</button>
                             <button onClick={onClose} style={{
                                 flex: 1, background: 'linear-gradient(180deg, #FF4E50 0%, #C0392B 100%)',

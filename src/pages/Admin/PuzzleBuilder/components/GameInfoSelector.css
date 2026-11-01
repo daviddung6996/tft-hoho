@@ -20,28 +20,27 @@
     align-items: center;
     justify-content: center;
     gap: 0.3cqw;
-    background: rgba(21, 58, 62, 0.3);
-    border: 0.05cqw dashed rgba(200, 170, 110, 0.5);
+    background: var(--tui-bone-04);
+    border: 0.05cqw dashed rgb(var(--tui-primary-rgb) / 0.5);
     padding: 0.6cqw 0.4cqw;
-    border-radius: 0.2cqw;
+    border-radius: 0;
     cursor: pointer;
     transition: border-color 0.15s, box-shadow 0.15s;
     position: relative;
 }
 
 .gis-slot:hover {
-    border-color: #c8aa6e;
-    box-shadow: 0 0 0.5cqw rgba(200, 170, 110, 0.2);
+    border-color: var(--tui-primary);
 }
 
 .gis-slot-plus {
-    color: #c8aa6e;
+    color: var(--tui-primary);
     font-size: 1.2cqw;
     font-weight: 300;
 }
 
 .gis-slot-hint {
-    color: rgba(200, 170, 110, 0.6);
+    color: rgb(var(--tui-primary-rgb) / 0.6);
     font-size: 0.65cqw;
     font-weight: 500;
 }
@@ -53,7 +52,7 @@
 }
 
 .gis-slot-label {
-    color: #F0E6D2;
+    color: var(--tui-bone);
     font-size: 0.7cqw;
     font-weight: 500;
     max-width: 7.5cqw;
@@ -69,9 +68,9 @@
     width: 1cqw;
     height: 1cqw;
     background: rgba(0, 0, 0, 0.6);
-    border: 0.05cqw solid #c8aa6e;
+    border: 0.05cqw solid var(--tui-primary);
     border-radius: 50%;
-    color: #c8aa6e;
+    color: var(--tui-primary);
     font-size: 0.5cqw;
     cursor: pointer;
     display: flex;
@@ -80,7 +79,7 @@
 }
 
 .gis-slot-clear:hover {
-    background: rgba(200, 170, 110, 0.2);
+    background: rgb(var(--tui-primary-rgb) / 0.2);
 }
 
 /* ==========================================================================
@@ -93,14 +92,11 @@
     width: 100%;
     height: 100%;
     background:
-        radial-gradient(ellipse at 50% 30%, rgba(200, 170, 110, 0.06) 0%, transparent 50%),
-        radial-gradient(ellipse at 50% 80%, rgba(21, 58, 62, 0.25) 0%, transparent 50%),
         rgba(0, 0, 0, 0.78);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 9999;
-    backdrop-filter: blur(8px);
     animation: hex-overlay-in 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -109,24 +105,23 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: linear-gradient(180deg, #153a3e 0%, #051c1e 100%);
+    background: #000000;
     width: 28cqw;
     min-width: 400px;
     max-width: 90vw;
     max-height: 70vh;
-    border: 0.1cqw solid #c8aa6e;
-    border-radius: 0.3cqw;
+    border: 0.1cqw solid var(--tui-border);
+    border-radius: 0;
     display: flex;
     flex-direction: column;
     box-shadow:
-        0 0 1.5cqw rgba(200, 170, 110, 0.25),
         0 0 3cqw rgba(0, 0, 0, 0.6);
     z-index: 10000;
 }
 
 .gis-modal-header {
     padding: 0.8cqw;
-    border-bottom: 0.05cqw solid rgba(200, 170, 110, 0.25);
+    border-bottom: 0.05cqw solid rgb(var(--tui-bone-rgb) / 0.25);
     display: flex;
     align-items: center;
     gap: 0.6cqw;
@@ -140,7 +135,7 @@
 
 .gis-modal-title {
     flex: 1;
-    color: #c8aa6e;
+    color: var(--tui-bone);
     font-family: 'Spectral', serif;
     font-size: 0.9cqw;
     font-weight: 600;
@@ -150,9 +145,9 @@
     width: 1.6cqw;
     height: 1.6cqw;
     background: rgba(0, 0, 0, 0.3);
-    border: 0.05cqw solid #c8aa6e;
-    border-radius: 0.2cqw;
-    color: #c8aa6e;
+    border: 0.05cqw solid var(--tui-primary);
+    border-radius: 0;
+    color: var(--tui-primary);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -161,7 +156,7 @@
 }
 
 .gis-modal-close:hover {
-    background: rgba(200, 170, 110, 0.15);
+    background: rgb(var(--tui-primary-rgb) / 0.15);
 }
 
 .gis-modal-content {
@@ -180,32 +175,30 @@
 .gis-option {
     padding: 0.6cqw;
     background: rgba(0, 0, 0, 0.2);
-    border: 0.05cqw solid rgba(200, 170, 110, 0.2);
-    border-radius: 0.2cqw;
+    border: 0.05cqw solid rgb(var(--tui-bone-rgb) / 0.2);
+    border-radius: 0;
     cursor: pointer;
     transition: border-color 0.15s, box-shadow 0.15s;
 }
 
 .gis-option:hover {
-    border-color: rgba(200, 170, 110, 0.5);
-    box-shadow: 0 0 0.4cqw rgba(200, 170, 110, 0.1);
+    border-color: rgb(var(--tui-primary-rgb) / 0.5);
 }
 
 .gis-option.selected {
-    background: rgba(21, 58, 62, 0.5);
-    border-color: #c8aa6e;
-    box-shadow: 0 0 0.4cqw rgba(200, 155, 60, 0.2);
+    background: var(--tui-primary-12);
+    border-color: var(--tui-primary);
 }
 
 .gis-option-name {
-    color: #F0E6D2;
+    color: var(--tui-bone);
     font-weight: 600;
     font-size: 0.75cqw;
     margin-bottom: 0.2cqw;
 }
 
 .gis-option-desc {
-    color: #94A3B8;
+    color: var(--tui-text-secondary);
     font-size: 0.65cqw;
     line-height: 1.4;
 }
@@ -219,9 +212,8 @@
 }
 
 .gis-mod-option.selected {
-    background: rgba(21, 58, 62, 0.5);
-    border-color: #c8aa6e;
-    box-shadow: 0 0 0.4cqw rgba(200, 170, 110, 0.2);
+    background: var(--tui-primary-12);
+    border-color: var(--tui-primary);
 }
 
 .gis-mod-badge {
@@ -230,15 +222,14 @@
     left: -0.3cqw;
     width: 1.1cqw;
     height: 1.1cqw;
-    background: #c8aa6e;
+    background: var(--tui-primary);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 0.6cqw;
     font-weight: 700;
-    color: #fff;
-    box-shadow: 0 0 0.4cqw rgba(200, 170, 110, 0.35);
+    color: #000000;
 }
 
 .gis-mod-icon {
@@ -246,7 +237,7 @@
     height: 3cqw;
     flex-shrink: 0;
     object-fit: contain;
-    border-radius: 0.2cqw;
+    border-radius: 0;
 }
 
 .gis-option-info {

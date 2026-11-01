@@ -231,7 +231,7 @@ export const TrashView: React.FC<TrashViewProps> = ({ onRestore, onPermanentDele
                 alignItems: 'center',
                 justifyContent: 'center',
                 height: '100%',
-                color: '#94A3B8',
+                color: 'var(--tui-text-secondary)',
                 gap: '1cqw'
             }}>
                 <div style={{ fontSize: '1cqw' }}>Đang tải thùng rác...</div>
@@ -247,7 +247,7 @@ export const TrashView: React.FC<TrashViewProps> = ({ onRestore, onPermanentDele
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 padding: '0.8cqw 1cqw',
-                borderBottom: '0.1cqw solid rgba(200, 170, 110, 0.2)',
+                borderBottom: '0.1cqw solid rgb(var(--tui-bone-rgb) / 0.2)',
                 flexShrink: 0,
                 gap: '2cqw'
             }}>
@@ -274,7 +274,7 @@ export const TrashView: React.FC<TrashViewProps> = ({ onRestore, onPermanentDele
                         onChange={(e) => setSearchTerm(e.target.value)}
                         style={{ minWidth: '15cqw' }}
                     />
-                    <span style={{ color: '#94A3B8', fontSize: '0.9cqw', whiteSpace: 'nowrap' }}>
+                    <span style={{ color: 'var(--tui-text-secondary)', fontSize: '0.9cqw', whiteSpace: 'nowrap' }}>
                         {filteredTrashItems.length} mục trong thùng rác
                     </span>
                 </div>
@@ -314,7 +314,7 @@ export const TrashView: React.FC<TrashViewProps> = ({ onRestore, onPermanentDele
                         alignItems: 'center',
                         justifyContent: 'center',
                         height: '100%',
-                        color: '#94A3B8',
+                        color: 'var(--tui-text-secondary)',
                         gap: '1cqw',
                         paddingTop: '5cqw'
                     }}>
@@ -360,11 +360,11 @@ export const TrashView: React.FC<TrashViewProps> = ({ onRestore, onPermanentDele
                                         </td>
                                         <td>
                                             <span style={{
-                                                background: 'rgba(200, 170, 110, 0.15)',
-                                                border: '0.05cqw solid #c8aa6e',
-                                                color: '#c8aa6e',
+                                                background: 'rgb(var(--tui-bone-rgb) / 0.15)',
+                                                border: '0.05cqw solid var(--tui-border)',
+                                                color: 'var(--tui-bone)',
                                                 padding: '0.2cqw 0.6cqw',
-                                                borderRadius: '0.3cqw',
+                                                borderRadius: '0',
                                                 fontSize: '0.7cqw',
                                                 textTransform: 'capitalize'
                                             }}>
@@ -377,7 +377,7 @@ export const TrashView: React.FC<TrashViewProps> = ({ onRestore, onPermanentDele
                                             </span>
                                         </td>
                                         <td>
-                                            <div style={{ fontWeight: 500, color: '#F0E6D2' }}>
+                                            <div style={{ fontWeight: 500, color: 'var(--tui-bone)' }}>
                                                 {data.name || data.title || data.text || 'Không tên'}
                                             </div>
                                         </td>
@@ -387,12 +387,12 @@ export const TrashView: React.FC<TrashViewProps> = ({ onRestore, onPermanentDele
                                             </div>
                                         </td>
                                         <td>
-                                            <span style={{ fontSize: '0.8cqw', color: '#94A3B8' }}>
+                                            <span style={{ fontSize: '0.8cqw', color: 'var(--tui-text-secondary)' }}>
                                                 {formatDate(item.deleted_at)}
                                             </span>
                                         </td>
                                         <td>
-                                            <span style={{ fontSize: '0.75cqw', color: '#94A3B8', fontStyle: 'italic' }}>
+                                            <span style={{ fontSize: '0.75cqw', color: 'var(--tui-text-secondary)', fontStyle: 'italic' }}>
                                                 {item.type === 'champions' && `Cost: ${data.cost || 'N/A'}`}
                                                 {item.type === 'traits' && `Active: ${data.breakpoints?.join(', ') || 'N/A'}`}
                                                 {item.type === 'items' && `Combined: ${data.combined || 'N/A'}`}

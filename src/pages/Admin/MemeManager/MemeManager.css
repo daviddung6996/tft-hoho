@@ -2,18 +2,11 @@
 /* Colors sourced from hextech-core/resources/design-tokens.json */
 
 /*
-  HEXTECH TOKENS USED:
-  --hex-gold:        #c8aa6e   (primary.DEFAULT)
-  --hex-gold-hover:  #d4b876   (primary.hover)
-  --hex-bg-modal:    #0d2e30   (background.modal_shell)
-  --hex-bg-dark:     #081e20   (background.modal_shell_dark)
-  --hex-text-title:  #F0E6D2   (text.title_cream)
-  --hex-text-body:   #94A3B8   (text.body)
-  --hex-text-muted:  rgba(200, 170, 110, 0.45)  (text.muted)
-  --hex-text-label:  rgba(200, 170, 110, 0.75)  (text.labels)
-  --hex-border-outer: rgba(200, 170, 110, 0.45) (border.outer_prominent)
-  --hex-border-div:   rgba(200, 170, 110, 0.30) (border.section_divider)
-  --hex-border-sub:   rgba(200, 170, 110, 0.15) (border.subtle_inner)
+  ROUND-2 (After Hours + primary #DD3C50) TOKENS USED:
+  structural borders/dividers -> Bone washes; interactive chrome, focus,
+  active states -> primary; headings/labels/body -> Bone steps.
+  KEPT: Meme correct/incorrect signal pair (gold + dim gold + teal-dark
+  incorrect tile) per kept-signal decision -- do not hue-swap to primary.
 */
 
 .meme-manager {
@@ -36,9 +29,9 @@
     font-size: 0.75cqw;
     font-weight: 600;
     padding: 0.3cqw 0.6cqw;
-    background: rgba(13, 46, 48, 0.5);
-    border: 0.05cqw solid rgba(200, 170, 110, 0.15);
-    color: #94A3B8;
+    background: var(--tui-bone-12);
+    border: 0.05cqw solid rgb(var(--tui-bone-rgb) / 0.15);
+    color: var(--tui-text-secondary);
     /* text.body */
 }
 
@@ -49,7 +42,7 @@
 }
 
 .meme-stat.incorrect {
-    color: #94A3B8;
+    color: var(--tui-text-secondary);
     /* text.body */
 }
 
@@ -70,17 +63,17 @@
     font-size: 0.7cqw;
     padding: 0.3cqw 0.6cqw;
     background: rgba(8, 30, 32, 0.6);
-    border: 0.05cqw solid rgba(200, 170, 110, 0.15);
-    color: #94A3B8;
+    border: 0.05cqw solid rgb(var(--tui-bone-rgb) / 0.15);
+    color: var(--tui-text-secondary);
     /* text.body */
     cursor: pointer;
     transition: all 0.2s;
 }
 
 .meme-filter-btn.active {
-    background: rgba(200, 170, 110, 0.12);
-    border-color: #c8aa6e;
-    color: #c8aa6e;
+    background: var(--tui-primary-12);
+    border-color: var(--tui-primary);
+    color: var(--tui-primary);
 }
 
 /* Modal Overlay */
@@ -88,10 +81,7 @@
     position: fixed;
     inset: 0;
     background:
-        radial-gradient(ellipse at 50% 30%, rgba(200, 170, 110, 0.06) 0%, transparent 50%),
-        radial-gradient(ellipse at 50% 80%, rgba(21, 58, 62, 0.25) 0%, transparent 50%),
         rgba(0, 0, 0, 0.78);
-    backdrop-filter: blur(8px);
     animation: hex-overlay-in 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     z-index: 1000;
     display: flex;
@@ -101,9 +91,9 @@
 
 /* Form */
 .meme-form {
-    background: #0d2e30;
+    background: #000000;
     /* background.modal_shell */
-    border: 0.08cqw solid rgba(200, 170, 110, 0.45);
+    border: 0.08cqw solid rgb(var(--tui-bone-rgb) / 0.45);
     /* border.outer_prominent */
     padding: 1.5cqw;
     display: flex;
@@ -111,7 +101,6 @@
     gap: 0.8cqw;
     width: 40cqw;
     max-width: 600px;
-    box-shadow: 0 0 2cqw rgba(200, 170, 110, 0.12);
 }
 
 .meme-form-header {
@@ -123,7 +112,7 @@
 .meme-form-close {
     background: none;
     border: none;
-    color: rgba(200, 170, 110, 0.45);
+    color: rgb(var(--tui-bone-rgb) / 0.45);
     /* text.muted */
     font-size: 1cqw;
     cursor: pointer;
@@ -133,7 +122,7 @@
 }
 
 .meme-form-close:hover {
-    color: #c8aa6e;
+    color: var(--tui-primary);
     /* primary.DEFAULT */
 }
 
@@ -141,7 +130,7 @@
     font-family: 'Spectral', serif;
     font-size: 0.9cqw;
     font-weight: 700;
-    color: #c8aa6e;
+    color: var(--tui-bone);
     /* text.heading_gold */
     text-transform: uppercase;
 }
@@ -165,7 +154,7 @@
 .meme-form-field label {
     font-family: 'Inter', sans-serif;
     font-size: 0.65cqw;
-    color: rgba(200, 170, 110, 0.75);
+    color: var(--tui-text-secondary);
     /* text.labels */
     text-transform: uppercase;
     font-weight: 600;
@@ -198,7 +187,7 @@
 
 .meme-preview-label {
     font-size: 0.6cqw;
-    color: rgba(200, 170, 110, 0.45);
+    color: rgb(var(--tui-bone-rgb) / 0.45);
     /* text.muted */
     font-weight: 600;
     text-transform: uppercase;
@@ -218,13 +207,13 @@
     font-family: 'Spectral', serif;
     font-size: 0.85cqw;
     font-weight: 700;
-    color: #F0E6D2;
+    color: var(--tui-bone);
     /* text.title_cream */
 }
 
 .meme-preview-insight {
     font-size: 0.65cqw;
-    color: #94A3B8;
+    color: var(--tui-text-secondary);
     /* text.body */
     width: 100%;
 }
@@ -241,8 +230,8 @@
     justify-content: space-between;
     align-items: center;
     padding: 0.5cqw 0.8cqw;
-    background: rgba(13, 46, 48, 0.3);
-    border: 0.05cqw solid rgba(200, 170, 110, 0.15);
+    background: var(--tui-bone-04);
+    border: 0.05cqw solid rgb(var(--tui-bone-rgb) / 0.15);
     transition: opacity 0.2s;
 }
 
@@ -295,7 +284,7 @@
     font-family: 'Inter', sans-serif;
     font-size: 0.75cqw;
     font-weight: 600;
-    color: #F0E6D2;
+    color: var(--tui-bone);
     /* text.title_cream */
     white-space: nowrap;
     overflow: hidden;
@@ -304,7 +293,7 @@
 
 .meme-card-insight {
     font-size: 0.6cqw;
-    color: rgba(200, 170, 110, 0.45);
+    color: rgb(var(--tui-bone-rgb) / 0.45);
     /* text.muted */
     white-space: nowrap;
     overflow: hidden;
@@ -321,7 +310,7 @@
 .meme-empty {
     text-align: center;
     padding: 2cqw;
-    color: rgba(200, 170, 110, 0.45);
+    color: rgb(var(--tui-bone-rgb) / 0.45);
     /* text.muted */
     font-size: 0.8cqw;
 }
@@ -329,7 +318,7 @@
 .meme-loading {
     text-align: center;
     padding: 2cqw;
-    color: #94A3B8;
+    color: var(--tui-text-secondary);
     /* text.body */
 }
 

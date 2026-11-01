@@ -5,7 +5,7 @@
     padding: 2rem;
     width: 100%;
     height: 100%;
-    color: #F0F6FC;
+    color: var(--tui-bone);
     overflow-y: auto;
     box-sizing: border-box;
     align-items: center;
@@ -28,9 +28,9 @@
     gap: 1rem;
     position: relative;
     padding: 1rem;
-    background: rgba(5, 28, 30, 0.2);
-    border: 0.1cqw solid rgba(200, 170, 110, 0.1);
-    border-radius: 0.5cqw;
+    background: var(--tui-bone-04);
+    border: 0.1cqw solid rgb(var(--tui-bone-rgb) / 0.1);
+    border-radius: 0;
 }
 
 .acb-slot-group {
@@ -42,7 +42,7 @@
 
 .acb-slot-label {
     font-family: 'Spectral', serif;
-    color: #c8aa6e;
+    color: var(--tui-bone);
     text-transform: uppercase;
     font-size: 0.9rem;
     letter-spacing: 0.05em;
@@ -59,8 +59,8 @@
     width: 8rem;
     height: 8rem;
     background: rgba(0, 0, 0, 0.4);
-    border: 0.1cqw dashed rgba(200, 170, 110, 0.4);
-    border-radius: 0.5cqw;
+    border: 0.1cqw dashed rgb(var(--tui-primary-rgb) / 0.4);
+    border-radius: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -72,26 +72,24 @@
 }
 
 .acb-slot:hover {
-    background: rgba(21, 58, 62, 0.6);
-    border-color: #c8aa6e;
-    box-shadow: 0 0 1.5cqw rgba(200, 170, 110, 0.2);
+    background: var(--tui-bone-12);
+    border-color: var(--tui-primary);
 }
 
 .acb-slot.filled {
     border-style: solid;
-    background: linear-gradient(135deg, rgba(21, 58, 62, 0.8) 0%, rgba(5, 28, 30, 0.9) 100%);
+    background: var(--tui-bone-12);
 }
 
 .acb-slot.pro-picked {
-    box-shadow: 0 0 2cqw #c8aa6e, inset 0 0 1cqw rgba(200, 170, 110, 0.5);
-    border-color: #c8aa6e;
+    border-color: var(--tui-primary);
 }
 
 .acb-slot-icon {
     width: 4rem;
     height: 4rem;
-    border: 0.1cqw solid #c8aa6e;
-    border-radius: 0.25cqw;
+    border: 0.1cqw solid var(--tui-border);
+    border-radius: 0;
     margin-bottom: 0.5rem;
     object-fit: cover;
 }
@@ -99,7 +97,7 @@
 .acb-slot-name {
     font-size: 0.8rem;
     text-align: center;
-    color: #fff;
+    color: var(--tui-bone);
     width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -115,7 +113,7 @@
     height: auto;
     background: none;
     border: none;
-    color: #94A3B8;
+    color: var(--tui-text-secondary);
     /* Blue Grey - Unobtrusive */
     font-size: 1cqw;
     font-weight: normal;
@@ -138,7 +136,7 @@
 }
 
 .acb-slot-clear:hover {
-    color: #F0F6FC;
+    color: var(--tui-bone);
     /* White on hover */
     background: none;
     transform: none;
@@ -146,13 +144,13 @@
 
 .acb-arrow {
     font-size: 1.5rem;
-    color: #c8aa6e;
+    color: var(--tui-primary);
     margin: 0.5rem 0;
 }
 
 .acb-empty-icon {
     font-size: 2rem;
-    color: rgba(200, 170, 110, 0.5);
+    color: rgb(var(--tui-bone-rgb) / 0.5);
 }
 
 /* Action Buttons (Pro Reroll / Pick) */
@@ -166,10 +164,10 @@
     width: 2rem;
     height: 2rem;
     border-radius: 50%;
-    border: 0.1cqw solid #4a5568;
+    border: 0.1cqw solid rgb(var(--tui-bone-rgb) / 0.3);
     /* Default inactive border */
     background: rgba(0, 0, 0, 0.4);
-    color: #4a5568;
+    color: var(--tui-text-muted);
     font-weight: bold;
     cursor: pointer;
     font-family: 'Inter', sans-serif;
@@ -187,38 +185,35 @@
     right: -0.3cqw;
     width: 1cqw;
     height: 1cqw;
-    background: #ef4444;
+    background: var(--tui-primary);
     /* Red or Gold depending on preference, User asked for badge */
-    color: #fff;
+    color: #000000;
     border-radius: 50%;
     font-size: 0.6cqw;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 0.1cqw solid #fff;
+    border: 0.1cqw solid var(--tui-bone);
     font-weight: 700;
-    box-shadow: 0 0 0.2cqw rgba(0, 0, 0, 0.5);
 }
 
 .acb-action-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: #ccc;
+    background: rgb(var(--tui-bone-rgb) / 0.1);
+    color: var(--tui-bone);
 }
 
 /* Reroll Button */
 .acb-action-btn.reroll.active {
-    background: #c8aa6e;
+    background: var(--tui-primary);
     color: #000;
-    border-color: #c8aa6e;
-    box-shadow: 0 0 0.5cqw rgba(200, 170, 110, 0.4);
+    border-color: var(--tui-primary);
 }
 
 /* Pick Button */
 .acb-action-btn.pick.active {
-    background: #c8aa6e;
-    color: #051c1e;
-    border-color: #c8aa6e;
-    box-shadow: 0 0 0.8cqw rgba(200, 170, 110, 0.4);
+    background: var(--tui-primary);
+    color: #000000;
+    border-color: var(--tui-primary);
 }
 
 /* Toggle Switch Styles */
@@ -228,7 +223,7 @@
     margin-top: 1rem;
     padding-top: 1rem;
     padding-bottom: 2rem;
-    border-top: 0.1cqw solid rgba(200, 170, 110, 0.2);
+    border-top: 0.1cqw solid rgb(var(--tui-bone-rgb) / 0.2);
     width: 100%;
     max-width: 60cqw;
 }
@@ -239,7 +234,7 @@
     gap: 1rem;
     cursor: pointer;
     font-family: 'Spectral', serif;
-    color: #c8aa6e;
+    color: var(--tui-bone);
     font-size: 1.1rem;
 }
 
@@ -252,7 +247,7 @@
     width: 3.5rem;
     height: 1.8rem;
     background-color: rgba(0, 0, 0, 0.5);
-    border: 0.1cqw solid #4a5568;
+    border: 0.1cqw solid rgb(var(--tui-bone-rgb) / 0.3);
     border-radius: 2rem;
     transition: all 0.3s ease;
 }
@@ -264,20 +259,19 @@
     height: 1.4rem;
     left: 0.15rem;
     top: 0.1rem;
-    background-color: #94a3b8;
+    background-color: var(--tui-text-secondary);
     border-radius: 50%;
     transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 
 .acb-toggle-input:checked+.acb-toggle-slider {
-    background-color: rgba(200, 155, 60, 0.2);
-    border-color: #c8aa6e;
+    background-color: rgb(var(--tui-primary-rgb) / 0.2);
+    border-color: var(--tui-primary);
 }
 
 .acb-toggle-input:checked+.acb-toggle-slider::before {
     left: 1.85rem;
-    background-color: #c8aa6e;
-    box-shadow: 0 0 10px rgba(200, 155, 60, 0.5);
+    background-color: var(--tui-primary);
 }
 
 /* Modal Styles - Centered & cqw based */
@@ -288,8 +282,6 @@
     width: 100%;
     height: 100%;
     background:
-        radial-gradient(ellipse at 50% 30%, rgba(200, 170, 110, 0.06) 0%, transparent 50%),
-        radial-gradient(ellipse at 50% 80%, rgba(21, 58, 62, 0.25) 0%, transparent 50%),
         rgba(0, 0, 0, 0.78);
     display: flex;
     align-items: center;
@@ -299,14 +291,14 @@
 }
 
 .acb-modal {
-    background: linear-gradient(180deg, #153a3e 0%, #051c1e 100%);
+    background: #000000;
     width: 60cqw;
     height: 45cqw;
-    border: 0.1cqw solid #c8aa6e;
-    border-radius: 0.5cqw;
+    border: 0.1cqw solid var(--tui-border);
+    border-radius: 0;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 0 2cqw rgba(0, 0, 0, 0.8), 0 0 1cqw rgba(200, 170, 110, 0.2);
+    box-shadow: 0 0 2cqw rgba(0, 0, 0, 0.8);
     position: relative;
     overflow: hidden;
     /* Prevent overflow leaks */
@@ -314,7 +306,7 @@
 
 .acb-modal-header {
     padding: 1.5cqw;
-    border-bottom: 0.1cqw solid rgba(200, 170, 110, 0.25);
+    border-bottom: 0.1cqw solid rgb(var(--tui-bone-rgb) / 0.25);
     display: flex;
     gap: 1cqw;
     align-items: center;
@@ -325,27 +317,26 @@
 .acb-search-input {
     flex: 1;
     background: rgba(0, 0, 0, 0.3);
-    border: 0.1cqw solid rgba(200, 170, 110, 0.3);
-    color: #f0f6fc;
+    border: 0.1cqw solid rgb(var(--tui-bone-rgb) / 0.3);
+    color: var(--tui-bone);
     padding: 0.5cqw 1cqw;
-    border-radius: 0.25cqw;
+    border-radius: 0;
     font-size: 1cqw;
     outline: none;
     height: 80%;
 }
 
 .acb-search-input:focus {
-    border-color: #c8aa6e;
-    box-shadow: 0 0 0.5cqw rgba(200, 170, 110, 0.2);
+    border-color: var(--tui-primary);
 }
 
 .acb-modal-close {
     width: 2.5cqw;
     height: 2.5cqw;
     background: rgba(0, 0, 0, 0.3);
-    border: 0.1cqw solid #c8aa6e;
-    border-radius: 0.25cqw;
-    color: #c8aa6e;
+    border: 0.1cqw solid var(--tui-primary);
+    border-radius: 0;
+    color: var(--tui-primary);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -354,7 +345,7 @@
 }
 
 .acb-modal-close:hover {
-    background: rgba(200, 170, 110, 0.15);
+    background: rgb(var(--tui-primary-rgb) / 0.15);
 }
 
 .acb-modal-grid {
@@ -374,21 +365,21 @@
     gap: 0.5cqw;
     cursor: pointer;
     padding: 0.5cqw;
-    border-radius: 0.5cqw;
+    border-radius: 0;
     border: 0.1cqw solid transparent;
     transition: all 0.2s;
 }
 
 .acb-modal-item:hover {
-    background: rgba(200, 170, 110, 0.1);
-    border-color: rgba(200, 170, 110, 0.3);
+    background: rgb(var(--tui-primary-rgb) / 0.1);
+    border-color: rgb(var(--tui-primary-rgb) / 0.3);
 }
 
 .acb-modal-icon {
     width: 5cqw;
     height: 5cqw;
-    border: 0.1cqw solid #4a5568;
-    border-radius: 0.25cqw;
+    border: 0.1cqw solid rgb(var(--tui-bone-rgb) / 0.3);
+    border-radius: 0;
     margin-bottom: 0.5rem;
     object-fit: cover;
 }
@@ -396,6 +387,6 @@
 .acb-modal-name {
     font-size: 0.8cqw;
     text-align: center;
-    color: #94a3b8;
+    color: var(--tui-text-secondary);
     line-height: 1.2;
 }

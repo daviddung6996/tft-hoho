@@ -110,9 +110,9 @@ const BoardTab: React.FC<BoardTabProps> = ({
                             onClick={() => onOpponentSelect(idx)}
                             style={{
                                 padding: '8px 16px',
-                                background: selectedOpponentIndex === idx ? 'linear-gradient(180deg, #1A4F55 0%, #0C2B2E 100%)' : 'rgba(0,0,0,0.5)',
-                                border: selectedOpponentIndex === idx ? '1px solid #00A3FF' : '1px solid #c8aa6e',
-                                color: selectedOpponentIndex === idx ? '#fff' : '#c8aa6e',
+                                background: selectedOpponentIndex === idx ? 'rgba(0, 163, 255, 0.15)' : 'rgba(0,0,0,0.5)',
+                                border: selectedOpponentIndex === idx ? '1px solid #00A3FF' : '1px solid var(--tui-border)',
+                                color: selectedOpponentIndex === idx ? '#fff' : 'var(--tui-bone)',
                                 cursor: 'pointer',
                                 fontFamily: 'Spectral'
                             }}

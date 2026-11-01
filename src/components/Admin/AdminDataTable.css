@@ -19,7 +19,7 @@
 }
 
 .admin-table-container::-webkit-scrollbar-thumb {
-    background: rgba(200, 170, 110, 0.3);
+    background: rgb(var(--tui-primary-rgb) / 0.3);
 }
 
 .admin-table {
@@ -27,40 +27,39 @@
     table-layout: fixed;
     border-collapse: separate;
     border-spacing: 0 0.4cqw;
-    color: #F0E6D2;
+    color: var(--tui-bone);
     font-size: 0.9cqw;
 }
 
 .admin-table th {
     position: sticky;
     top: 0;
-    background: linear-gradient(180deg, #153a3e 0%, #0d2a2e 100%);
-    backdrop-filter: blur(4px);
+    background: #000000;
     z-index: 10;
     text-align: left;
     padding: 0.8cqw 1cqw;
-    color: #F0E6D2;
+    color: var(--tui-bone);
     font-family: var(--font-heading);
     font-weight: 600;
     letter-spacing: 0.05em;
-    border-bottom: 0.08cqw solid rgba(200, 170, 110, 0.3);
+    border-bottom: 0.08cqw solid rgb(var(--tui-bone-rgb) / 0.3);
 }
 
 .admin-table td {
     padding: 0.8cqw 1cqw;
-    background: rgba(21, 58, 62, 0.4);
+    background: var(--tui-bone-08);
     vertical-align: middle;
     transition: all 0.2s ease;
-    border-top: 0.06cqw solid rgba(200, 170, 110, 0.1);
-    border-bottom: 0.06cqw solid rgba(200, 170, 110, 0.1);
+    border-top: 0.06cqw solid rgb(var(--tui-bone-rgb) / 0.1);
+    border-bottom: 0.06cqw solid rgb(var(--tui-bone-rgb) / 0.1);
 }
 
 .admin-table td:first-child {
-    border-left: 0.06cqw solid rgba(200, 170, 110, 0.1);
+    border-left: 0.06cqw solid rgb(var(--tui-bone-rgb) / 0.1);
 }
 
 .admin-table td:last-child {
-    border-right: 0.06cqw solid rgba(200, 170, 110, 0.1);
+    border-right: 0.06cqw solid rgb(var(--tui-bone-rgb) / 0.1);
 }
 
 .admin-table tbody tr {
@@ -68,8 +67,8 @@
 }
 
 .admin-table tbody tr:hover td {
-    background: rgba(21, 58, 62, 0.6);
-    border-color: rgba(200, 170, 110, 0.3);
+    background: var(--tui-bone-12);
+    border-color: rgb(var(--tui-primary-rgb) / 0.3);
 }
 
 /* Fade Out Animation */
@@ -82,21 +81,21 @@
 
 /* Zebra striping - subtle teal variation */
 .admin-table tbody tr:nth-child(even) td {
-    background: rgba(21, 58, 62, 0.3);
+    background: var(--tui-bone-04);
 }
 
 .admin-table tbody tr:nth-child(even):hover td {
-    background: rgba(21, 58, 62, 0.6);
+    background: var(--tui-bone-12);
 }
 
 /* Selected Row Highlight */
 .admin-table tr.selected-row td {
-    background: rgba(200, 170, 110, 0.08) !important;
-    border-color: rgba(200, 170, 110, 0.4) !important;
+    background: rgb(var(--tui-primary-rgb) / 0.08) !important;
+    border-color: rgb(var(--tui-primary-rgb) / 0.4) !important;
 }
 
 .admin-table tr.selected-row:hover td {
-    background: rgba(200, 170, 110, 0.12) !important;
+    background: var(--tui-primary-12) !important;
 }
 
 /* Column Specifics */
@@ -115,12 +114,12 @@
 .cell-pill {
     display: inline-block;
     padding: 0.2cqw 0.6cqw;
-    border-radius: 4px;
-    background: rgba(255, 255, 255, 0.05);
+    border-radius: 0;
+    background: rgb(var(--tui-bone-rgb) / 0.05);
     font-size: 0.75cqw;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgb(var(--tui-bone-rgb) / 0.1);
 }
 
 .cell-pill.rarity-1 {
@@ -162,7 +161,7 @@
 .champion-avatar {
     width: 3cqw;
     height: 3cqw;
-    border-radius: 4px;
+    border-radius: 0;
     border: 2px solid transparent;
     /* default */
     object-fit: cover;
@@ -200,8 +199,8 @@
     justify-content: center;
     padding: 0.6cqw 1.2cqw;
     background: transparent;
-    border: 0.1cqw solid #c8aa6e;
-    color: #F0E6D2;
+    border: 0.1cqw solid var(--tui-primary);
+    color: var(--tui-bone);
     font-family: 'Inter', sans-serif;
     font-size: 0.9cqw;
     font-weight: 500;
@@ -216,8 +215,7 @@
 
 /* Subtle hover glow - NO movement */
 .hex-button:hover {
-    border-color: #d4b876;
-    box-shadow: 0 0 0.8cqw rgba(200, 170, 110, 0.3);
+    border-color: var(--tui-primary);
 }
 
 /* Small Variant (e.g. Table Actions) */
@@ -229,14 +227,14 @@
 
 /* Primary Variant - Still just gold border */
 .hex-button.primary {
-    border-color: #c8aa6e;
-    color: #F0E6D2;
+    border-color: var(--tui-primary);
+    color: var(--tui-bone);
 }
 
 /* Danger Variant - Still just gold border */
 .hex-button.danger {
-    border-color: #c8aa6e;
-    color: #F0E6D2;
+    border-color: var(--tui-primary);
+    color: var(--tui-bone);
 }
 
 /* Action Buttons Container */

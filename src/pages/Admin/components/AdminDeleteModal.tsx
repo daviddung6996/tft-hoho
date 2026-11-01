@@ -18,7 +18,7 @@ const AdminDeleteModal: React.FC<AdminDeleteModalProps> = ({ isOpen, itemName, i
             left: 0,
             width: '100vw',
             height: '100vh',
-            background: 'radial-gradient(ellipse at 50% 30%, rgba(200, 170, 110, 0.06) 0%, transparent 50%), radial-gradient(ellipse at 50% 80%, rgba(21, 58, 62, 0.25) 0%, transparent 50%), rgba(0, 0, 0, 0.78)',
+            background: 'rgba(0, 0, 0, 0.78)',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
@@ -31,19 +31,18 @@ const AdminDeleteModal: React.FC<AdminDeleteModalProps> = ({ isOpen, itemName, i
                 padding: '0', // Reset padding for header/body split
                 display: 'flex',
                 flexDirection: 'column',
-                border: '1px solid #c8aa6e', // Hextech Gold
-                background: 'linear-gradient(180deg, #153a3e 0%, #051c1e 100%)',
-                boxShadow: '0 0 20px rgba(200, 170, 110, 0.25)', // Gold Glow
-                borderRadius: '4px',
+                border: '1px solid var(--tui-border)',
+                background: '#000000',
+                borderRadius: '0',
                 overflow: 'hidden'
             }}>
                 <div style={{
                     padding: '1.5rem',
-                    borderBottom: '1px solid rgba(200, 170, 110, 0.3)',
+                    borderBottom: '1px solid rgb(var(--tui-bone-rgb) / 0.3)',
                     textAlign: 'center'
                 }}>
                     <h3 style={{
-                        color: '#c8aa6e',
+                        color: 'var(--tui-bone)',
                         margin: 0,
                         fontFamily: 'Spectral, serif',
                         textTransform: 'uppercase',
@@ -56,7 +55,7 @@ const AdminDeleteModal: React.FC<AdminDeleteModalProps> = ({ isOpen, itemName, i
 
                 <div style={{ padding: '2rem 1.5rem' }}>
                     <p style={{
-                        color: '#F0F6FC',
+                        color: 'var(--tui-bone)',
                         textAlign: 'center',
                         lineHeight: '1.6',
                         margin: 0,
@@ -69,7 +68,7 @@ const AdminDeleteModal: React.FC<AdminDeleteModalProps> = ({ isOpen, itemName, i
                             display: 'block',
                             margin: '0.5rem 0'
                         }}>{itemName}</strong>
-                        <span style={{ fontSize: '0.9em', color: '#94A3B8', display: 'block' }}>
+                        <span style={{ fontSize: '0.9em', color: 'var(--tui-text-secondary)', display: 'block' }}>
                             Hành động này không thể hoàn tác.
                         </span>
                     </p>
@@ -77,7 +76,7 @@ const AdminDeleteModal: React.FC<AdminDeleteModalProps> = ({ isOpen, itemName, i
 
                 <div style={{
                     padding: '1.5rem',
-                    borderTop: '1px solid rgba(200, 170, 110, 0.3)',
+                    borderTop: '1px solid rgb(var(--tui-bone-rgb) / 0.3)',
                     display: 'flex',
                     gap: '1rem',
                     justifyContent: 'center',
@@ -89,8 +88,8 @@ const AdminDeleteModal: React.FC<AdminDeleteModalProps> = ({ isOpen, itemName, i
                         style={{
                             flex: 1,
                             background: 'transparent',
-                            border: '1px solid #c8aa6e',
-                            color: '#c8aa6e',
+                            border: '1px solid var(--tui-primary)',
+                            color: 'var(--tui-primary)',
                             padding: '0.6rem 1rem',
                             cursor: 'pointer',
                             fontFamily: 'Inter, sans-serif',
