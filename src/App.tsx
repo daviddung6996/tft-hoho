@@ -1,5 +1,7 @@
 
 import React, { useState, useEffect, useCallback, useMemo, Suspense } from 'react';
+import { ChunkErrorBoundary } from './components/common/ChunkErrorBoundary';
+import { lazyWithRetry } from './utils/chunkRecovery';
 import { usePuzzleGame } from './hooks/usePuzzleGame';
 import { useGameFlow } from './hooks/useGameFlow';
 import { usePuzzleToPlayers } from './hooks/usePuzzleToPlayers';
@@ -19,26 +21,26 @@ import { PlanSelector } from './features/augment-trainer/components/PlanSelector
 import { MenuButton } from './components/Settings/SettingsButton';
 
 // Lazy-loaded components (heavy deps: recharts, remotion, admin panel)
-const LoginModal = React.lazy(() =>
+const LoginModal = lazyWithRetry(() =>
     import('./components/Auth/LoginModal').then(m => ({ default: m.LoginModal }))
 );
-const AdminDataModal = React.lazy(() => import('./pages/Admin/AdminDataModal'));
-const UserProfileModal = React.lazy(() =>
+const AdminDataModal = lazyWithRetry(() => import('./pages/Admin/AdminDataModal'));
+const UserProfileModal = lazyWithRetry(() =>
     import('./components/Settings/UserProfileModal').then(m => ({ default: m.UserProfileModal }))
 );
-const VideoLibraryPage = React.lazy(() =>
+const VideoLibraryPage = lazyWithRetry(() =>
     import('./features/video-library/components/VideoLibraryPage').then(m => ({ default: m.VideoLibraryPage }))
 );
-const DecisionReview = React.lazy(() =>
+const DecisionReview = lazyWithRetry(() =>
     import('./components/Arena/DecisionReview').then(m => ({ default: m.DecisionReview }))
 );
-const ArenaSelectorModal = React.lazy(() =>
+const ArenaSelectorModal = lazyWithRetry(() =>
     import('./components/Settings/ArenaSelectorModal').then(m => ({ default: m.ArenaSelectorModal }))
 );
-const PuzzleCompletionModal = React.lazy(() =>
+const PuzzleCompletionModal = lazyWithRetry(() =>
     import('./components/Arena/PuzzleCompletionModal').then(m => ({ default: m.PuzzleCompletionModal }))
 );
-const SupportModal = React.lazy(() =>
+const SupportModal = lazyWithRetry(() =>
     import('./components/Settings/SupportModal').then(m => ({ default: m.SupportModal }))
 );
 
@@ -80,7 +82,7 @@ const COACH_PLAN_OPTIONS = [
     { id: 'greed', title: 'Chơi Loto', subtitle: 'Ra gì chơi đó vì chưa chốt bài' },
 ];
 
-const App: React.FC = () => {
+const AppContent: React.FC = () => {
     // --- 1. Authentication ---
     const { user, isAuthenticated, isAdmin, isLoading: isAuthLoading } = useAuth();
 
@@ -1022,5 +1024,11 @@ const App: React.FC = () => {
         </>
     );
 };
+
+const App: React.FC = () => (
+    <ChunkErrorBoundary>
+        <AppContent />
+    </ChunkErrorBoundary>
+);
 
 export default App;

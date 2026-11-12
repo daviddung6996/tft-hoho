@@ -1,4 +1,6 @@
 import React, { useEffect, useRef, useState, Suspense } from 'react';
+import { ChunkErrorBoundary } from '../common/ChunkErrorBoundary';
+import { lazyWithRetry } from '../../utils/chunkRecovery';
 import { AugmentData } from '../../services/augmentService';
 import { AugmentPath, CommunityVotes, StabilizationPlan } from '../../data/puzzleScenarios';
 import { PuzzleTier } from '../../features/tcoin/tcoin.types';
@@ -18,7 +20,7 @@ import { buildYouTubeEmbedUrl } from '../../utils/youtube';
 import type { MonetizationMode } from '../../features/monetization/monetization.types';
 import { PremiumLaneCallout } from '../../features/monetization/components/PremiumLaneCallout';
 
-const ShareModal = React.lazy(() =>
+const ShareModal = lazyWithRetry(() =>
     import('../../features/share/components/ShareModal').then(m => ({ default: m.ShareModal }))
 );
 
@@ -786,20 +788,22 @@ export const DecisionReview: React.FC<DecisionReviewProps> = ({
             </div>
 
             {showShareModal && iqChangeResult && (
-                <Suspense fallback={null}>
-                    <ShareModal
-                        data={{
-                            username: user?.display_name || 'Summoner',
-                            iqScore: iqChangeResult.newScore,
-                            iqRank: calculateUserIqRank(iqChangeResult.newScore),
-                            recentPuzzle: {
-                                rank: 'Thách Đấu',
-                                addedIq: iqChangeResult.changeAmount,
-                            },
-                        }}
-                        onClose={() => setShowShareModal(false)}
-                    />
-                </Suspense>
+                <ChunkErrorBoundary onDismiss={() => setShowShareModal(false)}>
+                    <Suspense fallback={null}>
+                        <ShareModal
+                            data={{
+                                username: user?.display_name || 'Summoner',
+                                iqScore: iqChangeResult.newScore,
+                                iqRank: calculateUserIqRank(iqChangeResult.newScore),
+                                recentPuzzle: {
+                                    rank: 'Thách Đấu',
+                                    addedIq: iqChangeResult.changeAmount,
+                                },
+                            }}
+                            onClose={() => setShowShareModal(false)}
+                        />
+                    </Suspense>
+                </ChunkErrorBoundary>
             )}
         </>
     );

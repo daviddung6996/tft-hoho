@@ -1,4 +1,6 @@
-import React, { Suspense, lazy, useState, useEffect, useRef } from 'react';
+import React, { Suspense, useState, useEffect, useRef } from 'react';
+import { ChunkErrorBoundary } from '../common/ChunkErrorBoundary';
+import { lazyWithRetry } from '../../utils/chunkRecovery';
 import './SettingsButton.css';
 import { useAuth } from '../../contexts/AuthContext';
 import { getUserIqStats } from '../../features/user-iq/userIq.service';
@@ -18,7 +20,7 @@ import {
 } from '../../utils/fullscreen';
 import type { MonetizationMode } from '../../features/monetization/monetization.types';
 
-const SupportModal = lazy(() =>
+const SupportModal = lazyWithRetry(() =>
     import('./SupportModal').then(m => ({ default: m.SupportModal }))
 );
 
@@ -490,9 +492,11 @@ export const MenuButton: React.FC<MenuButtonProps> = ({
             </div>
 
             {showSupportModal && (
-                <Suspense fallback={null}>
-                    <SupportModal isOpen={showSupportModal} onClose={() => setShowSupportModal(false)} />
-                </Suspense>
+                <ChunkErrorBoundary onDismiss={() => setShowSupportModal(false)}>
+                    <Suspense fallback={null}>
+                        <SupportModal isOpen={showSupportModal} onClose={() => setShowSupportModal(false)} />
+                    </Suspense>
+                </ChunkErrorBoundary>
             )}
 
             {showLogoutToast && (
