@@ -1,0 +1,151 @@
+/*
+ * TrueDamagePanel.css - True Damage Trait Panel (A-Side / B-Side)
+ * 
+ * FONT SPECIFICATION:
+ * - Tiêu đề (Title): "SVN-Beauford" (Riot Beaufort việt hóa, đã cài đặt tại máy và bundled tại /fonts/SVN-Beauford.otf).
+ *   Fallback: "Noto Serif Display", "DejaVu Serif", serif.
+ * - Thân bài (Body): "Liberation Sans", "DejaVu Sans", sans-serif.
+ *
+ * ICON SPECIFICATION:
+ * - Real Riot trait icon from CDN (tactics.tools / communitydragon):
+ *   https://ap.tft.tools/static/trait-icons/tft10_truedamage_w.svg
+ *   Local fallback asset: /tft-assets/traits/tft10_truedamage_w.svg
+ * - In .icon-slot: 46px x 46px flex container
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+Display:wght@700&display=swap');
+
+@font-face {
+  font-family: 'SVN-Beauford';
+  src: local('SVN-Beauford'),
+       local('SVN-Beaufort'),
+       url('/fonts/SVN-Beauford.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+.td-panel-wrapper {
+  position: relative;
+  display: inline-block;
+  user-select: none;
+}
+
+.td-panel-wrapper .panel {
+  width: 602px;
+  height: 885px;
+  background: linear-gradient(180deg, #0d1414 0%, #0b1111 45%, #090d0d 100%);
+  border: 2px solid #8a713f;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  font-family: "Liberation Sans", "DejaVu Sans", sans-serif;
+  box-sizing: border-box;
+}
+
+.td-panel-wrapper .header {
+  height: 102px;
+  background: #0c1a1b;
+  border-bottom: 1px solid rgba(201, 169, 97, 0.28);
+  display: flex;
+  align-items: center;
+  padding: 0 28px;
+  gap: 16px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+/* Ô icon flex — thay SVG bằng <img src="CDN"> là xong, layout không đổi */
+.td-panel-wrapper .icon-slot {
+  flex: 0 0 auto;
+  width: 46px;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.td-panel-wrapper .icon-slot svg,
+.td-panel-wrapper .icon-slot img {
+  display: block;
+  width: 46px;
+  height: 46px;
+  object-fit: contain;
+}
+
+.td-panel-wrapper .header h1 {
+  font-family: "SVN-Beauford", "Beaufort for LOL", "Beaufort", "Noto Serif Display", "DejaVu Serif", serif;
+  font-weight: 700;
+  font-size: 47px;
+  line-height: 1;
+  color: #efe7d3;
+  letter-spacing: 0.5px;
+  margin: 0;
+  padding: 0;
+}
+
+.td-panel-wrapper .body {
+  flex: 1 1 auto;
+  padding: 34px 28px 0 28px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.td-panel-wrapper .body p {
+  font-size: 29px;
+  line-height: 1.42;
+  color: #e9e2d0;
+  margin: 0;
+  padding: 0;
+}
+
+.td-panel-wrapper .body p + p {
+  margin-top: 28px;
+}
+
+.td-panel-wrapper .body p.lead {
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.td-panel-wrapper .body p.dim {
+  color: #7e7e76;
+}
+
+.td-panel-wrapper .body p.dim.bside {
+  padding-right: 60px; /* chỉ mặt B-Side, khi dùng font thay thế để ngắt dòng chuẩn */
+}
+
+.td-panel-wrapper .btn-wrap {
+  flex: 0 0 auto;
+  padding: 0 28px 30px 28px;
+  box-sizing: border-box;
+}
+
+.td-panel-wrapper .btn {
+  width: 100%;
+  height: 80px;
+  background: linear-gradient(180deg, #6f5029 0%, #4c3718 55%, #3a2a12 100%);
+  border: 2px solid #c9a961;
+  box-shadow: inset 0 1px 0 rgba(255, 232, 175, 0.35), inset 0 -1px 0 rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 35px;
+  font-weight: 700;
+  color: #f2e8ce;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  user-select: none;
+  transition: filter 0.15s ease;
+  outline: none;
+}
+
+.td-panel-wrapper .btn:hover {
+  filter: brightness(1.08);
+}
+
+.td-panel-wrapper .btn:active {
+  filter: brightness(0.95);
+}

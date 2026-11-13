@@ -3,6 +3,7 @@ import { Synergy } from '../../data/types';
 import { AssetImage } from '../../hooks/useAssetUrl';
 import { TraitTooltip } from '../common/HextechTooltip';
 import { useGameData } from '../../contexts/GameDataContext';
+import { TrueDamagePanel } from './TrueDamagePanel';
 import './SynergyPanel.css';
 
 interface SynergyPanelProps {
@@ -24,6 +25,7 @@ export const SynergyPanel: React.FC<SynergyPanelProps & {
 }) => {
         const { getTraitByNameEn } = useGameData();
         const [mode, setMode] = useState<'primary' | 'overflow'>('primary');
+        const [activeDetailTrait, setActiveDetailTrait] = useState<string | null>(null);
         const primaryCount = maxVisible - 1;
 
         // Reset to primary on board update (edge case: don't get stuck in overflow)
@@ -110,11 +112,17 @@ export const SynergyPanel: React.FC<SynergyPanelProps & {
             return dbTrait?.icon;
         };
 
+        const isTrueDamage = (synergy: Synergy) =>
+            synergy.id.toLowerCase().includes('truedamage') ||
+            synergy.id.toLowerCase().includes('true_damage') ||
+            synergy.name.toLowerCase().includes('true damage');
+
         const renderRow = (synergy: Synergy) => {
             const tierClass = getTierClass(synergy);
             const displayBreakpoint = getDisplayBreakpoint(synergy);
             const description = getTraitDescription(synergy);
             const dbIcon = getTraitIcon(synergy);
+            const hasDetailPanel = isTrueDamage(synergy);
 
             return (
                 <TraitTooltip
@@ -125,7 +133,15 @@ export const SynergyPanel: React.FC<SynergyPanelProps & {
                     breakpoints={synergy.breakpoints}
                     position="right"
                 >
-                    <div className={`synergy-floating-row ${tierClass}`}>
+                    <div
+                        className={`synergy-floating-row ${tierClass} ${activeDetailTrait === synergy.id ? 'is-selected' : ''}`}
+                        onClick={() => {
+                            if (hasDetailPanel) {
+                                setActiveDetailTrait(prev => prev === synergy.id ? null : synergy.id);
+                            }
+                        }}
+                        style={{ cursor: hasDetailPanel ? 'pointer' : undefined }}
+                    >
                         {/* Hexagon Left */}
                         <div className="synergy-hex-wrapper">
                             <div className="synergy-hex-shape">
@@ -169,6 +185,13 @@ export const SynergyPanel: React.FC<SynergyPanelProps & {
                 data-testid={`SynergyPanel:${variant}`}
             >
                 {visibleTraits.map(renderRow)}
+
+                {/* Trait Detail Panel for True Damage (anchored to synergy panel) */}
+                {activeDetailTrait && (
+                    <div className="synergy-trait-panel-anchor">
+                        <TrueDamagePanel onClose={() => setActiveDetailTrait(null)} />
+                    </div>
+                )}
 
                 {/* Overflow button: shown in primary mode when traits exceed MAX_VISIBLE */}
                 {hasOverflow && mode === 'primary' && (

@@ -59,7 +59,7 @@
     height: 3.5cqw;
     position: relative;
     z-index: 2;
-    filter: drop-shadow(0 0.15cqw 0.3cqw rgba(0, 0, 0, 0.6));
+    filter: drop-shadow(0 0.15cqw 0.3cqw rgb(var(--color-black-rgb) / 0.6));
 }
 
 .synergy-hex-shape {
@@ -71,7 +71,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: inset 0 0 0.3cqw rgba(0, 0, 0, 1);
+    box-shadow: inset 0 0 0.3cqw rgb(var(--color-black-rgb) / 1);
 }
 
 .synergy-icon-symbol {
@@ -83,7 +83,7 @@
 /* Tier Colors for Hexagons */
 .tier-inactive .synergy-hex-shape {
     background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
-    border: 0.05cqw solid #333;
+    border: 0.05cqw solid var(--color-neutral-800);
 }
 
 .tier-inactive {
@@ -96,7 +96,7 @@
 
 .tier-inactive .synergy-label-bar {
     background: rgba(5, 15, 20, 0.85);
-    border-color: rgba(255, 255, 255, 0.08);
+    border-color: rgb(var(--color-white-rgb) / 0.08);
 }
 
 .tier-bronze .synergy-hex-shape {
@@ -104,11 +104,11 @@
 }
 
 .tier-silver .synergy-hex-shape {
-    background: linear-gradient(135deg, #e0e0e0 0%, #909090 100%);
+    background: linear-gradient(135deg, var(--color-neutral-200) 0%, #909090 100%);
 }
 
 .tier-gold .synergy-hex-shape {
-    background: linear-gradient(135deg, #ffd700 0%, #b8860b 100%);
+    background: linear-gradient(135deg, var(--color-game-gold) 0%, #b8860b 100%);
 }
 
 .tier-prismatic .synergy-hex-shape {
@@ -119,7 +119,7 @@
 .tier-prismatic .synergy-hex-shape,
 .tier-bronze .synergy-hex-shape,
 .tier-silver .synergy-hex-shape {
-    box-shadow: inset 0 0 0.5cqw rgba(0, 0, 0, 0.6);
+    box-shadow: inset 0 0 0.5cqw rgb(var(--color-black-rgb) / 0.6);
 }
 
 .tier-gold .synergy-icon-symbol,
@@ -127,8 +127,8 @@
 .tier-bronze .synergy-icon-symbol,
 .tier-silver .synergy-icon-symbol {
     opacity: 1;
-    color: #fff;
-    text-shadow: 0 0.05cqw 0.15cqw rgba(0, 0, 0, 0.9);
+    color: var(--color-white);
+    text-shadow: 0 0.05cqw 0.15cqw rgb(var(--color-black-rgb) / 0.9);
 }
 
 
@@ -140,14 +140,14 @@
     height: 2.5cqw;
     padding: 0 0.8cqw 0 1.25cqw;
     /* More padding left for deeper hexagon overlap */
-    border-radius: 0 0.3cqw 0.3cqw 0;
+    border-radius: var(--radius-none) var(--radius-cqw-control) var(--radius-cqw-control) var(--radius-none);
     display: flex;
     flex-direction: column;
     justify-content: center;
     min-width: 7.3cqw;
-    border: 0.05cqw solid rgba(255, 255, 255, 0.15);
+    border: 0.05cqw solid rgb(var(--color-white-rgb) / 0.15);
     border-left: none;
-    box-shadow: 0 0.2cqw 0.4cqw rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0.2cqw 0.4cqw rgb(var(--color-black-rgb) / 0.4);
 }
 
 .trait-name {
@@ -160,14 +160,14 @@
 }
 
 .synergy-floating-row:not(.tier-inactive) .trait-name {
-    color: #fff;
-    text-shadow: 0 0 0.25cqw rgba(255, 255, 255, 0.2);
+    color: var(--color-white);
+    text-shadow: 0 0 0.25cqw rgb(var(--color-white-rgb) / 0.2);
 }
 
 .trait-numbers {
     font-size: 0.62cqw;
     color: #777;
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--font-tech);
     font-weight: 500;
 }
 
@@ -197,7 +197,7 @@
     flex: 1;
     height: 40px;
     padding: 0 14px 0 20px;
-    border-radius: 0 12px 12px 0;
+    border-radius: var(--radius-none) var(--radius-px-12) var(--radius-px-12) var(--radius-none);
 }
 
 .synergy-floating-container--sheet .synergy-hex-wrapper {
@@ -223,32 +223,47 @@
     height: 3.5cqw;
     min-width: 10.4cqw;
     /* same total width as hex + label bar */
-    background: rgba(255, 255, 255, 0.06);
-    border: 0.05cqw solid rgba(200, 170, 110, 0.25);
-    border-radius: 0.3cqw;
+    background: rgb(var(--color-white-rgb) / 0.06);
+    border: 0.05cqw solid rgb(var(--color-primary-rgb) / 0.25);
+    border-radius: var(--radius-cqw-control);
     font-family: 'Inter', sans-serif;
     font-size: 0.9cqw;
     font-weight: 700;
-    color: #c8aa6e;
+    color: var(--color-primary);
     letter-spacing: 0.05cqw;
     transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
 .trait-overflow-button:hover {
-    background: rgba(200, 170, 110, 0.12);
-    border-color: rgba(200, 170, 110, 0.55);
-    color: #f0e6d2;
+    background: rgb(var(--color-primary-rgb) / 0.12);
+    border-color: rgb(var(--color-primary-rgb) / 0.55);
+    color: var(--color-text-gold);
 }
 
 .trait-overflow-button--back {
-    background: rgba(255, 255, 255, 0.04);
-    border-color: rgba(200, 170, 110, 0.15);
-    color: rgba(200, 170, 110, 0.55);
+    background: rgb(var(--color-white-rgb) / 0.04);
+    border-color: rgb(var(--color-primary-rgb) / 0.15);
+    color: rgb(var(--color-primary-rgb) / 0.55);
     font-size: 1.1cqw;
 }
 
 .trait-overflow-button--back:hover {
-    background: rgba(200, 170, 110, 0.08);
-    border-color: rgba(200, 170, 110, 0.35);
-    color: #c8aa6e;
+    background: rgb(var(--color-primary-rgb) / 0.08);
+    border-color: rgb(var(--color-primary-rgb) / 0.35);
+    color: var(--color-primary);
+}
+/* Trait Detail Panel Anchor (True Damage and specialized trait panels) */
+.synergy-floating-row.is-selected {
+    transform: scale(1.05);
+    filter: brightness(1.2);
+}
+
+.synergy-trait-panel-anchor {
+    position: absolute;
+    left: calc(100% + 1cqw);
+    top: 50%;
+    transform: translateY(-50%) scale(0.68);
+    transform-origin: left center;
+    z-index: 100;
+    filter: drop-shadow(0 0.5cqw 2cqw rgba(0, 0, 0, 0.85));
 }
