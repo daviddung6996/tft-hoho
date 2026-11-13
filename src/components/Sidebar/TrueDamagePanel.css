@@ -2,8 +2,8 @@
  * TrueDamagePanel.css - True Damage Trait Panel (A-Side / B-Side)
  * 
  * FONT SPECIFICATION:
- * - Tiêu đề (Title): "SVN-Beauford" (Riot Beaufort việt hóa, đã cài đặt tại máy và bundled tại /fonts/SVN-Beauford.otf).
- *   Fallback: "Noto Serif Display", "DejaVu Serif", serif.
+ * - Tiêu đề (Title): "Noto Serif Display", "DejaVu Serif", serif (chuẩn fallback đã kiểm chứng).
+ *   BANNED: "SVN-Beauford" (sai font/misrendered).
  * - Thân bài (Body): "Liberation Sans", "DejaVu Sans", sans-serif.
  *
  * ICON SPECIFICATION:
@@ -14,16 +14,6 @@
  */
 
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+Display:wght@700&display=swap');
-
-@font-face {
-  font-family: 'SVN-Beauford';
-  src: local('SVN-Beauford'),
-       local('SVN-Beaufort'),
-       url('/fonts/SVN-Beauford.otf') format('opentype');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
 
 .td-panel-wrapper {
   position: relative;
@@ -74,7 +64,7 @@
 }
 
 .td-panel-wrapper .header h1 {
-  font-family: "SVN-Beauford", "Beaufort for LOL", "Beaufort", "Noto Serif Display", "DejaVu Serif", serif;
+  font-family: "Noto Serif Display", "DejaVu Serif", serif;
   font-weight: 700;
   font-size: 47px;
   line-height: 1;

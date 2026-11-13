@@ -297,7 +297,8 @@ True Damage Trait Panel (A-Side & B-Side) represents a specialized in-game detai
 
 ### Typography & Word Break Rules
 - **Font Stack:**
-  - Header/Title: `"SVN-Beauford", "Beaufort for LOL", "Beaufort", "Noto Serif Display", "DejaVu Serif", serif` (SVN-Beauford là bản Việt hóa chính thức của font Riot Beaufort, bundled tại `/fonts/SVN-Beauford.otf` và đã cài đặt trên hệ thống).
+  - Header/Title: `"Noto Serif Display", "DejaVu Serif", serif` (chuẩn fallback đã kiểm chứng, khớp ngắt dòng và visual frame gốc).
+  - **Banned Font:** `SVN-Beauford` bị CẤM vĩnh viễn (sai font / misrendered).
   - Body: `"Liberation Sans", "DejaVu Sans", sans-serif`
 - **B-Side Tier 5 Line-Break Compensation:** Due to the fallback body font width, `.dim.bside` MUST have `padding-right: 60px` so that Tier 5 breaks cleanly into 2 lines (`heal 2` / `player Health and gain 2 XP.`), matching the original frame.
 

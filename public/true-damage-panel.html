@@ -6,8 +6,8 @@
   <title>TFT-hoho — True Damage Trait Panel (A-Side & B-Side)</title>
   <!--
     FONT SPECIFICATION / GHI CHÚ BẮT BUỘC THEO CONTRACT:
-    Tiêu đề (Title): "SVN-Beauford" (Riot Beaufort việt hóa, đã cài trên máy và bundled tại /fonts/SVN-Beauford.otf).
-      Fallback: "Noto Serif Display", "DejaVu Serif", serif.
+    Tiêu đề (Title): "Noto Serif Display", "DejaVu Serif", serif.
+      BANNED: "SVN-Beauford" (sai font/misrendered).
     Thân bài (Body): "Liberation Sans", "DejaVu Sans", sans-serif.
 
     ICON SPECIFICATION:
@@ -15,17 +15,6 @@
     - Fallback local asset: /tft-assets/traits/tft10_truedamage_w.svg
     - Icon nằm trong .icon-slot flex 46x46
   -->
-  <style>
-    @font-face {
-      font-family: 'SVN-Beauford';
-      src: local('SVN-Beauford'),
-           local('SVN-Beaufort'),
-           url('/fonts/SVN-Beauford.otf') format('opentype');
-      font-weight: 700;
-      font-style: normal;
-      font-display: swap;
-    }
-  </style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Display:wght@700&display=swap" rel="stylesheet">
@@ -50,7 +39,7 @@
       max-width: 800px;
     }
     .page-header h2 {
-      font-family: "SVN-Beauford", "Noto Serif Display", "DejaVu Serif", serif;
+      font-family: "Noto Serif Display", "DejaVu Serif", serif;
       font-size: 32px;
       color: #efe7d3;
       margin-bottom: 8px;
@@ -119,7 +108,7 @@
       object-fit: contain;
     }
     .header h1 {
-      font-family: "SVN-Beauford", "Beaufort for LOL", "Beaufort", "Noto Serif Display", "DejaVu Serif", serif;
+      font-family: "Noto Serif Display", "DejaVu Serif", serif;
       font-weight: 700;
       font-size: 47px;
       line-height: 1;
@@ -185,7 +174,7 @@
 <body>
   <div class="page-header">
     <h2>True Damage Trait Panel — TFT-hoho</h2>
-    <p>Bản dựng chuẩn khổ 602×885 (1x) &amp; 1204×1770 (2x). Tiêu đề dùng SVN-Beauford (Riot Beaufort việt hóa), icon CDN 46×46 trong .icon-slot flex, thân bài Liberation Sans.</p>
+    <p>Bản dựng chuẩn khổ 602×885 (1x) &amp; 1204×1770 (2x). Tiêu đề Noto Serif Display, thân bài Liberation Sans, icon CDN 46×46 trong .icon-slot flex.</p>
   </div>
 
   <div class="panels-container">

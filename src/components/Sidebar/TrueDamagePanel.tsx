@@ -2,8 +2,8 @@
  * TrueDamagePanel.tsx - Trait True Damage Panel (A-Side & B-Side)
  * 
  * FONT NOTICE (Theo yêu cầu kỹ thuật & bản quyền):
- * Tiêu đề: "SVN-Beauford" (Riot Beaufort việt hóa, đã cài trên máy và bundled tại /fonts/SVN-Beauford.otf).
- *   Fallback: "Noto Serif Display", "DejaVu Serif", serif
+ * Tiêu đề: "Noto Serif Display", "DejaVu Serif", serif (Chuẩn fallback đã kiểm chứng)
+ *   BANNED: "SVN-Beauford" (sai font / misrendered per user directive)
  * Thân bài: "Liberation Sans", "DejaVu Sans", sans-serif
  *
  * ICON NOTICE:
