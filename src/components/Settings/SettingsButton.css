@@ -18,11 +18,11 @@
     width: var(--menu-control-size);
     height: var(--menu-control-size);
     background:
-        radial-gradient(ellipse at 50% 20%, rgba(231, 222, 209, 0.12) 0%, transparent 60%),
-        linear-gradient(180deg, rgba(0, 0, 0, 0.94) 0%, rgba(0, 0, 0, 0.98) 100%);
-    border: 1px solid rgba(231, 222, 209, 0.42);
+        radial-gradient(ellipse at 50% 20%, rgba(201, 169, 97, 0.12) 0%, transparent 60%),
+        linear-gradient(180deg, rgba(13, 20, 20, 0.95) 0%, rgba(9, 13, 13, 0.98) 100%);
+    border: 1px solid rgba(201, 169, 97, 0.42);
     border-radius: var(--menu-control-radius);
-    color: #E7DED1;
+    color: #EFE7D3;
     font-size: clamp(18px, 1.2vw, 20px);
     cursor: pointer;
     display: flex;
@@ -49,11 +49,11 @@
     width: var(--menu-control-size);
     height: var(--menu-control-size);
     background:
-        radial-gradient(ellipse at 50% 20%, rgba(231, 222, 209, 0.12) 0%, transparent 60%),
-        linear-gradient(180deg, rgba(0, 0, 0, 0.94) 0%, rgba(0, 0, 0, 0.98) 100%);
-    border: 1px solid rgba(231, 222, 209, 0.42);
+        radial-gradient(ellipse at 50% 20%, rgba(201, 169, 97, 0.12) 0%, transparent 60%),
+        linear-gradient(180deg, rgba(13, 20, 20, 0.95) 0%, rgba(9, 13, 13, 0.98) 100%);
+    border: 1px solid rgba(201, 169, 97, 0.42);
     border-radius: var(--menu-control-radius);
-    color: #E7DED1;
+    color: #EFE7D3;
     font-size: clamp(20px, 1.4vw, 22px);
     cursor: pointer;
     display: flex;

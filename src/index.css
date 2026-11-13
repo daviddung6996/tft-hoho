@@ -32,53 +32,72 @@ body.is-dragging *::after {
 }
 
 :root {
-  --tui-theme: after-hours;
-  --tui-void: #000000;
-  --tui-bone: #E7DED1;
-  --tui-bone-rgb: 231 222 209;
-  --tui-primary: #DD3C50;
-  --tui-primary-rgb: 221 60 80;
-  --tui-primary-deep: #711823;
-  --tui-primary-12: rgb(221 60 80 / 0.12);
-  --tui-bone-04: rgb(231 222 209 / 0.04);
-  --tui-bone-08: rgb(231 222 209 / 0.08);
-  --tui-bone-12: rgb(231 222 209 / 0.12);
-  --tui-bone-16: rgb(231 222 209 / 0.16);
-  --tui-bone-24: rgb(231 222 209 / 0.24);
-  --tui-bone-32: rgb(231 222 209 / 0.32);
-  --tui-bone-48: rgb(231 222 209 / 0.48);
-  --tui-bone-60: rgb(231 222 209 / 0.60);
-  --tui-bone-64: rgb(231 222 209 / 0.64);
-  --tui-bone-78: rgb(231 222 209 / 0.78);
-  --tui-bone-80: rgb(231 222 209 / 0.80);
-  --tui-surface-app: #000000;
-  --tui-surface-panel: #000000;
-  --tui-surface-panel-top: #000000;
-  --tui-surface-content: #000000;
-  --tui-surface-control: transparent;
-  --tui-surface-metric: #000000;
-  --tui-surface-elevated: #000000;
-  --tui-surface-review: #000000;
-  --tui-surface-modal: #000000;
-  --tui-surface-input: transparent;
-  --tui-text-primary: #E7DED1;
-  --tui-text-secondary: var(--tui-bone-78);
-  --tui-text-muted: var(--tui-bone-60);
-  --tui-text-disabled: var(--tui-bone-48);
-  --tui-text-inverse: #000000;
-  --tui-text-gold: #E7DED1; /* deprecated old name; maps to Bone */
-  --tui-gold: #E7DED1; /* deprecated old name; NOT Hextech gold */
-  --tui-gold-rgb: 231 222 209;
-  --tui-gold-hover: #E7DED1;
-  --tui-gold-deep: #E7DED1;
-  --tui-gold-accent: #E7DED1;
-  --tui-gold-accent-rgb: 231 222 209;
-  --tui-gold-game: #FFD700; /* TFT coin/gameplay semantic: unchanged */
-  --tui-border: var(--tui-bone-64);
-  --tui-border-strong: #E7DED1;
-  --tui-border-subtle: var(--tui-bone-24);
-  --tui-border-focus: #E7DED1;
-  --tui-border-panel: var(--tui-bone-24);
+  /* ==========================================================================
+     AUTHENTIC RIOT PANEL PALETTE — STRICT (AGENTS.md / DESIGN.md)
+     tft-hoho is an authentic in-game HUD/simulator, NOT a tftiseasy website.
+     After Hours (Void #000000 / Bone #E7DED1) is strictly BANNED in tft-hoho.
+     Measured verbatim from Riot True Damage frame & in-game Hextech HUD:
+     - Flat surface: #0B1111 (RGB 11 17 17)
+     - Gradient top: #0D1414 (RGB 13 20 20)
+     - Gradient bottom: #090D0D (RGB 9 13 13)
+     - Header / Content surface: #0C1A1B (RGB 12 26 27)
+     - Panel Border Gold: #8A713F (RGB 138 113 63)
+     - Accent Gold (active/focus): #C9A961 (RGB 201 169 97)
+     - Divider: rgba(201, 169, 97, 0.28)
+     - Heading / Title text: #EFE7D3 (RGB 239 231 211)
+     - Body text: #E9E2D0 (RGB 233 226 208)
+     - Active text: #FFFFFF
+     - Inactive / Dim text: #7E7E76
+     - Button Gradient: linear-gradient(180deg, #6F5029 0%, #4C3718 55%, #3A2A12 100%)
+     - Button Text: #F2E8CE
+     ========================================================================== */
+  --tui-theme: riot-panel;
+  --tui-void: #0B1111;
+  --tui-bone: #E9E2D0;
+  --tui-bone-rgb: 233 226 208;
+  --tui-primary: #C9A961;
+  --tui-primary-rgb: 201 169 97;
+  --tui-primary-deep: #6F5029;
+  --tui-primary-12: rgb(201 169 97 / 0.12);
+  --tui-bone-04: rgb(233 226 208 / 0.04);
+  --tui-bone-08: rgb(233 226 208 / 0.08);
+  --tui-bone-12: rgb(233 226 208 / 0.12);
+  --tui-bone-16: rgb(233 226 208 / 0.16);
+  --tui-bone-24: rgb(233 226 208 / 0.24);
+  --tui-bone-32: rgb(233 226 208 / 0.32);
+  --tui-bone-48: rgb(233 226 208 / 0.48);
+  --tui-bone-60: rgb(233 226 208 / 0.60);
+  --tui-bone-64: rgb(233 226 208 / 0.64);
+  --tui-bone-78: rgb(233 226 208 / 0.78);
+  --tui-bone-80: rgb(233 226 208 / 0.80);
+  --tui-surface-app: #0B1111;
+  --tui-surface-panel: #0B1111;
+  --tui-surface-panel-top: #0D1414;
+  --tui-surface-content: #0C1A1B;
+  --tui-surface-control: #0D1E1F;
+  --tui-surface-metric: #0B1111;
+  --tui-surface-elevated: #0C1A1B;
+  --tui-surface-review: #0B1111;
+  --tui-surface-modal: #0C1A1B;
+  --tui-surface-input: #090D0D;
+  --tui-text-primary: #E9E2D0;
+  --tui-text-secondary: #A0A8A8;
+  --tui-text-muted: #7E7E76;
+  --tui-text-disabled: #555550;
+  --tui-text-inverse: #0B1111;
+  --tui-text-gold: #EFE7D3;
+  --tui-gold: #C9A961;
+  --tui-gold-rgb: 201 169 97;
+  --tui-gold-hover: #EFE7D3;
+  --tui-gold-deep: #8A713F;
+  --tui-gold-accent: #C9A961;
+  --tui-gold-accent-rgb: 201 169 97;
+  --tui-gold-game: #FFD700;
+  --tui-border: #8A713F;
+  --tui-border-strong: #C9A961;
+  --tui-border-subtle: rgba(201, 169, 97, 0.28);
+  --tui-border-focus: #C9A961;
+  --tui-border-panel: #8A713F;
   --tui-success: #10B981; --tui-success-rgb: 16 185 129;
   --tui-danger: #EF4444; --tui-danger-rgb: 239 68 68;
   --tui-warning: #EAB308; --tui-warning-rgb: 234 179 8;
@@ -94,9 +113,9 @@ body.is-dragging *::after {
   --tui-rank-silver: #94A3B8;
   --tui-rank-bronze: #B45309;
   --tui-rank-iron: #4B5563;
-  --tui-font-heading: 'NB Akademie', Georgia, serif;
-  --tui-font-body: 'Be Vietnam Pro', system-ui, sans-serif;
-  --tui-font-mono: 'NB Akademie Mono', 'IBM Plex Mono', ui-monospace, Consolas, monospace;
+  --tui-font-heading: 'Noto Serif Display', 'Spectral', serif;
+  --tui-font-body: 'Liberation Sans', 'Inter', system-ui, sans-serif;
+  --tui-font-mono: 'IBM Plex Mono', ui-monospace, Consolas, monospace;
   --tui-text-xs: 0.75rem;
   --tui-text-sm: 0.875rem;
   --tui-text-base: 1rem;
@@ -135,40 +154,36 @@ body.is-dragging *::after {
   --tui-z-base: 0; --tui-z-raised: 10; --tui-z-dropdown: 100;
   --tui-z-sticky: 200; --tui-z-overlay: 300; --tui-z-modal: 400;
   --tui-z-toast: 500; --tui-z-tooltip: 600; --tui-z-max: 9999;
-  --tui-gradient-panel: none;
+  --tui-gradient-panel: linear-gradient(180deg, #0D1414 0%, #0B1111 45%, #090D0D 100%);
   --tui-gradient-overlay: none;
 }
 
 :root {
     /* ==========================================================================
-       COLORS (AGENTS.md Strict)
+       COLORS (AGENTS.md / True Damage Measured Riot Palette)
        ========================================================================== */
 
     /* Backgrounds */
-    --color-surface-dark: #000000;
-    /* Submerged Green — app/base/sunken background (was #090C14 Deep Navy, now green-anchored) */
-    --color-surface-panel: rgb(var(--color-surface-panel-rgb) / 0.85);
-    /* Glassy Hextech */
-    --color-surface-overlay: rgb(var(--color-black-rgb) / 0.6);
+    --color-surface-dark: #0B1111;
+    --color-surface-dark-rgb: 11 17 17;
+    --color-surface-panel: #0C1A1B;
+    --color-surface-panel-rgb: 12 26 27;
+    --color-surface-overlay: rgba(9, 13, 13, 0.75);
 
-    /* Primary Colors */
-    --color-primary: #E7DED1;
-    --color-primary-rgb: 231 222 209;
-    /* Hextech Gold */
-    --color-primary-dark: #E7DED1;
-    --color-primary-hover: #E7DED1;
-    --color-primary-glow: none;
+    /* Primary Colors — Riot Panel Gold/Bronze */
+    --color-primary: #8A713F;
+    --color-primary-rgb: 138 113 63;
+    --color-primary-dark: #6F5029;
+    --color-primary-hover: #C9A961;
+    --color-primary-glow: 0 0 12px rgba(201, 169, 97, 0.3);
 
-    /* Accents */
-    --color-accent-gold: #E7DED1;
-    --color-accent-gold-rgb: 231 222 209;
-    /* Prestige Gold */
-    --color-accent-gold-glow: none;
-    --color-accent-cyan: #E7DED1;
-    /* Gold (unified theme) */
+    /* Accents — Riot Bright Gold */
+    --color-accent-gold: #C9A961;
+    --color-accent-gold-rgb: 201 169 97;
+    --color-accent-gold-glow: 0 0 10px rgba(201, 169, 97, 0.35);
+    --color-accent-cyan: #8A713F;
     --color-accent-rose: #FF4E50;
     --color-accent-rose-rgb: 255 78 80;
-    /* Combat */
 
     /* Gameplay tier and semantic colors */
     --color-tier-advanced: #E8C252;
@@ -205,59 +220,56 @@ body.is-dragging *::after {
     --color-gold-deep: #B08830;
     --color-teal-highlight-rgb: 74 201 190;
 
-    /* Text */
-    --color-text-primary: #E7DED1;
-    --color-text-primary-rgb: 231 222 209;
-    /* Starlight White */
-    --color-text-secondary: var(--tui-text-secondary);
-    --color-text-secondary-rgb: 231 222 209;
-    /* Blue Grey */
-    --color-text-gold: #E7DED1;
-    --color-text-gold-rgb: 231 222 209;
-    /* Pale Gold */
+    /* Text — Riot Body & Heading Palette */
+    --color-text-primary: #E9E2D0;
+    --color-text-primary-rgb: 233 226 208;
+    --color-text-secondary: #A0A8A8;
+    --color-text-secondary-rgb: 160 168 168;
+    --color-text-gold: #EFE7D3;
+    --color-text-gold-rgb: 239 231 211;
 
     /* Shared neutral and teal primitives for alpha-aware surfaces */
     --color-white: #FFFFFF;
     --color-white-rgb: 255 255 255;
-    --color-black: #000000;
-    --color-black-rgb: 0 0 0;
-    --color-neutral-800: #333333;
-    --color-neutral-700: #444444;
-    --color-neutral-400: #A0A0A0;
-    --color-neutral-200: #E0E0E0;
-    --color-text-slate: var(--tui-text-muted);
-    --color-text-bright: #E7DED1;
-    --color-surface-dark-rgb: 0 0 0;   /* matches #000000 Void */
-    --color-surface-panel-rgb: 0 0 0; /* matches #000000 Void */
-    --surface-teal-top: #000000;
-    --surface-teal-top-rgb: 0 0 0;
-    --surface-teal-mid: #000000;
-    --surface-teal-mid-rgb: 0 0 0;
-    --surface-teal-focus: #000000;
-    --surface-teal-focus-rgb: 0 0 0;
-    --surface-teal-deep: #000000;
-    --surface-teal-deep-rgb: 0 0 0;
-    --surface-teal-content: #000000;
-    --surface-teal-content-rgb: 0 0 0;
-    --surface-teal-metric: #000000;
-    --surface-teal-metric-rgb: 0 0 0;
-    --surface-teal-elevated: #000000;
-    --surface-teal-elevated-rgb: 0 0 0;
-    --surface-teal-review: #000000;
-    --surface-teal-review-rgb: 0 0 0;
-    --surface-teal-control: #000000;
-    --surface-teal-control-rgb: 0 0 0;
-    --surface-teal-common: #000000;
-    --surface-coach-deep: #000000;
-    --surface-coach-deep-rgb: 0 0 0;
-    --surface-coach-ink: #000000;
-    --surface-coach-ink-rgb: 0 0 0;
-    --surface-coach-panel: #000000;
-    --surface-coach-panel-rgb: 0 0 0;
+    --color-black: #090D0D;
+    --color-black-rgb: 9 13 13;
+    --color-neutral-800: #1A2628;
+    --color-neutral-700: #253538;
+    --color-neutral-400: #7E7E76;
+    --color-neutral-200: #E9E2D0;
+    --color-text-slate: #7E7E76;
+    --color-text-bright: #FFFFFF;
+
+    /* Surface Teal Primitives — Authentic Riot True Damage & Hextech Palette */
+    --surface-teal-top: #0D1414;
+    --surface-teal-top-rgb: 13 20 20;
+    --surface-teal-mid: #0B1111;
+    --surface-teal-mid-rgb: 11 17 17;
+    --surface-teal-focus: #112628;
+    --surface-teal-focus-rgb: 17 38 40;
+    --surface-teal-deep: #090D0D;
+    --surface-teal-deep-rgb: 9 13 13;
+    --surface-teal-content: #0C1A1B;
+    --surface-teal-content-rgb: 12 26 27;
+    --surface-teal-metric: #0B1111;
+    --surface-teal-metric-rgb: 11 17 17;
+    --surface-teal-elevated: #0C1A1B;
+    --surface-teal-elevated-rgb: 12 26 27;
+    --surface-teal-review: #0B1111;
+    --surface-teal-review-rgb: 11 17 17;
+    --surface-teal-control: #0D1E1F;
+    --surface-teal-control-rgb: 13 30 31;
+    --surface-teal-common: #0C1A1B;
+    --surface-coach-deep: #090D0D;
+    --surface-coach-deep-rgb: 9 13 13;
+    --surface-coach-ink: #0B1111;
+    --surface-coach-ink-rgb: 11 17 17;
+    --surface-coach-panel: #0C1A1B;
+    --surface-coach-panel-rgb: 12 26 27;
 
     /* Gameplay interaction tokens */
     --game-focus-color: var(--color-text-gold);
-    --game-focus-ring: 0 0 0 2px #E7DED1;
+    --game-focus-ring: 0 0 0 2px #C9A961;
     --game-overlay-bg: rgb(var(--color-black-rgb) / 0.78);
     --game-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
     --game-motion-fast: 160ms;
@@ -299,8 +311,8 @@ body.is-dragging *::after {
     --radius-portrait-base: 36%;
 
     /* Admin specifics (Operations Deck) */
-    --bg-admin-dark: #000000;
-    --bg-admin-panel: #000000;  /* was #0D1624 (navy); migrated to panel content surface */
+    --bg-admin-dark: #0B1111;
+    --bg-admin-panel: #0C1A1B;
     --border-admin: rgb(var(--color-primary-rgb) / 0.3);
     --input-bg: rgb(var(--color-black-rgb) / 0.4);
 
@@ -319,7 +331,7 @@ body.is-dragging *::after {
     --border-gold: var(--border-width-std) solid rgb(var(--color-accent-gold-rgb) / 0.3);
 
     /* Panel Standard Gradient */
-    --gradient-panel: #000000;
+    --gradient-panel: linear-gradient(180deg, #0D1414 0%, #0B1111 45%, #090D0D 100%);
 
     /* ==========================================================================
        FONTS

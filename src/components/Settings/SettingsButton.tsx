@@ -303,11 +303,11 @@ export const MenuButton: React.FC<MenuButtonProps> = ({
                                     <button className="mobile-sheet-nav-item" onClick={() => { onLibraryClick?.(); setIsOpen(false); }}>
                                         <span className="mobile-sheet-nav-icon">
                                             <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <rect x="2" y="3" width="20" height="18" rx="3" stroke="#E7DED1" strokeWidth="1.5" fill="rgba(231,222,209,0.1)" />
-                                                <path d="M10 8.5L16 12L10 15.5V8.5Z" fill="#E7DED1" />
-                                                <line x1="2" y1="7" x2="22" y2="7" stroke="#E7DED1" strokeWidth="1" opacity="0.4" />
-                                                <circle cx="5" cy="5" r="0.8" fill="#E7DED1" opacity="0.6" />
-                                                <circle cx="8" cy="5" r="0.8" fill="#E7DED1" opacity="0.6" />
+                                                <rect x="2" y="3" width="20" height="18" rx="3" stroke="#EFE7D3" strokeWidth="1.5" fill="rgba(201,169,97,0.1)" />
+                                                <path d="M10 8.5L16 12L10 15.5V8.5Z" fill="#EFE7D3" />
+                                                <line x1="2" y1="7" x2="22" y2="7" stroke="#EFE7D3" strokeWidth="1" opacity="0.4" />
+                                                <circle cx="5" cy="5" r="0.8" fill="#EFE7D3" opacity="0.6" />
+                                                <circle cx="8" cy="5" r="0.8" fill="#EFE7D3" opacity="0.6" />
                                             </svg>
                                         </span>
                                         <span>Kho Pro Analysis</span>
@@ -435,11 +435,11 @@ export const MenuButton: React.FC<MenuButtonProps> = ({
                                 <button className="menu-item" onClick={() => { onLibraryClick?.(); setIsOpen(false); }}>
                                     <span className="menu-icon" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
                                         <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <rect x="2" y="3" width="20" height="18" rx="3" stroke="#E7DED1" strokeWidth="1.5" fill="rgba(231,222,209,0.1)" />
-                                            <path d="M10 8.5L16 12L10 15.5V8.5Z" fill="#E7DED1" />
-                                            <line x1="2" y1="7" x2="22" y2="7" stroke="#E7DED1" strokeWidth="1" opacity="0.4" />
-                                            <circle cx="5" cy="5" r="0.8" fill="#E7DED1" opacity="0.6" />
-                                            <circle cx="8" cy="5" r="0.8" fill="#E7DED1" opacity="0.6" />
+                                            <rect x="2" y="3" width="20" height="18" rx="3" stroke="#EFE7D3" strokeWidth="1.5" fill="rgba(201,169,97,0.1)" />
+                                            <path d="M10 8.5L16 12L10 15.5V8.5Z" fill="#EFE7D3" />
+                                            <line x1="2" y1="7" x2="22" y2="7" stroke="#EFE7D3" strokeWidth="1" opacity="0.4" />
+                                            <circle cx="5" cy="5" r="0.8" fill="#EFE7D3" opacity="0.6" />
+                                            <circle cx="8" cy="5" r="0.8" fill="#EFE7D3" opacity="0.6" />
                                         </svg>
                                     </span> Kho Pro Analysis
                                     {totalCount > 0 && (
@@ -457,7 +457,7 @@ export const MenuButton: React.FC<MenuButtonProps> = ({
                                                 <defs>
                                                     <linearGradient id="pro-star-grad" x1="0%" y1="0%" x2="100%" y2="100%">
                                                         <stop offset="0%" stopColor="#f0e6d2" />
-                                                        <stop offset="50%" stopColor="#E7DED1" />
+                                                        <stop offset="50%" stopColor="#EFE7D3" />
                                                         <stop offset="100%" stopColor="#7a5c28" />
                                                     </linearGradient>
                                                 </defs>
@@ -469,7 +469,7 @@ export const MenuButton: React.FC<MenuButtonProps> = ({
 
                                 {/* Support / Donate */}
                                 <button className="menu-item menu-item--support" onClick={() => { setShowSupportModal(true); setIsOpen(false); }}>
-                                    <span className="menu-icon" style={{ color: '#E7DED1' }}>☕</span> Ủng hộ dự án
+                                    <span className="menu-icon" style={{ color: '#EFE7D3' }}>☕</span> Ủng hộ dự án
                                 </button>
 
                                 <div className="menu-divider"></div>

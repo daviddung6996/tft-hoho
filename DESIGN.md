@@ -311,3 +311,29 @@ True Damage Trait Panel (A-Side & B-Side) represents a specialized in-game detai
 
 - **Coming Soon Page (`src/components/ComingSoonPage/`):** Retains its existing design, tokens, and theme without changes. Do NOT migrate or modify this page during theme or token updates.
 
+## 9. Theme Authority & Game HUD Architecture (After Hours BANNED)
+
+### tft-hoho is an In-Game HUD/Simulator, NOT a Website
+`tft-hoho` simulates the live League of Legends / Teamfight Tactics game client. It is **not** a SaaS website, blog, or marketing portal. Therefore:
+- **STRICTLY BANNED: After Hours Theme (`#000000` Void / `#E7DED1` Bone)**.
+  The `@tftiseasy/ui-library` website tokens, `--tui-theme: after-hours`, and pitch-black `#000000` HUD surfaces are completely banned from `tft-hoho`.
+- **STRICTLY BANNED: Ad-Hoc Standalone HTML Previews**.
+  Trait panels and HUD elements must be integrated as native React components inside the in-game HUD (`SynergyPanel.tsx`, `TrueDamagePanel.tsx`). Detached standalone preview pages (e.g. `public/true-damage-panel.html`) are prohibited.
+
+### Canonical Riot Panel & Hextech In-Game Palette (Measured Verbatim)
+All panels, HUD rails, chips, and overlays must adhere to the exact measured Riot palette:
+- **Flat Backdrop / Panel Surface:** `#0B1111` (RGB: `11 17 17`)
+- **Panel Gradient (Vertical):** `linear-gradient(180deg, #0D1414 0%, #0B1111 45%, #090D0D 100%)`
+- **Surface Top (Gradient start):** `#0D1414` (RGB: `13 20 20`)
+- **Surface Deep (Gradient end):** `#090D0D` (RGB: `9 13 13`)
+- **Header / Elevated Surface:** `#0C1A1B` (RGB: `12 26 27`)
+- **HUD Frame / Border Gold:** `#8A713F` (RGB: `138 113 63`, 2px solid)
+- **Active Accent Gold:** `#C9A961` (RGB: `201 169 97`, 2px solid)
+- **Sub-border / Divider:** `1px solid rgba(201, 169, 97, 0.28)`
+- **Title / Heading Text:** `#EFE7D3` (Noto Serif Display / Spectral)
+- **Body / Label Text:** `#E9E2D0` (Liberation Sans / Inter)
+- **Highlight / Active State:** `#FFFFFF` (bold, font-weight 700)
+- **Dim / Inactive State:** `#7E7E76`
+- **Accent Action Button:** `linear-gradient(180deg, #6F5029 0%, #4C3718 55%, #3A2A12 100%)`, border `2px solid #C9A961`, text `#F2E8CE`, inset shadow `inset 0 1px 0 rgba(255, 232, 175, 0.35), inset 0 -1px 0 rgba(0, 0, 0, 0.45)`.
+
+
