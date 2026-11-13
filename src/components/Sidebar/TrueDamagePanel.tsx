@@ -103,6 +103,26 @@ export const TrueDamagePanel: React.FC<TrueDamagePanelProps> = ({
             )}
           </div>
           <h1>True Damage</h1>
+          {onClose && (
+            <button
+              type="button"
+              className="td-close-btn"
+              onClick={onClose}
+              aria-label="Đóng panel"
+              style={{
+                marginLeft: 'auto',
+                background: 'transparent',
+                border: 'none',
+                color: '#efe7d3',
+                fontSize: '32px',
+                cursor: 'pointer',
+                padding: '0 8px',
+                lineHeight: 1,
+              }}
+            >
+              ×
+            </button>
+          )}
         </div>
 
         <div className="body">
